@@ -1,13 +1,14 @@
 .sidebar {
+  --sidebar-width: 19rem;
   --background-color: #282828;
   --shadow: inset 0px 1px 0px #222;
   position: absolute;
   left: 0;
-  width: 19rem;
+  width: var(--sidebar-width);
   height: 100%;
   background-color: var(--background-color);
   box-shadow: var(--shadow);
-  z-index: -1;
+  z-index: 1;
   overflow: auto;
 }
 

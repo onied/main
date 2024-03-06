@@ -1,0 +1,27 @@
+.summaryContainer {
+    margin-top: 1rem;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 5rem;
+    width: fit-content;
+    display: block;
+    gap: 1rem;
+    min-width: 480px;   
+}
+
+.markdownText p {
+    font-size: 16pt;
+    text-align: justify;
+}
+
+.fileLink{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.fileLink a {
+    color: #9715d3;
+    font-weight: bold;
+    font-size: 20pt;
+}

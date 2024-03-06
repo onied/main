@@ -1,0 +1,8 @@
+.blockViewContainer {
+    position: absolute;
+    left: var(--sidebar-width);
+    right: 0;
+    top: 0;
+    height: 100%; 
+    overflow: auto;
+}
