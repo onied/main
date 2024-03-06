@@ -1,3 +1,4 @@
+import { CompletedIcon } from "./completedIcon";
 import classes from "./sidebar.module.css";
 
 function Sidebar() {
@@ -7,8 +8,10 @@ function Sidebar() {
       <div>
         <div className={classes.module}>1. Первый модуль</div>
         <div className={classes.block}>1.1. Первый блок</div>
-        <div className={classes.block}>1.2. Второй блок</div>
-        <div className={classes.block}>1.3. Третий блок</div>
+        <div className={classes.selected}>1.2. Второй блок</div>
+        <div className={classes.block}>
+          1.3. Третий блок <CompletedIcon></CompletedIcon>
+        </div>
         <div className={classes.block}>1.4. Четвертый блок</div>
       </div>
       <div>

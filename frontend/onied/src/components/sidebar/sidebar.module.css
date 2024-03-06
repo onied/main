@@ -39,3 +39,21 @@
   font-size: 15pt;
   font-weight: bold;
 }
+
+.selected {
+  background-color: #383838;
+  color: #fff;
+  width: calc(100% - 2.2rem);
+  height: fit-content;
+  padding: 1.1rem;
+  font-size: 15pt;
+  font-weight: bold;
+}
+
+.completedIcon {
+  position: absolute;
+  right: 1rem;
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
