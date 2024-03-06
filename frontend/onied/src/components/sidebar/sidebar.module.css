@@ -38,6 +38,11 @@
   padding: 1.1rem;
   font-size: 15pt;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.block:hover {
+  background-color: #383838;
 }
 
 .selected {
