@@ -7,7 +7,6 @@ import FileLink from "./fileLink";
 function SummaryDto(title, markdownText, fileName, fileHref) {
     this.title = title;
     this.markdownText = markdownText;
-    this
     this.file = {
         name: fileName,
         href: fileHref,
