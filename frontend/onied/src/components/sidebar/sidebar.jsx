@@ -28,7 +28,7 @@ function Sidebar() {
   });
   const renderBlock = (block, index, moduleIndex) => {
     return (
-      <div className={classes.block}>
+      <div className={classes.block} key={moduleIndex + "." + index + "block"}>
         {moduleIndex + 1}.{index + 1}. {block.title}
         {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
       </div>
@@ -36,7 +36,7 @@ function Sidebar() {
   };
   const renderModule = (module, index) => {
     return (
-      <>
+      <div key={index + "module"}>
         <div className={classes.module}>
           {index + 1}. {module.title}
         </div>
@@ -45,7 +45,7 @@ function Sidebar() {
             renderBlock(block, blockIndex, index)
           )}
         </div>
-      </>
+      </div>
     );
   };
   return (
