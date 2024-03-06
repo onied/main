@@ -12,6 +12,7 @@ function App() {
           <Route path="/course/:courseId/learn/" element={Course()}></Route>
         </Routes>
       </main>
+      <main></main>
     </>
   );
 }

@@ -1,5 +1,11 @@
 #root {
   --header-height: 5rem;
+  --sidebar-width: 19rem;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
 
 main {
@@ -8,4 +14,9 @@ main {
   left: 0;
   right: 0;
   height: calc(100% - var(--header-height));
+}
+
+h2 {
+  font-size: 32pt;
+  font-weight: bolder;
 }
