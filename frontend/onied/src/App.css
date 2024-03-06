@@ -6,5 +6,6 @@ main {
   position: absolute;
   top: var(--header-height);
   left: 0;
+  right: 0;
   height: calc(100% - var(--header-height));
 }
