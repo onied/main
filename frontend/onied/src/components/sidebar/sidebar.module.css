@@ -19,3 +19,23 @@
   justify-content: center;
   flex-direction: column;
 }
+
+.module {
+  background-color: #9715d3;
+  color: #fff;
+  width: calc(100% - 2.2rem);
+  height: fit-content;
+  padding: 1.1rem;
+  font-size: 15pt;
+  font-weight: bold;
+}
+
+.block {
+  background-color: #282828;
+  color: #fff;
+  width: calc(100% - 2.2rem);
+  height: fit-content;
+  padding: 1.1rem;
+  font-size: 15pt;
+  font-weight: bold;
+}
