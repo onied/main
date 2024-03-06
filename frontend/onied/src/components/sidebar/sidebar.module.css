@@ -8,7 +8,7 @@
   height: 100%;
   background-color: var(--background-color);
   box-shadow: var(--shadow);
-  z-index: -1;
+  z-index: 1;
   overflow: auto;
 }
 
