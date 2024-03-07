@@ -11,14 +11,24 @@ function Tasks() {
         id: 1,
         title: "1. Что произошло на пло́щади Тяньаньмэ́нь в 1989 году?",
         type: taskType.MULTIPLE_ANSWERS,
-        variants: ["Ничего", "Ничего", "Ничего", "Ничего"],
+        variants: [
+          { id: 1, description: "Ничего" },
+          { id: 2, description: "Ничего" },
+          { id: 3, description: "Ничего" },
+          { id: 4, description: "Ничего" },
+        ],
         pointInfo: { completed: false },
       },
       {
         id: 2,
         title: "2. Чипи чипи чапа чапа дуби дуби даба даба?",
         type: taskType.SINGLE_ANSWER,
-        variants: ["Чипи чипи", "Чапа чапа", "Дуби дуби", "Даба даба"],
+        variants: [
+          { id: 5, description: "Чипи чипи" }, // variant_id is globally unique
+          { id: 6, description: "Чапа чапа" },
+          { id: 7, description: "Дуби дуби" },
+          { id: 8, description: "Даба даба" },
+        ],
         pointInfo: { completed: true, points: 0, maxPoints: 1 },
       },
       {
