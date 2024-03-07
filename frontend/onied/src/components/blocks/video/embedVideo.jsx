@@ -1,37 +1,51 @@
 import { useState } from "react";
 import classes from "./embedVideo.module.css"
 
+// 
 const embedElements = [
     {
+        // youtube
         regex: /^((?:https?:)?\/\/)?((?:www|m).)?((?:youtube(-nocookie)?.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|live\/|v\/)?)(?<videoId>[\w-]+)(\S+)?$/,
         getProvider: (href) => {
             const regex = /^((?:https?:)?\/\/)?((?:www|m).)?((?:youtube(-nocookie)?.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|live\/|v\/)?)(?<videoId>[\w]+)(\S+)?$/;
             const matches = href.match(regex);
-            console.log(`https://www.youtube.com/embed/${matches.groups.videoId}`);
 
             return <iframe 
             src={`https://www.youtube.com/embed/${matches.groups.videoId}`}
             className={classes.embedIFrame}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen />;
+            allowFullScreen />;
         }
     },
     {
-        regex: /^((?:https?:)?\/\/)?(vk\.com|m\.vk\.com|)?(\/video(?<videoOid>[\d-]+)_(?<videoId>[\d]+))?$/,
+        // vk video
+        regex: /^(?:https:\/\/)?(?:www\.)?(?:vk\.com|m\.vk\.com)(?:\/video)(?<videoOid>[\d-]+)_(?<videoId>[\d]+)$/,
         getProvider: (href) => {
-            const regex = /^((?:https?:)?\/\/)?(vk\.com|m\.vk\.com|)?(\/video(?<videoOid>[\d-]+)_(?<videoId>[\d]+))?$/;
+            const regex = /^(?:https:\/\/)?(?:www\.)?(?:vk\.com|m\.vk\.com)(?:\/video)(?<videoOid>[\d-]+)_(?<videoId>[\d]+)$/;
             const matches = href.match(regex);
             
-
-            // нужен хэш
-            console.log(`https://vk.com/video_ext.php?oid=${matches.groups.videoOid}&id=${matches.groups.videoId}&hd=2`);
             return <iframe 
-            src={`https://vk.com/video_ext.php?oid=${matches.groups.videoOid}&id=${matches.groups.videoId}&hd=2`}
+            src={`https://vk.com/video_ext.php?oid=${matches.groups.videoOid}&id=${matches.groups.videoId}`}
             className={classes.embedIFrame}
-            allow="autoplay; encrypted-media; picture-in-picture;" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"           
             allowFullScreen />;
-            // return <iframe src="https://vk.com/video_ext.php?oid=197465133&id=456239888&hd=2&hash=42d236acf4683c78" width="853" height="480" allow="autoplay; encrypted-media; fullscreen; picture-in-picture;" allowFullScreen></iframe>
+        }
+    },
+    {
+        // rutube
+        regex: /^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)?(\/[\S]+)?$$/,
+        getProvider: (href) => {
+            const regex = /^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)(\/[\S]+)?$/;
+            const matches = href.match(regex);
+            // https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd
+            
+            
+            return <iframe 
+            src={`https://rutube.ru/play/embed/${matches.groups.videoId}`} 
+            className={classes.embedIFrame}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen />;
         }
     }
 ];
