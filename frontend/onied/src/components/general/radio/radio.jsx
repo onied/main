@@ -1,7 +1,7 @@
 import classes from "./radio.module.css";
 
-function Radio() {
-  return <input type="radio" className={classes.radio}></input>;
+function Radio(props) {
+  return <input type="radio" className={classes.radio} {...props}></input>;
 }
 
 export default Radio;

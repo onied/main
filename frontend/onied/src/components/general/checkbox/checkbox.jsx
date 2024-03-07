@@ -1,7 +1,9 @@
 import classes from "./checkbox.module.css";
 
-function Checkbox() {
-  return <input type="checkbox" className={classes.checkbox}></input>;
+function Checkbox(props) {
+  return (
+    <input type="checkbox" className={classes.checkbox} {...props}></input>
+  );
 }
 
 export default Checkbox;
