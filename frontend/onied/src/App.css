@@ -1,6 +1,7 @@
 #root {
   --header-height: 5rem;
   --sidebar-width: 19rem;
+  --accent-color: #9715d3;
 }
 
 body {

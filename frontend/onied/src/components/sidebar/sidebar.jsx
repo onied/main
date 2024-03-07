@@ -50,7 +50,7 @@ function Sidebar() {
   };
   return (
     <div className={classes.sidebar}>
-      <div className={classes.title}>{hierarchy.title.toLowerCase()}</div>
+      <div className={classes.title}>{hierarchy.title}</div>
       <div>{hierarchy.modules.map(renderModule)}</div>
     </div>
   );
