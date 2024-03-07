@@ -9,7 +9,7 @@ function App() {
       <Header></Header>
       <main>
         <Routes>
-          <Route path="/course/:courseId/learn/" element={Course()}></Route>
+          <Route path="/course/:courseId/learn/*" element={Course()}></Route>
         </Routes>
       </main>
     </>
