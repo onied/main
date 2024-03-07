@@ -1,3 +1,4 @@
+import Button from "../../general/button/button";
 import GeneralTask from "./generalTask";
 import taskType from "./taskType";
 import classes from "./tasks.module.css";
@@ -20,15 +21,28 @@ function Tasks() {
         variants: ["Чипи чипи", "Чапа чапа", "Дуби дуби", "Даба даба"],
         pointInfo: { completed: true, points: 0, maxPoints: 1 },
       },
+      {
+        id: 3,
+        title: "3. Кто?",
+        type: taskType.INPUT_ANSWER,
+        pointInfo: { completed: true, points: 5, maxPoints: 5 },
+      },
+      {
+        id: 4,
+        title: "4. Напишите эссе на тему: “Как я провел лето”",
+        type: taskType.REVIEW_ANSWER,
+        pointInfo: { completed: false },
+      },
     ],
   };
   return (
-    <div className={classes.tasksContainer}>
+    <form className={classes.tasksContainer}>
       <h2>{tasks.title}</h2>
       {tasks.tasks.map((task, index) => {
         return <GeneralTask task={task} key={index}></GeneralTask>;
       })}
-    </div>
+      <Button type="submit">отправить на проверку</Button>
+    </form>
   );
 }
 
