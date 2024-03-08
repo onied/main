@@ -1,6 +1,6 @@
 import Sidebar from "../../components/sidebar/sidebar";
+import BlockViewContainer from "../../components/blocks/blockViewContainer";
 import Summary from "../../components/blocks/summary/summary";
-import classes from "../../components/blocks/blocks.module.css";
 import Tasks from "../../components/blocks/tasks/tasks";
 import EmbedVideo from "../../components/blocks/video/embedVideo";
 import React, { Fragment } from 'react'
@@ -11,7 +11,7 @@ function Course() {
   return (
     <>
       <Sidebar></Sidebar>
-      <div className={classes.blockViewContainer}>
+      <BlockViewContainer>
         <Routes>
           <Route path="1" element={Summary()}></Route>
           <Route path="2" element={Tasks()}></Route>
@@ -21,7 +21,7 @@ function Course() {
             <EmbedVideo href="https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"/>
             </Fragment>}></Route>
         </Routes>
-      </div>
+      </BlockViewContainer>
     </>
   ); // /course/asdf/learn/1 -- summary, /course/asdf/learn/2 -- tasks
 }
