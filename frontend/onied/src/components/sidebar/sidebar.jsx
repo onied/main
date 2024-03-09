@@ -2,18 +2,36 @@ import { useState } from "react";
 import { CompletedIcon } from "./completedIcon";
 import classes from "./sidebar.module.css";
 import BarLoader from "react-spinners/BarLoader";
+import { Link } from "react-router-dom";
 
-function Sidebar({ hierarchy }) {
+function Sidebar({ hierarchy, currentBlock, setCurrentBlock }) {
   const loaded = (attribute) => {
     return hierarchy != null ? attribute in hierarchy : false;
   };
 
   const renderBlock = (block, index, moduleIndex) => {
+    if (currentBlock == hierarchy.modules[moduleIndex].blocks[index].id)
+      return (
+        <div
+          className={classes.selected}
+          key={moduleIndex + "." + index + "block"}
+        >
+          {moduleIndex + 1}.{index + 1}. {block.title}
+          {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
+        </div>
+      );
     return (
-      <div className={classes.block} key={moduleIndex + "." + index + "block"}>
+      <Link
+        className={classes.block}
+        key={moduleIndex + "." + index + "block"}
+        to={`/course/${hierarchy.id}/learn/${hierarchy.modules[moduleIndex].blocks[index].id}/`}
+        onClick={() =>
+          setCurrentBlock(hierarchy.modules[moduleIndex].blocks[index].id)
+        }
+      >
         {moduleIndex + 1}.{index + 1}. {block.title}
         {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
-      </div>
+      </Link>
     );
   };
   const renderModule = (module, index) => {

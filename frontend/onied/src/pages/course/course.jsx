@@ -1,16 +1,15 @@
 import Sidebar from "../../components/sidebar/sidebar";
 import BlockViewContainer from "../../components/blocks/blockViewContainer";
-import Summary from "../../components/blocks/summary/summary";
-import Tasks from "../../components/blocks/tasks/tasks";
-import EmbedVideo from "../../components/blocks/video/embedVideo";
 import { Route, Routes, useParams } from "react-router-dom";
 import Config from "../../config/config";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BlockDispatcher from "../../components/blocks/blockDispatcher";
 
 function Course() {
   const { courseId } = useParams();
   const [hierarchy, setHierarchy] = useState();
+  const [currentBlock, setCurrentBlock] = useState();
 
   const id = Number(courseId);
   if (isNaN(id)) {
@@ -21,31 +20,34 @@ function Course() {
 
   useEffect(() => {
     axios
-      .get(Config.CoursesBackend + "courses/" + id + "/get_hierarchy")
+      .get(Config.CoursesBackend + "courses/" + id + "/get_hierarchy/")
       .then((response) => {
         console.log(response.data);
         setHierarchy(response.data);
+        if (
+          "modules" in response.data &&
+          response.data.modules.length > 0 &&
+          "blocks" in response.data.modules[0] &&
+          response.data.modules[0].blocks.length > 0
+        )
+          setCurrentBlock(response.data.modules[0].blocks[0].id);
       })
       .catch((error) => console.log(error));
   }, []);
 
   return (
     <>
-      <Sidebar hierarchy={hierarchy}></Sidebar>
+      <Sidebar
+        hierarchy={hierarchy}
+        currentBlock={currentBlock}
+        setCurrentBlock={setCurrentBlock}
+      ></Sidebar>
       <BlockViewContainer>
         <Routes>
-          <Route path="1" element={Summary()}></Route>
-          <Route path="2" element={Tasks()}></Route>
           <Route
-            path="3"
-            element={
-              <>
-                <EmbedVideo href="https://www.youtube.com/watch?v=YfBlwC44gDQ" />
-                <EmbedVideo href="https://vk.com/video-50883936_456243146" />
-                <EmbedVideo href="https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd" />
-              </>
-            }
-          ></Route>
+            path=":blockId/"
+            element={<BlockDispatcher hierarchy={hierarchy} />}
+          />
         </Routes>
       </BlockViewContainer>
     </>
