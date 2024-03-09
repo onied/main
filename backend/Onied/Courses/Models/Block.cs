@@ -12,4 +12,6 @@ public class Block
     [MinLength(1)]
     [MaxLength(200)]
     public string Title { get; set; } = null!;
+
+    public bool IsCompleted { get; set; }
 }

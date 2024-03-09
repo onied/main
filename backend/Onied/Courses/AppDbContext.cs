@@ -53,6 +53,7 @@ public class AppDbContext : DbContext
             Id = 2,
             ModuleId = 1,
             Title = "MAKIMA BEAN",
+            IsCompleted = true,
             Url = "https://www.youtube.com/watch?v=YfBlwC44gDQ"
         }, new VideoBlock
         {
