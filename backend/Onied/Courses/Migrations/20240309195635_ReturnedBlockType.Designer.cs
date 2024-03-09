@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240309195635_ReturnedBlockType")]
+    partial class ReturnedBlockType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace Courses.Migrations
 
                     b.ToTable("blocks", (string)null);
 
-                    b.HasDiscriminator<int>("BlockType").HasValue(0);
+                    b.HasDiscriminator<int>("BlockType").HasValue(3);
 
                     b.UseTphMappingStrategy();
                 });
@@ -341,7 +344,7 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(15000)")
                         .HasColumnName("markdown_text");
 
-                    b.HasDiscriminator().HasValue(1);
+                    b.HasDiscriminator().HasValue(0);
 
                     b.HasData(
                         new
@@ -361,7 +364,7 @@ namespace Courses.Migrations
                 {
                     b.HasBaseType("Courses.Models.Block");
 
-                    b.HasDiscriminator().HasValue(3);
+                    b.HasDiscriminator().HasValue(2);
 
                     b.HasData(
                         new
@@ -384,7 +387,7 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("url");
 
-                    b.HasDiscriminator().HasValue(2);
+                    b.HasDiscriminator().HasValue(1);
 
                     b.HasData(
                         new

@@ -13,5 +13,7 @@ public class Block
     [MaxLength(200)]
     public string Title { get; set; } = null!;
 
+    public virtual BlockType BlockType { get; set; }
+
     public bool IsCompleted { get; set; }
 }

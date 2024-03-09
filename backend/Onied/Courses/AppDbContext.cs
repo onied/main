@@ -25,6 +25,13 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Block>()
+            .HasDiscriminator(block => block.BlockType)
+            .HasValue<Block>(BlockType.AnyBlock)
+            .HasValue<SummaryBlock>(BlockType.SummaryBlock)
+            .HasValue<VideoBlock>(BlockType.VideoBlock)
+            .HasValue<TasksBlock>(BlockType.TasksBlock);
+
         modelBuilder.Entity<Course>().HasData(new Course
             { Id = 1, Title = "Название курса. Как я встретил вашу маму. Осуждаю." });
         modelBuilder.Entity<Module>().HasData(new Module
