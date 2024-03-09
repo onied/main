@@ -42,7 +42,6 @@ public class AppDbContext : DbContext
         {
             Id = 1,
             ModuleId = 1,
-            BlockType = BlockType.SummaryBlock,
             FileHref = "/assets/react.svg",
             FileName = "file_name.svg",
             Title = "Титульник",
@@ -53,21 +52,18 @@ public class AppDbContext : DbContext
         {
             Id = 2,
             ModuleId = 1,
-            BlockType = BlockType.VideoBlock,
             Title = "MAKIMA BEAN",
             Url = "https://www.youtube.com/watch?v=YfBlwC44gDQ"
         }, new VideoBlock
         {
             Id = 3,
             ModuleId = 1,
-            BlockType = BlockType.VideoBlock,
             Title = "Техас покидает родную гавань",
             Url = "https://vk.com/video-50883936_456243146"
         }, new VideoBlock
         {
             Id = 4,
             ModuleId = 1,
-            BlockType = BlockType.VideoBlock,
             Title = "Александр Асафов о предстоящих президентских выборах",
             Url = "https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"
         });
@@ -75,7 +71,6 @@ public class AppDbContext : DbContext
         {
             Id = 5,
             ModuleId = 1,
-            BlockType = BlockType.TasksBlock,
             Title = "Заголовок блока с заданиями"
         });
         modelBuilder.Entity<VariantsTask>().HasData(new VariantsTask
