@@ -22,8 +22,7 @@ function Summary() {
         "/assets/react.svg"
     ));
 
-    return (<Fragment>
-        <div className={classes.summaryContainer} >
+    return (<>
             <h2>{summary.title}</h2>
             <Markdown className={classes.markdownText}>{summary.markdownText}</Markdown>
             { 
@@ -31,8 +30,7 @@ function Summary() {
                     ? null 
                     : <FileLink fileName={summary.file.name} fileHref={summary.file.href} />
             }
-        </div>
-    </Fragment>);
+    </>);
 }
 
 

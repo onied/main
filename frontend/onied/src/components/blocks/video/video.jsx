@@ -9,9 +9,7 @@ function Video() {
   });
   return (
     <>
-      <div className={classes.videoBlockTitle}>
-        <h2>{videoBlock.title}</h2>
-      </div>
+      <h2>{videoBlock.title}</h2>
       <EmbedVideo href={videoBlock.href}></EmbedVideo>
     </>
   );

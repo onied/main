@@ -16,12 +16,3 @@
   min-width: 480px;
   height: fit-content;
 }
-
-.videoBlockTitle {
-  margin-top: 1rem;
-  margin-left: 10%;
-  margin-right: 10%;
-  width: fit-content;
-  display: block;
-  gap: 1rem;
-}
