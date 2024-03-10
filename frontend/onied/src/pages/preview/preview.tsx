@@ -55,9 +55,8 @@ function Preview(): ReactNode {
         <div className={classes.previewLeftBlock}>
             <h2 className={classes.previewTitle}>{dto.title}</h2>
             <div className={classes.additionalInfoLine}>
-                <a
-                    className={classes.additionalInfo}
-                    href={`/catalog?=category=${dto.category.id}`}>
+                <a className={classes.additionalInfo}
+                   href={`/catalog?=category=${dto.category.id}`}>
                     категория: {dto.category.name}
                 </a>
                 <span className={classes.additionalInfo}>
