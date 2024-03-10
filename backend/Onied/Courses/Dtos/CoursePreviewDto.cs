@@ -1,5 +1,3 @@
-using Courses.Models;
-
 namespace Courses.Dtos;
 
 public class CoursePreviewDto
