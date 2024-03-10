@@ -38,7 +38,6 @@ function Preview(): ReactNode {
             name: "цифровые технологии"
         },
         courseAuthor: {
-            id: 1,
             name: "Василий Теркин",
             avatarHref: "https://gas-kvas.com/uploads/posts/2023-02/1676538735_gas-kvas-com-p-vasilii-terkin-detskii-risunok-49.jpg",
         },
