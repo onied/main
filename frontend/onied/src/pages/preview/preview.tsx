@@ -19,7 +19,6 @@ type PreviewDto = {
         name: string;
     }
     courseAuthor: {
-        id: number;
         name: string;
         avatarHref: string;
     }
