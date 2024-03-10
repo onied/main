@@ -17,7 +17,8 @@ public class AppMappingProfile : Profile
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url));
         CreateMap<TaskVariant, VariantDto>();
-        CreateMap<Task, TaskDto>();
+        CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
+        CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
     }
 }
