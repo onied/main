@@ -1,0 +1,68 @@
+.previewContainer {
+    margin-left: auto;
+    margin-top: 3rem;
+    margin-right: auto;
+    margin-bottom: 3rem;
+    min-width: 480px;
+    width: 75%;
+}
+
+.previewLeftBlock {
+    width: 67%;
+    float: left;
+}
+
+.previewRightBlock {
+    width: 30%;
+    float: right;
+}
+
+.previewLeftBlock p {
+    text-align: justify;
+    font-size: 16pt;
+}
+
+.previewTitle {
+    margin-top: 0;
+}
+
+.additionalInfoLine {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.additionalInfo {
+    color: #686868;
+    font-size: 16pt;
+    font-weight: light;
+}
+
+.additionalInfo a {
+    text-decoration: underline;
+}
+
+.price {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.price::after {
+    margin-left: 0.5rem;
+    content: '₽';
+}
+
+.buyButton {
+    --button-color: var(--accent-color);
+    width: 100%;        
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    background-color: var(--button-color);
+    box-shadow: 0px 4px 7px 0px #9715d380;
+    font-weight: 600;
+    font-size: 20pt;
+    color: white;
+    border: 0;
+    cursor: pointer;
+    margin: 1rem 0;
+}

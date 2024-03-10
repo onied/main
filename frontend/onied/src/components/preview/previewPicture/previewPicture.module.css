@@ -1,0 +1,27 @@
+.previewPicture {
+display: block;
+max-width: 100%;
+object-fit: cover;
+border-radius: 2rem;
+}
+
+.archived {
+position: absolute;
+left: 0;
+bottom: 0;
+z-index: 1;
+width: 100%;
+background-color: #9715D3;
+height: 4rem;
+border-radius: 0 0 2rem 2rem;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.archived span{
+color: white;
+text-align: center;
+font-size: 24pt;
+font-weight: bolder;
+}
