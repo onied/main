@@ -9,14 +9,15 @@ import BlockDispatcher from "../../components/blocks/blockDispatcher";
 function Course() {
   const { courseId } = useParams();
   const [hierarchy, setHierarchy] = useState();
-  const [blocks, setBlocks] = useState();
+  const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
+  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
 
   const id = Number(courseId);
   if (isNaN(id)) {
     console.log(id);
     console.log(courseId);
-    return <h1>Курс не найден.</h1>;
+    return notFound;
   }
 
   useEffect(() => {
@@ -25,9 +26,19 @@ function Course() {
       .then((response) => {
         console.log(response.data);
         setHierarchy(response.data);
+        setCourseFound(true);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+
+        if ("response" in error && error.response.status == 404) {
+          setHierarchy({});
+          setCourseFound(false);
+        }
+      });
   }, []);
+
+  if (hierarchy != null && !courseFound) return notFound;
 
   return (
     <>
