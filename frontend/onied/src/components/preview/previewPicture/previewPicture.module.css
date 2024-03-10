@@ -1,8 +1,21 @@
-.previewPicture {
-display: block;
-max-width: 100%;
-object-fit: cover;
-border-radius: 2rem;
+@media screen and (width > 920px) {
+    .previewPicture {
+    display: block;
+    width: var(--right-block-width);
+    height: var(--right-block-width);
+    object-fit: cover;
+    border-radius: 2rem;
+    }
+}
+
+@media screen and (width < 920px) {
+    .previewPicture {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 2rem;
+    }
 }
 
 .archived {
@@ -25,3 +38,4 @@ text-align: center;
 font-size: 24pt;
 font-weight: bolder;
 }
+

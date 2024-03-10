@@ -1,20 +1,44 @@
-.previewContainer {
-    margin-left: auto;
-    margin-top: 3rem;
-    margin-right: auto;
-    margin-bottom: 3rem;
-    min-width: 480px;
-    width: 75%;
+@media screen and (width > 920px) {
+    .previewContainer {
+        --right-block-width: 350px;
+        --blocks-gap: 2%;
+        margin-left: auto;
+        margin-top: 3rem;
+        margin-right: auto;
+        margin-bottom: 3rem;
+        width: 75%;
+    }
+
+    .previewLeftBlock {
+        width: calc(100% - var(--blocks-gap) - var(--right-block-width));
+        float: left;
+    }
+
+    .previewRightBlock {
+        width: var(--right-block-width);
+        float: right;
+    }
 }
 
-.previewLeftBlock {
-    width: 67%;
-    float: left;
-}
+@media screen and (width < 920px) {
+    .previewContainer {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 1rem;
+        margin-left: 1rem;
+        margin-top: 3rem;
+        margin-right: 1rem;
+        margin-bottom: 3rem;
+        min-width: 480px;
+    }
 
-.previewRightBlock {
-    width: 30%;
-    float: right;
+    .previewLeftBlock {
+        width: 100%;
+    }
+    
+    .previewRightBlock {
+        width: 100%;
+    }
 }
 
 .previewLeftBlock p {
