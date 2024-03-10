@@ -9,6 +9,7 @@ import BlockDispatcher from "../../components/blocks/blockDispatcher";
 function Course() {
   const { courseId } = useParams();
   const [hierarchy, setHierarchy] = useState();
+  const [blocks, setBlocks] = useState();
   const [currentBlock, setCurrentBlock] = useState();
 
   const id = Number(courseId);
@@ -24,13 +25,6 @@ function Course() {
       .then((response) => {
         console.log(response.data);
         setHierarchy(response.data);
-        if (
-          "modules" in response.data &&
-          response.data.modules.length > 0 &&
-          "blocks" in response.data.modules[0] &&
-          response.data.modules[0].blocks.length > 0
-        )
-          setCurrentBlock(response.data.modules[0].blocks[0].id);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -46,7 +40,18 @@ function Course() {
         <Routes>
           <Route
             path=":blockId/"
-            element={<BlockDispatcher hierarchy={hierarchy} />}
+            element={
+              <BlockDispatcher
+                hierarchy={hierarchy}
+                setCurrentBlock={setCurrentBlock}
+              />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <h1 style={{ margin: "3rem" }}>Выберите блок из списка.</h1>
+            }
           />
         </Routes>
       </BlockViewContainer>
