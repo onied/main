@@ -1,5 +1,6 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,5 +58,19 @@ public class CoursesController : ControllerBase
         if (block == null || block.Module.CourseId != id)
             return NotFound();
         return _mapper.Map<VideoBlockDto>(block);
+    }
+
+    [HttpGet]
+    [Route("{id:int}/get_tasks_block/{blockId:int}")]
+    public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
+    {
+        var block = await _context.TasksBlocks
+            .Include(block => block.Module)
+            .Include(block => block.Tasks)
+            .ThenInclude(task => ((VariantsTask)task).Variants)
+            .FirstOrDefaultAsync(block => block.Id == blockId);
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+        return _mapper.Map<TasksBlockDto>(block);
     }
 }
