@@ -42,11 +42,7 @@ function Course() {
 
   return (
     <>
-      <Sidebar
-        hierarchy={hierarchy}
-        currentBlock={currentBlock}
-        setCurrentBlock={setCurrentBlock}
-      ></Sidebar>
+      <Sidebar hierarchy={hierarchy} currentBlock={currentBlock}></Sidebar>
       <BlockViewContainer>
         <Routes>
           <Route
