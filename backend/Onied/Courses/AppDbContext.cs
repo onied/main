@@ -60,7 +60,8 @@ public class AppDbContext : DbContext
             HoursCount = 100,
             PriceRubles = 0,
             IsArchived = true,
-            IsGlowing = false
+            IsGlowing = false,
+            IsProgramVisible = true
         });
         modelBuilder.Entity<Module>().HasData(new Module
         {

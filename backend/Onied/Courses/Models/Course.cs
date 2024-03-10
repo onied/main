@@ -36,5 +36,7 @@ public class Course
 
     public bool HasCertificates { get; set; }
 
+    public bool IsProgramVisible { get; set; }
+
     public ICollection<Module> Modules { get; } = new List<Module>();
 }
