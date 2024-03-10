@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240310173235_UpgradedCourses")]
+    partial class UpgradedCourses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,10 +174,6 @@ namespace Courses.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_glowing");
 
-                    b.Property<bool>("IsProgramVisible")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_program_visible");
-
                     b.Property<string>("PictureHref")
                         .IsRequired()
                         .HasMaxLength(2048)
@@ -213,7 +212,6 @@ namespace Courses.Migrations
                             HoursCount = 100,
                             IsArchived = true,
                             IsGlowing = false,
-                            IsProgramVisible = true,
                             PictureHref = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Kitten_sleeping.jpg",
                             PriceRubles = 0,
                             Title = "Название курса. Как я встретил вашу маму. Осуждаю."
