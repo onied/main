@@ -1,6 +1,7 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
+using Task = Courses.Models.Task;
 
 namespace Courses.Profiles;
 
@@ -15,5 +16,8 @@ public class AppMappingProfile : Profile
         CreateMap<SummaryBlock, SummaryBlockDto>();
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url));
+        CreateMap<TaskVariant, VariantDto>();
+        CreateMap<Task, TaskDto>();
+        CreateMap<TasksBlock, TasksBlockDto>();
     }
 }
