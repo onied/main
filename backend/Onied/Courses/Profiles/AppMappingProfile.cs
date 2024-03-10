@@ -16,5 +16,8 @@ public class AppMappingProfile : Profile
         CreateMap<Category, CategoryDto>();
         CreateMap<Course, PreviewDto>().ForMember(preview => preview.CourseAuthor,
             options => options.MapFrom(course => course.Author));
+        CreateMap<SummaryBlock, SummaryBlockDto>();
+        CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
+            expression => expression.MapFrom(block => block.Url));
     }
 }
