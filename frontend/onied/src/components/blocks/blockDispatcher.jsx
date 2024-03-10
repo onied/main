@@ -8,7 +8,12 @@ import classes from "./blocks.module.css";
 
 function BlockDispatcher({ hierarchy, setCurrentBlock }) {
   const { blockId } = useParams();
-  const blockTypes = [<></>, <Summary />, <Video />, <Tasks />];
+  const blockTypes = [
+    <></>,
+    <Summary courseId={hierarchy?.id} blockId={Number(blockId)} />,
+    <Video />,
+    <Tasks />,
+  ];
   const blocks =
     hierarchy != null && "modules" in hierarchy
       ? hierarchy.modules
