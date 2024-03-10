@@ -12,5 +12,7 @@ public class AppMappingProfile : Profile
             expression => expression.MapFrom(block => block.IsCompleted));
         CreateMap<Course, CourseDto>();
         CreateMap<Module, ModuleDto>();
+        CreateMap<SummaryBlock, SummaryBlockDto>();
+        CreateMap<VideoBlock, VideoBlockDto>();
     }
 }

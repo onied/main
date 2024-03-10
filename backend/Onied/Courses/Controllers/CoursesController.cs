@@ -36,4 +36,26 @@ public class CoursesController : ControllerBase
             return NotFound();
         return _mapper.Map<CourseDto>(course);
     }
+
+    [HttpGet]
+    [Route("{id:int}/get_summary_block/{blockId:int}")]
+    public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId)
+    {
+        var summary = await _context.SummaryBlocks.Include(block => block.Module)
+            .FirstOrDefaultAsync(block => block.Id == blockId);
+        if (summary == null || summary.Module.CourseId != id)
+            return NotFound();
+        return _mapper.Map<SummaryBlockDto>(summary);
+    }
+
+    [HttpGet]
+    [Route("{id:int}/get_video_block/{blockId:int}")]
+    public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId)
+    {
+        var block = await _context.VideoBlocks.Include(block => block.Module)
+            .FirstOrDefaultAsync(block => block.Id == blockId);
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+        return _mapper.Map<VideoBlockDto>(block);
+    }
 }
