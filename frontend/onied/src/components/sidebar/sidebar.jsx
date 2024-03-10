@@ -4,7 +4,7 @@ import classes from "./sidebar.module.css";
 import BarLoader from "react-spinners/BarLoader";
 import { Link } from "react-router-dom";
 
-function Sidebar({ hierarchy, currentBlock, setCurrentBlock }) {
+function Sidebar({ hierarchy, currentBlock }) {
   const loaded = (attribute) => {
     return hierarchy != null ? attribute in hierarchy : false;
   };
@@ -25,9 +25,6 @@ function Sidebar({ hierarchy, currentBlock, setCurrentBlock }) {
         className={classes.block}
         key={moduleIndex + "." + index + "block"}
         to={`/course/${hierarchy.id}/learn/${hierarchy.modules[moduleIndex].blocks[index].id}/`}
-        onClick={() =>
-          setCurrentBlock(hierarchy.modules[moduleIndex].blocks[index].id)
-        }
       >
         {moduleIndex + 1}.{index + 1}. {block.title}
         {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
