@@ -1,37 +1,37 @@
 import { useState } from "react";
 import { CompletedIcon } from "./completedIcon";
 import classes from "./sidebar.module.css";
+import BarLoader from "react-spinners/BarLoader";
+import { Link } from "react-router-dom";
 
-function Sidebar() {
-  const [hierarchy, setHierarchy] = useState({
-    title: "нАзвАниЕ курсА бЕз рЕгистрА",
-    modules: [
-      {
-        title: "Первый модуль",
-        blocks: [
-          { title: "Первый блок", completed: false },
-          { title: "Второй блок", completed: false },
-          { title: "Третий блок", completed: true },
-          { title: "Четвертый блок", completed: false },
-        ],
-      },
-      {
-        title: "Второй модуль",
-        blocks: [
-          { title: "Первый блок", completed: false },
-          { title: "Второй блок", completed: false },
-          { title: "Третий блок", completed: false },
-          { title: "Четвертый блок", completed: false },
-        ],
-      },
-    ],
-  });
+function Sidebar({ hierarchy, currentBlock, setCurrentBlock }) {
+  const loaded = (attribute) => {
+    return hierarchy != null ? attribute in hierarchy : false;
+  };
+
   const renderBlock = (block, index, moduleIndex) => {
+    if (currentBlock == hierarchy.modules[moduleIndex].blocks[index].id)
+      return (
+        <div
+          className={classes.selected}
+          key={moduleIndex + "." + index + "block"}
+        >
+          {moduleIndex + 1}.{index + 1}. {block.title}
+          {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
+        </div>
+      );
     return (
-      <div className={classes.block} key={moduleIndex + "." + index + "block"}>
+      <Link
+        className={classes.block}
+        key={moduleIndex + "." + index + "block"}
+        to={`/course/${hierarchy.id}/learn/${hierarchy.modules[moduleIndex].blocks[index].id}/`}
+        onClick={() =>
+          setCurrentBlock(hierarchy.modules[moduleIndex].blocks[index].id)
+        }
+      >
         {moduleIndex + 1}.{index + 1}. {block.title}
         {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
-      </div>
+      </Link>
     );
   };
   const renderModule = (module, index) => {
@@ -50,8 +50,18 @@ function Sidebar() {
   };
   return (
     <div className={classes.sidebar}>
-      <div className={classes.title}>{hierarchy.title}</div>
-      <div>{hierarchy.modules.map(renderModule)}</div>
+      <div className={classes.title}>
+        {loaded("title") ? hierarchy.title : <></>}
+      </div>
+      <div>
+        {loaded("modules") ? (
+          hierarchy.modules.map(renderModule)
+        ) : (
+          <div className="d-flex justify-content-center m-5">
+            <BarLoader color="var(--accent-color)" width="100%"></BarLoader>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

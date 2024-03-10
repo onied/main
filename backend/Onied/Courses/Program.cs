@@ -1,4 +1,5 @@
 using Courses;
+using Courses.Profiles;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
         .UseSnakeCaseNamingConvention());
+builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -23,6 +26,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(b => b.AllowAnyOrigin());
 
 app.UseAuthorization();
 

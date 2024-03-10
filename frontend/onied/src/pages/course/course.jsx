@@ -1,27 +1,72 @@
 import Sidebar from "../../components/sidebar/sidebar";
 import BlockViewContainer from "../../components/blocks/blockViewContainer";
-import Summary from "../../components/blocks/summary/summary";
-import Tasks from "../../components/blocks/tasks/tasks";
-import EmbedVideo from "../../components/blocks/video/embedVideo";
-import { Route, Routes } from "react-router-dom";
-
+import { Route, Routes, useParams } from "react-router-dom";
+import Config from "../../config/config";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import BlockDispatcher from "../../components/blocks/blockDispatcher";
 
 function Course() {
+  const { courseId } = useParams();
+  const [hierarchy, setHierarchy] = useState();
+  const [courseFound, setCourseFound] = useState(false);
+  const [currentBlock, setCurrentBlock] = useState();
+  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+
+  const id = Number(courseId);
+  if (isNaN(id)) {
+    console.log(id);
+    console.log(courseId);
+    return notFound;
+  }
+
+  useEffect(() => {
+    axios
+      .get(Config.CoursesBackend + "courses/" + id + "/get_hierarchy/")
+      .then((response) => {
+        console.log(response.data);
+        setHierarchy(response.data);
+        setCourseFound(true);
+      })
+      .catch((error) => {
+        console.log(error);
+
+        if ("response" in error && error.response.status == 404) {
+          setHierarchy({});
+          setCourseFound(false);
+        }
+      });
+  }, []);
+
+  if (hierarchy != null && !courseFound) return notFound;
+
   return (
     <>
-      <Sidebar></Sidebar>
+      <Sidebar
+        hierarchy={hierarchy}
+        currentBlock={currentBlock}
+        setCurrentBlock={setCurrentBlock}
+      ></Sidebar>
       <BlockViewContainer>
         <Routes>
-          <Route path="1" element={Summary()}></Route>
-          <Route path="2" element={Tasks()}></Route>
-          <Route path="3" element={<>
-            <EmbedVideo href="https://www.youtube.com/watch?v=YfBlwC44gDQ"/>
-            <EmbedVideo href="https://vk.com/video-50883936_456243146"/>
-            <EmbedVideo href="https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"/>
-            </>}></Route>
+          <Route
+            path=":blockId/"
+            element={
+              <BlockDispatcher
+                hierarchy={hierarchy}
+                setCurrentBlock={setCurrentBlock}
+              />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <h1 style={{ margin: "3rem" }}>Выберите блок из списка.</h1>
+            }
+          />
         </Routes>
       </BlockViewContainer>
     </>
-  ); // /course/asdf/learn/1 -- summary, /course/asdf/learn/2 -- tasks
+  );
 }
 export default Course;
