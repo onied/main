@@ -33,7 +33,7 @@ function Tasks({ courseId, blockId }) {
           setFound(false);
         }
       });
-  }, []);
+  }, [courseId, blockId]);
 
   if (found == null)
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;

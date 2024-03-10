@@ -18,7 +18,7 @@ function GeneralTask({ task, index }) {
       <TaskTitle
         taskTitle={task.title}
         pointInfo={{
-          completed: task.points != null,
+          checked: task.points != null,
           points: task.points,
           maxPoints: task.maxPoints,
         }}
