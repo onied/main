@@ -61,7 +61,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:int}/get_task_block/{blockId:int}")]
+    [Route("{id:int}/get_tasks_block/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
     {
         var block = await _context.TasksBlocks

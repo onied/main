@@ -12,7 +12,7 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }) {
     <></>,
     <Summary courseId={hierarchy?.id} blockId={Number(blockId)} />,
     <Video courseId={hierarchy?.id} blockId={Number(blockId)} />,
-    <Tasks />,
+    <Tasks courseId={hierarchy?.id} blockId={Number(blockId)} />,
   ];
   const blocks =
     hierarchy != null && "modules" in hierarchy
