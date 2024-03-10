@@ -20,6 +20,7 @@ function Summary({ courseId, blockId }) {
   const [found, setFound] = useState();
 
   useEffect(() => {
+    setFound(undefined);
     axios
       .get(
         Config.CoursesBackend +

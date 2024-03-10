@@ -8,5 +8,5 @@ public class VideoBlockDto
     public string Title { get; set; } = null!;
     public BlockType BlockType { get; set; }
     public bool IsCompleted { get; set; }
-    public string Url { get; set; } = null!;
+    public string Href { get; set; } = null!;
 }

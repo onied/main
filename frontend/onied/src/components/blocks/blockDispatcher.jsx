@@ -11,7 +11,7 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }) {
   const blockTypes = [
     <></>,
     <Summary courseId={hierarchy?.id} blockId={Number(blockId)} />,
-    <Video />,
+    <Video courseId={hierarchy?.id} blockId={Number(blockId)} />,
     <Tasks />,
   ];
   const blocks =
