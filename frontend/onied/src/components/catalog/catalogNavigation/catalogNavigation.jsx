@@ -10,7 +10,7 @@ function CatalogNavigation({ currentPage, onPageChange }){
         <div className={classes.catalogNavigationContainer}>
             <div className={classes.navItem} onClick={() => onPageChange(currentPage - 1)}>{"<"}</div>
             <div className={classes.navItem} onClick={() => onPageChange(currentPage - 1)}>Назад</div>
-            {currentPage - 2 > 1 ? (<div>...</div>) : null}
+            {currentPage - 2 > 1 ? (<div style={{ padding: "0 15px" }}>...</div>) : null}
             {pageNumbers.map((pageNumber) => {
                 if (pageNumber <= currentPage + 2 && pageNumber >= currentPage - 2){
                     return((<NaviationPageButton pageNumber={pageNumber}
@@ -18,7 +18,7 @@ function CatalogNavigation({ currentPage, onPageChange }){
                                                  onPageChange={onPageChange} />))
                 }
             })}
-            {currentPage + 2 < maxPageAmount ? (<div>...</div>) : null}
+            {currentPage + 2 < maxPageAmount ? (<div style={{ padding: "0 15px" }}>...</div>) : null}
             <div className={classes.navItem} onClick={() => onPageChange(currentPage + 1)}>Вперёд</div>
             <div className={classes.navItem} onClick={() => onPageChange(currentPage + 1)}>{">"}</div>
         </div>
