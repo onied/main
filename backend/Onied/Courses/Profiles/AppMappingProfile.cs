@@ -1,6 +1,8 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
+using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Task = Courses.Models.Task;
 
 namespace Courses.Profiles;
@@ -20,5 +22,11 @@ public class AppMappingProfile : Profile
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
+        
+        // UserInput
+        CreateMap<UserInput, UserInputDto>().ReverseMap(); // TODO: обработать инициализацию Task для ReverseMap
+        CreateMap<InputAnswerUserInput, InputAnswerUserInputDto>().ReverseMap();
+        CreateMap<VariantsAnswerUserInput, VariantsAnswerUserInputDto>().ReverseMap();
+        CreateMap<ManualReviewUserInput, ManualReviewUserInputDto>();
     }
 }
