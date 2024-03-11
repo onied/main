@@ -1,11 +1,14 @@
 import Button from "../../general/button/button.jsx";
 import classes from "./courseCard.module.css"
+import {Link} from "react-router-dom";
 
-function FreeCourseCardFooter(){
+function FreeCourseCardFooter({ courseId }){
     return(
         <div className={[classes.courseCardFooter, classes.freeCourse].join(' ')}>
             <span>Бесплатно</span>
-            <Button style={ { fontSize: '15px'} }>начать</Button>
+            <Link to={"/course/" + courseId}>
+                <Button style={ { fontSize: '15px'} }>начать</Button>
+            </Link>
         </div>
     )
 }

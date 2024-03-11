@@ -1,4 +1,5 @@
 const plainCourse = {
+    courseId: 1,
     href: "https://intelligentemployment.com/wp-content/uploads/2021/12/AdobeStock_387227165-scaled.jpeg",
     courseTitle: "Создание голограмм на ноутбуке",
     category: "Категория",
@@ -7,6 +8,7 @@ const plainCourse = {
     isHighlighted: false
 };
 const freeCourse = {
+    courseId: 1,
     href: "https://intelligentemployment.com/wp-content/uploads/2021/12/AdobeStock_387227165-scaled.jpeg",
     courseTitle: "Создание голограмм на ноутбуке(демо)",
     category: "Категория",
@@ -15,6 +17,7 @@ const freeCourse = {
     isHighlighted: false
 };
 const highlightedCourse = {
+    courseId: 1,
     href: "https://intelligentemployment.com/wp-content/uploads/2021/12/AdobeStock_387227165-scaled.jpeg",
     courseTitle: "Создание голограмм на ноутбуке(deluxe edition)",
     category: "Категория",
