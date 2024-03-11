@@ -73,4 +73,18 @@ public class CoursesController : ControllerBase
             return NotFound();
         return _mapper.Map<TasksBlockDto>(block);
     }
+    
+    [HttpPost]
+    [Route("{id:int}/check_tasks_block/{blockId:int}")]
+    public async Task<ActionResult<TasksBlockDto>> CheckTaskBlock(int id, int blockId)
+    {
+        var block = await _context.TasksBlocks
+            .Include(block => block.Module)
+            .Include(block => block.Tasks)
+            .ThenInclude(task => ((VariantsTask)task).Variants)
+            .FirstOrDefaultAsync(block => block.Id == blockId);
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+        return _mapper.Map<TasksBlockDto>(block);
+    }
 }
