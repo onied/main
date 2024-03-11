@@ -39,7 +39,6 @@ public class CoursesController : ControllerBase
         if (course == null)
             return NotFound();
         var preview = _mapper.Map<PreviewDto>(course);
-        preview.CourseAuthor.Name = $"{course.Author.FirstName} {course.Author.LastName}";
         preview.CourseProgram = course.IsProgramVisible
             ? course.Modules.OrderBy(module => module.Id).Select(module => module.Title).ToList()
             : null;
