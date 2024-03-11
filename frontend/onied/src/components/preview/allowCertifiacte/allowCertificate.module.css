@@ -1,15 +1,15 @@
 .allowCertificate {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .allowCertificate span {
-    color: #686868;
-    font-size: 16pt;
-    margin-left: 0.5rem;
-    font-weight: bold;
-    text-decoration: underline;
+  color: #686868;
+  font-size: 16pt;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  text-decoration: underline;
 }
