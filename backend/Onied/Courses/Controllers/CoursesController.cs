@@ -90,7 +90,7 @@ public class CoursesController : ControllerBase
     public async Task<ActionResult<List<UserTaskPoints>>> CheckTaskBlock(
         int id, 
         int blockId, 
-        [FromBody] UserInputDto inputsDto)
+        [FromBody] IEnumerable<UserInputDto> inputsDto)
     {
         var block = await _context.TasksBlocks
             .Include(block => block.Module)
