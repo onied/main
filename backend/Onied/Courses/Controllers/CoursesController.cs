@@ -1,8 +1,13 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
+using Courses.Models.Blocks.Tasks;
+using Courses.Models.Blocks.Tasks.TaskUserInput;
+using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Controllers;
 
@@ -13,12 +18,18 @@ public class CoursesController : ControllerBase
     private readonly AppDbContext _context;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
+    private readonly ICheckTasksService _checkTasksService;
 
-    public CoursesController(ILogger<CoursesController> logger, IMapper mapper, AppDbContext context)
+    public CoursesController(
+        ILogger<CoursesController> logger, 
+        IMapper mapper, 
+        AppDbContext context, 
+        ICheckTasksService checkTasksService)
     {
         _logger = logger;
         _mapper = mapper;
         _context = context;
+        _checkTasksService = checkTasksService;
     }
 
     [HttpGet]
@@ -76,15 +87,43 @@ public class CoursesController : ControllerBase
     
     [HttpPost]
     [Route("{id:int}/check_tasks_block/{blockId:int}")]
-    public async Task<ActionResult<TasksBlockDto>> CheckTaskBlock(int id, int blockId)
+    public async Task<ActionResult<List<UserTaskPoints>>> CheckTaskBlock(
+        int id, 
+        int blockId, 
+        [FromBody] IEnumerable<UserInputDto> inputsDto)
     {
         var block = await _context.TasksBlocks
             .Include(block => block.Module)
             .Include(block => block.Tasks)
             .ThenInclude(task => ((VariantsTask)task).Variants)
             .FirstOrDefaultAsync(block => block.Id == blockId);
+        
         if (block == null || block.Module.CourseId != id)
             return NotFound();
-        return _mapper.Map<TasksBlockDto>(block);
+
+        var inputs = _mapper.Map<List<UserInput>>(inputsDto);
+        var pointsAsyncEnumerable = inputs.Select(async input => await _checkTasksService.CheckTask(input));
+        return  (await Task.WhenAll(pointsAsyncEnumerable)).ToList();
+    }
+    
+    [HttpPost]
+    [Route("{id:int}/check_tasks_block/{blockId:int}")]
+    public async Task<ActionResult<List<UserTaskPoints>>> CheckTaskBlock(
+        int id, 
+        int blockId, 
+        [FromBody] UserInputDto inputsDto)
+    {
+        var block = await _context.TasksBlocks
+            .Include(block => block.Module)
+            .Include(block => block.Tasks)
+            .ThenInclude(task => ((VariantsTask)task).Variants)
+            .FirstOrDefaultAsync(block => block.Id == blockId);
+        
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+
+        var inputs = _mapper.Map<List<UserInput>>(inputsDto);
+        var pointsAsyncEnumerable = inputs.Select(async input => await _checkTasksService.CheckTask(input));
+        return  (await Task.WhenAll(pointsAsyncEnumerable)).ToList();
     }
 }
