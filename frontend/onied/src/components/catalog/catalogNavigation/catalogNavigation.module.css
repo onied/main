@@ -1,0 +1,17 @@
+.catalogNavigationContainer{
+    display: flex;
+    flex-direction: row;
+    padding: 20px 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.navItem{
+    padding: 0 15px;
+}
+
+.activeNavItem{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
