@@ -1,6 +1,6 @@
 import classes from "./catalogNavigation.module.css";
 
-function NavigationPageButton({ pageNumber, isActive, setCurrentPage }) {
+function NavigationPageButton({ pageNumber, isActive, onPageChange }) {
   return (
     <div>
       <div
@@ -8,7 +8,7 @@ function NavigationPageButton({ pageNumber, isActive, setCurrentPage }) {
           classes.navItem,
           isActive ? classes.activeNavItem : "",
         ].join(" ")}
-        onClick={() => setCurrentPage(pageNumber)}>
+        onClick={() => onPageChange(pageNumber)}>
         {pageNumber}
       </div>
     </div>
