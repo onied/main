@@ -38,12 +38,7 @@ public class CoursesController : ControllerBase
             .FirstOrDefaultAsync(course1 => course1.Id == id);
         if (course == null)
             return NotFound();
-        var preview = _mapper.Map<PreviewDto>(course);
-        preview.CourseAuthor.Name = $"{course.Author.FirstName} {course.Author.LastName}";
-        preview.CourseProgram = course.IsProgramVisible
-            ? course.Modules.OrderBy(module => module.Id).Select(module => module.Title).ToList()
-            : null;
-        return preview;
+        return _mapper.Map<PreviewDto>(course);
     }
 
     [HttpGet]
