@@ -2,8 +2,18 @@ import { useState } from "react";
 import Radio from "../../general/radio/radio";
 import classes from "./tasks.module.css";
 
-function SingleAnswersTask({ task }) {
+function SingleAnswersTask({ task, onChange }) {
   const [value, setValue] = useState();
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+
+    onChange({
+      id: task.id,
+      variantsIds: [Number(event.target.value)]
+    });
+  }
+
   return (
     <>
       {task.variants.map((variant) => {
@@ -13,7 +23,7 @@ function SingleAnswersTask({ task }) {
               name={task.id}
               id={variant.id}
               value={variant.id}
-              onChange={(event) => setValue(event.target.value)}
+              onChange={handleChange}
               checked={value == variant.id ? "t" : ""}
             ></Radio>
             <label htmlFor={variant.id} className={classes.variantLabel}>

@@ -5,25 +5,29 @@ import TaskTitle from "./taskTitle";
 import taskType from "./taskType";
 import ManualReviewTask from "./manualReviewTask";
 import classes from "./tasks.module.css";
+import { useCallback } from "react";
 
-function GeneralTask({ task, index }) {
+function GeneralTask({ task, index, taskPoints, onChange }) {
   const bodies = [
     SingleAnswersTask,
     MultipleAnswersTask,
     InputAnswer,
     ManualReviewTask,
   ];
+
+  const handleChange = (input) => onChange(index, input);
+
   return (
     <div>
       <TaskTitle
         taskTitle={task.title}
         pointInfo={{
-          checked: task.points != null,
-          points: task.points,
+          checked: taskPoints != null && taskPoints.points != null,
+          points: taskPoints != null && taskPoints.points != null ? taskPoints.points : 0,
           maxPoints: task.maxPoints,
         }}
       ></TaskTitle>
-      <div className={classes.taskBody}>{bodies[task.taskType]({ task })}</div>
+      <div className={classes.taskBody}>{bodies[task.taskType]({ task: task, onChange: handleChange })}</div>
     </div>
   );
 }

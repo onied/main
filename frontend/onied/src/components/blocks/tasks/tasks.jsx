@@ -10,6 +10,32 @@ import { useEffect, useState } from "react";
 function Tasks({ courseId, blockId }) {
   const [tasks, setTasks] = useState();
   const [found, setFound] = useState();
+  const [taskInputs, setTaskInputs] = useState();
+  const [taskPointsSequence, setTaskPointsSequence] = useState();
+
+  const handleChange = (inputIndex, input) => {
+    const newTaskInputs = [...taskInputs];
+    newTaskInputs[inputIndex] = input;
+    console.log(newTaskInputs)
+    setTaskInputs(newTaskInputs);
+  };
+
+  useEffect(() => {
+    setTaskPointsSequence(undefined);
+    axios
+      .get(
+        Config.CoursesBackend +
+        "courses/" +
+        courseId +
+        "/get_tasks_points/" + // переделать под норм запрос
+        blockId,
+      )
+      .then((response) => {
+        console.log(response.data);
+        setTaskPointsSequence(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, [courseId, blockId]);
 
   useEffect(() => {
     setFound(undefined);
@@ -25,6 +51,8 @@ function Tasks({ courseId, blockId }) {
         console.log(response.data);
         setFound(true);
         setTasks(response.data);
+
+        setTaskInputs(Array(response.data.tasks.length).fill(undefined));
       })
       .catch((error) => {
         console.log(error);
@@ -40,12 +68,31 @@ function Tasks({ courseId, blockId }) {
   if (!found) return <></>;
 
   return (
-    <form className={classes.tasksContainer}>
+    <form className={classes.tasksContainer} action="post">
       <h2>{tasks.title}</h2>
       {tasks.tasks.map((task, index) => {
-        return <GeneralTask task={task} key={index}></GeneralTask>;
+        return <GeneralTask key={index} task={task} index={index} onChange={handleChange}
+          taskPoints={taskPointsSequence == undefined ? null : taskPointsSequence[index]} />;
       })}
-      <Button type="submit">отправить на проверку</Button>
+      <Button type="submit" onClick={(e) => {
+        e.preventDefault();
+        console.log(taskInputs)
+
+        axios.post(
+          Config.CoursesBackend +
+          "courses/" +
+          courseId +
+          "/check_tasks_block/" + // переделать под норм запрос
+          blockId,
+          taskInputs // request data
+        )
+          .then((response) => {
+            console.log(response.data);
+            setTaskPointsSequence(response.data);
+          })
+          .catch((error) => console.log(error));
+      }
+      }>отправить на проверку</Button>
     </form>
   );
 }
