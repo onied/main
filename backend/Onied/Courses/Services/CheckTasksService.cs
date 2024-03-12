@@ -1,4 +1,3 @@
-using Courses.Models;
 using Courses.Models.Blocks.Tasks;
 using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +13,21 @@ public class CheckTasksService : ICheckTasksService
         _dbContext = dbContext;
     }
 
-    public async Task<UserTaskPoints> CheckTask(UserInput input)
-     => await CheckTask((dynamic)input);
+    public async Task<UserTaskPoints?> CheckTask(UserInput input)
+    {
+        if (!input.IsDone)
+        {
+            return new UserTaskPoints()
+            {
+                UserId = input.UserId,
+                TaskId = input.TaskId,
+                Points = 0
+            };
+        }
+        
+        return await CheckTask((dynamic)input);
+    }
+     
     
     private async Task<UserTaskPoints> CheckTask(VariantsAnswerUserInput input)
     {
@@ -58,13 +70,8 @@ public class CheckTasksService : ICheckTasksService
         };
     }
     
-    private async Task<UserTaskPoints> CheckTask(ManualReviewUserInput input)
+    private async Task<UserTaskPoints?> CheckTask(ManualReviewUserInput input)
     {
-        return new UserTaskPoints()
-        {
-            UserId = input.UserId,
-            TaskId = input.TaskId,
-            Points = 0
-        };
+        return null;
     }
 }

@@ -5,5 +5,5 @@ namespace Courses.Services;
 
 public interface ICheckTasksService
 {
-    public Task<UserTaskPoints> CheckTask(UserInput input);
+    public Task<UserTaskPoints?> CheckTask(UserInput input);
 }

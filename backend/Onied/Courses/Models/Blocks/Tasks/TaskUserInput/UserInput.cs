@@ -9,4 +9,8 @@ public abstract class UserInput
     
     public int TaskId { get; set; }
     // public Task Task { get; set; } = null!;
+    
+    public TaskType TaskType { get; set; }
+    
+    public bool IsDone { get; set; }
 }

@@ -33,19 +33,22 @@ public class AppMappingProfile : Profile
                     return new VariantsAnswerUserInput()
                     {
                         TaskId = src.TaskId,
-                        VariantsIds = src.VariantsIds!
+                        VariantsIds = src.VariantsIds!,
+                        IsDone = src.IsDone
                     };
                 case TaskType.InputAnswer:
                     return new InputAnswerUserInput()
                     {
                         TaskId = src.TaskId,
-                        Answer = src.Answer!
+                        Answer = src.Answer!,
+                        IsDone = src.IsDone
                     };
                 case TaskType.ManualReview:
                     return new ManualReviewUserInput()
                     {
                         TaskId = src.TaskId,
-                        Text = src.Text!
+                        Text = src.Text!,
+                        IsDone = src.IsDone
                     };
                 default:
                     throw new ArgumentOutOfRangeException();
