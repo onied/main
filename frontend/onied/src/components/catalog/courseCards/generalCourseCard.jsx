@@ -16,8 +16,8 @@ function GeneralCourseCard({ card }){
                 <h4>{card.courseAuthor}</h4>
             </div>
             {card.coursePrice > 0
-                ? (<PaidCourseCardFooter price={card.coursePrice}/>)
-                : (<FreeCourseCardFooter/>)}
+                ? (<PaidCourseCardFooter price={card.coursePrice} courseId={card.courseId}/>)
+                : (<FreeCourseCardFooter courseId={card.courseId}/>)}
         </div>
     )
 }
