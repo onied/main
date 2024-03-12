@@ -5,6 +5,7 @@ using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
 using Courses.Models.Blocks.Tasks;
 using Courses.Models.Blocks.Tasks.TaskUserInput;
+using Courses.Profiles.Resolvers;
 using Task = Courses.Models.Task;
 
 namespace Courses.Profiles;
@@ -17,6 +18,12 @@ public class AppMappingProfile : Profile
             expression => expression.MapFrom(block => block.IsCompleted));
         CreateMap<Course, CourseDto>();
         CreateMap<Module, ModuleDto>();
+        CreateMap<Author, AuthorDto>().ForMember(dest => dest.Name, opt => opt.MapFrom(new AuthorNameResolver()));
+        CreateMap<Category, CategoryDto>();
+        CreateMap<Course, PreviewDto>().ForMember(preview => preview.CourseAuthor,
+                options => options.MapFrom(course => course.Author))
+            .ForMember(preview => preview.CourseProgram,
+                options => options.MapFrom(new CourseProgramResolver()));
         CreateMap<SummaryBlock, SummaryBlockDto>();
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url));
