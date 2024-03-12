@@ -30,26 +30,23 @@ public class AppMappingProfile : Profile
             switch (src.TaskType)
             {
                 case TaskType.SingleAnswer or TaskType.MultipleAnswers:
-                    /*return new VariantsAnswerUserInput()
+                    return new VariantsAnswerUserInput()
                     {
                         TaskId = src.TaskId,
-                        Variants = context.Mapper.Map<List<TaskVariant>>(src.Variants!)
-                    };*/
-                    return context.Mapper.Map<VariantsAnswerUserInput>(src);
+                        VariantsIds = src.VariantsIds!
+                    };
                 case TaskType.InputAnswer:
-                    /*return new InputAnswerUserInput()
+                    return new InputAnswerUserInput()
                     {
                         TaskId = src.TaskId,
                         Answer = src.Answer!
-                    };*/
-                    return context.Mapper.Map<InputAnswerUserInput>(src);
+                    };
                 case TaskType.ManualReview:
-                    /*return new ManualReviewUserInput()
+                    return new ManualReviewUserInput()
                     {
                         TaskId = src.TaskId,
                         Text = src.Text!
-                    };*/
-                    return context.Mapper.Map<ManualReviewUserInput>(src);
+                    };
                 default:
                     throw new ArgumentOutOfRangeException();
             }
