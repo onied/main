@@ -1,7 +1,9 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Blocks.Tasks;
 using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
+using Courses.Models.Blocks.Tasks;
 using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Task = Courses.Models.Task;
 
@@ -56,6 +58,8 @@ public class AppMappingProfile : Profile
         CreateMap<UserInputDto, InputAnswerUserInput>();
         CreateMap<UserInputDto, VariantsAnswerUserInput>();
         CreateMap<UserInputDto, ManualReviewUserInputDto>();
+
+        CreateMap<UserTaskPoints, UserTaskPointsDto>();
 
         /*
          CreateMap<VariantsAnswerUserInputDto, VariantsAnswerUserInput>();
