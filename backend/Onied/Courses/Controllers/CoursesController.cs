@@ -1,8 +1,8 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Blocks.Tasks;
 using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
-using Courses.Models.Blocks.Tasks;
 using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -87,7 +87,7 @@ public class CoursesController : ControllerBase
     
     [HttpPost]
     [Route("{id:int}/check_tasks_block/{blockId:int}")]
-    public async Task<ActionResult<List<UserTaskPoints>>> CheckTaskBlock(
+    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
         int id, 
         int blockId, 
         [FromBody] IEnumerable<UserInputDto> inputsDto)
@@ -103,6 +103,6 @@ public class CoursesController : ControllerBase
 
         var inputs = _mapper.Map<List<UserInput>>(inputsDto);
         var pointsAsyncEnumerable = inputs.Select(async input => await _checkTasksService.CheckTask(input));
-        return  (await Task.WhenAll(pointsAsyncEnumerable)).ToList();
+        return _mapper.Map<List<UserTaskPointsDto>>(await Task.WhenAll(pointsAsyncEnumerable));
     }
 }
