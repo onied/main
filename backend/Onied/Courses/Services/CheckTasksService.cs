@@ -6,11 +6,11 @@ namespace Courses.Services;
 
 public class CheckTasksService : ICheckTasksService
 {
-    private readonly AppDbContext _dbContext;
+    private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-    public CheckTasksService(AppDbContext dbContext)
+    public CheckTasksService(IDbContextFactory<AppDbContext> contextFactory)
     {
-        _dbContext = dbContext;
+        _contextFactory = contextFactory;
     }
 
     public async Task<UserTaskPoints?> CheckTask(UserInput input)
@@ -31,7 +31,9 @@ public class CheckTasksService : ICheckTasksService
     
     private async Task<UserTaskPoints> CheckTask(VariantsAnswerUserInput input)
     {
-        var task = await _dbContext.VariantsTasks
+        await using var dbContext = await _contextFactory.CreateDbContextAsync();
+        
+        var task = await dbContext.VariantsTasks
             .Include(task => task.Variants)
             .FirstOrDefaultAsync(task => task.Id == input.TaskId);
 
@@ -51,7 +53,9 @@ public class CheckTasksService : ICheckTasksService
     
     private async Task<UserTaskPoints> CheckTask(InputAnswerUserInput input)
     {
-        var task = await _dbContext.InputTasks
+        await using var dbContext = await _contextFactory.CreateDbContextAsync();
+        
+        var task = await dbContext.InputTasks
             .Include(task => task.Answers)
             .FirstOrDefaultAsync(task => task.Id == input.TaskId);
 

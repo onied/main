@@ -119,13 +119,16 @@ public class CoursesController : ControllerBase
         int blockId,
         [FromBody] IEnumerable<UserInputDto> inputsDto)
     {
+        if (inputsDto.Any(inputDto => inputDto is null))
+            return BadRequest();
+        
         var block = await _context.TasksBlocks
             .Include(block => block.Module)
             .Include(block => block.Tasks)
             .ThenInclude(task => ((VariantsTask)task).Variants)
             .FirstOrDefaultAsync(block => block.Id == blockId);
 
-        if (block == null || block.Module.CourseId != id)
+        if (block is null || block.Module.CourseId != id)
             return NotFound();
 
         var inputs = _mapper.Map<List<UserInput>>(inputsDto);

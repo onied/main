@@ -11,13 +11,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
+/*builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
+    optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
+        .UseSnakeCaseNamingConvention());*/
+builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
 
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
+
 
 var app = builder.Build();
 
