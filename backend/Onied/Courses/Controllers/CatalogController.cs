@@ -11,10 +11,10 @@ namespace Courses.Controllers;
 public class CatalogController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private readonly ILogger<CoursesController> _logger;
+    private readonly ILogger<CatalogController> _logger;
     private readonly IMapper _mapper;
 
-    public CatalogController(ILogger<CoursesController> logger, IMapper mapper, AppDbContext context)
+    public CatalogController(ILogger<CatalogController> logger, IMapper mapper, AppDbContext context)
     {
         _logger = logger;
         _mapper = mapper;
