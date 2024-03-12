@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import LineEdit from "../../general/lineedit/lineedit";
 import taskType from "./taskType";
 
@@ -11,6 +11,7 @@ function InputAnswerTask({ task, onChange }) {
     onChange({
       taskId: task.id,
       taskType: taskType.INPUT_ANSWER,
+      isDone: true,
       answer: event.target.value,
     });
   }

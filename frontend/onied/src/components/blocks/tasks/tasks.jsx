@@ -1,6 +1,5 @@
 import Button from "../../general/button/button";
 import GeneralTask from "./generalTask";
-import taskType from "./taskType";
 import classes from "./tasks.module.css";
 import BeatLoader from "react-spinners/BeatLoader";
 import axios from "axios";
@@ -51,8 +50,13 @@ function Tasks({ courseId, blockId }) {
         console.log(response.data);
         setFound(true);
         setTasks(response.data);
-
-        setTaskInputs(Array(response.data.tasks.length).fill(undefined));
+        setTaskInputs(response.data.tasks.map(task => {
+          return {
+            taskId: task.id,
+            taskType: task.taskType,
+            isDone: false
+          }
+        }));
       })
       .catch((error) => {
         console.log(error);
@@ -86,11 +90,11 @@ function Tasks({ courseId, blockId }) {
           blockId,
           taskInputs,
         )
-        .then((response) => {
-          console.log(response.data);
-          setTaskPointsSequence(response.data);
-        })
-        .catch((error) => console.log(error));
+          .then((response) => {
+            console.log(response.data);
+            setTaskPointsSequence(response.data);
+          })
+          .catch((error) => console.log(error));
       }
       }>отправить на проверку</Button>
     </form>
