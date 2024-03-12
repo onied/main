@@ -28,6 +28,20 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
+    [Route("{id:int}/get_preview")]
+    public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id)
+    {
+        var course = await _context.Courses
+            .Include(course1 => course1.Modules)
+            .Include(course1 => course1.Author)
+            .Include(course1 => course1.Category)
+            .FirstOrDefaultAsync(course1 => course1.Id == id);
+        if (course == null)
+            return NotFound();
+        return _mapper.Map<PreviewDto>(course);
+    }
+
+    [HttpGet]
     [Route("{id:int}/get_hierarchy")]
     public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id)
     {

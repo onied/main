@@ -10,9 +10,9 @@ function CourseProgram(props: CourseProgramProps): ReactNode {
     return (
         <>
             <h2 className={classes.courseTitle}>программа курса</h2>
-            <ul className={classes.courseProgram}>
+            <ol className={classes.courseProgram}>
                 {props.modules.map(moduleTitle => <li>{moduleTitle}</li>)}
-            </ul>
+            </ol>
         </>
     );
 }
