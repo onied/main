@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import LineEdit from "../../general/lineedit/lineedit";
+import taskType from "./taskType";
 
 function InputAnswerTask({ task, onChange }) {
   const [value, setValue] = useState("");
@@ -8,7 +9,8 @@ function InputAnswerTask({ task, onChange }) {
     setValue(event.target.value);
     
     onChange({
-      id: task.id,
+      taskId: task.id,
+      taskType: taskType.INPUT_ANSWER,
       answer: event.target.value,
     });
   }

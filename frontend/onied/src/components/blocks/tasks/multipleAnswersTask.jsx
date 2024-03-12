@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Checkbox from "../../general/checkbox/checkbox";
 import classes from "./tasks.module.css";
+import taskType from "./taskType";
 
 function MultipleAnswersTask({ task, onChange }) {
   const [values, setValues] = useState([]);
@@ -14,7 +15,8 @@ function MultipleAnswersTask({ task, onChange }) {
     setValues(newValues);
 
     onChange({
-      id: task.id,
+      taskId: task.id,
+      taskType: taskType.MULTIPLE_ANSWERS,
       variantsIds: newValues,
     });
   }

@@ -84,13 +84,13 @@ function Tasks({ courseId, blockId }) {
           courseId +
           "/check_tasks_block/" + // переделать под норм запрос
           blockId,
-          taskInputs // request data
+          taskInputs,
         )
-          .then((response) => {
-            console.log(response.data);
-            setTaskPointsSequence(response.data);
-          })
-          .catch((error) => console.log(error));
+        .then((response) => {
+          console.log(response.data);
+          setTaskPointsSequence(response.data);
+        })
+        .catch((error) => console.log(error));
       }
       }>отправить на проверку</Button>
     </form>

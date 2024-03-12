@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Radio from "../../general/radio/radio";
 import classes from "./tasks.module.css";
+import taskType from "./taskType";
 
 function SingleAnswersTask({ task, onChange }) {
   const [value, setValue] = useState();
@@ -9,7 +10,8 @@ function SingleAnswersTask({ task, onChange }) {
     setValue(event.target.value);
 
     onChange({
-      id: task.id,
+      taskId: task.id,
+      taskType: taskType.SINGLE_ANSWER,
       variantsIds: [Number(event.target.value)]
     });
   }
