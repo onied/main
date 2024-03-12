@@ -21,19 +21,72 @@ public class CoursesControllerTests
     private readonly Fixture _fixture = new();
     private readonly CoursesController _controller;
     private readonly TestDataGenerator _generator;
+    private readonly IEnumerable<Course> _courses;
 
     public CoursesControllerTests()
     {
         _context = ContextGenerator.GetContext();
         _generator = new TestDataGenerator(_context, _fixture);
-        _generator.AddTestCoursesToDb(_generator.GenerateTestCourses());
+        _courses = _generator.GenerateTestCourses();
+        _generator.AddTestCoursesToDb(_courses);
         _controller = new CoursesController(_logger.Object, _mapper, _context);
     }
     
-    [Theory]
-    [InlineData(-1)]
-    public async Task GetCourseHierarchy_ReturnsNotFound_WhenCourseNotExist(int courseId)
+    [Fact]
+    public async Task GetPreviewCourse_ReturnsNotFound_WhenCourseNotExist()
     {
+        // Arrange
+        var courseId = -1;
+        
+        // Act
+        var result = await _controller.GetCoursePreview(courseId);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task GetCoursePreview_ReturnsCoursePreview_NotProgramVisible()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        
+        // Act
+        var result = await _controller.GetCoursePreview(courseId);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
+        var value = Assert.IsAssignableFrom<PreviewDto>(
+            actionResult.Value);
+        Assert.Equal(value.Id, courseId);
+        Assert.Equivalent(value.CourseAuthor, _mapper.Map<AuthorDto>(_courses.First().Author), true);
+    }
+    
+    [Fact]
+    public async Task GetCoursePreview_ReturnsCoursePreview_ProgramVisible()
+    {
+        // Arrange
+        var course = _courses.First(course => course.IsProgramVisible);
+        var courseId = course.Id;
+        
+        
+        // Act
+        var result = await _controller.GetCoursePreview(courseId);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
+        var value = Assert.IsAssignableFrom<PreviewDto>(
+            actionResult.Value);
+        Assert.Equal(value.Id, courseId);
+        Assert.Equivalent(value.CourseProgram, course.Modules.Select(module => module.Title));
+    }
+    
+    [Fact]
+    public async Task GetCourseHierarchy_ReturnsNotFound_WhenCourseNotExist()
+    {
+        // Arrange
+        var courseId = -1;
+        
         // Act
         var result = await _controller.GetCourseHierarchy(courseId);
 
@@ -41,13 +94,12 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(1)]
-    public async Task GetCourseHierarchy_ReturnsCourse(int courseId)
+    [Fact]
+    public async Task GetCourseHierarchy_ReturnsCourse()
     {
         // Arrange
-        var courses = _generator.GenerateTestCourses();
-
+        var courseId = _courses.First().Id;
+        
         // Act
         var result = await _controller.GetCourseHierarchy(courseId);
 
@@ -56,13 +108,16 @@ public class CoursesControllerTests
         var value = Assert.IsAssignableFrom<CourseDto>(
             actionResult.Value);
         Assert.Equal(value.Id, courseId);
-        Assert.Equal(value.Modules.Count, courses.First().Modules.Count);
+        Assert.Equal(value.Modules.Count, _courses.First().Modules.Count);
     }
     
-    [Theory]
-    [InlineData(1, -1)]
-    public async Task GetSummaryBlock_ReturnsNotFound_WhenBlockNotExist(int courseId, int blockId)
+    [Fact]
+    public async Task GetSummaryBlock_ReturnsNotFound_WhenBlockNotExist()
     {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = -1;
+        
         // Act
         var result = await _controller.GetSummaryBlock(courseId, blockId);
 
@@ -70,10 +125,15 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(-1, 1)]
-    public async Task GetSummaryBlock_ReturnsNotFound_WhenCourseNotRight(int courseId, int blockId)
+    [Fact]
+    public async Task GetSummaryBlock_ReturnsNotFound_WhenCourseNotRight()
     {
+        // Arrange
+        var courseId = -1;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<SummaryBlock>().First().Id;
+        
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
@@ -81,10 +141,15 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(1, 1)]
-    public async Task GetSummaryBlock_ReturnsBlock(int courseId, int blockId)
+    [Fact]
+    public async Task GetSummaryBlock_ReturnsBlock()
     {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<SummaryBlock>().First().Id;
+        
         // Act
         var result = await _controller.GetSummaryBlock(courseId, blockId);
 
@@ -95,10 +160,13 @@ public class CoursesControllerTests
         Assert.Equal(value.Id, blockId);
     }
     
-    [Theory]
-    [InlineData(1, -1)]
-    public async Task GetVideoBlock_ReturnsNotFound_WhenBlockNotExist(int courseId, int blockId)
+    [Fact]
+    public async Task GetVideoBlock_ReturnsNotFound_WhenBlockNotExist()
     {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = -1;
+        
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
@@ -106,10 +174,14 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(-1, 2)]
-    public async Task GetVideoBlock_ReturnsNotFound_WhenCourseNotRight(int courseId, int blockId)
+    [Fact]
+    public async Task GetVideoBlock_ReturnsNotFound_WhenCourseNotRight()
     {
+        // Arrange
+        var courseId = -1;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<VideoBlock>().First().Id;
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
@@ -117,10 +189,15 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(1, 2)]
-    public async Task GetVideoBlock_ReturnsBlock(int courseId, int blockId)
+    [Fact]
+    public async Task GetVideoBlock_ReturnsBlock()
     {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<VideoBlock>().First().Id;
+        
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
@@ -131,10 +208,13 @@ public class CoursesControllerTests
         Assert.Equal(value.Id, blockId);
     }
     
-    [Theory]
-    [InlineData(1, -1)]
-    public async Task GetTasksBlock_ReturnsNotFound_WhenBlockNotExist(int courseId, int blockId)
+    [Fact]
+    public async Task GetTasksBlock_ReturnsNotFound_WhenBlockNotExist()
     {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = -1;
+        
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
 
@@ -142,10 +222,15 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(-1, 3)]
-    public async Task GetTasksBlock_ReturnsNotFound_WhenCourseNotRight(int courseId, int blockId)
+    [Fact]
+    public async Task GetTasksBlock_ReturnsNotFound_WhenCourseNotRight()
     {
+        // Arrange
+        var courseId = -1;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First().Id;
+        
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
 
@@ -153,10 +238,15 @@ public class CoursesControllerTests
         Assert.IsType<NotFoundResult>(result.Result);
     }
     
-    [Theory]
-    [InlineData(1, 3)]
-    public async Task GetTasksBlock_ReturnsBlock(int courseId, int blockId)
+    [Fact]
+    public async Task GetTasksBlock_ReturnsBlock()
     {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First().Id;
+        
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
 
