@@ -15,8 +15,15 @@ function GeneralTask({ task, index }) {
   ];
   return (
     <div>
-      <TaskTitle taskTitle={task.title} pointInfo={task.pointInfo}></TaskTitle>
-      <div className={classes.taskBody}>{bodies[task.type]({ task })}</div>
+      <TaskTitle
+        taskTitle={task.title}
+        pointInfo={{
+          checked: task.points != null,
+          points: task.points,
+          maxPoints: task.maxPoints,
+        }}
+      ></TaskTitle>
+      <div className={classes.taskBody}>{bodies[task.taskType]({ task })}</div>
     </div>
   );
 }
