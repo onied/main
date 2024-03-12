@@ -25,6 +25,6 @@ public class AppMappingProfile : Profile
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
-        CreateMap<Course, CourseCardDto>();
+        CreateMap<Course, CourseCardDto>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceRubles));
     }
 }
