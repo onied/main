@@ -2,5 +2,5 @@ namespace Courses.Dtos.Blocks.Tasks.TaskUserInput;
 
 public class VariantsAnswerUserInputDto : UserInputDto
 {
-    public new List<VariantDto> Variants { get; set; } = new();
+    public new List<int> VariantsIds { get; set; } = new();
 }

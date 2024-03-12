@@ -30,9 +30,10 @@ public class CheckTasksService : ICheckTasksService
         {
             UserId = input.UserId,
             TaskId = input.TaskId,
-            Points = task.TaskType == TaskType.MultipleAnswers 
-                ? task.Variants.All(variant => variant.IsCorrect) ? task.MaxPoints : 0
-                : input.Variants.Count(variant => variant.IsCorrect) == 1 ? task.MaxPoints : 0
+            Points = task.Variants
+                .Where(variant => variant.IsCorrect)
+                .Select(variant => variant.Id)
+                .SequenceEqual(input.VariantsIds) ? task.MaxPoints : 0
         };
     }
     
@@ -59,6 +60,11 @@ public class CheckTasksService : ICheckTasksService
     
     private async Task<UserTaskPoints> CheckTask(ManualReviewUserInput input)
     {
-        throw new NotImplementedException();
+        return new UserTaskPoints()
+        {
+            UserId = input.UserId,
+            TaskId = input.TaskId,
+            Points = 0
+        };
     }
 }

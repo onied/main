@@ -149,25 +149,25 @@ public class AppDbContext : DbContext
         {
             Id = 1,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 1",
             IsCorrect = true
         }, new TaskVariant
         {
             Id = 2,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 2",
             IsCorrect = true
         }, new TaskVariant
         {
             Id = 3,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 3",
             IsCorrect = true
         }, new TaskVariant
         {
             Id = 4,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 4",
             IsCorrect = true
         }, new TaskVariant
         {

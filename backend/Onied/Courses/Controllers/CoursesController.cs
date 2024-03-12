@@ -3,6 +3,7 @@ using Courses.Dtos;
 using Courses.Dtos.Blocks.Tasks;
 using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
+using Courses.Models.Blocks.Tasks;
 using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,9 @@ public class CoursesController : ControllerBase
     private readonly ICheckTasksService _checkTasksService;
 
     public CoursesController(
-        ILogger<CoursesController> logger, 
-        IMapper mapper, 
-        AppDbContext context, 
+        ILogger<CoursesController> logger,
+        IMapper mapper,
+        AppDbContext context,
         ICheckTasksService checkTasksService)
     {
         _logger = logger;
@@ -84,12 +85,38 @@ public class CoursesController : ControllerBase
             return NotFound();
         return _mapper.Map<TasksBlockDto>(block);
     }
-    
+
+    [HttpGet]
+    [Route("{id:int}/get_tasks_points/{blockId:int}")]
+    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(int id, int blockId)
+    {
+        var block = await _context.TasksBlocks
+            .Include(block => block.Module)
+            .Include(block => block.Tasks)
+            .FirstOrDefaultAsync(block => block.Id == blockId);
+
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+
+        var points = block.Tasks.Select(
+            task => task.TaskType is TaskType.ManualReview
+                ? null
+                : new UserTaskPoints()
+                {
+                    TaskId = task.Id,
+                    Points = 0
+                });
+        // Заменить на нормальное обращение к базе
+        // с нулевыми баллами для автомат. пров. заданий по умолчанию
+
+        return _mapper.Map<List<UserTaskPointsDto>>(points);
+    }
+
     [HttpPost]
     [Route("{id:int}/check_tasks_block/{blockId:int}")]
     public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
-        int id, 
-        int blockId, 
+        int id,
+        int blockId,
         [FromBody] IEnumerable<UserInputDto> inputsDto)
     {
         var block = await _context.TasksBlocks
@@ -97,7 +124,7 @@ public class CoursesController : ControllerBase
             .Include(block => block.Tasks)
             .ThenInclude(task => ((VariantsTask)task).Variants)
             .FirstOrDefaultAsync(block => block.Id == blockId);
-        
+
         if (block == null || block.Module.CourseId != id)
             return NotFound();
 
