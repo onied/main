@@ -18,62 +18,49 @@ public class AppMappingProfile : Profile
         CreateMap<SummaryBlock, SummaryBlockDto>();
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url));
-        CreateMap<TaskVariant, VariantDto>();
+        CreateMap<TaskVariant, VariantDto>().ReverseMap();
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
-        
-        // UserInput
-        /*CreateMap<UserInput, UserInputDto>()
-            .IncludeAllDerived()
-            .ReverseMap(); // TODO: обработать инициализацию Task для ReverseMap*/
-        CreateMap<IEnumerable<UserInputDto>, List<UserInput>>();
-        
-        /*CreateMap<UserInputDto, UserInput>().ConstructUsing(
-            src =>
-            {
-                if (src.Text is not null)
-                {
-                    return new ManualReviewUserInput()
-                    {
-                        TaskId = src.TaskId,
-                        Text = src.Text
-                    };
-                }
-                
-                if (src.Variants is not null)
-                {
-                    return new VariantsAnswerUserInput()
-                    {
-                        TaskId = src.TaskId,
-                        Variants = src.
-                    };
-                }
-                
-                if (src.Variants is not null)
-                {
-                    return new InputAnswerUserInput()
-                    {
-                        TaskId = src.TaskId,
-                        Answer = src.Answer
-                    };
-                }
-                
 
-                return null;
+        CreateMap<UserInputDto, UserInput>().ConstructUsing((src, context) =>
+        {
+            switch (src.TaskType)
+            {
+                case TaskType.SingleAnswer or TaskType.MultipleAnswers:
+                    /*return new VariantsAnswerUserInput()
+                    {
+                        TaskId = src.TaskId,
+                        Variants = context.Mapper.Map<List<TaskVariant>>(src.Variants!)
+                    };*/
+                    return context.Mapper.Map<VariantsAnswerUserInput>(src);
+                case TaskType.InputAnswer:
+                    /*return new InputAnswerUserInput()
+                    {
+                        TaskId = src.TaskId,
+                        Answer = src.Answer!
+                    };*/
+                    return context.Mapper.Map<InputAnswerUserInput>(src);
+                case TaskType.ManualReview:
+                    /*return new ManualReviewUserInput()
+                    {
+                        TaskId = src.TaskId,
+                        Text = src.Text!
+                    };*/
+                    return context.Mapper.Map<ManualReviewUserInput>(src);
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            );*/
-        CreateMap<UserInputDto, UserInput>()
-            .Include<VariantsAnswerUserInputDto, VariantsAnswerUserInput>()
-            .Include<InputAnswerUserInputDto , InputAnswerUserInput>()
-            .Include<ManualReviewUserInputDto, ManualReviewUserInput>();
-            
-        CreateMap<VariantsAnswerUserInputDto, VariantsAnswerUserInput>();
+        });
+
+        CreateMap<UserInputDto, InputAnswerUserInput>();
+        CreateMap<UserInputDto, VariantsAnswerUserInput>();
+        CreateMap<UserInputDto, ManualReviewUserInputDto>();
+
+        /*
+         CreateMap<VariantsAnswerUserInputDto, VariantsAnswerUserInput>();
         CreateMap<InputAnswerUserInputDto, InputAnswerUserInput>();
         CreateMap<ManualReviewUserInputDto, ManualReviewUserInput>();
-        
-        /*CreateMap<InputAnswerUserInput, InputAnswerUserInputDto>().ReverseMap();
-        CreateMap<VariantsAnswerUserInput, VariantsAnswerUserInputDto>().ReverseMap();
-        CreateMap<ManualReviewUserInput, ManualReviewUserInputDto>();*/
+        */
     }
 }
