@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Courses.Models;
 
-namespace Courses.Dtos.Blocks.Tasks;
+namespace Courses.Dtos;
 
 public class UserInputDto : IValidatableObject
 {

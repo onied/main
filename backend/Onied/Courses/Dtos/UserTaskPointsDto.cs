@@ -1,4 +1,4 @@
-namespace Courses.Dtos.Blocks.Tasks;
+namespace Courses.Dtos;
 
 public class UserTaskPointsDto
 {

@@ -1,9 +1,7 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Dtos.Blocks.Tasks;
 using Courses.Exceptions;
 using Courses.Models;
-using Courses.Models.Blocks.Tasks;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

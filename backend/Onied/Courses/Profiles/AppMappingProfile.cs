@@ -1,8 +1,6 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Dtos.Blocks.Tasks;
 using Courses.Models;
-using Courses.Models.Blocks.Tasks;
 using Courses.Profiles.Resolvers;
 using Task = Courses.Models.Task;
 

@@ -1,4 +1,4 @@
-namespace Courses.Models.Blocks.Tasks;
+namespace Courses.Models;
 
 public class UserTaskPoints
 {
