@@ -1,6 +1,5 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Exceptions;
 using Courses.Models;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
