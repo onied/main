@@ -17,7 +17,9 @@ public class AppMappingProfile : Profile
         CreateMap<Author, AuthorDto>().ForMember(dest => dest.Name, opt => opt.MapFrom(new AuthorNameResolver()));
         CreateMap<Category, CategoryDto>();
         CreateMap<Course, PreviewDto>().ForMember(preview => preview.CourseAuthor,
-            options => options.MapFrom(course => course.Author));
+                options => options.MapFrom(course => course.Author))
+            .ForMember(preview => preview.CourseProgram,
+                options => options.MapFrom(new CourseProgramResolver()));
         CreateMap<SummaryBlock, SummaryBlockDto>();
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url));
@@ -26,5 +28,6 @@ public class AppMappingProfile : Profile
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
         CreateMap<Course, CourseCardDto>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceRubles));
+        CreateMap<UserTaskPoints, UserTaskPointsDto>();
     }
 }
