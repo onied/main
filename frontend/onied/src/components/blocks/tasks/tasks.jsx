@@ -85,6 +85,7 @@ function Tasks({ courseId, blockId }) {
         e.preventDefault();
         console.log(taskInputs)
 
+        setTaskPointsSequence(undefined);
         axios.post(
           Config.CoursesBackend +
           "courses/" +
