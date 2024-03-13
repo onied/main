@@ -46,8 +46,8 @@ public class CheckTasksService : ICheckTasksService
             TaskId = input.TaskId,
             Points = task.Answers.Any(
                     answer => answer.IsCaseSensitive 
-                        ? answer.Answer.ToLower().Equals(input.Answer.ToLower())
-                        : answer.Answer.Equals(input.Answer)
+                        ? answer.Answer.Equals(input.Answer)
+                        : answer.Answer.ToLower().Equals(input.Answer.ToLower()) 
                     ) ? task.MaxPoints : 0
         };
     }
