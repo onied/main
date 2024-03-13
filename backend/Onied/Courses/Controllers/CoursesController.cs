@@ -145,31 +145,20 @@ public class CoursesController : ControllerBase
 
         await System.Threading.Tasks.Task.Delay(2000);
 
-        try
+        var points = new List<UserTaskPoints?>();
+        foreach (var inputDto in inputsDto)
         {
-            var points = inputsDto.Select(inputDto =>
-            {
-                var task = block.Tasks.Single(task => inputDto.TaskId == task.Id);
+            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
+            
+            if (task is null)
+                return NotFound($"Task with id={inputDto.TaskId} not found.");
 
-                if (task is null)
-                    throw new TaskNotFoundException($"Task with id={inputDto.TaskId} not found.");
-                
-                if (task.TaskType != inputDto.TaskType)
-                    throw new InvalidUserInputException(
-                        $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
-
-                return _checkTasksService.CheckTask(task, inputDto);
-            });
-
-            return _mapper.Map<List<UserTaskPointsDto>>(points);
+            if (task.TaskType != inputDto.TaskType)
+                return BadRequest($"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
+            
+            points.Add(_checkTasksService.CheckTask(task, inputDto));
         }
-        catch (TaskNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (InvalidUserInputException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        
+        return _mapper.Map<List<UserTaskPointsDto>>(points);
     }
 }
