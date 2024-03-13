@@ -5,11 +5,13 @@ using Courses.Controllers;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
+using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Task = System.Threading.Tasks.Task;
+using TaskProj = Courses.Models.Task;
 
 namespace Tests.Courses.UnitTests.ControllerTests;
 
@@ -22,6 +24,7 @@ public class CoursesControllerTests
     private readonly CoursesController _controller;
     private readonly TestDataGenerator _generator;
     private readonly IEnumerable<Course> _courses;
+    private readonly Mock<ICheckTasksService> _checkTasksService = new();
 
     public CoursesControllerTests()
     {
@@ -29,7 +32,7 @@ public class CoursesControllerTests
         _generator = new TestDataGenerator(_context, _fixture);
         _courses = _generator.GenerateTestCourses();
         _generator.AddTestCoursesToDb(_courses);
-        _controller = new CoursesController(_logger.Object, _mapper, _context);
+        _controller = new CoursesController(_logger.Object, _mapper, _context, _checkTasksService.Object);
     }
     
     [Fact]
@@ -49,7 +52,8 @@ public class CoursesControllerTests
     public async Task GetCoursePreview_ReturnsCoursePreview_NotProgramVisible()
     {
         // Arrange
-        var courseId = _courses.First().Id;
+        var course = _courses.First();
+        var courseId = course.Id;
         
         // Act
         var result = await _controller.GetCoursePreview(courseId);
@@ -58,8 +62,8 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
         var value = Assert.IsAssignableFrom<PreviewDto>(
             actionResult.Value);
-        Assert.Equal(value.Id, courseId);
-        Assert.Equivalent(value.CourseAuthor, _mapper.Map<AuthorDto>(_courses.First().Author), true);
+        Assert.Equal(courseId, value.Id);
+        Assert.Equivalent(_mapper.Map<AuthorDto>(course.Author), value.CourseAuthor, true);
     }
     
     [Fact]
@@ -77,8 +81,8 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
         var value = Assert.IsAssignableFrom<PreviewDto>(
             actionResult.Value);
-        Assert.Equal(value.Id, courseId);
-        Assert.Equivalent(value.CourseProgram, course.Modules.Select(module => module.Title));
+        Assert.Equal(courseId, value.Id);
+        Assert.Equivalent(course.Modules.Select(module => module.Title), value.CourseProgram);
     }
     
     [Fact]
@@ -107,8 +111,8 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<CourseDto>>(result);
         var value = Assert.IsAssignableFrom<CourseDto>(
             actionResult.Value);
-        Assert.Equal(value.Id, courseId);
-        Assert.Equal(value.Modules.Count, _courses.First().Modules.Count);
+        Assert.Equal(courseId, value.Id);
+        Assert.Equal(_courses.First().Modules.Count, value.Modules.Count);
     }
     
     [Fact]
@@ -157,7 +161,7 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<SummaryBlockDto>>(result);
         var value = Assert.IsAssignableFrom<SummaryBlockDto>(
             actionResult.Value);
-        Assert.Equal(value.Id, blockId);
+        Assert.Equal(blockId, value.Id);
     }
     
     [Fact]
@@ -205,7 +209,7 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<VideoBlockDto>>(result);
         var value = Assert.IsAssignableFrom<VideoBlockDto>(
             actionResult.Value);
-        Assert.Equal(value.Id, blockId);
+        Assert.Equal(blockId, value.Id);
     }
     
     [Fact]
@@ -254,7 +258,185 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<TasksBlockDto>>(result);
         var value = Assert.IsAssignableFrom<TasksBlockDto>(
             actionResult.Value);
-        Assert.Equal(value.Id, blockId);
+        Assert.Equal(blockId, value.Id);
+    }
+
+    [Fact]
+    public async Task GetTaskPointsStored_ReturnsNotFound_WhenBlockNotExist()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = -1;
+        
+        // Act
+        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task GetTaskPointsStored_ReturnsNotFound_WhenCourseNotRight()
+    {
+        // Arrange
+        var courseId = -1;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First().Id;
+        
+        // Act
+        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task GetTaskPointsStored_ReturnsPointsRight()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var block = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First();
+        var blockId = block.Id;
+        
+        // Act
+        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
+        var value = Assert.IsAssignableFrom<List<UserTaskPointsDto>>(
+            actionResult.Value);
+        Assert.Equivalent(block.Tasks.Select(task => task.Points).OrderBy(x => x), 
+            value.Select(x => x.Points).OrderBy(x => x));
+    }
+    
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsNotFound_WhenBlockNotExist()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var blockId = -1;
+        
+        // Act
+        var result = await _controller.CheckTaskBlock(courseId, blockId, new List<UserInputDto>());
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsNotFound_WhenCourseNotRight()
+    {
+        // Arrange
+        var courseId = -1;
+        var blockId = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First().Id;
+        
+        // Act
+        var result = await _controller.CheckTaskBlock(courseId, blockId, new List<UserInputDto>());
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsBadRequest_EmptyAnyUserInputDto()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var block = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First();
+        var blockId = block.Id;
+        var inputsDto = _fixture.Build<UserInputDto>()
+            .FromFactory(() => null)
+            .CreateMany(1)
+            .ToList();
+
+        // Act
+        var result = await _controller.CheckTaskBlock(courseId, blockId, inputsDto);
+
+        // Assert
+        Assert.IsType<BadRequestResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsNotFound_NotTaskInBlock()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var block = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First();
+        var blockId = block.Id;
+        var inputsDto = _fixture.Build<UserInputDto>()
+            .With(input => input.TaskId, -1)
+            .CreateMany(1)
+            .ToList();
+
+        // Act
+        var result = await _controller.CheckTaskBlock(courseId, blockId, inputsDto);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsBadRequest_NotTaskType()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var block = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First();
+        var blockId = block.Id;
+        var task = block.Tasks.First();
+        var inputsDto = _fixture.Build<UserInputDto>()
+            .With(input => input.TaskId, task.Id)
+            .With(input => input.TaskType, task.TaskType + 1 % 4)
+            .CreateMany(1)
+            .ToList();
+
+        // Act
+        var result = await _controller.CheckTaskBlock(courseId, blockId, inputsDto);
+
+        // Assert
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+    
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsListUserTaskPointsDto()
+    {
+        // Arrange
+        var courseId = _courses.First().Id;
+        var block = _courses.First()
+            .Modules.First()
+            .Blocks.OfType<TasksBlock>().First();
+        var blockId = block.Id;
+        var task = block.Tasks.First();
+        var inputsDto = _fixture.Build<UserInputDto>()
+            .With(input => input.TaskId, task.Id)
+            .With(input => input.TaskType, task.TaskType)
+            .CreateMany(1)
+            .ToList();
+        _checkTasksService.Setup(cts => cts.CheckTask(It.IsAny<TaskProj>(), It.IsAny<UserInputDto>()))
+            .Returns(new UserTaskPoints
+            {
+                TaskId = task.Id,
+            });
+
+        // Act
+        var result = await _controller.CheckTaskBlock(courseId, blockId, inputsDto);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
+        var value = Assert.IsAssignableFrom<List<UserTaskPointsDto>>(
+            actionResult.Value);
+        Assert.Equivalent(task.Id, 
+            value.First().TaskId);
     }
     
     [Fact]
