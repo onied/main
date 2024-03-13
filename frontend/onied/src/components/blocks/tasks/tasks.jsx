@@ -90,7 +90,7 @@ function Tasks({ courseId, blockId }) {
           Config.CoursesBackend +
           "courses/" +
           courseId +
-          "/check_tasks_block/" + // переделать под норм запрос
+          "/check_tasks_block/"
           blockId,
           taskInputs,
         )
