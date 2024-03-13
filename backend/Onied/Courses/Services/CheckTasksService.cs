@@ -18,8 +18,12 @@ public class CheckTasksService : ICheckTasksService
                 Points = 0
             };
         }
-        
-        return CheckTask((dynamic)task, (dynamic)input);
+
+        return task.TaskType switch {
+            TaskType.SingleAnswer or TaskType.MultipleAnswers => CheckTask((VariantsTask)task, input),
+            TaskType.InputAnswer => CheckTask((InputTask)task, input),
+            _ => null
+        };
     }
     
     private UserTaskPoints CheckTask(VariantsTask task, UserInputDto input)
@@ -31,7 +35,7 @@ public class CheckTasksService : ICheckTasksService
             Points = task.Variants
                 .Where(variant => variant.IsCorrect)
                 .Select(variant => variant.Id)
-                .SequenceEqual(input.VariantsIds) ? task.MaxPoints : 0
+                .SequenceEqual(input.VariantsIds!) ? task.MaxPoints : 0
         };
     }
     

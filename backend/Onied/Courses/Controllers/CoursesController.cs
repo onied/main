@@ -145,15 +145,20 @@ public class CoursesController : ControllerBase
 
         if (block is null || block.Module.CourseId != id)
             return NotFound();
-        
+
         try
         {
-            var points = inputsDto.Select(inputDto => {
+            var points = inputsDto.Select(inputDto =>
+            {
                 var task = block.Tasks.Single(task => inputDto.TaskId == task.Id);
 
                 if (task is null)
-                    throw new TaskNotFoundException($"Task c id={inputDto.TaskId} не найден");
-            
+                    throw new TaskNotFoundException($"Task with id={inputDto.TaskId} not found.");
+                
+                if (task.TaskType != inputDto.TaskType)
+                    throw new InvalidUserInputException(
+                        $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
+
                 return _checkTasksService.CheckTask(task, inputDto);
             });
 
@@ -162,6 +167,10 @@ public class CoursesController : ControllerBase
         catch (TaskNotFoundException ex)
         {
             return NotFound(ex.Message);
+        }
+        catch (InvalidUserInputException ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }
