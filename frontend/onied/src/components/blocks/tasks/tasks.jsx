@@ -53,7 +53,6 @@ function Tasks({ courseId, blockId }) {
         setTaskInputs(response.data.tasks.map(task => {
           return {
             taskId: task.id,
-            taskType: task.taskType,
             isDone: false
           }
         }));

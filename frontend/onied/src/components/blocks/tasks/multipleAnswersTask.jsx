@@ -16,7 +16,6 @@ function MultipleAnswersTask({ task, onChange }) {
 
     onChange({
       taskId: task.id,
-      taskType: taskType.MULTIPLE_ANSWERS,
       isDone: true,
       variantsIds: newValues,
     });

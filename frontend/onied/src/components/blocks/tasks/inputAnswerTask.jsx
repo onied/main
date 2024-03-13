@@ -10,7 +10,6 @@ function InputAnswerTask({ task, onChange }) {
     
     onChange({
       taskId: task.id,
-      taskType: taskType.INPUT_ANSWER,
       isDone: true,
       answer: event.target.value,
     });
