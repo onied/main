@@ -26,7 +26,7 @@ public class UserInputDto : IValidatableObject
         if (TaskType is TaskType.MultipleAnswers 
             && !(Text is null && Answer is null))
             yield return new ValidationResult(
-                "Task with MultipleAnswers should only VariantIds");
+                "Task with MultipleAnswers should contain only VariantIds");
         
         if (TaskType is TaskType.InputAnswer
             && !(VariantsIds is null && Text is null))
