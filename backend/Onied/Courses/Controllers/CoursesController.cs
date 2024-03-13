@@ -98,7 +98,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Route("{id:int}/get_tasks_points/{blockId:int}")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsCached(int id, int blockId)
+    public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
     {
         var block = await _context.TasksBlocks
             .Include(block => block.Module)

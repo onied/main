@@ -10,6 +10,7 @@ function ManualReviewTask({ task, onChange }) {
     setValue(text);
     onChange({ 
       taskId: task.id,
+      taskType: taskType.REVIEW_ANSWER,
       isDone: true,
       text: text 
     });

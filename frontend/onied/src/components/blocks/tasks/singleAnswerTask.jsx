@@ -11,6 +11,7 @@ function SingleAnswersTask({ task, onChange }) {
 
     onChange({
       taskId: task.id,
+      taskType: taskType.SINGLE_ANSWER,
       isDone: true,
       variantsIds: [Number(event.target.value)]
     });

@@ -14,14 +14,7 @@ public class UserInputDto : IValidatableObject
     public string? Answer { get; set; }
     public string? Text { get; set; }
     
-    public TaskType TaskType 
-        => VariantsIds is not null 
-            ? VariantsIds.Count == 1 
-                ? TaskType.SingleAnswer 
-                : TaskType.MultipleAnswers 
-            : Answer is not null 
-                ? TaskType.InputAnswer 
-                : TaskType.ManualReview;
+    public TaskType TaskType { get; set; }
     
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

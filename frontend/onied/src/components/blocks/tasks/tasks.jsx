@@ -33,7 +33,10 @@ function Tasks({ courseId, blockId }) {
         console.log(response.data);
         setTaskPointsSequence(response.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setTaskPointsSequence(null);
+``      });
   }, [courseId, blockId]);
 
   useEffect(() => {
@@ -53,7 +56,8 @@ function Tasks({ courseId, blockId }) {
         setTaskInputs(response.data.tasks.map(task => {
           return {
             taskId: task.id,
-            isDone: false
+            isDone: false,
+            taskType: task.taskType
           }
         }));
       })
@@ -66,7 +70,7 @@ function Tasks({ courseId, blockId }) {
       });
   }, [courseId, blockId]);
 
-  if (found == null)
+  if (found == null || taskPointsSequence == null)
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;
   if (!found) return <></>;
 
@@ -75,7 +79,7 @@ function Tasks({ courseId, blockId }) {
       <h2>{tasks.title}</h2>
       {tasks.tasks.map((task, index) => {
         return <GeneralTask key={index} task={task} index={index} onChange={handleChange}
-          taskPoints={taskPointsSequence == undefined ? null : taskPointsSequence[index]} />;
+          taskPoints={taskPointsSequence[index]} />;
       })}
       <Button type="submit" onClick={(e) => {
         e.preventDefault();
