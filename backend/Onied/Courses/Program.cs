@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 /*builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
         .UseSnakeCaseNamingConvention());*/
-builder.Services.AddDbContextFactory<AppDbContext>(optionsBuilder =>
+builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());

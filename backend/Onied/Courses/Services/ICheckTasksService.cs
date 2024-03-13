@@ -1,9 +1,10 @@
+using Courses.Dtos.Blocks.Tasks;
 using Courses.Models.Blocks.Tasks;
-using Courses.Models.Blocks.Tasks.TaskUserInput;
+using Task = Courses.Models.Task;
 
 namespace Courses.Services;
 
 public interface ICheckTasksService
 {
-    public Task<UserTaskPoints?> CheckTask(UserInput input);
+    public UserTaskPoints? CheckTask(Task task, UserInputDto input);
 }

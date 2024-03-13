@@ -1,14 +1,12 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Dtos.Blocks.Tasks;
-using Courses.Dtos.Blocks.Tasks.TaskUserInput;
+using Courses.Exceptions;
 using Courses.Models;
 using Courses.Models.Blocks.Tasks;
-using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Controllers;
 
@@ -102,7 +100,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Route("{id:int}/get_tasks_points/{blockId:int}")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(int id, int blockId)
+    public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsCached(int id, int blockId)
     {
         var block = await _context.TasksBlocks
             .Include(block => block.Module)
@@ -131,22 +129,39 @@ public class CoursesController : ControllerBase
     public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
         int id,
         int blockId,
-        [FromBody] IEnumerable<UserInputDto> inputsDto)
+        [FromBody] List<UserInputDto> inputsDto)
     {
         if (inputsDto.Any(inputDto => inputDto is null))
             return BadRequest();
-        
+
         var block = await _context.TasksBlocks
             .Include(block => block.Module)
             .Include(block => block.Tasks)
-            .ThenInclude(task => ((VariantsTask)task).Variants)
+                .ThenInclude(task => ((VariantsTask)task).Variants)
+            .Include(block => block.Module)
+            .Include(block => block.Tasks)
+                .ThenInclude(task => ((InputTask)task).Answers)
             .FirstOrDefaultAsync(block => block.Id == blockId);
 
         if (block is null || block.Module.CourseId != id)
             return NotFound();
+        
+        try
+        {
+            var points = inputsDto.Select(inputDto => {
+                var task = block.Tasks.Single(task => inputDto.TaskId == task.Id);
 
-        var inputs = _mapper.Map<List<UserInput>>(inputsDto);
-        var pointsAsyncEnumerable = inputs.Select(async input => await _checkTasksService.CheckTask(input));
-        return _mapper.Map<List<UserTaskPointsDto>>(await Task.WhenAll(pointsAsyncEnumerable));
+                if (task is null)
+                    throw new TaskNotFoundException($"Task c id={inputDto.TaskId} не найден");
+            
+                return _checkTasksService.CheckTask(task, inputDto);
+            });
+
+            return _mapper.Map<List<UserTaskPointsDto>>(points);
+        }
+        catch (TaskNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

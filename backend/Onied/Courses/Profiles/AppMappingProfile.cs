@@ -1,10 +1,8 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Dtos.Blocks.Tasks;
-using Courses.Dtos.Blocks.Tasks.TaskUserInput;
 using Courses.Models;
 using Courses.Models.Blocks.Tasks;
-using Courses.Models.Blocks.Tasks.TaskUserInput;
 using Courses.Profiles.Resolvers;
 using Task = Courses.Models.Task;
 
@@ -27,51 +25,11 @@ public class AppMappingProfile : Profile
         CreateMap<SummaryBlock, SummaryBlockDto>();
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url));
-        CreateMap<TaskVariant, VariantDto>().ReverseMap();
+        CreateMap<TaskVariant, VariantDto>();
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
 
-        CreateMap<UserInputDto, UserInput>().ConstructUsing((src, context) =>
-        {
-            switch (src.TaskType)
-            {
-                case TaskType.SingleAnswer or TaskType.MultipleAnswers:
-                    return new VariantsAnswerUserInput()
-                    {
-                        TaskId = src.TaskId,
-                        VariantsIds = src.VariantsIds!,
-                        IsDone = src.IsDone
-                    };
-                case TaskType.InputAnswer:
-                    return new InputAnswerUserInput()
-                    {
-                        TaskId = src.TaskId,
-                        Answer = src.Answer!,
-                        IsDone = src.IsDone
-                    };
-                case TaskType.ManualReview:
-                    return new ManualReviewUserInput()
-                    {
-                        TaskId = src.TaskId,
-                        Text = src.Text!,
-                        IsDone = src.IsDone
-                    };
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        });
-
-        CreateMap<UserInputDto, InputAnswerUserInput>();
-        CreateMap<UserInputDto, VariantsAnswerUserInput>();
-        CreateMap<UserInputDto, ManualReviewUserInputDto>();
-
         CreateMap<UserTaskPoints, UserTaskPointsDto>();
-
-        /*
-         CreateMap<VariantsAnswerUserInputDto, VariantsAnswerUserInput>();
-        CreateMap<InputAnswerUserInputDto, InputAnswerUserInput>();
-        CreateMap<ManualReviewUserInputDto, ManualReviewUserInput>();
-        */
     }
 }
