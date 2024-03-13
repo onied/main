@@ -27,5 +27,7 @@ public class AppMappingProfile : Profile
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
+
+        CreateMap<UserTaskPoints, UserTaskPointsDto>();
     }
 }
