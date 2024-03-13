@@ -136,13 +136,14 @@ public class CoursesController : ControllerBase
             .Include(block => block.Module)
             .Include(block => block.Tasks)
                 .ThenInclude(task => ((VariantsTask)task).Variants)
-            .Include(block => block.Module)
             .Include(block => block.Tasks)
                 .ThenInclude(task => ((InputTask)task).Answers)
             .FirstOrDefaultAsync(block => block.Id == blockId);
 
         if (block is null || block.Module.CourseId != id)
             return NotFound();
+
+        await System.Threading.Tasks.Task.Delay(2000);
 
         try
         {
