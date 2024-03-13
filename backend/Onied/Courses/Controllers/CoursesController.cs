@@ -142,8 +142,6 @@ public class CoursesController : ControllerBase
         if (block is null || block.Module.CourseId != id)
             return NotFound();
 
-        await System.Threading.Tasks.Task.Delay(2000);
-
         var points = new List<UserTaskPoints?>();
         foreach (var inputDto in inputsDto)
         {
