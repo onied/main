@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Courses.Models;
 
-public class Task : IValidatableObject
+public class Task
 {
     public int Id { get; set; }
 
@@ -16,14 +16,5 @@ public class Task : IValidatableObject
     public string Title { get; set; } = null!;
 
     [Range(0, 1000)]
-    public int? Points { get; set; }
-
-    [Range(0, 1000)]
     public int MaxPoints { get; set; } = 1;
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (Points > MaxPoints)
-            yield return new ValidationResult("Too many points", new[] { nameof(Points), nameof(MaxPoints) });
-    }
 }
