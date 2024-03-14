@@ -308,8 +308,13 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
         var value = Assert.IsAssignableFrom<List<UserTaskPointsDto>>(
             actionResult.Value);
-        Assert.Equivalent(block.Tasks.Select(task => task.Points).OrderBy(x => x), 
-            value.Select(x => x.Points).OrderBy(x => x));
+        Assert.Equivalent(block.Tasks.Select(task => task.Id), 
+            value.Select(x => x.TaskId));
+        Assert.True(block.Tasks.Join(value, 
+                task => task.Id, 
+                dto => dto.TaskId,
+                (task, dto) => (task.MaxPoints, dto.Points))
+            .All(tuple => tuple.MaxPoints >= tuple.Points));
     }
     
     [Fact]
