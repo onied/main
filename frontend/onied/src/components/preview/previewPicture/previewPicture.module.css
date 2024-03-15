@@ -1,41 +1,40 @@
 @media screen and (width > 920px) {
-    .previewPicture {
+  .previewPicture {
     display: block;
     width: var(--right-block-width);
     height: var(--right-block-width);
     object-fit: cover;
     border-radius: 2rem;
-    }
+  }
 }
 
 @media screen and (width < 920px) {
-    .previewPicture {
+  .previewPicture {
     display: block;
     width: 100%;
     height: auto;
     object-fit: cover;
     border-radius: 2rem;
-    }
+  }
 }
 
 .archived {
-position: absolute;
-left: 0;
-bottom: 0;
-z-index: 1;
-width: 100%;
-background-color: #9715D3;
-height: 4rem;
-border-radius: 0 0 2rem 2rem;
-display: flex;
-justify-content: center;
-align-items: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  background-color: #9715d3;
+  height: 4rem;
+  border-radius: 0 0 2rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.archived span{
-color: white;
-text-align: center;
-font-size: 24pt;
-font-weight: bolder;
+.archived span {
+  color: white;
+  text-align: center;
+  font-size: 24pt;
+  font-weight: bolder;
 }
-

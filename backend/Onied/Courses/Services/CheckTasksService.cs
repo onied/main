@@ -18,13 +18,14 @@ public class CheckTasksService : ICheckTasksService
             };
         }
 
-        return task.TaskType switch {
+        return task.TaskType switch
+        {
             TaskType.SingleAnswer or TaskType.MultipleAnswers => CheckTask((VariantsTask)task, input),
             TaskType.InputAnswer => CheckTask((InputTask)task, input),
             _ => null
         };
     }
-    
+
     private UserTaskPoints CheckTask(VariantsTask task, UserInputDto input)
     {
         return new UserTaskPoints()
@@ -37,7 +38,7 @@ public class CheckTasksService : ICheckTasksService
                 .SequenceEqual(input.VariantsIds!) ? task.MaxPoints : 0
         };
     }
-    
+
     private UserTaskPoints CheckTask(InputTask task, UserInputDto input)
     {
         return new UserTaskPoints()
@@ -45,9 +46,9 @@ public class CheckTasksService : ICheckTasksService
             UserId = input.UserId,
             TaskId = input.TaskId,
             Points = task.Answers.Any(
-                    answer => answer.IsCaseSensitive 
+                    answer => answer.IsCaseSensitive
                         ? answer.Answer.Equals(input.Answer)
-                        : answer.Answer.ToLower().Equals(input.Answer.ToLower()) 
+                        : answer.Answer.ToLower().Equals(input.Answer.ToLower())
                     ) ? task.MaxPoints : 0
         };
     }

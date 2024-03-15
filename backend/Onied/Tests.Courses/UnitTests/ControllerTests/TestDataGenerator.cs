@@ -25,13 +25,13 @@ public class TestDataGenerator
         var sequenceBlock = 1;
         var sequenceTask = 1;
         var isProgramVisible = false;
-        
+
         var courses = _fixture.Build<Course>()
             .With(course => course.Id, () => sequenceCourse++)
             .With(course => course.IsProgramVisible, () => !isProgramVisible)
             .CreateMany(3)
             .ToList();
-        
+
         foreach (var course in courses)
         {
             var author = _fixture.Build<Author>()
@@ -47,7 +47,7 @@ public class TestDataGenerator
                 .Create();
             course.Category = category;
             course.CategoryId = category.Id;
-            
+
             var modules = _fixture.Build<Module>()
                 .With(module => module.Id, () => sequenceModule++)
                 .With(module => module.Course, course)
@@ -56,7 +56,7 @@ public class TestDataGenerator
                 .ToList();
             modules.ForEach(module => courses
                 .First(course => course.Id == module.CourseId).Modules.Add(module));
-            
+
             foreach (var module in modules)
             {
                 var summaryBlocks = _fixture.Build<SummaryBlock>()
@@ -82,7 +82,7 @@ public class TestDataGenerator
                     .With(block => block.BlockType, BlockType.TasksBlock)
                     .CreateMany(3)
                     .ToList();
-                
+
                 foreach (var tasksBlock in tasksBlocks)
                 {
                     var inputTasks = _fixture.Build<InputTask>()
@@ -100,10 +100,10 @@ public class TestDataGenerator
                             .With(answer => answer.TaskId, inputTask.Id)
                             .CreateMany(3)
                             .ToList();
-                        
+
                         answers.ForEach(answer => inputTask.Answers.Add(answer));
                     }
-                    
+
                     var variantTasks = _fixture.Build<VariantsTask>()
                         .With(task => task.Id, () => sequenceTask++)
                         .With(task => task.TasksBlock, tasksBlock)
@@ -111,7 +111,7 @@ public class TestDataGenerator
                         .With(task => task.TaskType, TaskType.MultipleAnswers)
                         .CreateMany(3)
                         .ToList();
-                    
+
                     foreach (var variantTask in variantTasks)
                     {
                         var variants = _fixture.Build<TaskVariant>()
@@ -119,10 +119,10 @@ public class TestDataGenerator
                             .With(variant => variant.TaskId, variantTask.Id)
                             .CreateMany(3)
                             .ToList();
-                        
+
                         variants.ForEach(variant => variantTask.Variants.Add(variant));
                     }
-                    
+
                     inputTasks.ForEach(inputTask => tasksBlock.Tasks.Add(inputTask));
                     variantTasks.ForEach(variantTask => tasksBlock.Tasks.Add(variantTask));
                 }
@@ -132,7 +132,7 @@ public class TestDataGenerator
                 tasksBlocks.ForEach(block => module.Blocks.Add(block));
             }
         }
-        
+
         return courses;
     }
 
@@ -145,7 +145,7 @@ public class TestDataGenerator
 
         var authors = courses.Select(course => course.Author);
         _context.Authors.AddRange(authors);
-        
+
         var categories = courses.Select(course => course.Category);
         _context.Categories.AddRange(categories);
 
@@ -161,13 +161,13 @@ public class TestDataGenerator
         var allTasks = tasksBlocks.SelectMany(block => block.Tasks);
         var inputTasks = allTasks.OfType<InputTask>();
         var variantsTasks = allTasks.OfType<VariantsTask>();
-        
+
         _context.InputTasks.AddRange(inputTasks);
         _context.VariantsTasks.AddRange(variantsTasks);
 
         var answers = inputTasks.SelectMany(task => task.Answers);
         var variants = variantsTasks.SelectMany(task => task.Variants);
-        
+
         _context.TaskTextInputAnswers.AddRange(answers);
         _context.TaskVariants.AddRange(variants);
 

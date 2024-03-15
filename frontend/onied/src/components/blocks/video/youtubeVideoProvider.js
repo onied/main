@@ -1,4 +1,4 @@
-import VideoProvider from "./videoProvider"
+import VideoProvider from "./videoProvider";
 
 /**
  * Youtube Video Provider.
@@ -6,13 +6,13 @@ import VideoProvider from "./videoProvider"
  * @class YoutubeVideoProvider
  * @extends {VideoProvider}
  */
-export default class YoutubeVideoProvider extends VideoProvider
-{
-    regex = /^((?:https?:)?\/\/)?((?:www|m).)?((?:youtube(-nocookie)?.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|live\/|v\/)?)(?<videoId>[\w]+)(\S+)?$/;
-    
-    getLink(href) {
-        const matches = href.match(this.regex);
+export default class YoutubeVideoProvider extends VideoProvider {
+  regex =
+    /^((?:https?:)?\/\/)?((?:www|m).)?((?:youtube(-nocookie)?.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|live\/|v\/)?)(?<videoId>[\w]+)(\S+)?$/;
 
-        return `https://www.youtube.com/embed/${matches.groups.videoId}`;
-    }
+  getLink(href) {
+    const matches = href.match(this.regex);
+
+    return `https://www.youtube.com/embed/${matches.groups.videoId}`;
+  }
 }

@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 
-import classes from './courseProgram.module.css'
+import classes from "./courseProgram.module.css";
 
 type CourseProgramProps = {
-    modules: Array<string>
+  modules: Array<string>;
 };
 
 function CourseProgram(props: CourseProgramProps): ReactNode {

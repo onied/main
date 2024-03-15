@@ -1,77 +1,77 @@
 @media screen and (width > 920px) {
-    .previewContainer {
-        --right-block-width: 350px;
-        --blocks-gap: 2%;
-        margin-left: auto;
-        margin-top: 3rem;
-        margin-right: auto;
-        margin-bottom: 3rem;
-        width: 75%;
-    }
+  .previewContainer {
+    --right-block-width: 350px;
+    --blocks-gap: 2%;
+    margin-left: auto;
+    margin-top: 3rem;
+    margin-right: auto;
+    margin-bottom: 3rem;
+    width: 75%;
+  }
 
-    .previewLeftBlock {
-        width: calc(100% - var(--blocks-gap) - var(--right-block-width));
-        float: left;
-    }
+  .previewLeftBlock {
+    width: calc(100% - var(--blocks-gap) - var(--right-block-width));
+    float: left;
+  }
 
-    .previewRightBlock {
-        width: var(--right-block-width);
-        float: right;
-    }
+  .previewRightBlock {
+    width: var(--right-block-width);
+    float: right;
+  }
 }
 
 @media screen and (width < 920px) {
-    .previewContainer {
-        display: flex;
-        flex-direction: column-reverse;
-        gap: 1rem;
-        margin-left: 1rem;
-        margin-top: 3rem;
-        margin-right: 1rem;
-        margin-bottom: 3rem;
-        min-width: 480px;
-    }
+  .previewContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1rem;
+    margin-left: 1rem;
+    margin-top: 3rem;
+    margin-right: 1rem;
+    margin-bottom: 3rem;
+    min-width: 480px;
+  }
 
-    .previewLeftBlock {
-        width: 100%;
-    }
-    
-    .previewRightBlock {
-        width: 100%;
-    }
+  .previewLeftBlock {
+    width: 100%;
+  }
+
+  .previewRightBlock {
+    width: 100%;
+  }
 }
 
 .previewLeftBlock p {
-    text-align: justify;
-    font-size: 16pt;
+  text-align: justify;
+  font-size: 16pt;
 }
 
 .previewTitle {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .additionalInfoLine {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .additionalInfo {
-    color: #686868;
-    font-size: 16pt;
-    font-weight: light;
+  color: #686868;
+  font-size: 16pt;
+  font-weight: light;
 }
 
 .additionalInfo a {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .price {
-    margin-top: 0.75rem;
-    margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .price::after {
-    margin-left: 0.5rem;
-    content: '₽';
+  margin-left: 0.5rem;
+  content: "₽";
 }
