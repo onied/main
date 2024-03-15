@@ -1,0 +1,14 @@
+.lineedit {
+  --lineedit-color: var(--accent-color);
+  border-radius: 1rem;
+  border: var(--lineedit-color) solid 0.3rem;
+  padding: 0.5rem;
+  /* appearance: none; */
+  text-decoration: none;
+  font-size: 16pt;
+  width: 70%;
+}
+
+.lineedit:focus {
+  outline: none;
+}

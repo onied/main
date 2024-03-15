@@ -1,0 +1,18 @@
+.blockViewContainer {
+  position: absolute;
+  left: var(--sidebar-width);
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.blockWrapper {
+  margin-top: 1rem;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 5rem;
+  display: block;
+  gap: 1rem;
+  min-width: 480px;
+}

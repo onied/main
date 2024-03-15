@@ -1,9 +1,23 @@
 #root {
   --header-height: 5rem;
+  --sidebar-width: 19rem;
+  --accent-color: #9715d3;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
 
 main {
   position: absolute;
   top: var(--header-height);
   left: 0;
+  right: 0;
+  height: calc(100% - var(--header-height));
+}
+
+h2 {
+  font-size: 32pt;
+  font-weight: bolder;
 }

@@ -1,16 +1,21 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Header from "./components/header/header";
+import Course from "./pages/course/course";
+import { Route, Routes } from "react-router-dom";
+import Preview from "./pages/preview/preview";
+import Catalog from "./pages/catalog/catalog.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <Header></Header>
-      <main></main>
+      <main>
+        <Routes>
+          <Route path="/course/:courseId/learn/*" element={<Course />}></Route>
+          <Route path="/course/:courseId" element={<Preview />}></Route>
+          <Route path="/catalog" element={<Catalog />}></Route>
+        </Routes>
+      </main>
     </>
   );
 }

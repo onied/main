@@ -1,0 +1,16 @@
+.markdownText p {
+  font-size: 16pt;
+  text-align: justify;
+}
+
+.fileLink {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.fileLink a {
+  color: #9715d3;
+  font-weight: bold;
+  font-size: 20pt;
+}
