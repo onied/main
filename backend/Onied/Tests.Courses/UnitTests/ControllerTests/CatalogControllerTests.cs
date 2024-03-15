@@ -30,7 +30,7 @@ public class CatalogControllerTests
         _generator.AddTestCoursesToDb(_courses);
         _controller = new CatalogController(_logger.Object, _mapper, _context);
     }
-    
+
     [Fact]
     public async Task Get_UsesCorrectOffsetAndLimit()
     {

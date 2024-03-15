@@ -34,27 +34,27 @@ public class CoursesControllerTests
         _generator.AddTestCoursesToDb(_courses);
         _controller = new CoursesController(_logger.Object, _mapper, _context, _checkTasksService.Object);
     }
-    
+
     [Fact]
     public async Task GetPreviewCourse_ReturnsNotFound_WhenCourseNotExist()
     {
         // Arrange
         var courseId = -1;
-        
+
         // Act
         var result = await _controller.GetCoursePreview(courseId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetCoursePreview_ReturnsCoursePreview_NotProgramVisible()
     {
         // Arrange
         var course = _courses.First();
         var courseId = course.Id;
-        
+
         // Act
         var result = await _controller.GetCoursePreview(courseId);
 
@@ -65,15 +65,15 @@ public class CoursesControllerTests
         Assert.Equal(courseId, value.Id);
         Assert.Equivalent(_mapper.Map<AuthorDto>(course.Author), value.CourseAuthor, true);
     }
-    
+
     [Fact]
     public async Task GetCoursePreview_ReturnsCoursePreview_ProgramVisible()
     {
         // Arrange
         var course = _courses.First(course => course.IsProgramVisible);
         var courseId = course.Id;
-        
-        
+
+
         // Act
         var result = await _controller.GetCoursePreview(courseId);
 
@@ -84,26 +84,26 @@ public class CoursesControllerTests
         Assert.Equal(courseId, value.Id);
         Assert.Equivalent(course.Modules.Select(module => module.Title), value.CourseProgram);
     }
-    
+
     [Fact]
     public async Task GetCourseHierarchy_ReturnsNotFound_WhenCourseNotExist()
     {
         // Arrange
         var courseId = -1;
-        
+
         // Act
         var result = await _controller.GetCourseHierarchy(courseId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetCourseHierarchy_ReturnsCourse()
     {
         // Arrange
         var courseId = _courses.First().Id;
-        
+
         // Act
         var result = await _controller.GetCourseHierarchy(courseId);
 
@@ -114,21 +114,21 @@ public class CoursesControllerTests
         Assert.Equal(courseId, value.Id);
         Assert.Equal(_courses.First().Modules.Count, value.Modules.Count);
     }
-    
+
     [Fact]
     public async Task GetSummaryBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
         var courseId = _courses.First().Id;
         var blockId = -1;
-        
+
         // Act
         var result = await _controller.GetSummaryBlock(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetSummaryBlock_ReturnsNotFound_WhenCourseNotRight()
     {
@@ -137,14 +137,14 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<SummaryBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetSummaryBlock_ReturnsBlock()
     {
@@ -153,7 +153,7 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<SummaryBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.GetSummaryBlock(courseId, blockId);
 
@@ -163,21 +163,21 @@ public class CoursesControllerTests
             actionResult.Value);
         Assert.Equal(blockId, value.Id);
     }
-    
+
     [Fact]
     public async Task GetVideoBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
         var courseId = _courses.First().Id;
         var blockId = -1;
-        
+
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetVideoBlock_ReturnsNotFound_WhenCourseNotRight()
     {
@@ -192,7 +192,7 @@ public class CoursesControllerTests
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetVideoBlock_ReturnsBlock()
     {
@@ -201,7 +201,7 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<VideoBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
@@ -211,21 +211,21 @@ public class CoursesControllerTests
             actionResult.Value);
         Assert.Equal(blockId, value.Id);
     }
-    
+
     [Fact]
     public async Task GetTasksBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
         var courseId = _courses.First().Id;
         var blockId = -1;
-        
+
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetTasksBlock_ReturnsNotFound_WhenCourseNotRight()
     {
@@ -234,14 +234,14 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<TasksBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetTasksBlock_ReturnsBlock()
     {
@@ -250,7 +250,7 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<TasksBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
 
@@ -267,14 +267,14 @@ public class CoursesControllerTests
         // Arrange
         var courseId = _courses.First().Id;
         var blockId = -1;
-        
+
         // Act
         var result = await _controller.GetTaskPointsStored(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetTaskPointsStored_ReturnsNotFound_WhenCourseNotRight()
     {
@@ -283,14 +283,14 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<TasksBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.GetTaskPointsStored(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task GetTaskPointsStored_ReturnsPointsRight()
     {
@@ -300,7 +300,7 @@ public class CoursesControllerTests
             .Modules.First()
             .Blocks.OfType<TasksBlock>().First();
         var blockId = block.Id;
-        
+
         // Act
         var result = await _controller.GetTaskPointsStored(courseId, blockId);
 
@@ -308,29 +308,29 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
         var value = Assert.IsAssignableFrom<List<UserTaskPointsDto>>(
             actionResult.Value);
-        Assert.Equivalent(block.Tasks.Select(task => task.Id), 
+        Assert.Equivalent(block.Tasks.Select(task => task.Id),
             value.Select(x => x.TaskId));
-        Assert.True(block.Tasks.Join(value, 
-                task => task.Id, 
+        Assert.True(block.Tasks.Join(value,
+                task => task.Id,
                 dto => dto.TaskId,
                 (task, dto) => (task.MaxPoints, dto.Points))
             .All(tuple => tuple.MaxPoints >= tuple.Points));
     }
-    
+
     [Fact]
     public async Task CheckTaskBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
         var courseId = _courses.First().Id;
         var blockId = -1;
-        
+
         // Act
         var result = await _controller.CheckTaskBlock(courseId, blockId, new List<UserInputDto>());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task CheckTaskBlock_ReturnsNotFound_WhenCourseNotRight()
     {
@@ -339,14 +339,14 @@ public class CoursesControllerTests
         var blockId = _courses.First()
             .Modules.First()
             .Blocks.OfType<TasksBlock>().First().Id;
-        
+
         // Act
         var result = await _controller.CheckTaskBlock(courseId, blockId, new List<UserInputDto>());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task CheckTaskBlock_ReturnsBadRequest_EmptyAnyUserInputDto()
     {
@@ -388,7 +388,7 @@ public class CoursesControllerTests
         // Assert
         Assert.IsType<NotFoundObjectResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task CheckTaskBlock_ReturnsBadRequest_NotTaskType()
     {
@@ -411,7 +411,7 @@ public class CoursesControllerTests
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
     }
-    
+
     [Fact]
     public async Task CheckTaskBlock_ReturnsListUserTaskPointsDto()
     {
@@ -440,10 +440,10 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
         var value = Assert.IsAssignableFrom<List<UserTaskPointsDto>>(
             actionResult.Value);
-        Assert.Equivalent(task.Id, 
+        Assert.Equivalent(task.Id,
             value.First().TaskId);
     }
-    
+
     [Fact]
     public void Get_ReturnsRightString()
     {
@@ -451,6 +451,6 @@ public class CoursesControllerTests
         var result = _controller.Get();
 
         // Assert
-        Assert.Equal(result, "Under construction...");
+        Assert.Equal("Under construction...", result);
     }
 }

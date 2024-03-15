@@ -29,14 +29,14 @@ public class CheckTasksServiceTests
             TaskId = input.TaskId,
             Points = 0
         };
-        
+
         // Act
         var actual = _checkTasksService.CheckTask(new Task(), input);
-        
+
         // Assert
         Assert.Equivalent(expected, actual, true);
     }
-    
+
     [Theory]
     [InlineData(1, true)]
     [InlineData(2, false)]
@@ -52,10 +52,10 @@ public class CheckTasksServiceTests
             .CreateMany(1)
             .ToList();
         variants.ForEach(variant => task.Variants.Add(variant));
-            
+
         var input = _fixture.Build<UserInputDto>()
             .With(input1 => input1.IsDone, true)
-            .With(input1 => input1.VariantsIds, new List<int>{ variantId })
+            .With(input1 => input1.VariantsIds, new List<int> { variantId })
             .Create();
         var expected = new UserTaskPoints
         {
@@ -63,14 +63,14 @@ public class CheckTasksServiceTests
             TaskId = input.TaskId,
             Points = isMaxPoints ? task.MaxPoints : 0
         };
-        
+
         // Act
         var actual = _checkTasksService.CheckTask(task, input);
-        
+
         // Assert
         Assert.Equivalent(expected, actual, true);
     }
-    
+
     [Theory]
     [InlineData(true, "Тест")]
     [InlineData(false, "тест")]
@@ -85,7 +85,7 @@ public class CheckTasksServiceTests
                 IsCaseSensitive = isCaseSensitive
             }))
             .Create();
-            
+
         var input = _fixture.Build<UserInputDto>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.Answer, answer)
@@ -96,10 +96,10 @@ public class CheckTasksServiceTests
             TaskId = input.TaskId,
             Points = task.MaxPoints
         };
-        
+
         // Act
         var actual = _checkTasksService.CheckTask(task, input);
-        
+
         // Assert
         Assert.Equivalent(expected, actual, true);
     }
