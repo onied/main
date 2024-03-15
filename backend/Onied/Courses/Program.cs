@@ -1,5 +1,6 @@
 using Courses;
 using Courses.Profiles;
+using Courses.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
 
+builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,7 +31,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(b => b.AllowAnyOrigin());
+app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthorization();
 

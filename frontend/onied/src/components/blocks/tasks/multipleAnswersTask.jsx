@@ -1,9 +1,27 @@
 import { useState } from "react";
 import Checkbox from "../../general/checkbox/checkbox";
 import classes from "./tasks.module.css";
+import taskType from "./taskType";
 
-function MultipleAnswersTask({ task }) {
-  const [value, setValue] = useState([]);
+function MultipleAnswersTask({ task, onChange }) {
+  const [values, setValues] = useState([]);
+
+  const handleChange = (event) => {
+    const currentVariantId = Number(event.target.value);
+
+    const newValues = !values.includes(currentVariantId)
+      ? [...values, currentVariantId]
+      : values.filter((v) => v != currentVariantId);
+    setValues(newValues);
+
+    onChange({
+      taskId: task.id,
+      taskType: taskType.MULTIPLE_ANSWERS,
+      isDone: true,
+      variantsIds: newValues,
+    });
+  }
+
   return (
     <>
       {task.variants.map((variant) => {
@@ -13,12 +31,8 @@ function MultipleAnswersTask({ task }) {
               name={task.id}
               id={variant.id}
               value={variant.id}
-              onChange={(event) => {
-                !value.includes(variant.id)
-                  ? setValue([...value, variant.id])
-                  : setValue(value.filter((v) => v != variant.id));
-              }}
-              checked={value.includes(variant.id) ? "t" : ""}
+              onChange={handleChange}
+              checked={values.includes(variant.id) ? "t" : ""}
             ></Checkbox>
             <label htmlFor={variant.id} className={classes.variantLabel}>
               {variant.description}

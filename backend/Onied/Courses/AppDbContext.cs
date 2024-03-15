@@ -115,7 +115,6 @@ public class AppDbContext : DbContext
             Id = 1,
             TasksBlockId = 5,
             MaxPoints = 1,
-            Points = null,
             TaskType = TaskType.MultipleAnswers,
             Title = "1. Что произошло на пло́щади Тяньаньмэ́нь в 1989 году?"
         }, new VariantsTask
@@ -123,7 +122,6 @@ public class AppDbContext : DbContext
             Id = 2,
             TasksBlockId = 5,
             MaxPoints = 1,
-            Points = 0,
             TaskType = TaskType.SingleAnswer,
             Title = "2. Чипи чипи чапа чапа дуби дуби даба даба?"
         });
@@ -132,7 +130,6 @@ public class AppDbContext : DbContext
             Id = 3,
             TasksBlockId = 5,
             MaxPoints = 5,
-            Points = 5,
             TaskType = TaskType.InputAnswer,
             Title = "3. Кто?"
         });
@@ -141,7 +138,6 @@ public class AppDbContext : DbContext
             Id = 4,
             TasksBlockId = 5,
             MaxPoints = 1,
-            Points = null,
             TaskType = TaskType.ManualReview,
             Title = "4. Напишите эссе на тему: “Как я провел лето”"
         });
@@ -149,25 +145,25 @@ public class AppDbContext : DbContext
         {
             Id = 1,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 1",
             IsCorrect = true
         }, new TaskVariant
         {
             Id = 2,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 2",
             IsCorrect = true
         }, new TaskVariant
         {
             Id = 3,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 3",
             IsCorrect = true
         }, new TaskVariant
         {
             Id = 4,
             TaskId = 1,
-            Description = "Ничего",
+            Description = "Ничего 4",
             IsCorrect = true
         }, new TaskVariant
         {
