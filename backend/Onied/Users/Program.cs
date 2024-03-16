@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Users;
+using Users.Extensions.WebApplicationExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase("asdf"));
@@ -9,12 +11,26 @@ builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<App
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.ResolveConflictingActions(apiDescriptions =>
+    {
+        const int bestOrder = int.MaxValue;
+        ApiDescription? bestDescr = null;
+        foreach (var currDescr in apiDescriptions)
+        {
+            var currOrder = currDescr.ActionDescriptor.AttributeRouteInfo?.Order ?? 0;
+            if (currOrder < bestOrder) bestDescr = currDescr;
+        }
+
+        return bestDescr;
+    });
+});
 
 
 var app = builder.Build();
 
-app.MapIdentityApi<AppUser>();
+app.MapCustomIdentityApi();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

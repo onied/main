@@ -5,13 +5,11 @@ namespace Users;
 
 public class AppUser : IdentityUser
 {
-    [Required]
     [MaxLength(50)]
-    public string FirstName { get; set; } = null!;
+    public string? FirstName { get; set; } = null!;
 
-    [Required]
     [MaxLength(50)]
-    public string LastName { get; set; } = null!;
+    public string? LastName { get; set; } = null!;
 
-    public bool? Gender { get; set; }
+    public Gender? Gender { get; set; }
 }
