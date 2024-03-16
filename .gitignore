@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,rider,csharp,visualstudio,visualstudiocode,webstorm
 
 .idea
+*.http
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
