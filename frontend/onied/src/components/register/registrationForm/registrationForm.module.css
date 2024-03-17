@@ -1,0 +1,104 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  border: 0.07rem solid;
+  border-color: #dbdbdb;
+  padding: 0.5rem 3.2rem;
+  margin: 14px auto 14px auto;
+}
+
+.cardForm {
+  border: 0.07rem solid;
+  border-color: #dbdbdb;
+  padding: 2.1rem 2.7rem;
+  margin-top: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.genders {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.variants {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.gender {
+  display: flex;
+  align-items: center;
+}
+
+.labelGenders {
+  color: #494949;
+  font-size: 10pt;
+}
+
+.blockGender {
+  margin-left: 0.7rem;
+  height: 1.9rem;
+  padding-top: 0.4rem;
+}
+
+.or {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  gap: 10px;
+  padding: 1rem 0rem;
+  width: 100%;
+}
+
+.line {
+  width: 100%;
+  border-top: 1px solid #dbdbdb;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 10px 0px 0px;
+}
+
+.title {
+  font-family: "Quicksand", Helvetica;
+  font-size: 40pt;
+  text-align: center;
+}
+
+.textInfo {
+  color: #737373;
+  flex: 1;
+  font-family: "Inter", Helvetica;
+  font-size: 14pt;
+  font-weight: 600;
+  text-align: center;
+}
+
+.authVK {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  font-size: 14pt;
+}
