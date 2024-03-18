@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.cardForm {
+  border: 0.07rem solid;
+  border-color: #dbdbdb;
+  padding: 2.1rem 2.7rem;
+  margin-top: 14px;
+}
