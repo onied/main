@@ -1,0 +1,15 @@
+import classes from "../loginForm/loginForm.module.css";
+import Button from "../../general/button/button.jsx";
+
+function LoginForm() {
+  return (
+    <div className={classes.login}>
+      <div style={{ whiteSpace: "nowrap", fontSize: "12pt" }}>
+        Есть аккаунт?
+      </div>
+      <Button style={{ width: "100%" }}>войти</Button>
+    </div>
+  );
+}
+
+export default LoginForm;
