@@ -11,7 +11,7 @@ type SignInFormData = {
   password: string;
 };
 
-function SignInForm(onFormSubmit) {
+function SignInForm({ onFormSubmit }) {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 
@@ -28,9 +28,26 @@ function SignInForm(onFormSubmit) {
     <>
       <div className={classes.title}>OniEd</div>
 
-      <form className={classes.form} action="post" onSubmit={handleSubmit}>
-        <InputForm placeholder="Эл. адрес" onChange={setEmail} />
-        <InputForm placeholder="Пароль" onChange={setPassword} />
+      <form
+        className={classes.form}
+        action="post"
+        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <InputForm
+          placeholder="Эл. адрес"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
+        />
+        <InputForm
+          placeholder="Пароль"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
+        />
         <Button style={{ width: "100%" }}>войти</Button>
       </form>
 
