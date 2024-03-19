@@ -47,3 +47,10 @@
   display: flex;
   justify-content: center;
 }
+
+.errorMessage {
+  color: #ed4956;
+  margin: auto;
+  font-size: 12pt;
+  font-weight: 300;
+}
