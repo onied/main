@@ -21,7 +21,7 @@ function LoginForm() {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 
-  const [errorMessage, setErrorMessage] = useState<string>();
+  // const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleSubmit = () => {
     const formData: LoginFormData = {
@@ -30,34 +30,32 @@ function LoginForm() {
     };
 
     console.log(formData);
+    navigator("/login/2fa", { state: { ...formData } });
+    // axios
+    //   .post(Config.Users + "login", formData)
+    //   .then((response) => {
+    //     console.log(response.data);
 
-    axios
-      .post(Config.Users + "login", formData)
-      .then((response) => {
-        console.log(response.data);
+    //     // maybe get some check from backend?
+    //   })
+    //   .catch((error: AxiosError) => {
+    //     console.log(error);
 
-        // savin' data
+    //     let message = "Неизвестная ошибка";
 
-        navigator("/");
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
+    //     if (error.response == null) {
+    //       setErrorMessage("Нет ответа от сервера");
+    //       return;
+    //     }
 
-        let message = "Неизвестная ошибка";
-
-        if (error.response == null) {
-          setErrorMessage("Нет ответа от сервера");
-          return;
-        }
-
-        const statusCode = error.response!.status;
-        if (statusCode === 401) {
-          message = "Неверные данные для входа";
-        } else if (statusCode >= 500) {
-          message = "Произошла ошибка на сервере";
-        }
-        setErrorMessage(message);
-      });
+    //     const statusCode = error.response!.status;
+    //     if (statusCode === 401) {
+    //       message = "Неверные данные для входа";
+    //     } else if (statusCode >= 500) {
+    //       message = "Произошла ошибка на сервере";
+    //     }
+    //     setErrorMessage(message);
+    //   });
   };
 
   return (
@@ -72,9 +70,9 @@ function LoginForm() {
           handleSubmit();
         }}
       >
-        {errorMessage === undefined ? null : (
+        {/* {errorMessage === undefined ? null : (
           <span className={classes.errorMessage}>{errorMessage}</span>
-        )}
+        )} */}
         <InputForm
           placeholder="Эл. адрес"
           type="email"
