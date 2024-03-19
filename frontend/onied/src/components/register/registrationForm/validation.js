@@ -34,7 +34,7 @@ export const validateInput = (field, input, setErrorMessage) => {
         } else {
           stateObj["confirmPassword"] = input.confirmPassword
             ? ""
-            : errorMessage.confirmPassword;
+            : "Введенные пароли не совпадают";
         }
         break;
 
