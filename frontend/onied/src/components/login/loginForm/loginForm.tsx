@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import axios, { AxiosError } from "axios";
-
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
 import VkLogo from "../../../assets/vk.svg";
-import Config from "../../../config/config";
 
 type LoginFormData = {
   email: string;
@@ -21,8 +18,6 @@ function LoginForm() {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 
-  // const [errorMessage, setErrorMessage] = useState<string>();
-
   const handleSubmit = () => {
     const formData: LoginFormData = {
       email: email!,
@@ -31,31 +26,6 @@ function LoginForm() {
 
     console.log(formData);
     navigator("/login/2fa", { state: { ...formData } });
-    // axios
-    //   .post(Config.Users + "login", formData)
-    //   .then((response) => {
-    //     console.log(response.data);
-
-    //     // maybe get some check from backend?
-    //   })
-    //   .catch((error: AxiosError) => {
-    //     console.log(error);
-
-    //     let message = "Неизвестная ошибка";
-
-    //     if (error.response == null) {
-    //       setErrorMessage("Нет ответа от сервера");
-    //       return;
-    //     }
-
-    //     const statusCode = error.response!.status;
-    //     if (statusCode === 401) {
-    //       message = "Неверные данные для входа";
-    //     } else if (statusCode >= 500) {
-    //       message = "Произошла ошибка на сервере";
-    //     }
-    //     setErrorMessage(message);
-    //   });
   };
 
   return (
@@ -70,9 +40,6 @@ function LoginForm() {
           handleSubmit();
         }}
       >
-        {/* {errorMessage === undefined ? null : (
-          <span className={classes.errorMessage}>{errorMessage}</span>
-        )} */}
         <InputForm
           placeholder="Эл. адрес"
           type="email"
