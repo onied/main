@@ -48,10 +48,8 @@ function RegistrationForm() {
   };
 
   useEffect(() => {
-    const hasError = Object.keys(errorMessage).every(
-      (key) => errorMessage[key]
-    );
-    setIsFormValid(hasError);
+    const hasError = Object.keys(errorMessage).some((key) => errorMessage[key]);
+    setIsFormValid(!hasError);
   }, [errorMessage]);
 
   const [isFormValid, setIsFormValid] = useState(false);
