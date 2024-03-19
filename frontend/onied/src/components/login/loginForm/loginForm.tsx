@@ -6,16 +6,16 @@ import axios, { AxiosError } from "axios";
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
 
-import classes from "./signInForm.module.css";
+import classes from "./loginForm.module.css";
 import VkLogo from "../../../assets/vk.svg";
 import Config from "../../../config/config";
 
-type SignInFormData = {
+type LoginFormData = {
   email: string;
   password: string;
 };
 
-function SignInForm() {
+function LoginForm() {
   const navigator = useNavigate();
 
   const [email, setEmail] = useState<string>();
@@ -24,7 +24,7 @@ function SignInForm() {
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleSubmit = () => {
-    const formData: SignInFormData = {
+    const formData: LoginFormData = {
       email: email!,
       password: password!,
     };
@@ -32,7 +32,7 @@ function SignInForm() {
     console.log(formData);
 
     axios
-      .post(Config.Users + "sign_in", formData)
+      .post(Config.Users + "login", formData)
       .then((response) => {
         console.log(response.data);
 
@@ -110,4 +110,4 @@ function SignInForm() {
   );
 }
 
-export default SignInForm;
+export default LoginForm;

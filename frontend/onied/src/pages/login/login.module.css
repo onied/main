@@ -18,7 +18,7 @@
   justify-content: center; /* or - flex: 0 50% - or - flex-basis: 50% - */
 }
 
-.signInImg {
+.loginImg {
   display: block;
   max-width: 100%;
   height: auto;
