@@ -8,18 +8,6 @@
   padding: 3rem;
 }
 
-.registerContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  min-width: 360px;
-  border: 0.07rem solid #dbdbdb;
-  gap: 1rem;
-  padding: 0.1rem 3rem;
-  margin-top: 1.5rem;
-}
-
 .form {
   display: flex;
   flex-direction: column;

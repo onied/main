@@ -7,20 +7,17 @@ import Config from "../../config/config";
 import classes from "./signIn.module.css";
 import SignInForm from "../../components/signin/signInForm/signInForm";
 import SignInLogo from "../../assets/signIn.svg";
-
-type SignInDto = {
-  email: string;
-  password: string;
-};
+import SignInFormData from "../../components/signin/SignInFormData";
+import RegistrationForm from "../../components/signin/registrationForm/registrationForm";
 
 function SignIn(): ReactNode {
   const [errorMessage, setErrorMessage] = useState<string>();
 
-  const trySignIn = (formData: SignInDto) => {
+  const trySignIn = (formData: SignInFormData) => {
     console.log(formData);
 
     axios
-      .post(Config.UsersBackend + "sign_in", formData)
+      .post(Config.Users + "sign_in", formData)
       .then((response) => {
         console.log(response.data);
 
@@ -42,6 +39,7 @@ function SignIn(): ReactNode {
       <div className={classes.rightBlock}>
         {errorMessage === undefined ? null : <div>{errorMessage}</div>}
         <SignInForm onFormSubmit={trySignIn} />
+        <RegistrationForm />
       </div>
     </div>
   );

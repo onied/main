@@ -1,16 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
 
 import classes from "./signInForm.module.css";
 import VkLogo from "../../../assets/vk.svg";
-import { Link } from "react-router-dom";
-
-type SignInFormData = {
-  email: string;
-  password: string;
-};
+import SignInFormData from "../SignInFormData";
 
 function SignInForm({ onFormSubmit }) {
   const [email, setEmail] = useState<string>();
@@ -26,55 +22,47 @@ function SignInForm({ onFormSubmit }) {
   };
 
   return (
-    <>
-      <div className={classes.container}>
-        <div className={classes.title}>OniEd</div>
+    <div className={classes.container}>
+      <div className={classes.title}>OniEd</div>
 
-        <form
-          className={classes.form}
-          action="post"
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-        >
-          <InputForm
-            placeholder="Эл. адрес"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-          />
-          <InputForm
-            placeholder="Пароль"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
-          />
-          <Button style={{ width: "100%" }}>войти</Button>
-        </form>
-
-        <div className={classes.or}>
-          <div className={classes.line}></div>
-          <div style={{ color: "#494949" }}>или</div>
-          <div className={classes.line}></div>
-        </div>
-
-        <div className={classes.authVK}>
-          <img src={VkLogo} />
-          <div>Войти через VK</div>
-        </div>
-
-        <div className={classes.forgotPassword}>
-          <Link to="/forgotPassword">Забыли пароль?</Link>
-        </div>
-      </div>
-      <div className={classes.registerContainer}>
-        <div style={{ whiteSpace: "nowrap", fontSize: "12pt" }}>
-          Нет аккаунта?
-        </div>
+      <form
+        className={classes.form}
+        action="post"
+        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <InputForm
+          placeholder="Эл. адрес"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
+        />
+        <InputForm
+          placeholder="Пароль"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
+        />
         <Button style={{ width: "100%" }}>войти</Button>
+      </form>
+
+      <div className={classes.or}>
+        <div className={classes.line}></div>
+        <div style={{ color: "#494949" }}>или</div>
+        <div className={classes.line}></div>
       </div>
-    </>
+
+      <div className={classes.authVK}>
+        <img src={VkLogo} />
+        <div>Войти через VK</div>
+      </div>
+
+      <div className={classes.forgotPassword}>
+        <Link to="/forgotPassword">Забыли пароль?</Link>
+      </div>
+    </div>
   );
 }
 
