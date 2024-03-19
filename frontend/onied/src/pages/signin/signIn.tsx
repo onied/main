@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 
 import axios from "axios";
 
@@ -14,17 +14,34 @@ type SignInDto = {
 };
 
 function SignIn(): ReactNode {
+  const [errorMessage, setErrorMessage] = useState<string>();
+
+  const trySignIn = (formData: SignInDto) => {
+    console.log(formData);
+
+    axios
+      .post(Config.UsersBackend + "sign_in", formData)
+      .then((response) => {
+        console.log(response.data);
+
+        // savin' data
+
+        redirect("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage("Неверные данные для входа");
+      });
+  };
+
   return (
     <div className={classes.contentContainer}>
       <div className={classes.signInImg}>
         <img src={SignInLogo} />
       </div>
       <div className={classes.rightBlock}>
-        <SignInForm
-          onFormSubmit={(formData: SignInDto) => {
-            console.log(formData);
-          }}
-        />
+        {errorMessage === undefined ? null : <div>{errorMessage}</div>}
+        <SignInForm onFormSubmit={trySignIn} />
       </div>
     </div>
   );
