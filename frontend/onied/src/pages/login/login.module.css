@@ -1,0 +1,53 @@
+@media screen and (width > 920px) {
+  .mainContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .loginImg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media screen and (width < 920px) {
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    align-items: ce;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .loginImg {
+    display: none;
+  }
+}
+
+.mainContainer * {
+  box-sizing: border-box;
+}
+
+.mainContainer > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* or - flex: 0 50% - or - flex-basis: 50% - */
+}
+
+.rightBlock {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}

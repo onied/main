@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Preview from "./pages/preview/preview";
 import Catalog from "./pages/catalog/catalog.jsx";
 import Register from "./pages/register/register.jsx";
+import Login from "./pages/login/login";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/course/:courseId" element={<Preview />}></Route>
           <Route path="/catalog" element={<Catalog />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route path="/login" element={<Login />}></Route>
         </Routes>
       </main>
     </>
