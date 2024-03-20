@@ -1,9 +1,5 @@
-body {
-  overflow: hidden;
-}
-
 @media screen and (width > 920px) {
-  main {
+  .mainContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -11,7 +7,6 @@ body {
     gap: 1rem;
     padding: 1rem;
     box-sizing: border-box;
-    overflow: auto;
   }
 
   .loginImg {
@@ -19,11 +14,13 @@ body {
     max-width: 100%;
     height: auto;
     object-fit: cover;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
 @media screen and (width < 920px) {
-  main {
+  .mainContainer {
     display: flex;
     flex-direction: column;
     justify-content: top;
@@ -31,7 +28,6 @@ body {
     align-items: ce;
     padding: 1rem;
     box-sizing: border-box;
-    overflow-y: auto;
   }
 
   .loginImg {
@@ -39,11 +35,11 @@ body {
   }
 }
 
-main * {
+.mainContainer * {
   box-sizing: border-box;
 }
 
-main > div {
+.mainContainer > div {
   display: flex;
   flex-direction: column;
   justify-content: center;
