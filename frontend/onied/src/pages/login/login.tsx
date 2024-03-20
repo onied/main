@@ -12,8 +12,10 @@ function Login(): ReactNode {
         <img src={SignInLogo} />
       </div>
       <div className={classes.rightBlock}>
-        <SignInForm />
-        <RegistrationForm />
+        <div className={classes.centeredForms}>
+          <SignInForm />
+          <RegistrationForm />
+        </div>
       </div>
     </div>
   );
