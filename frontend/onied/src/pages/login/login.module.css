@@ -1,37 +1,56 @@
-.contentContainer {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  gap: 1rem;
-  padding: 1rem;
-  box-sizing: border-box;
-  overflow: auto;
+body {
+  overflow: hidden;
 }
 
-.contentContainer * {
+@media screen and (width > 920px) {
+  main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow: auto;
+  }
+
+  .loginImg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+}
+
+@media screen and (width < 920px) {
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    align-items: ce;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .loginImg {
+    display: none;
+  }
+}
+
+main * {
   box-sizing: border-box;
 }
 
-.contentContainer > div {
+main > div {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* or - flex: 0 50% - or - flex-basis: 50% - */
-}
-
-.loginImg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  object-fit: cover;
+  justify-content: center;
+  /* or - flex: 0 50% - or - flex-basis: 50% - */
 }
 
 .rightBlock {
-  padding-left: 10%;
-}
-
-.centeredForms {
   width: fit-content;
   margin-left: auto;
   margin-right: auto;

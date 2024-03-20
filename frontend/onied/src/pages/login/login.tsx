@@ -7,17 +7,13 @@ import RegistrationForm from "../../components/login/registrationForm/registrati
 
 function Login(): ReactNode {
   return (
-    <div className={classes.contentContainer}>
-      <div className={classes.loginImg}>
-        <img src={SignInLogo} />
-      </div>
+    <>
+      <img className={classes.loginImg} src={SignInLogo} />
       <div className={classes.rightBlock}>
-        <div className={classes.centeredForms}>
-          <SignInForm />
-          <RegistrationForm />
-        </div>
+        <SignInForm />
+        <RegistrationForm />
       </div>
-    </div>
+    </>
   );
 }
 
