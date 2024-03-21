@@ -34,7 +34,7 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.MapCustomIdentityApi();
+app.MapGroup("/api/v1/").MapCustomIdentityApi();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
