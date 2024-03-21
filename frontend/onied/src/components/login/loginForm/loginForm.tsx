@@ -5,7 +5,7 @@ import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
-import VkLogo from "../../../assets/vk.svg";
+import VkButton from "../../general/vkbutton/vkbutton";
 
 type LoginFormData = {
   email: string;
@@ -63,10 +63,7 @@ function LoginForm() {
         <div className={classes.line}></div>
       </div>
 
-      <div className={classes.authVK}>
-        <img src={VkLogo} />
-        <div>Войти через VK</div>
-      </div>
+      <VkButton></VkButton>
 
       <div className={classes.forgotPassword}>
         <Link to="/forgotPassword">Забыли пароль?</Link>
