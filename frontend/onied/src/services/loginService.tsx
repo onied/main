@@ -11,7 +11,7 @@ class LoginService {
     var date = new Date();
     date.setSeconds(date.getSeconds() + expiresIn);
     localStorage.setItem("expires", date.toString());
-    api.defaults.headers.common["Authorization"] = accessToken;
+    api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
 
   static checkLoggedIn(): Boolean {
