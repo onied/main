@@ -9,10 +9,7 @@
           "Port": 5135
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/{everything}",
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Identity.Bearer"
-      }
+      "UpstreamPathTemplate": "/api/v1/{everything}"
     }
   ],
   "GlobalConfiguration": {

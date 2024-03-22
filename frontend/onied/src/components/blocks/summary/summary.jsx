@@ -3,8 +3,7 @@ import Markdown from "react-markdown";
 import classes from "./summary.module.css";
 import BeatLoader from "react-spinners/BeatLoader";
 import FileLink from "./fileLink";
-import axios from "axios";
-import Config from "../../../config/config";
+import api from "../../../config/axios";
 
 function SummaryDto(title, markdownText, fileName, fileHref) {
   this.title = title;
@@ -21,14 +20,8 @@ function Summary({ courseId, blockId }) {
 
   useEffect(() => {
     setFound(undefined);
-    axios
-      .get(
-        Config.CoursesBackend +
-          "courses/" +
-          courseId +
-          "/get_summary_block/" +
-          blockId
-      )
+    api
+      .get("courses/" + courseId + "/get_summary_block/" + blockId)
       .then((response) => {
         console.log(response.data);
         setFound(true);

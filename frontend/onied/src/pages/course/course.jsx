@@ -1,10 +1,9 @@
 import Sidebar from "../../components/sidebar/sidebar";
 import BlockViewContainer from "../../components/blocks/blockViewContainer";
 import { Route, Routes, useParams } from "react-router-dom";
-import Config from "../../config/config";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import BlockDispatcher from "../../components/blocks/blockDispatcher";
+import api from "../../config/axios";
 
 function Course() {
   const { courseId } = useParams();
@@ -21,8 +20,8 @@ function Course() {
   }
 
   useEffect(() => {
-    axios
-      .get(Config.CoursesBackend + "courses/" + id + "/get_hierarchy/")
+    api
+      .get("courses/" + id + "/get_hierarchy/")
       .then((response) => {
         console.log(response.data);
         setHierarchy(response.data);
