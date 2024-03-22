@@ -100,7 +100,7 @@ function CardTwoFactor() {
           </div>
           {errorMessage && (
             <span className={classes.errorMessage}>{errorMessage}</span>)}
-          <Button style={{margin: "auto", width:"45%"}} onClick={sendCode}>
+          <Button style={{margin: "auto", width:"60%"}} onClick={sendCode}>
             подтвердить
           </Button>
         </div>
