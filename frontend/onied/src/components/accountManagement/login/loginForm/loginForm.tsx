@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import Button from "../../general/button/button";
-import InputForm from "../../general/inputform/inputform";
+import Button from "../../../general/button/button";
+import InputForm from "../../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
-import VkLogo from "../../../assets/vk.svg";
+import VkLogo from "../../../../assets/vk.svg";
 
 type LoginFormData = {
   email: string;

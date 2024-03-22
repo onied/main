@@ -1,5 +1,5 @@
-import classes from "../siteHeader/siteHeader.module.css";
-import VkLogo from "../../../assets/vk.svg";
+import classes from "./siteHeader.module.css";
+import VkLogo from "../../../../assets/vk.svg";
 
 function SiteHeader() {
   return (
