@@ -1,18 +1,15 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/todos/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "jsonplaceholder.typicode.com",
-          "Port": 443
+          "Host": "localhost",
+          "Port": 5135
         }
       ],
-      "UpstreamPathTemplate": "/todos/{id}",
-      "UpstreamHttpMethod": [
-        "Get"
-      ],
+      "UpstreamPathTemplate": "/api/v1/{everything}",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Identity.Bearer"
       }
