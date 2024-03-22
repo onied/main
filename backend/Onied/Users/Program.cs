@@ -1,30 +1,18 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 using Users;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("ocelot.json");
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("UsersDatabase"))
         .UseSnakeCaseNamingConvention());
 builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<AppDbContext>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    var configuration = builder.Configuration.GetSection("Authentication:JWT");
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidIssuer = configuration["Issuer"],
-        ValidateAudience = true,
-        ValidAudience = configuration["Audience"],
-        ValidateLifetime = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtKey"]!)),
-        ValidateIssuerSigningKey = true
-    };
-});
+builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorization();
 builder.Services.AddCors();
 
@@ -32,9 +20,13 @@ builder.Services.AddCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddOcelot();
 
 var app = builder.Build();
+app.UseRouting();
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -45,6 +37,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapControllers();
+app.UseEndpoints(e => { e.MapControllers(); });
+
+app.UseOcelot().Wait();
 
 app.Run();
