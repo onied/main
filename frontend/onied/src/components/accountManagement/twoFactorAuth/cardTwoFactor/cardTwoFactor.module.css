@@ -1,0 +1,25 @@
+.twoFactorImg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.textInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+}
+
+.title {
+    font-weight: 800;
+    font-size: 24pt;
+    text-align: center;
+}
+
+.pleaseEnterCode {
+    color: #737373;
+    font-size: 16pt;
+    font-weight: 600;
+    text-align: center;
+}
