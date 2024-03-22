@@ -3,10 +3,75 @@ import Card from "../../../general/card/card.jsx";
 import TwoFactorImg from "../../../../assets/twoFactor.svg";
 import SingleDigitInput from "../singleDigitInput/singleDigitInput.jsx";
 import Button from "../../../general/button/button.jsx";
+import {useRef, useState} from "react";
+import axios from "axios";
+import config from "../../../../config/config.js";
+import {handleErrors} from "../../register/registrationForm/validation.js";
+import {useNavigate} from "react-router-dom";
 
 
 function CardTwoFactor() {
+  const navigator = useNavigate();
+  const inputsRefs = useRef([]);
 
+  const [digits, setDigits] = useState(['', '', '', '', '', '']);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleKeyDown = (index, event) => {
+    if (event.key === 'Backspace') {
+      handleBackspace(index);
+    } else if (event.key.length === 1 && /^\d$/.test(event.key)) {
+      const value = event.key.replace(/[^0-9]/g, ''); // Оставляем только цифры
+      handleInput(index, value);
+    }
+  }
+
+  const handleInput = (index, value) => {
+    setDigits(prevDigits => {
+      const newDigits = [...prevDigits];
+      newDigits[index] = value;
+      return newDigits;
+    });
+    const nextIndex = index + 1;
+    if (nextIndex < inputsRefs.current.length) {
+      inputsRefs.current[nextIndex].focus();
+    }
+  };
+
+  const handleBackspace = (index) => {
+    setDigits(prevDigits => {
+      const newDigits = [...prevDigits];
+      newDigits[index] = '';
+      return newDigits;
+    });
+    const prevIndex = index - 1;
+    if (prevIndex >= 0) {
+      inputsRefs.current[prevIndex].focus();
+    }
+  };
+
+  const sendCode = () => {
+    if (digits.every(digit => digit !== '')) {
+      axios
+        .post(config.Users + "manage/2fa", {
+          enable: true,
+          twoFactorCode: digits.join(''),
+          resetSharedKey: false,
+          resetRecoveryCodes: false,
+          forgetMachine: false
+        })
+        .then((response) => {
+          console.log(response);
+          navigator("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessage("Неверный код")
+        });
+    } else {
+      setErrorMessage("Неверный код")
+    }
+  }
 
   return(
     <>
@@ -26,11 +91,16 @@ function CardTwoFactor() {
               <SingleDigitInput
                 key={index}
                 id={`input-${index}`}
+                innerRef={(input) => (inputsRefs.current[index] = input)}
+                onKeyDown={(value) => handleKeyDown(index, value)}
                 className={classes.singleDigitInput}
+                value={digits[index]}
               />
             ))}
           </div>
-          <Button style={{margin: "auto", width:"45%"}}>
+          {errorMessage && (
+            <span className={classes.errorMessage}>{errorMessage}</span>)}
+          <Button style={{margin: "auto", width:"45%"}} onClick={sendCode}>
             подтвердить
           </Button>
         </div>
