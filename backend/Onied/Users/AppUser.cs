@@ -12,4 +12,8 @@ public class AppUser : IdentityUser
     public string? LastName { get; set; } = null!;
 
     public Gender? Gender { get; set; }
+
+    [Url]
+    [MaxLength(2048)]
+    public string? Avatar { get; set; }
 }
