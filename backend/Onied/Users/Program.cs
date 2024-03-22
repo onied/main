@@ -1,5 +1,8 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Users;
 using Users.Extensions.WebApplicationExtensions;
 
@@ -7,6 +10,34 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("UsersDatabase"))
         .UseSnakeCaseNamingConvention());
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    var configuration = builder.Configuration.GetSection("Authentication:JWT");
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = configuration["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = configuration["Audience"],
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtKey"]!)),
+        ValidateIssuerSigningKey = true
+    };
+}).AddVkontakte(options =>
+{
+    options.CallbackPath = "/api/v1/signin-vk";
+    options.Fields.Add("first_name");
+    options.Fields.Add("last_name");
+    options.Fields.Add("sex");
+    options.Fields.Add("photo_max_orig");
+
+    options.Scope.Clear();
+    options.Scope.Add("email");
+
+    var configuration = builder.Configuration.GetSection("Authentication:VK");
+    options.ClientId = configuration["ClientId"]!;
+    options.ClientSecret = configuration["ClientSecret"]!;
+});
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddCors();
