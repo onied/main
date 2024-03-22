@@ -7,6 +7,7 @@ function VkButton() {
   url.searchParams.append("client_id", Config.ClientId);
   url.searchParams.append("redirect_uri", Config.RedirectUrl);
   url.searchParams.append("display", "page");
+  url.searchParams.append("scope", "email");
   return (
     <a className={classes.authVK} href={url.toString()}>
       <img src={VkLogo} />
