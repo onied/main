@@ -17,16 +17,17 @@ function CardTwoFactor() {
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleKeyDown = (index, event) => {
-    if (event.key === 'Backspace') {
+  const handleChange = (index, event) => {
+    const value = event.target.value
+    if (value === '') {
       handleBackspace(index);
-    } else if (event.key.length === 1 && /^\d$/.test(event.key)) {
-      const value = event.key.replace(/[^0-9]/g, ''); // Оставляем только цифры
+    } else if (/^\d$/.test(value)) {
       handleInput(index, value);
     }
   }
 
-  const handleInput = (index, value) => {
+  const handleInput = (index, event) => {
+    const value = event.value
     setDigits(prevDigits => {
       const newDigits = [...prevDigits];
       newDigits[index] = value;
@@ -92,7 +93,7 @@ function CardTwoFactor() {
                 key={index}
                 id={`input-${index}`}
                 innerRef={(input) => (inputsRefs.current[index] = input)}
-                onKeyDown={(value) => handleKeyDown(index, value)}
+                onChange={(event) => handleChange(index, event)}
                 className={classes.singleDigitInput}
                 value={digits[index]}
               />
