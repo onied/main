@@ -38,6 +38,8 @@ function LoginForm() {
         return axios.post(Config.Users + "login", formData);
       })
       .then((response) => {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
         navigator("/");
       })
       .catch();
