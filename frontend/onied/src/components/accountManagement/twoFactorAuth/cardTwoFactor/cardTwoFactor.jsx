@@ -68,7 +68,7 @@ function CardTwoFactor() {
   const sendCode = () => {
     if (digits.every((digit) => digit !== "")) {
       axios
-        .post(config.Users + "login", {
+        .post(config.UsersBackend + "login", {
           email: email,
           password: password,
           twoFactorCode: digits.join(""),

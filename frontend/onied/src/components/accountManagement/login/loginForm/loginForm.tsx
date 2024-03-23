@@ -37,13 +37,15 @@ function LoginForm() {
     console.log(formData);
 
     axios
-      .get(Config.Users + "manage/2fa/info", { params: { email: email } })
+      .get(Config.UsersBackend + "manage/2fa/info", {
+        params: { email: email },
+      })
       .then((response) => {
         if (response.data.isTwoFactorEnabled == true) {
           navigator("/login/2fa", { state: { ...formData } });
         }
 
-        return axios.post(Config.Users + "login", formData);
+        return axios.post(Config.UsersBackend + "login", formData);
       })
       .then((response) => {
         console.log(response);

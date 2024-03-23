@@ -70,7 +70,7 @@ function RegistrationForm() {
       let password = form.password.value;
 
       axios
-        .post(Config.Users + "register", {
+        .post(Config.UsersBackend + "register", {
           firstName,
           lastName,
           gender,
