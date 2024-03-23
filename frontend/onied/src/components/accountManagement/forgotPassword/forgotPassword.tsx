@@ -1,10 +1,10 @@
 import { useState } from "react";
-import InputForm from "../general/inputform/inputform";
+import InputForm from "../../general/inputform/inputform";
 import classes from "./forgotPassword.module.css";
-import Button from "../general/button/button";
+import Button from "../../general/button/button";
 import axios from "axios";
-import Config from "../../config/config";
-import ForgotPasswordImg from "../../assets/forgotPassword.svg";
+import Config from "../../../config/config";
+import ForgotPasswordImg from "../../../assets/forgotPassword.svg";
 
 type ForgotPasswordFormData = {
   email: string;
@@ -24,7 +24,7 @@ function ForgotPasswordComponent() {
     console.log(formData);
     setError(undefined);
     axios
-      .post(Config.Users + "forgotPassword", {
+      .post(Config.UsersBackend + "forgotPassword", {
         email: email,
       })
       .then((_) => {

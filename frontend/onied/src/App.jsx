@@ -4,7 +4,7 @@ import Course from "./pages/course/course";
 import { Route, Routes } from "react-router-dom";
 import Preview from "./pages/preview/preview";
 import Catalog from "./pages/catalog/catalog.jsx";
-import ForgotPassword from "./pages/forgotPassword/forgotPassword";
+import ForgotPassword from "./pages/accountManagement/forgotPassword/forgotPassword";
 import Register from "./pages/accountManagement/register/register.jsx";
 import Login from "./pages/accountManagement/login/login";
 import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";

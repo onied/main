@@ -1,5 +1,5 @@
 import classes from "./forgotPassword.module.css";
-import ForgotPasswordComponent from "../../components/forgotPassword/forgotPassword.js";
+import ForgotPasswordComponent from "../../../components/accountManagement/forgotPassword/forgotPassword.js";
 
 function ForgotPassword() {
   return (
