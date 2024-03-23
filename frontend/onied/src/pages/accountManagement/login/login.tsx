@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 
 import classes from "./login.module.css";
-import SignInLogo from "../../assets/signIn.svg";
-import SignInForm from "../../components/login/loginForm/loginForm";
-import RegistrationForm from "../../components/login/registrationForm/registrationForm";
+import SignInLogo from "../../../assets/signIn.svg";
+import SignInForm from "../../../components/accountManagement/login/loginForm/loginForm";
+import RegistrationForm from "../../../components/accountManagement/login/registrationForm/registrationForm";
 
 function Login(): ReactNode {
   return (

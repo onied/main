@@ -22,10 +22,12 @@ function Tasks({ courseId, blockId }) {
     setTaskPointsSequence(undefined);
     api
       .get(
-        "courses/" +
+        Config.CoursesBackend +
+          "courses/" +
           courseId +
-          "/get_tasks_points/" + // переделать под норм запрос
-          blockId
+          "/tasks/" +
+          blockId +
+          "/points"
       )
       .then((response) => {
         console.log(response.data);
@@ -34,14 +36,13 @@ function Tasks({ courseId, blockId }) {
       .catch((error) => {
         console.log(error);
         setTaskPointsSequence(null);
-        ``;
       });
   }, [courseId, blockId]);
 
   useEffect(() => {
     setFound(undefined);
-    api
-      .get("courses/" + courseId + "/get_tasks_block/" + blockId)
+    axios
+      .get(Config.CoursesBackend + "courses/" + courseId + "/tasks/" + blockId)
       .then((response) => {
         console.log(response.data);
         setFound(true);
@@ -90,9 +91,14 @@ function Tasks({ courseId, blockId }) {
           console.log(taskInputs);
 
           setTaskPointsSequence(undefined);
-          api
+          axios
             .post(
-              "courses/" + courseId + "/check_tasks_block/" + blockId,
+              Config.CoursesBackend +
+                "courses/" +
+                courseId +
+                "/tasks/" +
+                blockId +
+                "/check",
               taskInputs
             )
             .then((response) => {

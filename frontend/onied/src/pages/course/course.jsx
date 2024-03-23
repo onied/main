@@ -20,8 +20,8 @@ function Course() {
   }
 
   useEffect(() => {
-    api
-      .get("courses/" + id + "/get_hierarchy/")
+    axios
+      .get(Config.CoursesBackend + "courses/" + id + "/hierarchy/")
       .then((response) => {
         console.log(response.data);
         setHierarchy(response.data);

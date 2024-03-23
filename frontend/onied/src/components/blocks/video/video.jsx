@@ -9,8 +9,8 @@ function Video({ courseId, blockId }) {
 
   useEffect(() => {
     setFound(undefined);
-    api
-      .get("courses/" + courseId + "/get_video_block/" + blockId)
+    axios
+      .get(Config.CoursesBackend + "courses/" + courseId + "/video/" + blockId)
       .then((response) => {
         console.log(response.data);
         setFound(true);

@@ -20,8 +20,10 @@ function Summary({ courseId, blockId }) {
 
   useEffect(() => {
     setFound(undefined);
-    api
-      .get("courses/" + courseId + "/get_summary_block/" + blockId)
+    axios
+      .get(
+        Config.CoursesBackend + "courses/" + courseId + "/summary/" + blockId
+      )
       .then((response) => {
         console.log(response.data);
         setFound(true);

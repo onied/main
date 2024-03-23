@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Button from "../../general/button/button";
+import Button from "../../../general/button/button";
 import classes from "./registrationForm.module.css";
 
 function RegistrationForm() {

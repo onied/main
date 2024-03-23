@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Users;
+using Users.Services.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json");
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
 builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorization();
+builder.Services.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
 builder.Services.AddCors();
 
 // Add services to the container.
@@ -21,6 +23,8 @@ builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
+
+builder.Services.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
 
 var app = builder.Build();
 app.UseRouting();
@@ -37,7 +41,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// We need this for Ocelot to work correctly;
+// Otherwise the middleware chain is in the wrong order.
+#pragma warning disable ASP0014
 app.UseEndpoints(e => { e.MapControllers(); });
+#pragma warning restore ASP0014
 
 app.UseOcelot().Wait();
 

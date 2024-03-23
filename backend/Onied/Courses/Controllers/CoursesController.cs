@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Courses.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/[controller]/{id:int}")]
 public class CoursesController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -29,13 +29,6 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    public string Get()
-    {
-        return "Under construction...";
-    }
-
-    [HttpGet]
-    [Route("{id:int}/get_preview")]
     public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id)
     {
         var course = await _context.Courses
@@ -49,7 +42,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:int}/get_hierarchy")]
+    [Route("hierarchy")]
     public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id)
     {
         var course = await _context.Courses.Include(course1 => course1.Modules).ThenInclude(module => module.Blocks)
@@ -60,7 +53,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:int}/get_summary_block/{blockId:int}")]
+    [Route("summary/{blockId:int}")]
     public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId)
     {
         var summary = await _context.SummaryBlocks.Include(block => block.Module)
@@ -71,7 +64,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:int}/get_video_block/{blockId:int}")]
+    [Route("video/{blockId:int}")]
     public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId)
     {
         var block = await _context.VideoBlocks.Include(block => block.Module)
@@ -82,7 +75,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:int}/get_tasks_block/{blockId:int}")]
+    [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
     {
         var block = await _context.TasksBlocks
@@ -96,7 +89,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:int}/get_tasks_points/{blockId:int}")]
+    [Route("tasks/{blockId:int}/points")]
     public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
     {
         var block = await _context.TasksBlocks
@@ -122,7 +115,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    [Route("{id:int}/check_tasks_block/{blockId:int}")]
+    [Route("tasks/{blockId:int}/check")]
     public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
         int id,
         int blockId,
@@ -146,16 +139,16 @@ public class CoursesController : ControllerBase
         foreach (var inputDto in inputsDto)
         {
             var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
-            
+
             if (task is null)
                 return NotFound($"Task with id={inputDto.TaskId} not found.");
 
             if (task.TaskType != inputDto.TaskType)
                 return BadRequest($"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
-            
+
             points.Add(_checkTasksService.CheckTask(task, inputDto));
         }
-        
+
         return _mapper.Map<List<UserTaskPointsDto>>(points);
     }
 }
