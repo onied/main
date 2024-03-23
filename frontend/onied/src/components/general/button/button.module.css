@@ -11,3 +11,11 @@
   cursor: pointer;
   margin: 1rem 0;
 }
+
+.button:disabled {
+  box-shadow: none;
+  background-color: white;
+  border: 3px solid var(--button-color);
+  cursor: inherit;
+  color: var(--accent-color);
+}
