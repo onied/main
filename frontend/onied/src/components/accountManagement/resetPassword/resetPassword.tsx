@@ -13,7 +13,7 @@ type ResetPasswordFormData = {
   resetCode: string;
 };
 
-function ForgotPasswordComponent() {
+function ResetPasswordComponent() {
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [password, setPassword] = useState("");
@@ -111,4 +111,4 @@ function ForgotPasswordComponent() {
   );
 }
 
-export default ForgotPasswordComponent;
+export default ResetPasswordComponent;
