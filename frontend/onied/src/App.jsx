@@ -19,7 +19,7 @@ function App() {
           <Route path="/catalog" element={<Catalog />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
-          <Route path="/two-factor" element={<TwoFactor />}></Route>s
+          <Route path="/login/2fa" element={<TwoFactor />}></Route>s
         </Routes>
       </main>
     </>
