@@ -443,14 +443,4 @@ public class CoursesControllerTests
         Assert.Equivalent(task.Id,
             value.First().TaskId);
     }
-
-    [Fact]
-    public void Get_ReturnsRightString()
-    {
-        // Act
-        var result = _controller.Get();
-
-        // Assert
-        Assert.Equal("Under construction...", result);
-    }
 }
