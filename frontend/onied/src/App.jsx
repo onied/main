@@ -8,6 +8,7 @@ import ForgotPassword from "./pages/accountManagement/forgotPassword/forgotPassw
 import Register from "./pages/accountManagement/register/register.jsx";
 import Login from "./pages/accountManagement/login/login";
 import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
+import ResetPassword from "./pages/accountManagement/resetPassword/resetPassword";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/login/2fa" element={<TwoFactor />}></Route>
           <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
+          <Route path="/resetPassword" element={<ResetPassword />}></Route>
         </Routes>
       </main>
     </>

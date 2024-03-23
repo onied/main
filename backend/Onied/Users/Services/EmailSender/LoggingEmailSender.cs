@@ -1,9 +1,11 @@
 using System.Web;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Users.Services.EmailSender;
 
-public class LoggingEmailSender(ILogger<LoggingEmailSender> logger) : IEmailSender<AppUser>
+public class LoggingEmailSender(ILogger<LoggingEmailSender> logger, IConfiguration configuration)
+    : IEmailSender<AppUser>
 {
     public Task SendConfirmationLinkAsync(AppUser user, string email, string confirmationLink)
     {
@@ -24,8 +26,14 @@ public class LoggingEmailSender(ILogger<LoggingEmailSender> logger) : IEmailSend
     public Task SendPasswordResetCodeAsync(AppUser user, string email, string resetCode)
     {
         resetCode = HttpUtility.HtmlDecode(resetCode);
-        logger.LogInformation("Password reset code for {FirstName} {LastName} sent to {email}: {resetCode}",
-            user.FirstName, user.LastName, email, resetCode);
+        var frontUrl = new UriBuilder(configuration["FrontendPasswordResetUrl"]!);
+        frontUrl.Query = new QueryBuilder
+        {
+            { "email", email },
+            { "code", resetCode }
+        }.ToString();
+        logger.LogInformation("Password reset code link for {FirstName} {LastName} sent to {email}: {frontUrl}",
+            user.FirstName, user.LastName, email, frontUrl.ToString());
         return Task.CompletedTask;
     }
 }
