@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import classes from "../loginForm/loginForm.module.css";
-import Button from "../../general/button/button.jsx";
+import classes from "./loginForm.module.css";
+import Button from "../../../general/button/button.jsx";
 
 function LoginForm() {
   const navigator = useNavigate();

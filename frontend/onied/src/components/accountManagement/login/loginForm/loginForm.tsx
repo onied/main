@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import Button from "../../general/button/button";
-import InputForm from "../../general/inputform/inputform";
+import Button from "../../../general/button/button";
+import InputForm from "../../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
-import VkLogo from "../../../assets/vk.svg";
+import VkLogo from "../../../../assets/vk.svg";
+import axios, { AxiosError } from "axios";
+import Config from "../../../../config/config";
 
 type LoginFormData = {
   email: string;
@@ -14,9 +16,17 @@ type LoginFormData = {
 
 function LoginForm() {
   const navigator = useNavigate();
+  const location = useLocation();
 
+  const [errorMessage, setErrorMessage] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+
+  useEffect(() => {
+    if (location.state != null) {
+      setErrorMessage(location.state.errorMessage);
+    }
+  }, []);
 
   const handleSubmit = () => {
     const formData: LoginFormData = {
@@ -25,7 +35,27 @@ function LoginForm() {
     };
 
     console.log(formData);
-    navigator("/login/2fa", { state: { ...formData } });
+
+    axios
+      .get(Config.UsersBackend + "manage/2fa/info", {
+        params: { email: email },
+      })
+      .then((response) => {
+        if (response.data.isTwoFactorEnabled == true) {
+          navigator("/login/2fa", { state: { ...formData } });
+        }
+
+        return axios.post(Config.UsersBackend + "login", formData);
+      })
+      .then((response) => {
+        console.log(response);
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        navigator("/");
+      })
+      .catch((reason: AxiosError) => {
+        setErrorMessage("Неверные имя пользователя или пароль");
+      });
   };
 
   return (
@@ -40,6 +70,9 @@ function LoginForm() {
           handleSubmit();
         }}
       >
+        {errorMessage && (
+          <span className={classes.errorMessage}>{errorMessage}</span>
+        )}
         <InputForm
           placeholder="Эл. адрес"
           type="email"

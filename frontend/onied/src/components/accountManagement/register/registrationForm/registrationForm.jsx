@@ -1,9 +1,9 @@
-import InputForm from "../../general/inputform/inputform.jsx";
-import Radio from "../../general/radio/radio.jsx";
-import Button from "../../general/button/button";
+import InputForm from "../../../general/inputform/inputform.jsx";
+import Radio from "../../../general/radio/radio.jsx";
+import Button from "../../../general/button/button.jsx";
 import classes from "./registrationForm.module.css";
 import axios from "axios";
-import Config from "../../../config/config.js";
+import Config from "../../../../config/config.js";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleErrors, validateInput } from "./validation.js";
@@ -70,7 +70,7 @@ function RegistrationForm() {
       let password = form.password.value;
 
       axios
-        .post(Config.Users + "register", {
+        .post(Config.UsersBackend + "register", {
           firstName,
           lastName,
           gender,

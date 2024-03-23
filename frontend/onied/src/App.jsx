@@ -4,8 +4,9 @@ import Course from "./pages/course/course";
 import { Route, Routes } from "react-router-dom";
 import Preview from "./pages/preview/preview";
 import Catalog from "./pages/catalog/catalog.jsx";
-import Register from "./pages/register/register.jsx";
-import Login from "./pages/login/login";
+import Register from "./pages/accountManagement/register/register.jsx";
+import Login from "./pages/accountManagement/login/login";
+import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/catalog" element={<Catalog />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/login/2fa" element={<TwoFactor />}></Route>s
         </Routes>
       </main>
     </>

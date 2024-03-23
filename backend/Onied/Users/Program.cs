@@ -11,6 +11,7 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
 builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorization();
+builder.Services.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
 builder.Services.AddCors();
 
 // Add services to the container.
