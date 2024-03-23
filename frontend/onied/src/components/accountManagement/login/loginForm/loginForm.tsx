@@ -6,7 +6,7 @@ import InputForm from "../../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
 import VkLogo from "../../../../assets/vk.svg";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Config from "../../../../config/config";
 
 type LoginFormData = {
@@ -17,6 +17,7 @@ type LoginFormData = {
 function LoginForm() {
   const navigator = useNavigate();
 
+  const [errorMessage, setErrorMessage] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 
@@ -42,7 +43,9 @@ function LoginForm() {
         localStorage.setItem("refreshToken", response.data.refreshToken);
         navigator("/");
       })
-      .catch();
+      .catch((reason: AxiosError) => {
+        setErrorMessage("Неверные имя пользователя или пароль");
+      });
   };
 
   return (
@@ -57,6 +60,9 @@ function LoginForm() {
           handleSubmit();
         }}
       >
+        {errorMessage && (
+          <span className={classes.errorMessage}>{errorMessage}</span>
+        )}
         <InputForm
           placeholder="Эл. адрес"
           type="email"
