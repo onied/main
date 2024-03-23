@@ -55,7 +55,7 @@ public static class MapIdentityApi
             return TypedResults.Ok();
         }).WithOrder(-1);
 
-        endpoints.MapGet(
+        endpoints.MapPost(
             "manage/2fa/info",
             async Task<Results<Ok<TwoFactorEnabledResponse>, NotFound>> (
                 string email,
