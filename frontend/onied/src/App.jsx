@@ -10,8 +10,10 @@ import Login from "./pages/accountManagement/login/login";
 import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
 import ResetPassword from "./pages/accountManagement/resetPassword/resetPassword";
 import OauthRedirect from "./pages/oauthRedirect/oauthRedirect";
+import LoginService from "./services/loginService";
 
 function App() {
+  LoginService.registerAutomaticRefresh();
   return (
     <>
       <Header></Header>
