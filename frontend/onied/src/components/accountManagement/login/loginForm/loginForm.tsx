@@ -6,6 +6,7 @@ import InputForm from "../../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
 import VkLogo from "../../../../assets/vk.svg";
+import axios from "axios";
 
 type LoginFormData = {
   email: string;
@@ -25,7 +26,20 @@ function LoginForm() {
     };
 
     console.log(formData);
-    navigator("/login/2fa", { state: { ...formData } });
+
+    axios
+      .get("/manage/2fa/info", { params: { email: email } })
+      .then((response) => {
+        if (response.data.isTwoFactorEnabled == true) {
+          navigator("/login/2fa", { state: { ...formData } });
+        }
+
+        return axios.post("/login", formData);
+      })
+      .then((response) => {
+        navigator("/");
+      })
+      .catch();
   };
 
   return (
