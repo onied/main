@@ -7,6 +7,7 @@ import InputForm from "../../../general/inputform/inputform";
 import classes from "./loginForm.module.css";
 import api from "../../../../config/axios";
 import VkButton from "../../../general/vkbutton/vkbutton";
+import LoginService from "../../../../services/loginService";
 
 type LoginFormData = {
   email: string;
@@ -48,8 +49,11 @@ function LoginForm() {
       })
       .then((response) => {
         console.log(response);
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
+        LoginService.storeTokens(
+          response.data.accessToken,
+          response.data.expiresIn,
+          response.data.refreshToken
+        );
         navigator("/");
       })
       .catch((_) => {

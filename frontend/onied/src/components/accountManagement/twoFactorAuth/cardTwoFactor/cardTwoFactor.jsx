@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SixDigitsInput from "../../sixDigitsInput/sixDigitsInput";
 import api from "../../../../config/axios";
+import LoginService from "../../../../services/loginService";
 
 function CardTwoFactor() {
   const navigator = useNavigate();
@@ -39,8 +40,11 @@ function CardTwoFactor() {
         })
         .then((response) => {
           console.log(response);
-          localStorage.setItem("accessToken", response.data.accessToken);
-          localStorage.setItem("refreshToken", response.data.refreshToken);
+          LoginService.storeTokens(
+            response.data.accessToken,
+            response.data.expiresIn,
+            response.data.refreshToken
+          );
           navigator("/");
         })
         .catch((reason) => {

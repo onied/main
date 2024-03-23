@@ -28,6 +28,13 @@ class LoginService {
     return true;
   }
 
+  static clearTokens() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("expires");
+    delete api.defaults.headers.common["Authorization"];
+  }
+
   static refreshTokens() {
     const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken === null) return;
@@ -43,10 +50,7 @@ class LoginService {
         );
       })
       .catch((_) => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("expires");
-        delete api.defaults.headers.common["Authorization"];
+        this.clearTokens();
       });
   }
 }
