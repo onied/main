@@ -22,6 +22,7 @@ function ForgotPasswordComponent() {
     };
 
     console.log(formData);
+    setError(undefined);
     axios
       .post(Config.Users + "forgotPassword", {
         email: email,
