@@ -3,18 +3,34 @@ import Card from "../../../general/card/card.jsx";
 import TwoFactorImg from "../../../../assets/twoFactor.svg";
 import SingleDigitInput from "../singleDigitInput/singleDigitInput.jsx";
 import Button from "../../../general/button/button.jsx";
-import { useRef, useState } from "react";
-import axios from "axios";
+import { useRef, useState, useEffect } from "react";
+import axios, { Axios, AxiosError } from "axios";
 import config from "../../../../config/config.js";
 import { handleErrors } from "../../register/registrationForm/validation.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-function CardTwoFactor({ email, password }) {
+function CardTwoFactor() {
   const navigator = useNavigate();
+  const location = useLocation();
   const inputsRefs = useRef([]);
 
   const [digits, setDigits] = useState(["", "", "", "", "", ""]);
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (
+      location.state == null ||
+      location.state.email == null ||
+      location.state.password == null
+    ) {
+      navigator("/login");
+    } else {
+      setEmail(location.state.email);
+      setPassword(location.state.password);
+    }
+  }, []);
 
   const handleChange = (index, event) => {
     const value = event.target.value;
@@ -25,8 +41,7 @@ function CardTwoFactor({ email, password }) {
     }
   };
 
-  const handleInput = (index, event) => {
-    const value = event.value;
+  const handleInput = (index, value) => {
     setDigits((prevDigits) => {
       const newDigits = [...prevDigits];
       newDigits[index] = value;
@@ -62,17 +77,22 @@ function CardTwoFactor({ email, password }) {
           console.log(response);
           navigator("/");
         })
-        .catch((error) => {
+        .catch((reason) => {
+          const message =
+            reason.response == null || reason.response.status >= 500
+              ? "Ошибка сервера"
+              : reason.response.data.detail == "LockedOut"
+                ? "Пользователь не активирован. Подтвердите почту"
+                : "Неверные данные для входа";
+
           navigator("/login", {
             state: {
-              email,
-              password,
-              errorMessage: "Неверные данные для входа",
+              errorMessage: message,
             },
           });
         });
     } else {
-      setErrorMessage("Неверный код");
+      setErrorMessage("Поле не заполнено");
     }
   };
 

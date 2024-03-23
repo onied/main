@@ -25,8 +25,6 @@ function LoginForm() {
   useEffect(() => {
     if (location.state != null) {
       setErrorMessage(location.state.errorMessage);
-      setEmail(location.state.email);
-      setPassword(location.state.password);
     }
   }, []);
 
