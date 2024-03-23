@@ -17,6 +17,14 @@ function ForgotPasswordComponent() {
   const [buttonDisabled, setButtonDisabled] = useState("");
 
   const handleSubmit = () => {
+    if (
+      !/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(
+        email
+      )
+    ) {
+      setError("Вы ввели неправильный электронный адрес");
+      return;
+    }
     const formData: ForgotPasswordFormData = {
       email: email!,
     };
@@ -24,9 +32,7 @@ function ForgotPasswordComponent() {
     console.log(formData);
     setError(undefined);
     axios
-      .post(Config.UsersBackend + "forgotPassword", {
-        email: email,
-      })
+      .post(Config.UsersBackend + "forgotPassword", formData)
       .then((_) => {
         setSent(true);
         setButtonDisabled("t");
@@ -60,6 +66,7 @@ function ForgotPasswordComponent() {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
+          required="t"
         />
         <Button type="submit" disabled={buttonDisabled}>
           отправить
@@ -72,7 +79,7 @@ function ForgotPasswordComponent() {
       ) : (
         <></>
       )}
-      {error != undefined ? <p className={classes.sent}>{error}</p> : <></>}
+      {error != undefined ? <p className={classes.error}>{error}</p> : <></>}
     </div>
   );
 }
