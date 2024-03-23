@@ -5,9 +5,8 @@ import Button from "../../../general/button/button";
 import InputForm from "../../../general/inputform/inputform";
 
 import classes from "./loginForm.module.css";
-import VkLogo from "../../../../assets/vk.svg";
-import axios, { AxiosError } from "axios";
-import Config from "../../../../config/config";
+import api from "../../../../config/axios";
+import VkButton from "../../../general/vkbutton/vkbutton";
 
 type LoginFormData = {
   email: string;
@@ -36,8 +35,8 @@ function LoginForm() {
 
     console.log(formData);
 
-    axios
-      .get(Config.UsersBackend + "manage/2fa/info", {
+    api
+      .get("manage/2fa/info", {
         params: { email: email },
       })
       .then((response) => {
@@ -45,7 +44,7 @@ function LoginForm() {
           navigator("/login/2fa", { state: { ...formData } });
         }
 
-        return axios.post(Config.UsersBackend + "login", formData);
+        return api.post("login", formData);
       })
       .then((response) => {
         console.log(response);
@@ -53,7 +52,7 @@ function LoginForm() {
         localStorage.setItem("refreshToken", response.data.refreshToken);
         navigator("/");
       })
-      .catch((reason: AxiosError) => {
+      .catch((_) => {
         setErrorMessage("Неверные имя пользователя или пароль");
       });
   };
@@ -96,10 +95,7 @@ function LoginForm() {
         <div className={classes.line}></div>
       </div>
 
-      <div className={classes.authVK}>
-        <img src={VkLogo} />
-        <div>Войти через VK</div>
-      </div>
+      <VkButton></VkButton>
 
       <div className={classes.forgotPassword}>
         <Link to="/forgotPassword">Забыли пароль?</Link>

@@ -21,14 +21,7 @@ function Tasks({ courseId, blockId }) {
   useEffect(() => {
     setTaskPointsSequence(undefined);
     api
-      .get(
-        Config.CoursesBackend +
-          "courses/" +
-          courseId +
-          "/tasks/" +
-          blockId +
-          "/points"
-      )
+      .get("courses/" + courseId + "/tasks/" + blockId + "/points")
       .then((response) => {
         console.log(response.data);
         setTaskPointsSequence(response.data);
@@ -41,8 +34,8 @@ function Tasks({ courseId, blockId }) {
 
   useEffect(() => {
     setFound(undefined);
-    axios
-      .get(Config.CoursesBackend + "courses/" + courseId + "/tasks/" + blockId)
+    api
+      .get("courses/" + courseId + "/tasks/" + blockId)
       .then((response) => {
         console.log(response.data);
         setFound(true);
@@ -91,14 +84,9 @@ function Tasks({ courseId, blockId }) {
           console.log(taskInputs);
 
           setTaskPointsSequence(undefined);
-          axios
+          api
             .post(
-              Config.CoursesBackend +
-                "courses/" +
-                courseId +
-                "/tasks/" +
-                blockId +
-                "/check",
+              "courses/" + courseId + "/tasks/" + blockId + "/check",
               taskInputs
             )
             .then((response) => {
