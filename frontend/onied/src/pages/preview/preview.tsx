@@ -43,7 +43,7 @@ function Preview(): ReactNode {
   useEffect(() => {
     setFound(undefined);
     axios
-      .get(Config.CoursesBackend + "courses/" + id + "/get_preview/")
+      .get(Config.CoursesBackend + "courses/" + id)
       .then((response) => {
         console.log(response.data);
         setFound(true);
