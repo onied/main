@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Users.Dtos;
+using Users.Responses;
 
 namespace Users.Extensions.WebApplicationExtensions;
 
@@ -53,6 +54,23 @@ public static class MapIdentityApi
             await SendConfirmationEmailAsync(user, userManager, context, email);
             return TypedResults.Ok();
         }).WithOrder(-1);
+
+        endpoints.MapGet(
+            "manage/2fa/info",
+            async Task<Results<Ok<TwoFactorEnabledResponse>, NotFound>> (
+                string email,
+                UserManager<AppUser> userManager) =>
+        {
+
+            var user = await userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            var response = new TwoFactorEnabledResponse(user.TwoFactorEnabled);
+            return TypedResults.Ok(response);
+        });
 
         async Task SendConfirmationEmailAsync(AppUser user, UserManager<AppUser> userManager, HttpContext context,
             string email, bool isChange = false)

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Users;
@@ -9,6 +10,7 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
 builder.Services.AddCors();
 
 // Add services to the container.
