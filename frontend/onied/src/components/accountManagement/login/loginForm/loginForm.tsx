@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import Button from "../../../general/button/button";
 import InputForm from "../../../general/inputform/inputform";
@@ -16,10 +16,19 @@ type LoginFormData = {
 
 function LoginForm() {
   const navigator = useNavigate();
+  const location = useLocation();
 
   const [errorMessage, setErrorMessage] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+
+  useEffect(() => {
+    if (location.state != null) {
+      setErrorMessage(location.state.errorMessage);
+      setEmail(location.state.email);
+      setPassword(location.state.password);
+    }
+  }, []);
 
   const handleSubmit = () => {
     const formData: LoginFormData = {

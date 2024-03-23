@@ -63,8 +63,13 @@ function CardTwoFactor({ email, password }) {
           navigator("/");
         })
         .catch((error) => {
-          console.log(error);
-          setErrorMessage("Неверный код");
+          navigator("/login", {
+            state: {
+              email,
+              password,
+              errorMessage: "Неверные данные для входа",
+            },
+          });
         });
     } else {
       setErrorMessage("Неверный код");
