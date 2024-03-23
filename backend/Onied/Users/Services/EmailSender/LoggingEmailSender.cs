@@ -26,12 +26,14 @@ public class LoggingEmailSender(ILogger<LoggingEmailSender> logger, IConfigurati
     public Task SendPasswordResetCodeAsync(AppUser user, string email, string resetCode)
     {
         resetCode = HttpUtility.HtmlDecode(resetCode);
-        var frontUrl = new UriBuilder(configuration["FrontendPasswordResetUrl"]!);
-        frontUrl.Query = new QueryBuilder
+        var frontUrl = new UriBuilder(configuration.GetConnectionString("FrontendPasswordResetUrl")!)
         {
-            { "email", email },
-            { "code", resetCode }
-        }.ToString();
+            Query = new QueryBuilder
+            {
+                { "email", email },
+                { "code", resetCode }
+            }.ToString()
+        };
         logger.LogInformation("Password reset code link for {FirstName} {LastName} sent to {email}: {frontUrl}",
             user.FirstName, user.LastName, email, frontUrl.ToString());
         return Task.CompletedTask;
