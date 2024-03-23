@@ -23,11 +23,7 @@ function Summary({ courseId, blockId }) {
     setFound(undefined);
     axios
       .get(
-        Config.CoursesBackend +
-          "courses/" +
-          courseId +
-          "/get_summary_block/" +
-          blockId
+        Config.CoursesBackend + "courses/" + courseId + "/summary/" + blockId
       )
       .then((response) => {
         console.log(response.data);
