@@ -1,9 +1,9 @@
-.cardTwoFactor {
+.cardConfirmEmail {
     display: flex;
     flex-direction: column;
 }
 
-.twoFactorImg {
+.confirmEmailImg {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,7 +22,7 @@
     text-align: center;
 }
 
-.pleaseEnterCode {
+.pleaseEnter {
     color: #737373;
     font-size: 16pt;
     font-weight: 600;
