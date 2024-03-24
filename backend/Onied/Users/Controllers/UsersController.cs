@@ -209,7 +209,7 @@ public class UsersController : ControllerBase
         [FromServices] SignInManager<AppUser> signInManager)
     {
         var userManager = signInManager.UserManager;
-        if (ClaimsPrincipal.Current == null || await userManager.GetUserAsync(ClaimsPrincipal.Current) is not { } user)
+        if (await userManager.GetUserAsync(User) is not { } user)
             return TypedResults.NotFound();
 
         if (tfaRequest.Enable == true)
