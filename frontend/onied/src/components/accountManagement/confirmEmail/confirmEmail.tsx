@@ -28,8 +28,8 @@ function ConfirmEmailComponent() {
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken')
-    /*if (userId == null || code == null || !accessToken)
-      navigator("/login");*/
+    if (userId == null || code == null || !accessToken)
+      navigator("/login");
 
     api.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
     api
