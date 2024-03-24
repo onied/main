@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Courses.Models;
 
-public class Author
+public class User
 {
-    public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public Guid Id { get; set; }
 
     [MinLength(1)]
     [MaxLength(50)]

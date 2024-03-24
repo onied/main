@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using Courses;
 using Courses.Models;
+using Courses.Models.Users;
 using Task = System.Threading.Tasks.Task;
 
 namespace Tests.Courses.UnitTests.ControllerTests;
@@ -19,7 +20,6 @@ public class TestDataGenerator
     public IEnumerable<Course> GenerateTestCourses()
     {
         var sequenceCourse = 1;
-        var sequenceAuthor = 1;
         var sequenceCategory = 1;
         var sequenceModule = 1;
         var sequenceBlock = 1;
@@ -35,7 +35,7 @@ public class TestDataGenerator
         foreach (var course in courses)
         {
             var author = _fixture.Build<Author>()
-                .With(author1 => author1.Id, () => sequenceAuthor++)
+                .With(author1 => author1.Id, Guid.NewGuid)
                 .Do(author1 => author1.Courses.Add(course))
                 .Create();
             course.Author = author;

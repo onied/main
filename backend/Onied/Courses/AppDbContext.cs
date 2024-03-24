@@ -1,4 +1,5 @@
 using Courses.Models;
+using Courses.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Task = Courses.Models.Task;
 
@@ -10,6 +11,7 @@ public class AppDbContext : DbContext
     {
     }
 
+    public DbSet<User> Users { get; set; } = null!;
     public DbSet<Author> Authors { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
@@ -34,9 +36,19 @@ public class AppDbContext : DbContext
             .HasValue<VideoBlock>(BlockType.VideoBlock)
             .HasValue<TasksBlock>(BlockType.TasksBlock);
 
+        modelBuilder.Entity<User>()
+            .HasMany<Course>(u => u.Courses)
+            .WithMany();
+
+        modelBuilder.Entity<Author>()
+            .HasMany<Course>(a => a.TeachingCourses)
+            .WithOne(c => c.Author)
+            .HasForeignKey(c => c.AuthorId);
+
+        var authorId = Guid.NewGuid();
         modelBuilder.Entity<Author>().HasData(new Author
         {
-            Id = 1,
+            Id = authorId,
             AvatarHref =
                 "https://gas-kvas.com/uploads/posts/2023-02/1676538735_gas-kvas-com-p-vasilii-terkin-detskii-risunok-49.jpg",
             FirstName = "Василий",
@@ -50,7 +62,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Course>().HasData(new Course
         {
             Id = 1,
-            AuthorId = 1,
+            AuthorId = authorId,
             CategoryId = 1,
             Title = "Название курса. Как я встретил вашу маму. Осуждаю.",
             PictureHref = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Kitten_sleeping.jpg",
