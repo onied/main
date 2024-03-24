@@ -4,6 +4,7 @@ class LoginService {
   static interval: NodeJS.Timeout | null = null;
 
   static registerAutomaticRefresh() {
+    LoginService.unregisterAutomaticRefresh();
     LoginService.interval = setInterval(LoginService.refreshTokens, 600000);
     // refresh tokens every 10 minutes
   }
