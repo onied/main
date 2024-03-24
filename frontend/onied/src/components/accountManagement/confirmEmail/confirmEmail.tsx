@@ -29,9 +29,14 @@ function ConfirmEmailComponent() {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
 
-    if (userId == null || code == null) navigator("/login");
-    if (!LoginService.checkLoggedIn())
+    if (userId == null || code == null) {
+      navigator("/login");
+      return;
+    }
+    if (!LoginService.checkLoggedIn()) {
       navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
+      return;
+    }
 
     api
       .get("confirmEmail", {
@@ -49,7 +54,7 @@ function ConfirmEmailComponent() {
           })
           .catch((reason) => {
             if (reason.response.status === 404) {
-              navigator("/login");
+              navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
             }
           });
       })
