@@ -43,9 +43,7 @@ function ConfirmEmailComponent() {
 
 
     api
-      .post("manage/2fa", {}, {
-        headers: {'Authorization': 'Bearer ' + accessToken}
-      })
+      .post("manage/2fa", {})
       .then((response) => {
         setSharedKey(response.data.sharedKey);
       })
