@@ -3,10 +3,10 @@ import Card from "../../../general/card/card.jsx";
 import TwoFactorImg from "../../../../assets/twoFactor.svg";
 import Button from "../../../general/button/button.jsx";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import config from "../../../../config/config.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import SixDigitsInput from "../../sixDigitsInput/sixDigitsInput";
+import api from "../../../../config/axios";
+import LoginService from "../../../../services/loginService";
 
 function CardTwoFactor() {
   const navigator = useNavigate();
@@ -32,16 +32,19 @@ function CardTwoFactor() {
 
   const sendCode = () => {
     if (digits !== "") {
-      axios
-        .post(config.UsersBackend + "login", {
+      api
+        .post("login", {
           email: email,
           password: password,
           twoFactorCode: digits,
         })
         .then((response) => {
           console.log(response);
-          localStorage.setItem("accessToken", response.data.accessToken);
-          localStorage.setItem("refreshToken", response.data.refreshToken);
+          LoginService.storeTokens(
+            response.data.accessToken,
+            response.data.expiresIn,
+            response.data.refreshToken
+          );
           navigator("/");
         })
         .catch((reason) => {
@@ -49,7 +52,7 @@ function CardTwoFactor() {
             reason.response == null || reason.response.status >= 500
               ? "Ошибка сервера"
               : reason.response.data.detail == "LockedOut"
-                ? "Пользователь не активирован. Подтвердите почту"
+                ? "Слишком много неверных попыток входа, подождите несколько минут и попробуйте еще раз."
                 : "Неверные данные для входа";
 
           navigator("/login", {

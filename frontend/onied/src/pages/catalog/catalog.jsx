@@ -2,8 +2,7 @@ import CourseCardsContainer from "../../components/catalog/courseCardsContainer.
 import CatalogHeader from "../../components/catalog/catalogHeader/catalogHeader.jsx";
 import CatalogNavigation from "../../components/catalog/catalogNavigation/catalogNavigation.jsx";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import Config from "../../config/config.js";
+import api from "../../config/axios.ts";
 
 function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,8 +11,8 @@ function Catalog() {
 
   useEffect(() => {
     setCoursesList(undefined);
-    axios
-      .get(Config.CoursesBackend + "catalog/?page=" + currentPage)
+    api
+      .get("catalog/?page=" + currentPage)
       .then((response) => {
         console.log(response.data);
         setCoursesList(response.data.elements);

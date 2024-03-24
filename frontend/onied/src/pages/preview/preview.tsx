@@ -7,10 +7,9 @@ import PreviewPicture from "../../components/preview/previewPicture/previewPictu
 import CourseProgram from "../../components/preview/courseProgram/courseProgram";
 import Button from "../../components/general/button/button";
 import AuthorBlock from "../../components/preview/authorBlock/authorBlock";
-import axios from "axios";
-import Config from "../../config/config";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BeatLoader from "react-spinners/BeatLoader";
+import api from "../../config/axios";
 
 type PreviewDto = {
   title: string;
@@ -42,8 +41,8 @@ function Preview(): ReactNode {
 
   useEffect(() => {
     setFound(undefined);
-    axios
-      .get(Config.CoursesBackend + "courses/" + id)
+    api
+      .get("courses/" + id)
       .then((response) => {
         console.log(response.data);
         setFound(true);
@@ -84,7 +83,13 @@ function Preview(): ReactNode {
       <div className={classes.previewRightBlock}>
         <PreviewPicture href={dto.pictureHref} isArchived={dto.isArchived} />
         <h2 className={classes.price}>{dto.price}</h2>
-        <Button style={{ width: "100%", fontSize: "20pt" }}>купить</Button>
+        <Link to="learn">
+          <Button
+            style={{ width: "100%", fontSize: "20pt", textDecorations: "none" }}
+          >
+            купить
+          </Button>
+        </Link>
         <AuthorBlock
           authorName={dto.courseAuthor.name}
           authorAvatarHref={dto.courseAuthor.avatarHref}

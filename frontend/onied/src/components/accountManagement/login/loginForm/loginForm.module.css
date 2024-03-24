@@ -33,15 +33,6 @@
   border-top: 1px solid #dbdbdb;
 }
 
-.authVK {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  white-space: nowrap;
-  gap: 10px;
-  font-size: 14pt;
-}
-
 .forgotPassword {
   display: flex;
   justify-content: center;

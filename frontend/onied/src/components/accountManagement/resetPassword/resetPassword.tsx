@@ -2,10 +2,9 @@ import { useState } from "react";
 import InputForm from "../../general/inputform/inputform";
 import classes from "./resetPassword.module.css";
 import Button from "../../general/button/button";
-import axios from "axios";
-import Config from "../../../config/config";
 import ResetPasswordImg from "../../../assets/resetPassword.svg";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import api from "../../../config/axios";
 
 type ResetPasswordFormData = {
   email: string;
@@ -38,8 +37,8 @@ function ResetPasswordComponent() {
 
     console.log(formData);
     setError(undefined);
-    axios
-      .post(Config.UsersBackend + "resetPassword", formData)
+    api
+      .post("resetPassword", formData)
       .then((_) => {
         navigate("/login");
       })

@@ -2,9 +2,8 @@ import Button from "../../general/button/button";
 import GeneralTask from "./generalTask";
 import classes from "./tasks.module.css";
 import BeatLoader from "react-spinners/BeatLoader";
-import axios from "axios";
-import Config from "../../../config/config";
 import { useEffect, useState } from "react";
+import api from "../../../config/axios";
 
 function Tasks({ courseId, blockId }) {
   const [tasks, setTasks] = useState();
@@ -21,15 +20,8 @@ function Tasks({ courseId, blockId }) {
 
   useEffect(() => {
     setTaskPointsSequence(undefined);
-    axios
-      .get(
-        Config.CoursesBackend +
-          "courses/" +
-          courseId +
-          "/tasks/" +
-          blockId +
-          "/points"
-      )
+    api
+      .get("courses/" + courseId + "/tasks/" + blockId + "/points")
       .then((response) => {
         console.log(response.data);
         setTaskPointsSequence(response.data);
@@ -37,14 +29,13 @@ function Tasks({ courseId, blockId }) {
       .catch((error) => {
         console.log(error);
         setTaskPointsSequence(null);
-        ``;
       });
   }, [courseId, blockId]);
 
   useEffect(() => {
     setFound(undefined);
-    axios
-      .get(Config.CoursesBackend + "courses/" + courseId + "/tasks/" + blockId)
+    api
+      .get("courses/" + courseId + "/tasks/" + blockId)
       .then((response) => {
         console.log(response.data);
         setFound(true);
@@ -93,14 +84,9 @@ function Tasks({ courseId, blockId }) {
           console.log(taskInputs);
 
           setTaskPointsSequence(undefined);
-          axios
+          api
             .post(
-              Config.CoursesBackend +
-                "courses/" +
-                courseId +
-                "/tasks/" +
-                blockId +
-                "/check",
+              "courses/" + courseId + "/tasks/" + blockId + "/check",
               taskInputs
             )
             .then((response) => {

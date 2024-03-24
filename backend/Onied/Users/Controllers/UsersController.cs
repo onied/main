@@ -209,7 +209,7 @@ public class UsersController : ControllerBase
         [FromServices] SignInManager<AppUser> signInManager)
     {
         var userManager = signInManager.UserManager;
-        if (ClaimsPrincipal.Current == null || await userManager.GetUserAsync(ClaimsPrincipal.Current) is not { } user)
+        if (await userManager.GetUserAsync(User) is not { } user)
             return TypedResults.NotFound();
 
         if (tfaRequest.Enable == true)
@@ -271,10 +271,7 @@ public class UsersController : ControllerBase
         [FromServices] UserManager<AppUser> userManager)
     {
         var user = await userManager.FindByEmailAsync(email);
-        if (user is null)
-        {
-            return TypedResults.NotFound();
-        }
+        if (user is null) return TypedResults.NotFound();
 
         var response = new TwoFactorEnabledResponse(user.TwoFactorEnabled);
         return TypedResults.Ok(response);
@@ -285,7 +282,7 @@ public class UsersController : ControllerBase
     public async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> GetInfo
         ([FromServices] UserManager<AppUser> userManager)
     {
-        if (ClaimsPrincipal.Current == null || await userManager.GetUserAsync(ClaimsPrincipal.Current) is not { } user)
+        if (await userManager.GetUserAsync(User) is not { } user)
             return TypedResults.NotFound();
 
         return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
@@ -297,7 +294,7 @@ public class UsersController : ControllerBase
     ([FromBody] InfoRequest infoRequest,
         [FromServices] UserManager<AppUser> userManager)
     {
-        if (ClaimsPrincipal.Current == null || await userManager.GetUserAsync(ClaimsPrincipal.Current) is not { } user)
+        if (await userManager.GetUserAsync(User) is not { } user)
             return TypedResults.NotFound();
 
         if (!string.IsNullOrEmpty(infoRequest.NewEmail) && !EmailAddressAttribute.IsValid(infoRequest.NewEmail))
