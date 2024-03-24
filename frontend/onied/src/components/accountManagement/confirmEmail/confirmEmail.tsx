@@ -17,17 +17,20 @@ function ConfirmEmailComponent() {
   const [digits, setDigits] = useState("");
   const [sharedKey, setSharedKey] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [uriForQr, setUriForQr] = useState("");
 
   const [showKeyText, setShowKeyText] = useState(true);
   const showKey = () => {
     setShowKeyText(!showKeyText);
   };
 
-  const userId = searchParams.get("userid");
-  const code = searchParams.get("code");
+
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken')
+    const userId = searchParams.get("userId");
+    const code = searchParams.get("code");
+    const accessToken = localStorage.getItem('access_token')
+
     if (userId == null || code == null || !accessToken)
       navigator("/login");
 
@@ -46,6 +49,7 @@ function ConfirmEmailComponent() {
       .post("manage/2fa", {})
       .then((response) => {
         setSharedKey(response.data.sharedKey);
+        setUriForQr(`otpauth://totp/Onied:${123}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`)
       })
       .catch()
   }, [])
@@ -61,6 +65,7 @@ function ConfirmEmailComponent() {
         })
         .then((response) => {
           console.log(response)
+          navigator("/")
         })
         .catch((reason) => {
           const message =
@@ -90,7 +95,7 @@ function ConfirmEmailComponent() {
                 отсканируйте QR-код в приложении аутентификации.
               </div>
               <div className={classes.qrCode}>
-                <QRCode value={sharedKey}></QRCode>
+                <QRCode value={uriForQr}></QRCode>
               </div>
               <div className={classes.pleaseEnter}>
                 или введите ключ вручную: <br />
