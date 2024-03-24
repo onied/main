@@ -18,6 +18,7 @@ function ConfirmEmailComponent() {
   const [sharedKey, setSharedKey] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [uriForQr, setUriForQr] = useState("");
+  const [isValidLink, setIsValidLink] = useState(true);
 
   const [showKeyText, setShowKeyText] = useState(true);
   const showKey = () => {
@@ -40,18 +41,25 @@ function ConfirmEmailComponent() {
       })
       .then((response) => {
         console.log(response);
+        api
+          .post("manage/2fa", {})
+          .then((response) => {
+            setSharedKey(response.data.sharedKey);
+            setUriForQr(
+              `otpauth://totp/Onied:${123}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`
+            );
+          })
+          .catch((reason) => {
+            if (reason.response.status === 404) {
+              navigator("/login");
+            }
+          });
       })
-      .catch();
-
-    api
-      .post("manage/2fa", {})
-      .then((response) => {
-        setSharedKey(response.data.sharedKey);
-        setUriForQr(
-          `otpauth://totp/Onied:${123}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`
-        );
-      })
-      .catch();
+      .catch((reason) => {
+        if (reason.response.status === 401) {
+          setIsValidLink(false);
+        }
+      });
   }, []);
 
   const sendCode = () => {
@@ -79,6 +87,17 @@ function ConfirmEmailComponent() {
       setErrorMessage("Поле не заполнено");
     }
   };
+
+  if (!isValidLink) {
+    return (
+      <>
+        <div className={classes.invalidLink}>
+          Cрок действия ссылки истек. Запросите новую ссылку для подтверждения
+          почты.
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
