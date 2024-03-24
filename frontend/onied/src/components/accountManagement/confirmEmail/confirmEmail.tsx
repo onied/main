@@ -5,7 +5,7 @@ import Button from "../../general/button/button";
 import Card from "../../general/card/card";
 import {useEffect, useState} from "react";
 import {Navigate, useNavigate, useSearchParams} from "react-router-dom";
-import axios from "axios";
+import api from "../../../config/axios";
 import config from "../../../config/config";
 import QRCode from "react-qr-code";
 
@@ -29,11 +29,11 @@ function ConfirmEmailComponent() {
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken')
     /*if (userId == null || code == null || !accessToken)
-      navigator("/");*/
+      navigator("/login");*/
 
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
-    axios
-      .get(config.UsersBackend + "confirmEmail", {
+    api.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
+    api
+      .get("confirmEmail", {
         params: {userId: userId, code: code},
       })
       .then((response) => {
@@ -42,8 +42,8 @@ function ConfirmEmailComponent() {
       .catch()
 
 
-    axios
-      .post(config.UsersBackend + "manage/2fa", {}, {
+    api
+      .post("manage/2fa", {}, {
         headers: {'Authorization': 'Bearer ' + accessToken}
       })
       .then((response) => {
@@ -56,8 +56,8 @@ function ConfirmEmailComponent() {
     setErrorMessage("")
 
     if (digits !== "") {
-      axios
-        .post(config.UsersBackend + "manage/2fa", {
+      api
+        .post("manage/2fa", {
           enable: true,
           twoFactorCode: digits,
         })
