@@ -14,6 +14,7 @@ import LoginService from "./services/loginService";
 import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 
 function App() {
+  LoginService.initialize();
   LoginService.registerAutomaticRefresh();
   return (
     <>
