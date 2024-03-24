@@ -61,9 +61,11 @@ class LoginService {
           response.data.expiresIn,
           response.data.refreshToken
         );
+        console.log("Tokens updated");
       })
       .catch((_) => {
         LoginService.clearTokens();
+        console.log("Tokens expired");
       });
   }
 }
