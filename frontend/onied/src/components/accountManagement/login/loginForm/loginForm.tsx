@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 import Button from "../../../general/button/button";
 import InputForm from "../../../general/inputform/inputform";
@@ -15,6 +20,7 @@ type LoginFormData = {
 };
 
 function LoginForm() {
+  const [searchParams, _] = useSearchParams();
   const navigator = useNavigate();
   const location = useLocation();
 
@@ -54,7 +60,9 @@ function LoginForm() {
           response.data.expiresIn,
           response.data.refreshToken
         );
-        navigator("/");
+        const redirect = searchParams.get("redirect");
+        if (redirect) navigator(decodeURIComponent(redirect));
+        else navigator("/");
       })
       .catch((_) => {
         setErrorMessage("Неверные имя пользователя или пароль");

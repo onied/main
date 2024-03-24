@@ -10,6 +10,7 @@ import QRCode from "react-qr-code";
 import LoginService from "../../../services/loginService";
 
 function ConfirmEmailComponent() {
+  const currentUrl = window.location.pathname + window.location.search;
   const navigator = useNavigate();
   const [searchParams, _] = useSearchParams();
 
@@ -27,8 +28,11 @@ function ConfirmEmailComponent() {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
 
-    if (userId == null || code == null || !LoginService.checkLoggedIn())
-      navigator("/login");
+    console.log(api.defaults.headers.common.Authorization);
+
+    if (userId == null || code == null) navigator("/login");
+    if (!LoginService.checkLoggedIn())
+      navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
 
     api
       .get("confirmEmail", {
