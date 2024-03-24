@@ -10,6 +10,9 @@ public class LoggingEmailSender(ILogger<LoggingEmailSender> logger, IConfigurati
     public Task SendConfirmationLinkAsync(AppUser user, string email, string confirmationLink)
     {
         confirmationLink = HttpUtility.HtmlDecode(confirmationLink);
+        var url = new UriBuilder(configuration.GetConnectionString("FrontendConfirmEmailUrl")!);
+        url.Query = new Uri(confirmationLink).Query;
+        confirmationLink = url.ToString();
         logger.LogInformation("Confirmation link for {FirstName} {LastName} sent to {email}: {confirmationLink}",
             user.FirstName, user.LastName, email, confirmationLink);
         return Task.CompletedTask;
