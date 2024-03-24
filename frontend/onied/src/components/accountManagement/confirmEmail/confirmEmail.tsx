@@ -8,6 +8,7 @@ import {Navigate, useNavigate, useSearchParams} from "react-router-dom";
 import api from "../../../config/axios";
 import config from "../../../config/config";
 import QRCode from "react-qr-code";
+import LoginService from "../../../services/loginService";
 
 function ConfirmEmailComponent() {
 
@@ -29,12 +30,10 @@ function ConfirmEmailComponent() {
   useEffect(() => {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
-    const accessToken = localStorage.getItem('access_token')
 
-    if (userId == null || code == null || !accessToken)
+    if (userId == null || code == null || !LoginService.checkLoggedIn())
       navigator("/login");
 
-    api.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
     api
       .get("confirmEmail", {
         params: {userId: userId, code: code},
