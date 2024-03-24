@@ -11,8 +11,10 @@ import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
 import ResetPassword from "./pages/accountManagement/resetPassword/resetPassword";
 import OauthRedirect from "./pages/oauthRedirect/oauthRedirect";
 import LoginService from "./services/loginService";
+import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 
 function App() {
+  LoginService.initialize();
   LoginService.registerAutomaticRefresh();
   return (
     <>
@@ -28,6 +30,7 @@ function App() {
           <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
           <Route path="/resetPassword" element={<ResetPassword />}></Route>
           <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
+          <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
         </Routes>
       </main>
     </>

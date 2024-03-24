@@ -9,6 +9,12 @@ class LoginService {
     // refresh tokens every 10 minutes
   }
 
+  static initialize() {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken)
+      api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+  }
+
   static unregisterAutomaticRefresh() {
     if (LoginService.interval == null) return;
     clearInterval(LoginService.interval);
@@ -24,7 +30,7 @@ class LoginService {
     var date = new Date();
     date.setSeconds(date.getSeconds() + expiresIn);
     localStorage.setItem("expires", date.toString());
-    api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   }
 
   static checkLoggedIn(): Boolean {

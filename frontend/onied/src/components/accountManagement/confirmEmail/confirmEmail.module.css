@@ -1,0 +1,64 @@
+.cardConfirmEmail {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirmEmailImg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.textInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 24pt;
+  text-align: center;
+}
+
+.pleaseEnter {
+  color: #737373;
+  font-size: 16pt;
+  font-weight: 600;
+  text-align: center;
+}
+
+.inputDigits {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 10px 0px;
+}
+
+.errorMessage {
+  color: #ed4956;
+  margin: auto;
+  font-size: 20pt;
+  font-weight: 600;
+}
+
+.qrCode {
+  margin: auto;
+}
+
+.showKey {
+  background: none;
+  border: none;
+  color: #0077ff;
+  font-size: 20pt;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.invalidLink {
+  font-size: 32pt;
+  font-weight: 600;
+  text-align: center;
+}
