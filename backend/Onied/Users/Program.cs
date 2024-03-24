@@ -34,8 +34,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 // We need this for Ocelot to work correctly;
 // Otherwise the middleware chain is in the wrong order.
 #pragma warning disable ASP0014
