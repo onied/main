@@ -2,12 +2,11 @@ import { Link } from "react-router-dom";
 import classes from "./header.module.css";
 import Logo from "../../assets/logo.svg";
 import Avatar from "react-avatar";
-import { useState } from "react";
+import { useProfile } from "../../hooks/profile/useProfile";
+import { getProfileName } from "../../hooks/profile/profile";
 
 function Header() {
-  const [profileInfo, setProfileInfo] = useState({
-    name: "Иван Иванов",
-  });
+  const profile = useProfile();
   return (
     <header className={classes.header}>
       <div className={classes.leftWrapper}>
@@ -24,14 +23,21 @@ function Header() {
         </div>
       </div>
       <div className={classes.rightWrapper}>
-        <Link to="/profile" className={classes.profileContainer}>
-          <p className={classes.profileName}>{profileInfo.name}</p>
-          <Avatar
-            name={profileInfo.name}
-            size="50"
-            className={classes.profileAvatar}
-          ></Avatar>
-        </Link>
+        {profile === null ? (
+          <Link to="/login" className={classes.profileContainer}>
+            Войти
+          </Link>
+        ) : (
+          <Link to="/profile" className={classes.profileContainer}>
+            <p className={classes.profileName}>{getProfileName(profile)}</p>
+            <Avatar
+              name={getProfileName(profile)}
+              size="50"
+              className={classes.profileAvatar}
+              src={profile.avatarHref ? profile.avatarHref : undefined}
+            ></Avatar>
+          </Link>
+        )}
       </div>
     </header>
   );
