@@ -28,8 +28,6 @@ function ConfirmEmailComponent() {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
 
-    console.log(api.defaults.headers.common.Authorization);
-
     if (userId == null || code == null) navigator("/login");
     if (!LoginService.checkLoggedIn())
       navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
