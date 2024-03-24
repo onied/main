@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
 .header {
   --background-color: #282828;
   --shadow: 0px 4px 4px 0px #00000040;
@@ -9,4 +11,87 @@
   height: var(--header-height);
   background-color: var(--background-color);
   box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.leftWrapper {
+  display: flex;
+}
+
+.logoContainer {
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
+  color: white;
+  padding: calc(var(--header-height) * 0.1);
+  align-items: center;
+  gap: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+.logoContainer:hover {
+  background-color: #00000040;
+}
+
+.logoImage {
+  background-color: #424242cc;
+  overflow: hidden;
+  border-radius: 1rem;
+  height: calc(var(--header-height) * 0.8);
+  width: calc(var(--header-height) * 0.8);
+}
+
+.logoTitle {
+  font-family: "Quicksand", Helvetica;
+  font-weight: 300;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14pt;
+  gap: 1rem;
+}
+
+.link {
+  color: #dbdbdb;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  height: 100%;
+}
+
+.link:hover {
+  background-color: #00000040;
+}
+
+.rightWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.profileContainer {
+  padding: calc(var(--header-height) * 0.1) 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+.profileAvatar {
+  border-radius: 0.5rem;
+}
+
+.profileContainer:hover {
+  background-color: #00000040;
 }
