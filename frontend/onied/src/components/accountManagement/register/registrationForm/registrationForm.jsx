@@ -2,11 +2,10 @@ import InputForm from "../../../general/inputform/inputform.jsx";
 import Radio from "../../../general/radio/radio.jsx";
 import Button from "../../../general/button/button.jsx";
 import classes from "./registrationForm.module.css";
-import axios from "axios";
-import Config from "../../../../config/config.js";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleErrors, validateInput } from "./validation.js";
+import api from "../../../../config/axios.ts";
 
 function RegistrationForm() {
   const navigator = useNavigate();
@@ -69,8 +68,8 @@ function RegistrationForm() {
       let email = form.email.value;
       let password = form.password.value;
 
-      axios
-        .post(Config.UsersBackend + "register", {
+      api
+        .post("register", {
           firstName,
           lastName,
           gender,
@@ -113,7 +112,7 @@ function RegistrationForm() {
           </div>
           <div className={classes.variants}>
             {Object.keys(genders).map((key) => (
-              <div className={classes.gender}>
+              <div className={classes.gender} key={key}>
                 <label className={classes.labelGenders}>{key}</label>
                 <Radio
                   id={genders[key]}

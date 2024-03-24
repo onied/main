@@ -1,5 +1,5 @@
+import VkButton from "../../../general/vkbutton/vkbutton";
 import classes from "./siteHeader.module.css";
-import VkLogo from "../../../../assets/vk.svg";
 
 function SiteHeader() {
   return (
@@ -9,10 +9,7 @@ function SiteHeader() {
         <div className={classes.textInfo}>
           Зарегистрируйтесь и получите доступ <br />к множеству онлайн курсов
         </div>
-        <div className={classes.authVK}>
-          <img src={VkLogo} />
-          <div>Войти через VK</div>
-        </div>
+        <VkButton></VkButton>
       </div>
       <div className={classes.or}>
         <div className={classes.line}></div>
