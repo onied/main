@@ -1,17 +1,15 @@
-import classes from "./confirmEmail.module.css"
+import classes from "./confirmEmail.module.css";
 import ConfirmEmailImg from "../../../assets/confirmEmail.svg";
 import SixDigitsInput from "../sixDigitsInput/sixDigitsInput";
 import Button from "../../general/button/button";
 import Card from "../../general/card/card";
-import {useEffect, useState} from "react";
-import {Navigate, useNavigate, useSearchParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../../config/axios";
-import config from "../../../config/config";
 import QRCode from "react-qr-code";
 import LoginService from "../../../services/loginService";
 
 function ConfirmEmailComponent() {
-
   const navigator = useNavigate();
   const [searchParams, _] = useSearchParams();
 
@@ -25,8 +23,6 @@ function ConfirmEmailComponent() {
     setShowKeyText(!showKeyText);
   };
 
-
-
   useEffect(() => {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
@@ -36,25 +32,26 @@ function ConfirmEmailComponent() {
 
     api
       .get("confirmEmail", {
-        params: {userId: userId, code: code},
+        params: { userId: userId, code: code },
       })
       .then((response) => {
         console.log(response);
       })
-      .catch()
-
+      .catch();
 
     api
       .post("manage/2fa", {})
       .then((response) => {
         setSharedKey(response.data.sharedKey);
-        setUriForQr(`otpauth://totp/Onied:${123}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`)
+        setUriForQr(
+          `otpauth://totp/Onied:${123}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`
+        );
       })
-      .catch()
-  }, [])
+      .catch();
+  }, []);
 
   const sendCode = () => {
-    setErrorMessage("")
+    setErrorMessage("");
 
     if (digits !== "") {
       api
@@ -63,15 +60,16 @@ function ConfirmEmailComponent() {
           twoFactorCode: digits,
         })
         .then((response) => {
-          console.log(response)
-          navigator("/")
+          console.log(response);
+          navigator("/");
         })
         .catch((reason) => {
           const message =
             reason.response == null || reason.response.status >= 500
-            ? "Ошибка сервера" : "Вы ввели неверный код";
-          setErrorMessage(message)
-          console.log(reason)
+              ? "Ошибка сервера"
+              : "Вы ввели неверный код";
+          setErrorMessage(message);
+          console.log(reason);
         });
     } else {
       setErrorMessage("Поле не заполнено");
@@ -79,44 +77,42 @@ function ConfirmEmailComponent() {
   };
 
   return (
-      <>
-        <div>
-          <Card className={classes.cardConfirmEmail}>
-            <div className={classes.confirmEmailImg}>
-              <img src={ConfirmEmailImg} />
+    <>
+      <div>
+        <Card className={classes.cardConfirmEmail}>
+          <div className={classes.confirmEmailImg}>
+            <img src={ConfirmEmailImg} />
+          </div>
+          <div className={classes.textInfo}>
+            <div className={classes.title}>Почта была успешно подтверждена</div>
+            <div className={classes.pleaseEnter}>
+              Onied использует двухфакторную аутентификацию по умолчанию. <br />
+              отсканируйте QR-код в приложении аутентификации.
             </div>
-            <div className={classes.textInfo}>
-              <div className={classes.title}>
-                Почта была успешно подтверждена
-              </div>
-              <div className={classes.pleaseEnter}>
-                Onied использует двухфакторную аутентификацию по умолчанию. <br/>
-                отсканируйте QR-код в приложении аутентификации.
-              </div>
-              <div className={classes.qrCode}>
-                <QRCode value={uriForQr}></QRCode>
-              </div>
-              <div className={classes.pleaseEnter}>
-                или введите ключ вручную: <br />
-                <button className={classes.showKey} onClick={showKey}>
-                  {showKeyText ? 'показать ключ' : sharedKey}
-                </button>
-              </div>
-              <div className={classes.pleaseEnter}>
-                Для проверки, введите код из приложения:
-              </div>
-              <SixDigitsInput onChange={setDigits}/>
-              {errorMessage && (
-                <span className={classes.errorMessage}>{errorMessage}</span>
-              )}
-              <Button style={{margin: "auto", width: "60%"}} onClick={sendCode}>
-                подтвердить
-              </Button>
+            <div className={classes.qrCode}>
+              <QRCode value={uriForQr}></QRCode>
             </div>
-          </Card>
-        </div>
-      </>
-  )
+            <div className={classes.pleaseEnter}>
+              или введите ключ вручную: <br />
+              <a className={classes.showKey} onClick={showKey}>
+                {showKeyText ? "показать ключ" : sharedKey}
+              </a>
+            </div>
+            <div className={classes.pleaseEnter}>
+              Для проверки, введите код из приложения:
+            </div>
+            <SixDigitsInput onChange={setDigits} />
+            {errorMessage && (
+              <span className={classes.errorMessage}>{errorMessage}</span>
+            )}
+            <Button style={{ margin: "auto", width: "60%" }} onClick={sendCode}>
+              подтвердить
+            </Button>
+          </div>
+        </Card>
+      </div>
+    </>
+  );
 }
 
 export default ConfirmEmailComponent;
