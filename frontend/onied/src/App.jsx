@@ -9,6 +9,7 @@ import Register from "./pages/accountManagement/register/register.jsx";
 import Login from "./pages/accountManagement/login/login";
 import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
 import ResetPassword from "./pages/accountManagement/resetPassword/resetPassword";
+import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login/2fa" element={<TwoFactor />}></Route>
           <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
           <Route path="/resetPassword" element={<ResetPassword />}></Route>
+          <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
         </Routes>
       </main>
     </>
