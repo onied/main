@@ -14,6 +14,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     public async Task<User?> GetUserWithCoursesAsync(Guid id)
         => await dbContext.Users
             .Include(u => u.Courses)
+            .ThenInclude(c => c.Author)
             .FirstOrDefaultAsync(u => u.Id == id);
 
     public async Task SaveUserAsync(User user)
