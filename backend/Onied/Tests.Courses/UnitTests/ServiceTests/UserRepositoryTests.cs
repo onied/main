@@ -45,7 +45,7 @@ public class UserRepositoryTests
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(_existingUserId, actual.Id);
+        Assert.Equivalent(_existingUserId, actual.Id);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class UserRepositoryTests
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(_courses, actual.Courses);
+        Assert.Equivalent(_courses, actual.Courses);
     }
 
     [Fact]

@@ -1,6 +1,9 @@
 using AutoFixture;
+using AutoMapper;
 using Courses.Controllers;
+using Courses.Dtos;
 using Courses.Models;
+using Courses.Profiles;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -11,12 +14,13 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 public class AccountsControllerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Mock<IUserRepository> _userRepository = new();
     private readonly AccountsController _controller;
 
     public AccountsControllerTests()
     {
-        _controller = new AccountsController(_userRepository.Object);
+        _controller = new AccountsController(_userRepository.Object, _mapper);
     }
 
     [Fact]
@@ -47,8 +51,8 @@ public class AccountsControllerTests
         var result = await _controller.GetCourses(user.Id);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<List<Course>>>(result);
-        var actualCourses = Assert.IsAssignableFrom<List<Course>>(
+        var actionResult = Assert.IsType<ActionResult<List<CourseCardDto>>>(result);
+        var actualCourses = Assert.IsAssignableFrom<List<CourseCardDto>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
         Assert.Empty(actualCourses);
@@ -71,6 +75,7 @@ public class AccountsControllerTests
         foreach (var c in courses)
             user.Courses.Add(c);
 
+        var expectedCourses = _mapper.Map<List<CourseCardDto>>(courses);
 
         _userRepository.Setup(a => a.GetUserWithCoursesAsync(user.Id))
             .Returns(Task.FromResult(user)!);
@@ -79,10 +84,10 @@ public class AccountsControllerTests
         var result = await _controller.GetCourses(user.Id);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<List<Course>>>(result);
-        var actualCourses = Assert.IsAssignableFrom<List<Course>>(
+        var actionResult = Assert.IsType<ActionResult<List<CourseCardDto>>>(result);
+        var actualCourses = Assert.IsAssignableFrom<List<CourseCardDto>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
-        Assert.Equal(courses, actualCourses);
+        Assert.Equivalent(expectedCourses, actualCourses);
     }
 }
