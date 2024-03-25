@@ -1,7 +1,6 @@
 using AutoFixture;
 using Courses;
 using Courses.Models;
-using Courses.Models.Users;
 using Courses.Services;
 using Task = System.Threading.Tasks.Task;
 
@@ -80,11 +79,11 @@ public class UserRepositoryTests
     {
         _notExistingUserId = Guid.NewGuid();
 
-        var author = _fixture.Build<Author>()
+        var author = _fixture.Build<User>()
             .With(author1 => author1.Id, Guid.NewGuid)
             .Create();
 
-        _context.Authors.Add(author);
+        _context.Users.Add(author);
 
         _courses = Enumerable.Range(1, CourseSequenceLength)
                 .Select(i => _fixture.Build<Course>()

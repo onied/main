@@ -1,5 +1,4 @@
 using Courses.Models;
-using Courses.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Task = Courses.Models.Task;
 
@@ -12,7 +11,6 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Author> Authors { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<Module> Modules { get; set; } = null!;
@@ -40,13 +38,13 @@ public class AppDbContext : DbContext
             .HasMany<Course>(u => u.Courses)
             .WithMany();
 
-        modelBuilder.Entity<Author>()
+        modelBuilder.Entity<User>()
             .HasMany<Course>(a => a.TeachingCourses)
             .WithOne(c => c.Author)
             .HasForeignKey(c => c.AuthorId);
 
         var authorId = Guid.NewGuid();
-        modelBuilder.Entity<Author>().HasData(new Author
+        modelBuilder.Entity<User>().HasData(new User
         {
             Id = authorId,
             AvatarHref =

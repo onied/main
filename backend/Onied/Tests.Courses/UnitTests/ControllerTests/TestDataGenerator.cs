@@ -1,8 +1,6 @@
 ﻿using AutoFixture;
 using Courses;
 using Courses.Models;
-using Courses.Models.Users;
-using Task = System.Threading.Tasks.Task;
 
 namespace Tests.Courses.UnitTests.ControllerTests;
 
@@ -34,7 +32,7 @@ public class TestDataGenerator
 
         foreach (var course in courses)
         {
-            var author = _fixture.Build<Author>()
+            var author = _fixture.Build<User>()
                 .With(author1 => author1.Id, Guid.NewGuid)
                 .Do(author1 => author1.Courses.Add(course))
                 .Create();
@@ -144,7 +142,7 @@ public class TestDataGenerator
         _context.Modules.AddRange(modules);
 
         var authors = courses.Select(course => course.Author);
-        _context.Authors.AddRange(authors);
+        _context.Users.AddRange(authors);
 
         var categories = courses.Select(course => course.Category);
         _context.Categories.AddRange(categories);
@@ -173,5 +171,4 @@ public class TestDataGenerator
 
         _context.SaveChangesAsync();
     }
-
 }

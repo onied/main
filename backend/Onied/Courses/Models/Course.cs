@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Courses.Models.Users;
 
 namespace Courses.Models;
 
@@ -8,7 +7,7 @@ public class Course
     public int Id { get; set; }
 
     public Guid AuthorId { get; set; }
-    public Author Author { get; set; } = null!;
+    public User Author { get; set; } = null!;
 
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;
