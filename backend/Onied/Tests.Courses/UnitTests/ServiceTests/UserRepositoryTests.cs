@@ -63,7 +63,7 @@ public class UserRepositoryTests
     public async Task SaveUser_UserStored()
     {
         // Arrange
-        var user = _fixture.Build<Author>()
+        var user = _fixture.Build<User>()
             .With(author1 => author1.Id, Guid.NewGuid)
             .Create();
 
