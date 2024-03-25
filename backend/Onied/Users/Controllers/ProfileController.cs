@@ -11,29 +11,21 @@ namespace Users.Controllers;
 [Route("api/v1/[controller]")]
 public class ProfileController : ControllerBase
 {
-    private readonly AppDbContext _context;
     private readonly ILogger<ProfileController> _logger;
     private readonly IMapper _mapper;
 
-    public ProfileController(AppDbContext context, ILogger<ProfileController> logger, IMapper mapper)
+    public ProfileController(ILogger<ProfileController> logger, IMapper mapper)
     {
-        _context = context;
         _logger = logger;
         _mapper = mapper;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<UserProfileDto>> Get([FromServices] SignInManager<AppUser> signInManager)
+   [HttpGet]
+    public async Task<ActionResult<UserProfileDto>> Get([FromServices] UserManager<AppUser> userManager)
     {
-        var currentUser = HttpContext.User;
-
-        if (!signInManager.IsSignedIn(currentUser))
-        {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null)
             return Unauthorized();
-        }
-
-        var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.FindAsync<AppUser>(userId);
         var userProfile = _mapper.Map<UserProfileDto>(user);
 
         return Ok(userProfile);
@@ -41,42 +33,30 @@ public class ProfileController : ControllerBase
 
     [HttpPut("")]
     public async Task<ActionResult> EditProfile(
-        [FromServices] SignInManager<AppUser> signInManager,
+        [FromServices] UserManager<AppUser> userManager,
         [FromBody] ProfileChangedDto profileChanged)
     {
-        var currentUser = User;
-
-        if (!signInManager.IsSignedIn(currentUser))
-        {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null)
             return Unauthorized();
-        }
-
-        var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.FindAsync<AppUser>(userId);
         user.FirstName = profileChanged.FirstName;
         user.LastName = profileChanged.LastName;
         user.Gender = profileChanged.Gender;
-        await _context.SaveChangesAsync();
+        await userManager.UpdateAsync(user);
 
         return Ok();
     }
 
     [HttpPut("avatar")]
     public async Task<ActionResult> Avatar(
-        [FromServices] SignInManager<AppUser> signInManager,
+        [FromServices] UserManager<AppUser> userManager,
         [FromBody] AvatarChangedDto avatar)
     {
-        var currentUser = User;
-
-        if (!signInManager.IsSignedIn(currentUser))
-        {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null)
             return Unauthorized();
-        }
-
-        var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.FindAsync<AppUser>(userId);
         user.Avatar = avatar.AvatarHref;
-        await _context.SaveChangesAsync();
+        await userManager.UpdateAsync(user);
 
         return Ok();
     }

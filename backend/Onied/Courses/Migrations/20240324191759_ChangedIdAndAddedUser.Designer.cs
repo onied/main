@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240324191759_ChangedIdAndAddedUser")]
+    partial class ChangedIdAndAddedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,7 +120,7 @@ namespace Courses.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid?>("AuthorId")
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid")
                         .HasColumnName("author_id");
 
@@ -182,7 +185,7 @@ namespace Courses.Migrations
                         new
                         {
                             Id = 1,
-                            AuthorId = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
+                            AuthorId = new Guid("198252ef-ed29-47e5-98bc-8b49109a1958"),
                             CategoryId = 1,
                             Description = "Описание курса. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas dui id ornare arcu. Nunc id cursus metus aliquam eleifend mi in nulla posuere. Luctus venenatis lectus magna fringilla urna porttitor. Lobortis elementum nibh tellus molestie. Curabitur gravida arcu ac tortor dignissim convallis aenean. Ut diam quam nulla porttitor massa. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Sagittis id consectetur purus ut faucibus pulvinar elementum integer. Malesuada bibendum arcu vitae elementum curabitur vitae nunc sed velit. Mattis nunc sed blandit libero volutpat sed. Urna neque viverra justo nec. Ullamcorper morbi tincidunt ornare massa. Bibendum est ultricies integer quis auctor elit sed vulputate. Scelerisque eu ultrices vitae auctor eu augue ut lectus. Lacus vel facilisis volutpat est velit. Vitae purus faucibus ornare suspendisse sed nisi lacus. Urna condimentum mattis pellentesque id nibh tortor id. Urna cursus eget nunc scelerisque. Massa id neque aliquam vestibulum morbi. Neque vitae tempus quam pellentesque nec nam aliquam sem et. Mauris pellentesque pulvinar pellentesque habitant morbi. Feugiat in ante metus dictum at. Consequat id porta nibh venenatis cras. Massa massa ultricies mi quis hendrerit dolor. Varius duis at consectetur lorem donec massa sapien faucibus et. Vestibulum sed arcu non odio euismod lacinia at quis risus. Molestie ac feugiat sed lectus vestibulum mattis. In tellus integer feugiat scelerisque varius morbi. Neque ornare aenean euismod elementum. Egestas erat imperdiet sed euismod nisi.",
                             HasCertificates = true,
@@ -432,19 +435,22 @@ namespace Courses.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("AvatarHref")
+                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("avatar_href");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
+                        .HasColumnName("discriminator");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("first_name");
-
-                    b.Property<int?>("Gender")
-                        .HasColumnType("integer")
-                        .HasColumnName("gender");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -457,14 +463,9 @@ namespace Courses.Migrations
 
                     b.ToTable("users", (string)null);
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
-                            AvatarHref = "https://gas-kvas.com/uploads/posts/2023-02/1676538735_gas-kvas-com-p-vasilii-terkin-detskii-risunok-49.jpg",
-                            FirstName = "Василий",
-                            LastName = "Теркин"
-                        });
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Courses.Models.SummaryBlock", b =>
@@ -613,6 +614,24 @@ namespace Courses.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Courses.Models.Users.Author", b =>
+                {
+                    b.HasBaseType("Courses.Models.User");
+
+                    b.ToTable("users", (string)null);
+
+                    b.HasDiscriminator().HasValue("Author");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("198252ef-ed29-47e5-98bc-8b49109a1958"),
+                            AvatarHref = "https://gas-kvas.com/uploads/posts/2023-02/1676538735_gas-kvas-com-p-vasilii-terkin-detskii-risunok-49.jpg",
+                            FirstName = "Василий",
+                            LastName = "Теркин"
+                        });
+                });
+
             modelBuilder.Entity("CourseUser", b =>
                 {
                     b.HasOne("Courses.Models.Course", null)
@@ -644,10 +663,11 @@ namespace Courses.Migrations
 
             modelBuilder.Entity("Courses.Models.Course", b =>
                 {
-                    b.HasOne("Courses.Models.User", "Author")
+                    b.HasOne("Courses.Models.Users.Author", "Author")
                         .WithMany("TeachingCourses")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_courses_users_author_id");
 
                     b.HasOne("Courses.Models.Category", "Category")
@@ -725,11 +745,6 @@ namespace Courses.Migrations
                     b.Navigation("Blocks");
                 });
 
-            modelBuilder.Entity("Courses.Models.User", b =>
-                {
-                    b.Navigation("TeachingCourses");
-                });
-
             modelBuilder.Entity("Courses.Models.TasksBlock", b =>
                 {
                     b.Navigation("Tasks");
@@ -743,6 +758,11 @@ namespace Courses.Migrations
             modelBuilder.Entity("Courses.Models.VariantsTask", b =>
                 {
                     b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("Courses.Models.Users.Author", b =>
+                {
+                    b.Navigation("TeachingCourses");
                 });
 #pragma warning restore 612, 618
         }
