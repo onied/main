@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240325102500_MovedAuthorToUser")]
-    partial class MovedAuthorToUser
+    [Migration("20240325152043_FixedBugsAddedOnDeleteRuleAddedFields")]
+    partial class FixedBugsAddedOnDeleteRuleAddedFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,7 +120,7 @@ namespace Courses.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("AuthorId")
+                    b.Property<Guid?>("AuthorId")
                         .HasColumnType("uuid")
                         .HasColumnName("author_id");
 
@@ -185,7 +185,7 @@ namespace Courses.Migrations
                         new
                         {
                             Id = 1,
-                            AuthorId = new Guid("442adaca-06d8-43b4-8e12-faebbaad930b"),
+                            AuthorId = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
                             CategoryId = 1,
                             Description = "Описание курса. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas dui id ornare arcu. Nunc id cursus metus aliquam eleifend mi in nulla posuere. Luctus venenatis lectus magna fringilla urna porttitor. Lobortis elementum nibh tellus molestie. Curabitur gravida arcu ac tortor dignissim convallis aenean. Ut diam quam nulla porttitor massa. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Sagittis id consectetur purus ut faucibus pulvinar elementum integer. Malesuada bibendum arcu vitae elementum curabitur vitae nunc sed velit. Mattis nunc sed blandit libero volutpat sed. Urna neque viverra justo nec. Ullamcorper morbi tincidunt ornare massa. Bibendum est ultricies integer quis auctor elit sed vulputate. Scelerisque eu ultrices vitae auctor eu augue ut lectus. Lacus vel facilisis volutpat est velit. Vitae purus faucibus ornare suspendisse sed nisi lacus. Urna condimentum mattis pellentesque id nibh tortor id. Urna cursus eget nunc scelerisque. Massa id neque aliquam vestibulum morbi. Neque vitae tempus quam pellentesque nec nam aliquam sem et. Mauris pellentesque pulvinar pellentesque habitant morbi. Feugiat in ante metus dictum at. Consequat id porta nibh venenatis cras. Massa massa ultricies mi quis hendrerit dolor. Varius duis at consectetur lorem donec massa sapien faucibus et. Vestibulum sed arcu non odio euismod lacinia at quis risus. Molestie ac feugiat sed lectus vestibulum mattis. In tellus integer feugiat scelerisque varius morbi. Neque ornare aenean euismod elementum. Egestas erat imperdiet sed euismod nisi.",
                             HasCertificates = true,
@@ -435,7 +435,6 @@ namespace Courses.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("AvatarHref")
-                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("avatar_href");
@@ -445,6 +444,10 @@ namespace Courses.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("first_name");
+
+                    b.Property<int?>("Gender")
+                        .HasColumnType("integer")
+                        .HasColumnName("gender");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -460,7 +463,7 @@ namespace Courses.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("442adaca-06d8-43b4-8e12-faebbaad930b"),
+                            Id = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
                             AvatarHref = "https://gas-kvas.com/uploads/posts/2023-02/1676538735_gas-kvas-com-p-vasilii-terkin-detskii-risunok-49.jpg",
                             FirstName = "Василий",
                             LastName = "Теркин"
@@ -647,8 +650,7 @@ namespace Courses.Migrations
                     b.HasOne("Courses.Models.User", "Author")
                         .WithMany("TeachingCourses")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
+                        .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_courses_users_author_id");
 
                     b.HasOne("Courses.Models.Category", "Category")

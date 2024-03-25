@@ -41,7 +41,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany<Course>(a => a.TeachingCourses)
             .WithOne(c => c.Author)
-            .HasForeignKey(c => c.AuthorId);
+            .HasForeignKey(c => c.AuthorId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         var authorId = Guid.NewGuid();
         modelBuilder.Entity<User>().HasData(new User
