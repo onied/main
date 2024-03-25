@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication.BearerToken;
@@ -273,8 +272,6 @@ public class UsersController : ControllerBase
         var user = await userManager.FindByEmailAsync(email);
         if (user is null) return TypedResults.NotFound();
 
-
-
         var response = new TwoFactorEnabledResponse(user.TwoFactorEnabled);
         return TypedResults.Ok(response);
     }
@@ -286,8 +283,6 @@ public class UsersController : ControllerBase
     {
         if (await userManager.GetUserAsync(User) is not { } user)
             return TypedResults.NotFound();
-
-        var claims = User.Claims.ToList();
 
         return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
     }
