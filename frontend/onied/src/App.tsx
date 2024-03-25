@@ -14,9 +14,19 @@ import LoginService from "./services/loginService";
 import { useState } from "react";
 import { Profile } from "./hooks/profile/profile";
 import { ProfileContext } from "./hooks/profile/profileContext";
+import ProfilePage from "./pages/profile/profile";
 
 function App() {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(
+    {
+      firstName: "Иван",
+      lastName: "Иванов",
+      gender: 0,
+      avatarHref: "http://loremflickr.com/400/400",
+      email: "test@example.com",
+    }
+    // null
+  );
   LoginService.registerAutomaticRefresh();
   return (
     <>
@@ -36,6 +46,7 @@ function App() {
             <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
             <Route path="/resetPassword" element={<ResetPassword />}></Route>
             <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
+            <Route path="/profile/*" element={<ProfilePage />}></Route>
           </Routes>
         </main>
       </ProfileContext.Provider>

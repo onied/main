@@ -1,4 +1,4 @@
-import Sidebar from "../../components/sidebar/sidebar";
+import CoursesSidebar from "../../components/sidebar/coursesSidebar";
 import BlockViewContainer from "../../components/blocks/blockViewContainer";
 import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -41,7 +41,10 @@ function Course() {
 
   return (
     <>
-      <Sidebar hierarchy={hierarchy} currentBlock={currentBlock}></Sidebar>
+      <CoursesSidebar
+        hierarchy={hierarchy}
+        currentBlock={currentBlock}
+      ></CoursesSidebar>
       <BlockViewContainer>
         <Routes>
           <Route
