@@ -1,7 +1,10 @@
+import ProfileCertificates from "../../components/profile/certificates";
+import ProfileCourses from "../../components/profile/courses";
+import ProfileInfo from "../../components/profile/info";
 import ProfilePageContainer from "../../components/profile/profilePageContainer";
 import ProfileSidebar from "../../components/sidebar/profileSidebar";
 import { useProfile } from "../../hooks/profile/useProfile";
-import { Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 function ProfilePage() {
   const profile = useProfile();
@@ -9,7 +12,14 @@ function ProfilePage() {
   return (
     <>
       <ProfileSidebar></ProfileSidebar>
-      <ProfilePageContainer>I like trains</ProfilePageContainer>
+      <ProfilePageContainer>
+        <Routes>
+          <Route path="/" element={<ProfileInfo />} />
+          <Route path="/courses" element={<ProfileCourses />} />
+          <Route path="/certificates" element={<ProfileCertificates />} />
+          <Route path="*" element={<Navigate to="/profile" />} />
+        </Routes>
+      </ProfilePageContainer>
     </>
   );
 }
