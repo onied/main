@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Users.Dtos;
@@ -30,11 +31,53 @@ public class ProfileController : ControllerBase
         {
             return Unauthorized();
         }
-        
+
         var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _context.FindAsync<AppUser>(userId);
         var userProfile = _mapper.Map<UserProfileDto>(user);
 
         return Ok(userProfile);
+    }
+
+    [HttpPut("")]
+    public async Task<ActionResult> EditProfile(
+        [FromServices] SignInManager<AppUser> signInManager,
+        [FromBody] ProfileChangedDto profileChanged)
+    {
+        var currentUser = User;
+
+        if (!signInManager.IsSignedIn(currentUser))
+        {
+            return Unauthorized();
+        }
+
+        var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _context.FindAsync<AppUser>(userId);
+        user.FirstName = profileChanged.FirstName;
+        user.LastName = profileChanged.LastName;
+        user.Gender = profileChanged.Gender;
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [HttpPut("avatar")]
+    public async Task<ActionResult> Avatar(
+        [FromServices] SignInManager<AppUser> signInManager,
+        [FromBody] AvatarChangedDto avatar)
+    {
+        var currentUser = User;
+
+        if (!signInManager.IsSignedIn(currentUser))
+        {
+            return Unauthorized();
+        }
+
+        var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _context.FindAsync<AppUser>(userId);
+        user.Avatar = avatar.AvatarHref;
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 }
