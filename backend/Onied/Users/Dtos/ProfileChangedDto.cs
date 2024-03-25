@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-﻿namespace Users.Dtos;
+namespace Users.Dtos;
 
 public class ProfileChangedDto
 {
