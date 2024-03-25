@@ -1,6 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 ﻿namespace Users.Dtos;
 
 public class AvatarChangedDto
 {
-    public string AvatarHref { get; set; } = null!;
+    [Url]
+    [MaxLength(2048)]
+    public string? AvatarHref { get; set; }
 }
