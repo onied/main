@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Users;
+using Users.Profiles;
 using Users.Services.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<App
 builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorization();
 builder.Services.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
+builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
 
 // Add services to the container.
@@ -38,8 +40,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 // We need this for Ocelot to work correctly;
 // Otherwise the middleware chain is in the wrong order.

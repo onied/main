@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Profile } from "./hooks/profile/profile";
 import { ProfileContext } from "./hooks/profile/profileContext";
 import ProfilePage from "./pages/profile/profile";
+import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(
@@ -27,6 +28,7 @@ function App() {
     }
     // null
   );
+  LoginService.initialize();
   LoginService.registerAutomaticRefresh();
   return (
     <>
@@ -46,6 +48,7 @@ function App() {
             <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
             <Route path="/resetPassword" element={<ResetPassword />}></Route>
             <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
+            <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
             <Route path="/profile/*" element={<ProfilePage />}></Route>
           </Routes>
         </main>
