@@ -15,9 +15,9 @@ function ProfileSidebar() {
   const [currentTabUrl, setCurrentTabUrl] = useState("/");
   const profile = useProfile();
   const tabs: Array<Tab> = [
-    { title: "Мои данные", url: "/" },
-    { title: "Мои курсы", url: "/courses" },
-    { title: "Мои сертификаты", url: "/certificates" },
+    { title: "Мои данные", url: "" },
+    { title: "Мои курсы", url: "courses" },
+    { title: "Мои сертификаты", url: "certificates" },
   ];
   const renderBlock = (tab: Tab, index: number) => {
     if (currentTabUrl == tab.url)
@@ -27,14 +27,19 @@ function ProfileSidebar() {
         </div>
       );
     return (
-      <Link className={classes.block} key={index} to={`/profile${tab.url}`}>
+      <Link className={classes.block} key={index} to={`/profile/${tab.url}`}>
         {tab.title}
       </Link>
     );
   };
 
   useEffect(() => {
-    setCurrentTabUrl(location.pathname.replace("/profile", ""));
+    setCurrentTabUrl(
+      location.pathname
+        .replace("/profile", "")
+        .replace(/^\//, "")
+        .replace(/\/$/, "")
+    );
   }, [location.pathname]);
 
   return (

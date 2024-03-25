@@ -1,0 +1,37 @@
+.profilePageContainer {
+  position: absolute;
+  left: var(--sidebar-width);
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.profileHeader {
+  background-color: #f3f3f3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.profileAvatar {
+  border-radius: 1rem;
+}
+
+.profileInfoWrapper {
+  height: 100%;
+  display: inline-block;
+}
+
+.profileName {
+  color: black;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.profileEmail {
+  color: #4a4a4a;
+  font-weight: 400;
+}
