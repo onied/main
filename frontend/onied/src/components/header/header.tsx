@@ -34,7 +34,7 @@ function Header() {
               name={getProfileName(profile)}
               size="50"
               className={classes.profileAvatar}
-              src={profile.avatarHref ? profile.avatarHref : undefined}
+              src={profile.avatar ? profile.avatar : undefined}
             ></Avatar>
           </Link>
         )}

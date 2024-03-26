@@ -58,7 +58,7 @@ function ProfileInfo() {
         ProfileService.fetchProfile();
       })
       .catch((error) => {
-        if (error.status == 400) {
+        if (error.response.status == 400) {
           if (error.response.data.errors.Gender)
             setErrors({ ...errors, gender: "Неверное значение поля" });
           if (error.response.data.errors.FirstName)
@@ -66,6 +66,50 @@ function ProfileInfo() {
           if (error.response.data.errors.LastName)
             setErrors({ ...errors, gender: "Введите правильную фамилию" });
         }
+      });
+  };
+  const saveAvatar = (e: any) => {
+    e.preventDefault();
+    setErrors({
+      firstName: null,
+      lastName: null,
+      gender: null,
+      avatar: null,
+    });
+    api
+      .put("/profile/avatar", {
+        avatarHref: newAvatar,
+      })
+      .then((_) => {
+        setAvatarChangeModalOpen(false);
+        ProfileService.fetchProfile();
+      })
+      .catch((error) => {
+        if (error.response.status == 400) {
+          if (error.response.data.errors.AvatarHref) {
+            setErrors({ ...errors, avatar: "Введите корректный URL." });
+          }
+        }
+      });
+  };
+  const deleteAvatar = (e: any) => {
+    e.preventDefault();
+    setErrors({
+      firstName: null,
+      lastName: null,
+      gender: null,
+      avatar: null,
+    });
+    api
+      .put("/profile/avatar", {
+        avatarHref: null,
+      })
+      .then((_) => {
+        setAvatarChangeModalOpen(false);
+        ProfileService.fetchProfile();
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
   if (originalProfile == null) return <></>;
@@ -205,7 +249,7 @@ function ProfileInfo() {
               name={getProfileName(profile)}
               size="150"
               className={classes.profileAvatar}
-              src={profile.avatarHref ? profile.avatarHref : undefined}
+              src={originalProfile.avatar ? originalProfile.avatar : undefined}
             ></Avatar>
           </div>
         </div>
@@ -219,7 +263,11 @@ function ProfileInfo() {
             </Button>
           </div>
           <div className={classes.profileInfoRightButton}>
-            <Button style={{ width: "100%" }} disabled="t">
+            <Button
+              style={{ width: "100%" }}
+              disabled={!originalProfile.avatar}
+              onClick={deleteAvatar}
+            >
               удалить
             </Button>
           </div>
@@ -245,6 +293,10 @@ function ProfileInfo() {
       <Dialog
         open={avatarChangeModalOpen}
         onClose={() => setAvatarChangeModalOpen(false)}
+        PaperProps={{
+          component: "form",
+          onSubmit: saveAvatar,
+        }}
       >
         <DialogTitle>Загрузить аватар</DialogTitle>
         <DialogContent>

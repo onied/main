@@ -14,7 +14,7 @@ function ProfilePageContainer({ children }: { children: React.ReactNode }) {
           name={getProfileName(profile)}
           size="150"
           className={classes.profileAvatar}
-          src={profile.avatarHref ? profile.avatarHref : undefined}
+          src={profile.avatar ? profile.avatar : undefined}
         ></Avatar>
         <div className={classes.profileInfoWrapper}>
           <h2 className={classes.profileName}>{getProfileName(profile)}</h2>
