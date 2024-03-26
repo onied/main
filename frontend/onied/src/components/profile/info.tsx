@@ -112,6 +112,17 @@ function ProfileInfo() {
         console.log(error);
       });
   };
+  const sendPasswordReset = () => {
+    setPasswordSent(false);
+    api
+      .post("forgotPassword", {
+        email: profile.email,
+      })
+      .then((_) => {
+        setPasswordSent(true);
+      })
+      .catch();
+  };
   if (originalProfile == null) return <></>;
   return (
     <div className={classes.pageWrapper}>
@@ -280,7 +291,9 @@ function ProfileInfo() {
           <p className={classes.changePasswordDesc}>
             На вашу почту будет отправлена ссылка для смены пароля.
           </p>
-          <Button disabled={passwordSent}>сменить пароль</Button>
+          <Button disabled={passwordSent} onClick={sendPasswordReset}>
+            сменить пароль
+          </Button>
           {passwordSent ? (
             <p className={classes.changePasswordSuccess}>
               Письмо было отправлено на ваш электронный ящик.
