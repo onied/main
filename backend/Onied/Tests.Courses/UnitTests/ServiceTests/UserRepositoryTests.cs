@@ -59,7 +59,7 @@ public class UserRepositoryTests
     }
 
     [Fact]
-    public async Task SaveUser_UserStored()
+    public async Task AddUser_UserStored()
     {
         // Arrange
         var user = _fixture.Build<User>()
@@ -67,7 +67,7 @@ public class UserRepositoryTests
             .Create();
 
         // Act
-        await _userRepository.SaveUserAsync(user);
+        await _userRepository.AddUserAsync(user);
         var actualUser = _context.Users.SingleOrDefault(u => u.Id == user.Id);
 
         // Assert
