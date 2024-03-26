@@ -31,10 +31,20 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
 
     public async Task<Course?> GetCourseAsync(int id)
     => await dbContext.Courses
+        .Include(course => course.Modules)
         .Include(course => course.Author)
         .Include(course => course.Category)
         .AsNoTracking()
         .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Course?> GetCourseWithBlocksAsync(int id)
+        => await dbContext.Courses
+            .Include(course => course.Modules)
+                .ThenInclude(module => module.Blocks)
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
 
     public async Task AddCourseAsync(Course course)
     {
