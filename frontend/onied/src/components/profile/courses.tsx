@@ -25,7 +25,7 @@ type CourseCard = {
 };
 
 function ProfileCourses() {
-  const profile = useProfile();
+  const [profile, _] = useProfile();
   const [coursesList, setCoursesList] = useState<
     Array<CourseCard> | undefined
   >();

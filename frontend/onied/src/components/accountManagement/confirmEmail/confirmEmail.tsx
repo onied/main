@@ -26,11 +26,12 @@ function ConfirmEmailComponent() {
     setShowKeyText(!showKeyText);
   };
 
-  const profile = useProfile();
+  const [profile, loading] = useProfile();
 
   useEffect(() => {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
+    if (loading) return;
 
     if (userId == null || code == null) {
       navigator("/login");
@@ -66,7 +67,7 @@ function ConfirmEmailComponent() {
           setIsValidLink(false);
         }
       });
-  }, []);
+  }, [loading]);
 
   const sendCode = () => {
     setErrorMessage("");
@@ -93,6 +94,13 @@ function ConfirmEmailComponent() {
       setErrorMessage("Поле не заполнено");
     }
   };
+
+  if (!loading && profile == null)
+    return (
+      <Navigate
+        to={`/login?redirect=${encodeURIComponent(currentUrl)}`}
+      ></Navigate>
+    );
 
   if (!isValidLink) {
     return (

@@ -5,7 +5,7 @@ import Avatar from "react-avatar";
 import { getProfileName } from "../../hooks/profile/profile";
 
 function ProfilePageContainer({ children }: { children: React.ReactNode }) {
-  const profile = useProfile();
+  const [profile, _] = useProfile();
   if (profile == null) return <></>;
   return (
     <div className={classes.profilePageContainer}>

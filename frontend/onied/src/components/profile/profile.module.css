@@ -128,3 +128,10 @@
   margin-right: 1rem;
   margin-bottom: 1rem;
 }
+
+.profileInfoSaved {
+  display: block;
+  color: #419341;
+  text-align: center;
+  width: 100%;
+}

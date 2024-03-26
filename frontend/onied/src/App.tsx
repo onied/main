@@ -17,38 +17,46 @@ import { ProfileContext } from "./hooks/profile/profileContext";
 import ProfilePage from "./pages/profile/profile";
 import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 import ProfileService from "./services/profileService";
+import { LoadingContext } from "./hooks/profile/loadingContext";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
   LoginService.initialize();
   LoginService.registerAutomaticRefresh();
-  ProfileService.initialize(setProfile);
+  ProfileService.initialize(setProfile, setLoading);
   useEffect(() => {
     if (profile == null && LoginService.checkLoggedIn())
       ProfileService.fetchProfile();
+    else setLoading(false);
   }, []);
   return (
     <>
       <ProfileContext.Provider value={profile}>
-        <Header></Header>
-        <main>
-          <Routes>
-            <Route
-              path="/course/:courseId/learn/*"
-              element={<Course />}
-            ></Route>
-            <Route path="/course/:courseId" element={<Preview />}></Route>
-            <Route path="/catalog" element={<Catalog />}></Route>
-            <Route path="/register" element={<Register />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/login/2fa" element={<TwoFactor />}></Route>
-            <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
-            <Route path="/resetPassword" element={<ResetPassword />}></Route>
-            <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
-            <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
-            <Route path="/profile/*" element={<ProfilePage />}></Route>
-          </Routes>
-        </main>
+        <LoadingContext.Provider value={loading}>
+          <Header></Header>
+          <main>
+            <Routes>
+              <Route
+                path="/course/:courseId/learn/*"
+                element={<Course />}
+              ></Route>
+              <Route path="/course/:courseId" element={<Preview />}></Route>
+              <Route path="/catalog" element={<Catalog />}></Route>
+              <Route path="/register" element={<Register />}></Route>
+              <Route path="/login" element={<Login />}></Route>
+              <Route path="/login/2fa" element={<TwoFactor />}></Route>
+              <Route
+                path="/forgotPassword"
+                element={<ForgotPassword />}
+              ></Route>
+              <Route path="/resetPassword" element={<ResetPassword />}></Route>
+              <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
+              <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
+              <Route path="/profile/*" element={<ProfilePage />}></Route>
+            </Routes>
+          </main>
+        </LoadingContext.Provider>
       </ProfileContext.Provider>
     </>
   );

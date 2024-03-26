@@ -7,8 +7,8 @@ import { useProfile } from "../../hooks/profile/useProfile";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 function ProfilePage() {
-  const profile = useProfile();
-  if (profile == null) return <Navigate to="/login"></Navigate>;
+  const [profile, loading] = useProfile();
+  if (profile == null && !loading) return <Navigate to="/login"></Navigate>;
   return (
     <>
       <ProfileSidebar></ProfileSidebar>

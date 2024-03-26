@@ -11,6 +11,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import api from "../../config/axios";
+import ProfileService from "../../services/profileService";
 
 type Errors = {
   firstName: string | null;
@@ -20,7 +22,7 @@ type Errors = {
 };
 
 function ProfileInfo() {
-  const originalProfile = useProfile();
+  const [originalProfile, _] = useProfile();
   const [profile, setProfile] = useState<Profile>({
     ...originalProfile,
   } as Profile);
@@ -33,14 +35,45 @@ function ProfileInfo() {
   const [newAvatar, setNewAvatar] = useState<string>("");
   const [avatarChangeModalOpen, setAvatarChangeModalOpen] = useState(false);
   const [passwordSent, setPasswordSent] = useState<Boolean>(false);
+  const [profileInfoSaved, setProfileInfoSaved] = useState(false);
   const onGenderChange = (e: ChangeEvent<HTMLInputElement>) =>
     setProfile({ ...profile, gender: Number(e.target.value) });
-  if (profile == null) return <></>;
+  const saveInfo = (e: any) => {
+    e.preventDefault();
+    setProfileInfoSaved(false);
+    setErrors({
+      firstName: null,
+      lastName: null,
+      gender: null,
+      avatar: null,
+    });
+    api
+      .put("/profile", {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        gender: profile.gender,
+      })
+      .then((_) => {
+        setProfileInfoSaved(true);
+        ProfileService.fetchProfile();
+      })
+      .catch((error) => {
+        if (error.status == 400) {
+          if (error.response.data.errors.Gender)
+            setErrors({ ...errors, gender: "Неверное значение поля" });
+          if (error.response.data.errors.FirstName)
+            setErrors({ ...errors, lastName: "Введите правильное имя" });
+          if (error.response.data.errors.LastName)
+            setErrors({ ...errors, gender: "Введите правильную фамилию" });
+        }
+      });
+  };
+  if (originalProfile == null) return <></>;
   return (
     <div className={classes.pageWrapper}>
       <h3 className={classes.pageTitle}>Редактирование профиля</h3>
       <div className={classes.profileInfoContents}>
-        <form>
+        <form onSubmit={saveInfo}>
           <div className={classes.profileInfoGrid}>
             <label
               htmlFor="profile_first_name"
@@ -154,6 +187,11 @@ function ProfileInfo() {
           <div className={classes.profileInfoFooter}>
             <div className={classes.profileInfoRightButton}>
               <Button type="submit">сохранить</Button>
+              {profileInfoSaved ? (
+                <label className={classes.profileInfoSaved}>Сохранено</label>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </form>

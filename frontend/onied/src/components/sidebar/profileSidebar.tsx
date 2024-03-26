@@ -13,7 +13,7 @@ type Tab = {
 function ProfileSidebar() {
   const location = useLocation();
   const [currentTabUrl, setCurrentTabUrl] = useState("/");
-  const profile = useProfile();
+  const [profile, _] = useProfile();
   const tabs: Array<Tab> = [
     { title: "Мои данные", url: "" },
     { title: "Мои курсы", url: "courses" },

@@ -4,7 +4,7 @@ import CertificateContainer, { Certificate } from "./certificate/certificate";
 import { useState } from "react";
 
 function ProfileCertificates() {
-  const profile = useProfile();
+  const [profile, _] = useProfile();
   const [certificateList, setCertificateList] = useState<
     Array<Certificate> | undefined
   >();

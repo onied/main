@@ -6,7 +6,7 @@ import { useProfile } from "../../hooks/profile/useProfile";
 import { getProfileName } from "../../hooks/profile/profile";
 
 function Header() {
-  const profile = useProfile();
+  const [profile, _] = useProfile();
   return (
     <header className={classes.header}>
       <div className={classes.leftWrapper}>
@@ -23,7 +23,7 @@ function Header() {
         </div>
       </div>
       <div className={classes.rightWrapper}>
-        {profile === null ? (
+        {profile == null ? (
           <Link to="/login" className={classes.profileContainer}>
             Войти
           </Link>
