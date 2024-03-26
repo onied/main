@@ -11,25 +11,22 @@ import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
 import ResetPassword from "./pages/accountManagement/resetPassword/resetPassword";
 import OauthRedirect from "./pages/oauthRedirect/oauthRedirect";
 import LoginService from "./services/loginService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Profile } from "./hooks/profile/profile";
 import { ProfileContext } from "./hooks/profile/profileContext";
 import ProfilePage from "./pages/profile/profile";
 import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
+import ProfileService from "./services/profileService";
 
 function App() {
-  const [profile, setProfile] = useState<Profile | null>(
-    {
-      firstName: "Иван",
-      lastName: "Иванов",
-      gender: 0,
-      avatarHref: "http://loremflickr.com/400/400",
-      email: "test@example.com",
-    }
-    // null
-  );
+  const [profile, setProfile] = useState<Profile | null>(null);
   LoginService.initialize();
   LoginService.registerAutomaticRefresh();
+  ProfileService.initialize(setProfile);
+  useEffect(() => {
+    if (profile == null && LoginService.checkLoggedIn())
+      ProfileService.fetchProfile();
+  }, []);
   return (
     <>
       <ProfileContext.Provider value={profile}>
