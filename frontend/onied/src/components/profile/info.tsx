@@ -6,6 +6,11 @@ import Radio from "../general/radio/radio";
 import Button from "../general/button/button";
 import Avatar from "react-avatar";
 import { Profile, getProfileName } from "../../hooks/profile/profile";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 type Errors = {
   firstName: string | null;
@@ -25,6 +30,8 @@ function ProfileInfo() {
     gender: null,
     avatar: null,
   });
+  const [newAvatar, setNewAvatar] = useState<string>("");
+  const [avatarChangeModalOpen, setAvatarChangeModalOpen] = useState(false);
   const [passwordSent, setPasswordSent] = useState<Boolean>(false);
   const onGenderChange = (e: ChangeEvent<HTMLInputElement>) =>
     setProfile({ ...profile, gender: Number(e.target.value) });
@@ -162,16 +169,16 @@ function ProfileInfo() {
               className={classes.profileAvatar}
               src={profile.avatarHref ? profile.avatarHref : undefined}
             ></Avatar>
-            {errors.avatar ? (
-              <div className={classes.profileInfoError}>{errors.avatar}</div>
-            ) : (
-              <></>
-            )}
           </div>
         </div>
         <div className={classes.profileInfoFooter}>
           <div className={classes.profileInfoLeftButton}>
-            <Button style={{ width: "100%" }}>загрузить</Button>
+            <Button
+              style={{ width: "100%" }}
+              onClick={() => setAvatarChangeModalOpen(true)}
+            >
+              загрузить
+            </Button>
           </div>
           <div className={classes.profileInfoRightButton}>
             <Button style={{ width: "100%" }} disabled="t">
@@ -197,6 +204,33 @@ function ProfileInfo() {
           )}
         </div>
       </div>
+      <Dialog
+        open={avatarChangeModalOpen}
+        onClose={() => setAvatarChangeModalOpen(false)}
+      >
+        <DialogTitle>Загрузить аватар</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Введите ссылку на новый аватар</DialogContentText>
+          <InputForm
+            value={newAvatar}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setNewAvatar(e.target.value)
+            }
+            style={{ margin: "1rem" }}
+            type="url"
+          ></InputForm>
+          {errors.avatar ? (
+            <div className={classes.profileInfoError}>{errors.avatar}</div>
+          ) : (
+            <></>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <button type="submit" className={classes.avatarChangeDialogButton}>
+            сохранить
+          </button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

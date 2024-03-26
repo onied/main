@@ -117,3 +117,14 @@
 .changePasswordSuccess {
   color: #419341;
 }
+
+.avatarChangeDialogButton {
+  background-color: #9715d3;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
