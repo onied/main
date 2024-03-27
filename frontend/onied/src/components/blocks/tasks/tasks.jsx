@@ -9,6 +9,7 @@ function Tasks({ courseId, blockId }) {
   const [tasks, setTasks] = useState();
   const [found, setFound] = useState();
   const [taskInputs, setTaskInputs] = useState();
+  const [reloadNeeded, setReloadNeeded] = useState(0);
   const [taskPointsSequence, setTaskPointsSequence] = useState();
 
   const handleChange = (inputIndex, input) => {
@@ -57,7 +58,7 @@ function Tasks({ courseId, blockId }) {
           setFound(false);
         }
       });
-  }, [courseId, blockId]);
+  }, [courseId, blockId, reloadNeeded]);
 
   if (found == null || taskPointsSequence == null)
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;
@@ -92,6 +93,7 @@ function Tasks({ courseId, blockId }) {
             .then((response) => {
               console.log(response.data);
               setTaskPointsSequence(response.data);
+              setReloadNeeded(reloadNeeded + 1);
             })
             .catch((error) => console.log(error));
         }}
