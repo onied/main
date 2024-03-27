@@ -3,7 +3,6 @@ using Courses.Dtos;
 using Courses.Helpers;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Courses.Controllers;
 
