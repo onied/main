@@ -662,6 +662,10 @@ public class CoursesControllerTests
 
         var courseId = course.Id;
         var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
+            .Returns(Task.FromResult<TasksBlock?>(block));
+
         var inputsDto = _fixture.Build<UserInputDto>()
             .With(input => input.TaskId, -1)
             .CreateMany(1)
@@ -671,7 +675,7 @@ public class CoursesControllerTests
         var result = await _controller.CheckTaskBlock(courseId, blockId, inputsDto);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFoundObjectResult>(result.Result);
     }
 
     [Fact]
