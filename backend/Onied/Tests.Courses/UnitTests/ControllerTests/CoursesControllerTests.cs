@@ -489,6 +489,50 @@ public class CoursesControllerTests
     }
 
     [Fact]
+    public async Task GetTaskPointsStored_ReturnsNullBecauseManual()
+    {
+        // Arrange
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
+        var task = _fixture.Build<TaskProj>()
+            .With(task => task.TasksBlock, block)
+            .With(task => task.TasksBlockId, block.Id)
+            .With(task => task.TaskType, TaskType.ManualReview)
+            .Create();
+        block.Tasks.Add(task);
+
+        var courseId = course.Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
+            .Returns(Task.FromResult<TasksBlock?>(block));
+
+        // Act
+        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
+        var value = Assert.IsAssignableFrom<List<UserTaskPointsDto>>(
+            actionResult.Value);
+        Assert.All(value, Assert.Null);
+    }
+
+    [Fact]
     public async Task GetTaskPointsStored_ReturnsPointsRight()
     {
         // Arrange
@@ -521,6 +565,8 @@ public class CoursesControllerTests
 
         foreach (var variantTask in variantTasks)
         {
+            block.Tasks.Add(variantTask);
+
             var variants = _fixture.Build<TaskVariant>()
                 .With(variant => variant.Task, variantTask)
                 .With(variant => variant.TaskId, variantTask.Id)
