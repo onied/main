@@ -72,7 +72,29 @@ public class UserRepositoryTests
 
         // Assert
         Assert.NotNull(actualUser);
-        Assert.Equal(user, actualUser);
+        Assert.Equivalent(user, actualUser);
+    }
+
+    [Fact]
+    public async Task UpdateUser_UserStored()
+    {
+        // Arrange
+        var user = _fixture.Build<User>()
+            .With(author1 => author1.Id, Guid.NewGuid)
+            .Create();
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        var prevFirstName = user.FirstName;
+        user.FirstName = "newName";
+
+        // Act
+        await _userRepository.UpdateUserAsync(user);
+        var actualUser = _context.Users.SingleOrDefault(u => u.Id == user.Id);
+
+        // Assert
+        Assert.NotNull(actualUser);
+        Assert.Equivalent(user, actualUser);
     }
 
     private void ProduceTestData()
