@@ -3,6 +3,7 @@ import { Navigate, useSearchParams } from "react-router-dom";
 import api from "../../config/axios";
 import { BeatLoader } from "react-spinners";
 import LoginService from "../../services/loginService";
+import ProfileService from "../../services/profileService";
 
 function OauthRedirect() {
   const [loginResult, setLoginResult] = useState<Boolean | undefined>();
@@ -22,6 +23,7 @@ function OauthRedirect() {
           response.data.expiresIn,
           response.data.refreshToken
         );
+        ProfileService.fetchProfile();
         setLoginResult(true);
       })
       .catch((error) => {

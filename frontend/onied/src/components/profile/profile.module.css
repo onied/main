@@ -1,0 +1,137 @@
+.profilePageContainer {
+  position: absolute;
+  left: var(--sidebar-width);
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.profileHeader {
+  background-color: #f3f3f3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 3rem;
+  gap: 3rem;
+}
+
+.profileAvatar {
+  border-radius: 1rem;
+}
+
+.profileInfoWrapper {
+  height: 100%;
+  display: inline-block;
+}
+
+.profileName {
+  color: black;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.profileEmail {
+  color: #4a4a4a;
+  font-weight: 400;
+}
+
+.pageWrapper {
+  padding: 2rem 3rem;
+}
+
+.pageTitle {
+  margin-top: 0;
+  font-size: 20pt;
+  font-weight: 800;
+}
+
+.profileInfoContents {
+  max-width: 512px;
+}
+
+.profileInfoGrid {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  align-items: center;
+  row-gap: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.profileInfoRadioGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.profileInfoRadio {
+  display: flex;
+  align-items: center;
+}
+
+.profileInfoRadioLabel {
+  font-size: 10pt;
+  font-weight: 200;
+}
+
+.profileInfoFooter {
+  display: grid;
+  grid-template-columns: 30% 35% 35%;
+}
+
+.profileInfoRightButton {
+  grid-column: 3;
+  width: 100%;
+  margin-left: 1rem;
+}
+
+.profileInfoLeftButton {
+  grid-column: 2;
+  width: 100%;
+  margin-right: 1rem;
+}
+
+.profileInfoInputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profileInfoError {
+  font-size: 10pt;
+  color: #ed4956;
+  text-align: center;
+}
+
+.hr {
+  border: 1.5px solid #dbdbdb;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.changePasswordDesc {
+  color: #686868;
+}
+
+.changePasswordSuccess {
+  color: #419341;
+}
+
+.avatarChangeDialogButton {
+  background-color: #9715d3;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profileInfoSaved {
+  display: block;
+  color: #419341;
+  text-align: center;
+  width: 100%;
+}

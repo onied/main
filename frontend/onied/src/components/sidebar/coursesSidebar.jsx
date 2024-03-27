@@ -4,7 +4,7 @@ import classes from "./sidebar.module.css";
 import BarLoader from "react-spinners/BarLoader";
 import { Link } from "react-router-dom";
 
-function Sidebar({ hierarchy, currentBlock }) {
+function CoursesSidebar({ hierarchy, currentBlock }) {
   const loaded = (attribute) => {
     return hierarchy != null ? attribute in hierarchy : false;
   };
@@ -63,4 +63,4 @@ function Sidebar({ hierarchy, currentBlock }) {
   );
 }
 
-export default Sidebar;
+export default CoursesSidebar;

@@ -13,6 +13,7 @@ import classes from "./loginForm.module.css";
 import api from "../../../../config/axios";
 import VkButton from "../../../general/vkbutton/vkbutton";
 import LoginService from "../../../../services/loginService";
+import ProfileService from "../../../../services/profileService";
 
 type LoginFormData = {
   email: string;
@@ -60,6 +61,7 @@ function LoginForm() {
           response.data.expiresIn,
           response.data.refreshToken
         );
+        ProfileService.fetchProfile();
         const redirect = searchParams.get("redirect");
         if (redirect) navigator(decodeURIComponent(redirect));
         else navigator("/");

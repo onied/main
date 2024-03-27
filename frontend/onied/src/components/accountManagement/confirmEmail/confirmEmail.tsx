@@ -4,10 +4,11 @@ import SixDigitsInput from "../sixDigitsInput/sixDigitsInput";
 import Button from "../../general/button/button";
 import Card from "../../general/card/card";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../../config/axios";
 import QRCode from "react-qr-code";
 import LoginService from "../../../services/loginService";
+import { useProfile } from "../../../hooks/profile/useProfile";
 
 function ConfirmEmailComponent() {
   const currentUrl = window.location.pathname + window.location.search;
@@ -25,15 +26,18 @@ function ConfirmEmailComponent() {
     setShowKeyText(!showKeyText);
   };
 
+  const [profile, loading] = useProfile();
+
   useEffect(() => {
     const userId = searchParams.get("userId");
     const code = searchParams.get("code");
+    if (loading) return;
 
     if (userId == null || code == null) {
       navigator("/login");
       return;
     }
-    if (!LoginService.checkLoggedIn()) {
+    if (!LoginService.checkLoggedIn() || profile == null) {
       navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
       return;
     }
@@ -49,7 +53,7 @@ function ConfirmEmailComponent() {
           .then((response) => {
             setSharedKey(response.data.sharedKey);
             setUriForQr(
-              `otpauth://totp/Onied:${123}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`
+              `otpauth://totp/Onied:${profile.email}?secret=${response.data.sharedKey}&issuer=Onied&digits=6`
             );
           })
           .catch((reason) => {
@@ -63,7 +67,7 @@ function ConfirmEmailComponent() {
           setIsValidLink(false);
         }
       });
-  }, []);
+  }, [loading]);
 
   const sendCode = () => {
     setErrorMessage("");
@@ -90,6 +94,13 @@ function ConfirmEmailComponent() {
       setErrorMessage("Поле не заполнено");
     }
   };
+
+  if (!loading && profile == null)
+    return (
+      <Navigate
+        to={`/login?redirect=${encodeURIComponent(currentUrl)}`}
+      ></Navigate>
+    );
 
   if (!isValidLink) {
     return (

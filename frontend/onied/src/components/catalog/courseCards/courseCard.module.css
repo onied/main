@@ -59,3 +59,14 @@
   font-size: 18px;
   font-weight: 600;
 }
+
+.courseCardFooter.continueCourse button {
+  background-color: #81d581;
+}
+
+.continueCourse {
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}

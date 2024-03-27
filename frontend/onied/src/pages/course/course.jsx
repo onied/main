@@ -1,4 +1,4 @@
-import Sidebar from "../../components/sidebar/sidebar";
+import CoursesSidebar from "../../components/sidebar/coursesSidebar";
 import BlockViewContainer from "../../components/blocks/blockViewContainer";
 import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -11,15 +11,14 @@ function Course() {
   const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
-
   const id = Number(courseId);
-  if (isNaN(id)) {
-    console.log(id);
-    console.log(courseId);
-    return notFound;
-  }
 
   useEffect(() => {
+    if (isNaN(id)) {
+      setHierarchy({});
+      setCourseFound(false);
+      return;
+    }
     api
       .get("courses/" + id + "/hierarchy/")
       .then((response) => {
@@ -37,11 +36,20 @@ function Course() {
       });
   }, []);
 
+  if (isNaN(id)) {
+    console.log(id);
+    console.log(courseId);
+    return notFound;
+  }
+
   if (hierarchy != null && !courseFound) return notFound;
 
   return (
     <>
-      <Sidebar hierarchy={hierarchy} currentBlock={currentBlock}></Sidebar>
+      <CoursesSidebar
+        hierarchy={hierarchy}
+        currentBlock={currentBlock}
+      ></CoursesSidebar>
       <BlockViewContainer>
         <Routes>
           <Route
