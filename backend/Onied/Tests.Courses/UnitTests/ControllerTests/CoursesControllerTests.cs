@@ -1,13 +1,11 @@
 using AutoFixture;
 using AutoMapper;
-using Courses;
 using Courses.Controllers;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Task = System.Threading.Tasks.Task;
@@ -17,22 +15,27 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class CoursesControllerTests
 {
-    private readonly AppDbContext _context;
     private readonly Mock<ILogger<CoursesController>> _logger = new();
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Fixture _fixture = new();
     private readonly CoursesController _controller;
     private readonly TestDataGenerator _generator;
     private readonly IEnumerable<Course> _courses;
+    private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ICheckTasksService> _checkTasksService = new();
 
     public CoursesControllerTests()
     {
-        _context = ContextGenerator.GetContext();
-        _generator = new TestDataGenerator(_context, _fixture);
+        _generator = new TestDataGenerator(_fixture, _courseRepository, _blockRepository);
         _courses = _generator.GenerateTestCourses();
         _generator.AddTestCoursesToDb(_courses);
-        _controller = new CoursesController(_logger.Object, _mapper, _context, _checkTasksService.Object);
+        _controller = new CoursesController(
+            _logger.Object,
+            _mapper,
+            _courseRepository.Object,
+            _blockRepository.Object,
+            _checkTasksService.Object);
     }
 
     [Fact]
@@ -40,6 +43,9 @@ public class CoursesControllerTests
     {
         // Arrange
         var courseId = -1;
+
+        _courseRepository.Setup(r => r.GetCourseAsync(-1))
+            .Returns(Task.FromResult<Course?>(null));
 
         // Act
         var result = await _controller.GetCoursePreview(courseId);
@@ -52,8 +58,29 @@ public class CoursesControllerTests
     public async Task GetCoursePreview_ReturnsCoursePreview_NotProgramVisible()
     {
         // Arrange
-        var course = _courses.First();
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, false)
+            .Create();
         var courseId = course.Id;
+
+        var author = _fixture.Build<User>()
+            .With(author1 => author1.Id, Guid.NewGuid)
+            .Do(author1 => author1.Courses.Add(course))
+            .Create();
+        course.Author = author;
+        course.AuthorId = author.Id;
+
+        var sequenceModule = 1;
+        var modules = _fixture.Build<Module>()
+            .With(module => module.Id, () => sequenceModule++)
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .CreateMany(3)
+            .ToList();
+        modules.ForEach(module => course.Modules.Add(module));
+
+        _courseRepository.Setup(r => r.GetCourseAsync(courseId))
+            .Returns(Task.FromResult<Course?>(course));
 
         // Act
         var result = await _controller.GetCoursePreview(courseId);
@@ -70,9 +97,29 @@ public class CoursesControllerTests
     public async Task GetCoursePreview_ReturnsCoursePreview_ProgramVisible()
     {
         // Arrange
-        var course = _courses.First(course => course.IsProgramVisible);
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
         var courseId = course.Id;
 
+        var author = _fixture.Build<User>()
+            .With(author1 => author1.Id, Guid.NewGuid)
+            .Do(author1 => author1.Courses.Add(course))
+            .Create();
+        course.Author = author;
+        course.AuthorId = author.Id;
+
+        var sequenceModule = 1;
+        var modules = _fixture.Build<Module>()
+            .With(module => module.Id, () => sequenceModule++)
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .CreateMany(3)
+            .ToList();
+        modules.ForEach(module => course.Modules.Add(module));
+
+        _courseRepository.Setup(r => r.GetCourseAsync(courseId))
+            .Returns(Task.FromResult<Course?>(course));
 
         // Act
         var result = await _controller.GetCoursePreview(courseId);
@@ -91,6 +138,9 @@ public class CoursesControllerTests
         // Arrange
         var courseId = -1;
 
+        _courseRepository.Setup(r => r.GetCourseWithBlocksAsync(courseId))
+            .Returns(Task.FromResult<Course?>(null));
+
         // Act
         var result = await _controller.GetCourseHierarchy(courseId);
 
@@ -102,7 +152,22 @@ public class CoursesControllerTests
     public async Task GetCourseHierarchy_ReturnsCourse()
     {
         // Arrange
-        var courseId = _courses.First().Id;
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+        var courseId = course.Id;
+
+        var sequenceModule = 1;
+        var modules = _fixture.Build<Module>()
+            .With(module => module.Id, () => sequenceModule++)
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .CreateMany(3)
+            .ToList();
+        modules.ForEach(module => course.Modules.Add(module));
+
+        _courseRepository.Setup(r => r.GetCourseWithBlocksAsync(courseId))
+            .Returns(Task.FromResult<Course?>(course));
 
         // Act
         var result = await _controller.GetCourseHierarchy(courseId);
@@ -119,8 +184,11 @@ public class CoursesControllerTests
     public async Task GetSummaryBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
-        var courseId = _courses.First().Id;
+        var courseId = -1;
         var blockId = -1;
+
+        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
+            .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
         var result = await _controller.GetSummaryBlock(courseId, blockId);
@@ -133,13 +201,30 @@ public class CoursesControllerTests
     public async Task GetSummaryBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<SummaryBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.SummaryBlock)
+            .Create();
+
         var courseId = -1;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<SummaryBlock>().First().Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
+            .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -149,10 +234,26 @@ public class CoursesControllerTests
     public async Task GetSummaryBlock_ReturnsBlock()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<SummaryBlock>().First().Id;
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<SummaryBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.SummaryBlock).Create();
+
+        var courseId = course.Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
+            .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
         var result = await _controller.GetSummaryBlock(courseId, blockId);
@@ -161,15 +262,18 @@ public class CoursesControllerTests
         var actionResult = Assert.IsType<ActionResult<SummaryBlockDto>>(result);
         var value = Assert.IsAssignableFrom<SummaryBlockDto>(
             actionResult.Value);
+
         Assert.Equal(blockId, value.Id);
     }
 
     [Fact]
     public async Task GetVideoBlock_ReturnsNotFound_WhenBlockNotExist()
     {
-        // Arrange
-        var courseId = _courses.First().Id;
+        var courseId = -1;
         var blockId = -1;
+
+        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
+            .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
@@ -182,10 +286,27 @@ public class CoursesControllerTests
     public async Task GetVideoBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<VideoBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.VideoBlock).Create();
+
         var courseId = -1;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<VideoBlock>().First().Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetVideoBlock(blockId))
+            .Returns(Task.FromResult<VideoBlock?>(block));
+
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
 
@@ -197,10 +318,27 @@ public class CoursesControllerTests
     public async Task GetVideoBlock_ReturnsBlock()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<VideoBlock>().First().Id;
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<VideoBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.VideoBlock)
+            .Create();
+
+        var courseId = course.Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetVideoBlock(blockId))
+            .Returns(Task.FromResult<VideoBlock?>(block));
 
         // Act
         var result = await _controller.GetVideoBlock(courseId, blockId);
@@ -216,8 +354,11 @@ public class CoursesControllerTests
     public async Task GetTasksBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
-        var courseId = _courses.First().Id;
+        var courseId = -1;
         var blockId = -1;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, false, false))
+            .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
@@ -230,10 +371,27 @@ public class CoursesControllerTests
     public async Task GetTasksBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+
         var courseId = -1;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First().Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, false, false))
+            .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);
@@ -246,10 +404,27 @@ public class CoursesControllerTests
     public async Task GetTasksBlock_ReturnsBlock()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First().Id;
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+
+        var courseId = course.Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
+            .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
         var result = await _controller.GetTaskBlock(courseId, blockId);

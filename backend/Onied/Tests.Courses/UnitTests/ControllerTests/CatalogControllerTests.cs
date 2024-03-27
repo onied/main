@@ -6,6 +6,7 @@ using Courses.Dtos;
 using Courses.Helpers;
 using Courses.Models;
 using Courses.Profiles;
+using Courses.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Task = System.Threading.Tasks.Task;
@@ -15,6 +16,8 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 public class CatalogControllerTests
 {
     private readonly AppDbContext _context;
+    private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ILogger<CatalogController>> _logger = new();
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Fixture _fixture = new();
@@ -25,10 +28,10 @@ public class CatalogControllerTests
     public CatalogControllerTests()
     {
         _context = ContextGenerator.GetContext();
-        _generator = new TestDataGenerator(_context, _fixture);
+        _generator = new TestDataGenerator(_fixture, _courseRepository, _blockRepository, _context);
         _courses = _generator.GenerateTestCourses();
         _generator.AddTestCoursesToDb(_courses);
-        _controller = new CatalogController(_logger.Object, _mapper, _context);
+        _controller = new CatalogController(_logger.Object, _mapper, _courseRepository.Object);
     }
 
     [Fact]

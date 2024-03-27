@@ -9,7 +9,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
     public Task<int> CountAsync()
         => dbContext.Courses.CountAsync();
 
-    public async Task<List<Course>> GetCoursesAsync(int? offset, int? limit)
+    public async Task<List<Course>> GetCoursesAsync(int? offset = null, int? limit = null)
     {
         var query = dbContext.Courses
             .Include(course => course.Author)
