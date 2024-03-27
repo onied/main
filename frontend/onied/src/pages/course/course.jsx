@@ -11,15 +11,14 @@ function Course() {
   const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
-
   const id = Number(courseId);
-  if (isNaN(id)) {
-    console.log(id);
-    console.log(courseId);
-    return notFound;
-  }
 
   useEffect(() => {
+    if (isNaN(id)) {
+      setHierarchy({});
+      setCourseFound(false);
+      return;
+    }
     api
       .get("courses/" + id + "/hierarchy/")
       .then((response) => {
@@ -36,6 +35,12 @@ function Course() {
         }
       });
   }, []);
+
+  if (isNaN(id)) {
+    console.log(id);
+    console.log(courseId);
+    return notFound;
+  }
 
   if (hierarchy != null && !courseFound) return notFound;
 

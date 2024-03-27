@@ -37,7 +37,9 @@ function ProfileCourses() {
         console.log(response);
         setCoursesList(response.data);
       })
-      .catch();
+      .catch(() => {
+        setCoursesList([]);
+      });
   }, [profile]);
   if (profile == null) return <></>;
   return (
@@ -45,7 +47,7 @@ function ProfileCourses() {
       <h3 className={classes.pageTitle}>Доступные курсы</h3>
       {coursesList === undefined ? (
         <BeatLoader color="var(--accent-color)"></BeatLoader>
-      ) : coursesList ? (
+      ) : coursesList.length > 0 ? (
         <CourseCardsContainer
           coursesList={coursesList}
           owned={true}

@@ -3,6 +3,7 @@ import CatalogHeader from "../../components/catalog/catalogHeader/catalogHeader.
 import CatalogNavigation from "../../components/catalog/catalogNavigation/catalogNavigation.jsx";
 import { useEffect, useState } from "react";
 import api from "../../config/axios.ts";
+import classes from "./catalog.module.css";
 
 function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +30,9 @@ function Catalog() {
   return (
     <div>
       <CatalogHeader />
-      <CourseCardsContainer coursesList={coursesList} />
+      <div className={classes.courseCardsContainerContainer}>
+        <CourseCardsContainer coursesList={coursesList} />
+      </div>
       <CatalogNavigation
         currentPage={currentPage}
         maxPageAmount={pagesCount}
