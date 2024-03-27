@@ -18,7 +18,9 @@ builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>(
 builder.Services.AddCors();
 
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 
 var app = builder.Build();
 

@@ -6,8 +6,8 @@ public class Course
 {
     public int Id { get; set; }
 
-    public int AuthorId { get; set; }
-    public Author Author { get; set; } = null!;
+    public Guid? AuthorId { get; set; }
+    public User? Author { get; set; }
 
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;

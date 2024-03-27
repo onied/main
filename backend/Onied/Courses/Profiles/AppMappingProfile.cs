@@ -14,10 +14,11 @@ public class AppMappingProfile : Profile
             expression => expression.MapFrom(block => block.IsCompleted));
         CreateMap<Course, CourseDto>();
         CreateMap<Module, ModuleDto>();
-        CreateMap<Author, AuthorDto>().ForMember(dest => dest.Name, opt => opt.MapFrom(new AuthorNameResolver()));
+        CreateMap<User, AuthorDto>().ForMember(dest => dest.Name, opt => opt.MapFrom(new AuthorNameResolver()));
         CreateMap<Category, CategoryDto>();
         CreateMap<Course, PreviewDto>().ForMember(preview => preview.CourseAuthor,
                 options => options.MapFrom(course => course.Author))
+            .ForMember(preview => preview.Price, options => options.MapFrom(course => course.PriceRubles))
             .ForMember(preview => preview.CourseProgram,
                 options => options.MapFrom(new CourseProgramResolver()));
         CreateMap<SummaryBlock, SummaryBlockDto>();

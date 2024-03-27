@@ -1,10 +1,9 @@
-import Sidebar from "../../components/sidebar/sidebar";
+import CoursesSidebar from "../../components/sidebar/coursesSidebar";
 import BlockViewContainer from "../../components/blocks/blockViewContainer";
 import { Route, Routes, useParams } from "react-router-dom";
-import Config from "../../config/config";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import BlockDispatcher from "../../components/blocks/blockDispatcher";
+import api from "../../config/axios";
 
 function Course() {
   const { courseId } = useParams();
@@ -12,17 +11,16 @@ function Course() {
   const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
-
   const id = Number(courseId);
-  if (isNaN(id)) {
-    console.log(id);
-    console.log(courseId);
-    return notFound;
-  }
 
   useEffect(() => {
-    axios
-      .get(Config.CoursesBackend + "courses/" + id + "/get_hierarchy/")
+    if (isNaN(id)) {
+      setHierarchy({});
+      setCourseFound(false);
+      return;
+    }
+    api
+      .get("courses/" + id + "/hierarchy/")
       .then((response) => {
         console.log(response.data);
         setHierarchy(response.data);
@@ -38,11 +36,20 @@ function Course() {
       });
   }, []);
 
+  if (isNaN(id)) {
+    console.log(id);
+    console.log(courseId);
+    return notFound;
+  }
+
   if (hierarchy != null && !courseFound) return notFound;
 
   return (
     <>
-      <Sidebar hierarchy={hierarchy} currentBlock={currentBlock}></Sidebar>
+      <CoursesSidebar
+        hierarchy={hierarchy}
+        currentBlock={currentBlock}
+      ></CoursesSidebar>
       <BlockViewContainer>
         <Routes>
           <Route

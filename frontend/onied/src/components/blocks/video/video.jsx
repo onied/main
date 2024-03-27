@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import EmbedVideo from "./embedVideo";
 import BeatLoader from "react-spinners/BeatLoader";
-import axios from "axios";
-import Config from "../../../config/config";
+import api from "../../../config/axios";
 
 function Video({ courseId, blockId }) {
   const [videoBlock, setVideoBlock] = useState();
@@ -10,14 +9,8 @@ function Video({ courseId, blockId }) {
 
   useEffect(() => {
     setFound(undefined);
-    axios
-      .get(
-        Config.CoursesBackend +
-          "courses/" +
-          courseId +
-          "/get_video_block/" +
-          blockId
-      )
+    api
+      .get("courses/" + courseId + "/video/" + blockId)
       .then((response) => {
         console.log(response.data);
         setFound(true);

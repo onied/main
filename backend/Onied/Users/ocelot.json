@@ -1,0 +1,36 @@
+{
+  "Routes": [
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/api/v1/account/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5135
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/accounts/{userId}/{everything}",
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5135
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/{everything}"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5288"
+  }
+}
