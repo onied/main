@@ -15,21 +15,16 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class CoursesControllerTests
 {
-    private readonly Mock<ILogger<CoursesController>> _logger = new();
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Fixture _fixture = new();
     private readonly CoursesController _controller;
-    private readonly TestDataGenerator _generator;
-    private readonly IEnumerable<Course> _courses;
+    private readonly Mock<ILogger<CoursesController>> _logger = new();
     private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ICheckTasksService> _checkTasksService = new();
 
     public CoursesControllerTests()
     {
-        _generator = new TestDataGenerator(_fixture, _courseRepository, _blockRepository);
-        _courses = _generator.GenerateTestCourses();
-        _generator.AddTestCoursesToDb(_courses);
         _controller = new CoursesController(
             _logger.Object,
             _mapper,
@@ -177,7 +172,7 @@ public class CoursesControllerTests
         var value = Assert.IsAssignableFrom<CourseDto>(
             actionResult.Value);
         Assert.Equal(courseId, value.Id);
-        Assert.Equal(_courses.First().Modules.Count, value.Modules.Count);
+        Assert.Equal(course.Modules.Count, value.Modules.Count);
     }
 
     [Fact]
@@ -216,6 +211,7 @@ public class CoursesControllerTests
             .With(block => block.ModuleId, module.Id)
             .With(block => block.BlockType, BlockType.SummaryBlock)
             .Create();
+        module.Blocks.Add(block);
 
         var courseId = -1;
         var blockId = block.Id;
@@ -248,6 +244,7 @@ public class CoursesControllerTests
             .With(block => block.Module, module)
             .With(block => block.ModuleId, module.Id)
             .With(block => block.BlockType, BlockType.SummaryBlock).Create();
+        module.Blocks.Add(block);
 
         var courseId = course.Id;
         var blockId = block.Id;
@@ -300,6 +297,7 @@ public class CoursesControllerTests
             .With(block => block.Module, module)
             .With(block => block.ModuleId, module.Id)
             .With(block => block.BlockType, BlockType.VideoBlock).Create();
+        module.Blocks.Add(block);
 
         var courseId = -1;
         var blockId = block.Id;
@@ -333,6 +331,7 @@ public class CoursesControllerTests
             .With(block => block.ModuleId, module.Id)
             .With(block => block.BlockType, BlockType.VideoBlock)
             .Create();
+        module.Blocks.Add(block);
 
         var courseId = course.Id;
         var blockId = block.Id;
@@ -357,7 +356,7 @@ public class CoursesControllerTests
         var courseId = -1;
         var blockId = -1;
 
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, false, false))
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
@@ -386,11 +385,12 @@ public class CoursesControllerTests
             .With(block => block.ModuleId, module.Id)
             .With(block => block.BlockType, BlockType.TasksBlock)
             .Create();
+        module.Blocks.Add(block);
 
         var courseId = -1;
         var blockId = block.Id;
 
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, false, false))
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
@@ -419,6 +419,7 @@ public class CoursesControllerTests
             .With(block => block.ModuleId, module.Id)
             .With(block => block.BlockType, BlockType.TasksBlock)
             .Create();
+        module.Blocks.Add(block);
 
         var courseId = course.Id;
         var blockId = block.Id;
@@ -440,8 +441,11 @@ public class CoursesControllerTests
     public async Task GetTaskPointsStored_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
-        var courseId = _courses.First().Id;
+        var courseId = -1;
         var blockId = -1;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
+            .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
         var result = await _controller.GetTaskPointsStored(courseId, blockId);
@@ -454,10 +458,28 @@ public class CoursesControllerTests
     public async Task GetTaskPointsStored_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
         var courseId = -1;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First().Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
+            .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
         var result = await _controller.GetTaskPointsStored(courseId, blockId);
@@ -470,11 +492,46 @@ public class CoursesControllerTests
     public async Task GetTaskPointsStored_ReturnsPointsRight()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var block = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First();
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
+        var variantTasks = _fixture.Build<VariantsTask>()
+            .With(task => task.TasksBlock, block)
+            .With(task => task.TasksBlockId, block.Id)
+            .With(task => task.TaskType, TaskType.MultipleAnswers)
+            .CreateMany(3)
+            .ToList();
+
+        var courseId = course.Id;
         var blockId = block.Id;
+
+        foreach (var variantTask in variantTasks)
+        {
+            var variants = _fixture.Build<TaskVariant>()
+                .With(variant => variant.Task, variantTask)
+                .With(variant => variant.TaskId, variantTask.Id)
+                .CreateMany(3)
+                .ToList();
+
+            variants.ForEach(variant => variantTask.Variants.Add(variant));
+        }
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
+            .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
         var result = await _controller.GetTaskPointsStored(courseId, blockId);
@@ -496,8 +553,11 @@ public class CoursesControllerTests
     public async Task CheckTaskBlock_ReturnsNotFound_WhenBlockNotExist()
     {
         // Arrange
-        var courseId = _courses.First().Id;
+        var courseId = -1;
         var blockId = -1;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
+            .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
         var result = await _controller.CheckTaskBlock(courseId, blockId, new List<UserInputDto>());
@@ -510,10 +570,28 @@ public class CoursesControllerTests
     public async Task CheckTaskBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
         var courseId = -1;
-        var blockId = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First().Id;
+        var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
+            .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
         var result = await _controller.CheckTaskBlock(courseId, blockId, new List<UserInputDto>());
@@ -526,11 +604,29 @@ public class CoursesControllerTests
     public async Task CheckTaskBlock_ReturnsBadRequest_EmptyAnyUserInputDto()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var block = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First();
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
+        var courseId = course.Id;
         var blockId = block.Id;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
+            .Returns(Task.FromResult<TasksBlock?>(block));
+
         var inputsDto = _fixture.Build<UserInputDto>()
             .FromFactory(() => null)
             .CreateMany(1)
@@ -547,10 +643,24 @@ public class CoursesControllerTests
     public async Task CheckTaskBlock_ReturnsNotFound_NotTaskInBlock()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var block = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First();
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
+        var courseId = course.Id;
         var blockId = block.Id;
         var inputsDto = _fixture.Build<UserInputDto>()
             .With(input => input.TaskId, -1)
@@ -561,19 +671,43 @@ public class CoursesControllerTests
         var result = await _controller.CheckTaskBlock(courseId, blockId, inputsDto);
 
         // Assert
-        Assert.IsType<NotFoundObjectResult>(result.Result);
+        Assert.IsType<NotFoundResult>(result.Result);
     }
 
     [Fact]
     public async Task CheckTaskBlock_ReturnsBadRequest_NotTaskType()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var block = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First();
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
+        var task = _fixture.Build<InputTask>()
+            .With(task => task.TasksBlock, block)
+            .With(task => task.TasksBlockId, block.Id)
+            .With(task => task.TaskType, TaskType.InputAnswer)
+            .Create();
+        block.Tasks.Add(task);
+
+        var courseId = course.Id;
         var blockId = block.Id;
-        var task = block.Tasks.First();
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
+            .Returns(Task.FromResult<TasksBlock?>(block));
+
         var inputsDto = _fixture.Build<UserInputDto>()
             .With(input => input.TaskId, task.Id)
             .With(input => input.TaskType, task.TaskType + 1 % 4)
@@ -591,17 +725,42 @@ public class CoursesControllerTests
     public async Task CheckTaskBlock_ReturnsListUserTaskPointsDto()
     {
         // Arrange
-        var courseId = _courses.First().Id;
-        var block = _courses.First()
-            .Modules.First()
-            .Blocks.OfType<TasksBlock>().First();
+        var course = _fixture.Build<Course>()
+            .With(c => c.IsProgramVisible, true)
+            .Create();
+
+        var module = _fixture.Build<Module>()
+            .With(module => module.Course, course)
+            .With(module => module.CourseId, course.Id)
+            .Create();
+        course.Modules.Add(module);
+
+        var block = _fixture.Build<TasksBlock>()
+            .With(block => block.Module, module)
+            .With(block => block.ModuleId, module.Id)
+            .With(block => block.BlockType, BlockType.TasksBlock)
+            .Create();
+        module.Blocks.Add(block);
+
+        var task = _fixture.Build<InputTask>()
+            .With(task => task.TasksBlock, block)
+            .With(task => task.TasksBlockId, block.Id)
+            .With(task => task.TaskType, TaskType.InputAnswer)
+            .Create();
+        block.Tasks.Add(task);
+
+        var courseId = course.Id;
         var blockId = block.Id;
-        var task = block.Tasks.First();
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
+            .Returns(Task.FromResult<TasksBlock?>(block));
+
         var inputsDto = _fixture.Build<UserInputDto>()
             .With(input => input.TaskId, task.Id)
             .With(input => input.TaskType, task.TaskType)
             .CreateMany(1)
             .ToList();
+
         _checkTasksService.Setup(cts => cts.CheckTask(It.IsAny<TaskProj>(), It.IsAny<UserInputDto>()))
             .Returns(new UserTaskPoints
             {
