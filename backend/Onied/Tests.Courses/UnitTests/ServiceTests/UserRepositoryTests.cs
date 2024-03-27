@@ -17,7 +17,7 @@ public class UserRepositoryTests
 
     private Guid _notExistingUserId;
     private Guid _existingUserId;
-    private IEnumerable<Course> _courses;
+    private IEnumerable<Course> _courses = null!;
 
     public UserRepositoryTests()
     {
@@ -77,32 +77,32 @@ public class UserRepositoryTests
 
     private void ProduceTestData()
     {
-        _notExistingUserId = Guid.NewGuid();
-
         var author = _fixture.Build<User>()
             .With(author1 => author1.Id, Guid.NewGuid)
             .Create();
 
-        _context.Users.Add(author);
-
-        _courses = Enumerable.Range(1, CourseSequenceLength)
+        var courses = Enumerable.Range(1, CourseSequenceLength)
                 .Select(i => _fixture.Build<Course>()
                         .With(c => c.Id, i)
                         .With(c => c.AuthorId, author.Id)
                         .Create())
                 .ToList();
-        _context.Courses.AddRange(_courses);
 
         var user = _fixture.Build<User>()
             .With(u => u.Id, Guid.NewGuid)
             .Create();
-        foreach (var c in _courses)
+        foreach (var c in courses)
         {
             user.Courses.Add(c);
         }
-        _context.Add(user);
-        _existingUserId = user.Id;
 
+        _existingUserId = user.Id;
+        _notExistingUserId = Guid.NewGuid();
+        _courses = courses;
+
+        _context.Courses.AddRange(courses);
+        _context.Users.Add(author);
+        _context.Users.Add(user);
         _context.SaveChanges();
     }
 }
