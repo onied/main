@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Courses;
 using Courses.Controllers;
 using Courses.Dtos;
 using Courses.Helpers;
@@ -15,22 +14,14 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class CatalogControllerTests
 {
-    private readonly AppDbContext _context;
-    private readonly Mock<ICourseRepository> _courseRepository = new();
-    private readonly Mock<IBlockRepository> _blockRepository = new();
-    private readonly Mock<ILogger<CatalogController>> _logger = new();
+    private readonly CatalogController _controller;
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Fixture _fixture = new();
-    private readonly CatalogController _controller;
-    private readonly TestDataGenerator _generator;
-    private readonly IEnumerable<Course> _courses;
+    private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<ILogger<CatalogController>> _logger = new();
 
     public CatalogControllerTests()
     {
-        _context = ContextGenerator.GetContext();
-        _generator = new TestDataGenerator(_fixture, _courseRepository, _blockRepository, _context);
-        _courses = _generator.GenerateTestCourses();
-        _generator.AddTestCoursesToDb(_courses);
         _controller = new CatalogController(_logger.Object, _mapper, _courseRepository.Object);
     }
 
@@ -39,6 +30,30 @@ public class CatalogControllerTests
     {
         // Arrange
         var pageQuery = new PageQuery(); // Adjust as needed
+
+        var courses = _fixture.Build<Course>()
+            .CreateMany(3)
+            .ToList();
+
+        foreach (var course in courses)
+        {
+            var author = _fixture.Build<User>()
+                .With(author1 => author1.Id, Guid.NewGuid)
+                .Do(author1 => author1.Courses.Add(course))
+                .Create();
+            course.Author = author;
+            course.AuthorId = author.Id;
+
+            var category = _fixture.Build<Category>()
+                .Do(category1 => category1.Courses.Add(course))
+                .Create();
+            course.Category = category;
+            course.CategoryId = category.Id;
+        }
+
+        _courseRepository
+            .Setup(e => e.GetCoursesAsync(0, pageQuery.ElementsOnPage))
+            .Returns(Task.FromResult(courses));
 
         // Act
         var result = await _controller.Get(pageQuery);

@@ -1,26 +1,18 @@
 ﻿using AutoFixture;
 using Courses;
 using Courses.Models;
-using Courses.Services;
-using Moq;
-using Task = System.Threading.Tasks.Task;
 
 namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class TestDataGenerator
 {
     private readonly AppDbContext _context;
-    private readonly Mock<ICourseRepository> _courseRepository;
-    private readonly Mock<IBlockRepository> _blockRepository;
     private readonly IFixture _fixture;
 
-    public TestDataGenerator(IFixture fixture, Mock<ICourseRepository> courseRepository, Mock<IBlockRepository> blockRepository,
-        AppDbContext? context = null)
+    public TestDataGenerator(IFixture fixture, AppDbContext? context = null)
     {
         _context = context ?? ContextGenerator.GetContext();
         _fixture = fixture;
-        _courseRepository = courseRepository;
-        _blockRepository = blockRepository;
     }
 
     public IEnumerable<Course> GenerateTestCourses()
@@ -138,10 +130,6 @@ public class TestDataGenerator
                 tasksBlocks.ForEach(block => module.Blocks.Add(block));
             }
         }
-
-        _courseRepository
-            .Setup(e => e.GetCoursesAsync(null, null))
-            .Returns(Task.FromResult(courses));
 
         return courses;
     }

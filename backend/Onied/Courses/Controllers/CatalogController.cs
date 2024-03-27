@@ -29,7 +29,7 @@ public class CatalogController : ControllerBase
             pageQuery,
             await _courseRepository.CountAsync(),
             out var offset);
-        var courses = _courseRepository.GetCoursesAsync(
+        var courses = await _courseRepository.GetCoursesAsync(
             offset,
             page.ElementsPerPage);
         page.Elements = _mapper.Map<IEnumerable<CourseCardDto>>(courses);
