@@ -1,0 +1,41 @@
+.container {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header {
+  border-bottom: 1px solid #dbdbdb;
+  overflow: hidden;
+  font-size: 16pt;
+}
+
+.active {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  background-color: var(--accent-color);
+  height: 100%;
+  padding: 0.5rem 1rem;
+}
+
+.regular {
+  display: inline-block;
+  color: #686868;
+  text-decoration: none;
+  height: 100%;
+  padding: 0.5rem 1rem;
+}
+
+.button {
+  padding: 0.5rem 2rem;
+  border-radius: 1rem;
+  background-color: var(--accent-color);
+  box-shadow: 0px 4px 7px 0px #9715d380;
+  font-weight: 600;
+  font-size: 16pt;
+  color: white;
+  border: 0;
+  cursor: pointer;
+}

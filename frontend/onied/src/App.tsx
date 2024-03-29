@@ -18,18 +18,20 @@ import ProfilePage from "./pages/profile/profile";
 import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 import ProfileService from "./services/profileService";
 import { LoadingContext } from "./hooks/profile/loadingContext";
+import TeachingPage from "./pages/teaching/teaching";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  LoginService.initialize();
+  const [refreshingTokens, setRefreshingTokens] = useState(false);
+  LoginService.initialize(setRefreshingTokens);
   LoginService.registerAutomaticRefresh();
   ProfileService.initialize(setProfile, setLoading);
   useEffect(() => {
-    if (profile == null && LoginService.checkLoggedIn())
-      ProfileService.fetchProfile();
+    if (refreshingTokens) setLoading(true);
+    if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
     else setLoading(false);
-  }, []);
+  }, [refreshingTokens]);
   return (
     <>
       <ProfileContext.Provider value={profile}>
@@ -54,6 +56,7 @@ function App() {
               <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
               <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
               <Route path="/profile/*" element={<ProfilePage />}></Route>
+              <Route path="/teaching/*" element={<TeachingPage />}></Route>
             </Routes>
           </main>
         </LoadingContext.Provider>
