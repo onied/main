@@ -39,8 +39,8 @@ function TeachingHeader() {
   }, [location.pathname]);
 
   return (
-    <div className={classes.container}>
-      <div className={classes.header}>{tabs.map(renderBlock)}</div>
+    <div className={classes.header}>
+      <span>{tabs.map(renderBlock)}</span>
       <Button className={classes.button}>создать курс</Button>
     </div>
   );
