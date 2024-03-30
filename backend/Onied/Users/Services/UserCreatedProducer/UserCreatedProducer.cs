@@ -22,6 +22,6 @@ public class UserCreatedProducer(
 
         var userCreated = mapper.Map<UserCreated>(user);
         await publishEndpoint.Publish(userCreated);
-        logger.LogInformation("Published User({user})", user);
+        logger.LogInformation("Published User(id={userId})", userId);
     }
 }

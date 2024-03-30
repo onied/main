@@ -30,12 +30,13 @@ public class ProfileProducer(
     {
         if (!Guid.TryParse(await userManager.GetUserIdAsync(user), out var userId))
         {
-            logger.LogError("Error when publishing User({user}): Invalid id format", user);
+            logger.LogError("Error when publishing User(id={userId}): Invalid id format", userId);
             return;
         }
         user.Id = userId.ToString();
 
         var profilePhotoUpdated = mapper.Map<ProfilePhotoUpdated>(user);
         await publishEndpoint.Publish(profilePhotoUpdated);
+        logger.LogInformation("Published ProfileProtoUpdated(id={userId})", userId);
     }
 }
