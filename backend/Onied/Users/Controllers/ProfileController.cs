@@ -1,6 +1,4 @@
-using System.Security.Claims;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Users.Dtos;
@@ -16,10 +14,14 @@ public class ProfileController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IProfileProducer _profileProducer;
 
-    public ProfileController(ILogger<ProfileController> logger, IMapper mapper)
+    public ProfileController(
+        ILogger<ProfileController> logger,
+        IMapper mapper,
+        IProfileProducer profileProducer)
     {
         _logger = logger;
         _mapper = mapper;
+        _profileProducer = profileProducer;
     }
 
     [HttpGet]

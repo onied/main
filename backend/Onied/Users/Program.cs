@@ -6,6 +6,7 @@ using Ocelot.Middleware;
 using Users;
 using Users.Profiles;
 using Users.Services.EmailSender;
+using Users.Services.ProfileProducer;
 using Users.Services.UserCreatedProducer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,7 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
 builder.Services.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
+builder.Services.AddScoped<IProfileProducer, ProfileProducer>();
 
 var app = builder.Build();
 app.UseRouting();
