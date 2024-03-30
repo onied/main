@@ -4,7 +4,7 @@ using MassTransit;
 using MassTransit.Data.Messages;
 using Task = System.Threading.Tasks.Task;
 
-namespace Courses.Services.UserCreatedConsumer;
+namespace Courses.Services.Consumers;
 
 public class UserCreatedConsumer(
     ILogger<UserCreatedConsumer> logger,
@@ -14,7 +14,8 @@ public class UserCreatedConsumer(
     public async Task Consume(ConsumeContext<UserCreated> context)
     {
         var user = mapper.Map<User>(context.Message);
-        await userRepository.SaveUserAsync(user);
-        logger.LogInformation("Created User({user}) in database", user);
+        logger.LogInformation("Trying to create User profile(id={userId}) photo in database", user.Id);
+        await userRepository.AddUserAsync(user);
+        logger.LogInformation("Created User profile(id={userId}) in database", user.Id);
     }
 }

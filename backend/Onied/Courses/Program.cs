@@ -1,8 +1,9 @@
 using Courses;
 using Courses.Profiles;
 using Courses.Services;
-using Courses.Services.UserCreatedConsumer;
+using Courses.Services.Consumers;
 using MassTransit;
+using MassTransit.Data.Messages;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,8 @@ builder.Services.AddCors();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<ProfileUpdatedConsumer>();
+    x.AddConsumer<ProfilePhotoUpdatedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
