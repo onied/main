@@ -5,7 +5,7 @@ import classes from "./editHierarchy.module.css";
 import Button from "../../../components/general/button/button";
 import { BeatLoader } from "react-spinners";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import type { DropResult } from "@hello-pangea/dnd";
+import type { DropResult, DragStart } from "@hello-pangea/dnd";
 
 type Block = {
   id: number;
@@ -28,9 +28,16 @@ type Course = {
 function EditCourseHierarchy() {
   const { courseId } = useParams();
   const [hierarchy, setHierarchy] = useState<Course | null | undefined>();
+  const [moduleDropDisabled, setModuleDropDisabled] = useState(false);
+  const [hierarchyDropDisabled, setHierarchyDropDisabled] = useState(false);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
   const id = Number(courseId);
   const blockTypes = ["", "summary", "video", "tasks"];
+
+  const onDragStart = (start: DragStart) => {
+    setModuleDropDisabled(start.draggableId.startsWith("module"));
+    setHierarchyDropDisabled(start.draggableId.startsWith("block"));
+  };
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -38,7 +45,6 @@ function EditCourseHierarchy() {
     }
     if (result.draggableId.startsWith("module")) {
       if (result.destination.droppableId != "hierarchy") {
-        console.log("fuck you");
         return;
       }
       const newArray = Array.from(hierarchy!.modules);
@@ -105,7 +111,10 @@ function EditCourseHierarchy() {
             </div>
           )}
         </Draggable>
-        <Droppable droppableId={"module" + module.id}>
+        <Droppable
+          droppableId={"module" + module.id}
+          isDropDisabled={moduleDropDisabled}
+        >
           {(provided, snapshot) => (
             <div
               {...provided.droppableProps}
@@ -168,8 +177,11 @@ function EditCourseHierarchy() {
         <div className={classes.buttonsUp}>
           <Button>добавить модуль</Button>
         </div>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="hierarchy">
+        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+          <Droppable
+            droppableId="hierarchy"
+            isDropDisabled={hierarchyDropDisabled}
+          >
             {(provided, snapshot) => (
               <div
                 {...provided.droppableProps}
