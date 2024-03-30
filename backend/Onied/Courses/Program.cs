@@ -1,6 +1,8 @@
 using Courses;
 using Courses.Profiles;
 using Courses.Services;
+using Courses.Services.UserCreatedConsumer;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,21 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserCreatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

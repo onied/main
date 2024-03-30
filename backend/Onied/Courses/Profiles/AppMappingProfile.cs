@@ -2,6 +2,7 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles.Resolvers;
+using MassTransit.Data.Messages;
 using Task = Courses.Models.Task;
 
 namespace Courses.Profiles;
@@ -29,5 +30,8 @@ public class AppMappingProfile : Profile
         CreateMap<TasksBlock, TasksBlockDto>();
         CreateMap<Course, CourseCardDto>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceRubles));
         CreateMap<UserTaskPoints, UserTaskPointsDto>();
+
+        //MassTransit
+        CreateMap<UserCreated, User>();
     }
 }

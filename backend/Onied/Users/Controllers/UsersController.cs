@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Users.Dtos;
 using Users.Responses;
+using Users.Services.UserCreatedProducer;
 
 namespace Users.Controllers;
 
@@ -23,14 +24,20 @@ public class UsersController : ControllerBase
     private readonly IEmailSender<AppUser> _emailSender;
     private readonly LinkGenerator _linkGenerator;
     private readonly TimeProvider _timeProvider;
+    private readonly IUserCreatedProducer _userCreatedProducer;
 
-    public UsersController(IEmailSender<AppUser> emailSender, LinkGenerator linkGenerator,
-        IOptionsMonitor<BearerTokenOptions> bearerTokenOptions, TimeProvider timeProvider)
+    public UsersController(
+        IEmailSender<AppUser> emailSender,
+        LinkGenerator linkGenerator,
+        IOptionsMonitor<BearerTokenOptions> bearerTokenOptions,
+        TimeProvider timeProvider,
+        IUserCreatedProducer userCreatedProducer)
     {
         _emailSender = emailSender;
         _linkGenerator = linkGenerator;
         _bearerTokenOptions = bearerTokenOptions;
         _timeProvider = timeProvider;
+        _userCreatedProducer = userCreatedProducer;
     }
 
     [HttpPost]
@@ -56,6 +63,7 @@ public class UsersController : ControllerBase
 
         if (!result.Succeeded) return CreateValidationProblem(result);
 
+        await _userCreatedProducer.PublishAsync(user);
         await SendConfirmationEmailAsync(user, userManager, HttpContext, email);
         return TypedResults.Ok();
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Users.Dtos;
+using Users.Services.ProfileProducer;
 
 namespace Users.Controllers;
 
@@ -13,6 +14,7 @@ public class ProfileController : ControllerBase
 {
     private readonly ILogger<ProfileController> _logger;
     private readonly IMapper _mapper;
+    private readonly IProfileProducer _profileProducer;
 
     public ProfileController(ILogger<ProfileController> logger, IMapper mapper)
     {
@@ -20,7 +22,7 @@ public class ProfileController : ControllerBase
         _mapper = mapper;
     }
 
-   [HttpGet]
+    [HttpGet]
     public async Task<ActionResult<UserProfileDto>> Get([FromServices] UserManager<AppUser> userManager)
     {
         var user = await userManager.GetUserAsync(User);
@@ -43,6 +45,7 @@ public class ProfileController : ControllerBase
         user.LastName = profileChanged.LastName;
         user.Gender = profileChanged.Gender;
         await userManager.UpdateAsync(user);
+        await _profileProducer.PublishProfileUpdatedAsync(user);
 
         return Ok();
     }
@@ -57,6 +60,7 @@ public class ProfileController : ControllerBase
             return Unauthorized();
         user.Avatar = avatar.AvatarHref;
         await userManager.UpdateAsync(user);
+        await _profileProducer.PublishProfilePhotoUpdatedAsync(user);
 
         return Ok();
     }
