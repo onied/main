@@ -48,14 +48,18 @@
 }
 
 .module {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   background-color: var(--accent-color);
   color: white;
   border-radius: 10px;
-  font-size: 14pt;
+  font-size: 16pt;
+  font-weight: 700;
+}
+
+.moduleHeader {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 .block {
@@ -66,8 +70,9 @@
   background-color: #dbdbdb;
   color: black;
   border-radius: 10px;
-  font-size: 14pt;
+  font-size: 16pt;
   margin-top: 1rem;
+  font-weight: 700;
 }
 
 .accordion {
@@ -82,4 +87,30 @@
 .expandMoreIcon {
   color: white;
   font-size: 32pt;
+}
+
+.blockHeader {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.moduleButtons {
+  color: #ffffff80;
+  opacity: 0;
+  transition: 0.1s ease-in-out;
+}
+
+.blockButtons {
+  color: #42424280;
+  opacity: 0;
+  transition: 0.1s ease-in-out;
+}
+
+.block:hover .blockButtons {
+  opacity: 1;
+}
+
+.module:hover .moduleButtons {
+  opacity: 1;
 }

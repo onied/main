@@ -110,7 +110,13 @@ function EditCourseHierarchy() {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
-            {moduleIndex + 1}.{index + 1}. {block.title}
+            <div className={classes.blockHeader}>
+              <span className={classes.blockIndex}>
+                {moduleIndex + 1}.{index + 1}.
+              </span>
+              <span className={classes.blockTitle}>{block.title}</span>
+              <span className={classes.blockButtons}>кнопки</span>
+            </div>
           </div>
         )}
       </Draggable>
@@ -151,7 +157,13 @@ function EditCourseHierarchy() {
                     }
                     className={classes.module}
                   >
-                    {index + 1}. {module.title}
+                    <div className={classes.moduleHeader}>
+                      <span className={classes.moduleIndex}>{index + 1}.</span>
+                      <span className={classes.moduleTitle}>
+                        {module.title}
+                      </span>
+                      <span className={classes.moduleButtons}>кнопки</span>
+                    </div>
                   </AccordionSummary>
                 )}
               </Droppable>
