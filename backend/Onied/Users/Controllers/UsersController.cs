@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Users.Dtos;
-using Users.Responses;
 using Users.Services.UserCreatedProducer;
 
 namespace Users.Controllers;
@@ -273,14 +272,14 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [Route("/api/v1/manage/2fa/info")]
-    public async Task<Results<Ok<TwoFactorEnabledResponse>, NotFound>> Get2FaInfo(
+    public async Task<Results<Ok<TwoFactorEnabledDto>, NotFound>> Get2FaInfo(
         string email,
         [FromServices] UserManager<AppUser> userManager)
     {
         var user = await userManager.FindByEmailAsync(email);
         if (user is null) return TypedResults.NotFound();
 
-        var response = new TwoFactorEnabledResponse(user.TwoFactorEnabled);
+        var response = new TwoFactorEnabledDto(user.TwoFactorEnabled);
         return TypedResults.Ok(response);
     }
 
