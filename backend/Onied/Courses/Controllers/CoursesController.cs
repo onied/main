@@ -3,7 +3,6 @@ using Courses.Dtos;
 using Courses.Models;
 using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Courses.Controllers;
 
@@ -11,7 +10,8 @@ namespace Courses.Controllers;
 [Route("api/v1/[controller]/{id:int}")]
 public class CoursesController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ICourseRepository _courseRepository;
+    private readonly IBlockRepository _blockRepository;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
     private readonly ICheckTasksService _checkTasksService;
@@ -19,23 +19,21 @@ public class CoursesController : ControllerBase
     public CoursesController(
         ILogger<CoursesController> logger,
         IMapper mapper,
-        AppDbContext context,
+        ICourseRepository courseRepository,
+        IBlockRepository blockRepository,
         ICheckTasksService checkTasksService)
     {
         _logger = logger;
         _mapper = mapper;
-        _context = context;
+        _courseRepository = courseRepository;
+        _blockRepository = blockRepository;
         _checkTasksService = checkTasksService;
     }
 
     [HttpGet]
     public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id)
     {
-        var course = await _context.Courses
-            .Include(course1 => course1.Modules)
-            .Include(course1 => course1.Author)
-            .Include(course1 => course1.Category)
-            .FirstOrDefaultAsync(course1 => course1.Id == id);
+        var course = await _courseRepository.GetCourseAsync(id);
         if (course == null)
             return NotFound();
         return _mapper.Map<PreviewDto>(course);
@@ -45,8 +43,7 @@ public class CoursesController : ControllerBase
     [Route("hierarchy")]
     public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id)
     {
-        var course = await _context.Courses.Include(course1 => course1.Modules).ThenInclude(module => module.Blocks)
-            .FirstOrDefaultAsync(course1 => course1.Id == id);
+        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
         if (course == null)
             return NotFound();
         return _mapper.Map<CourseDto>(course);
@@ -56,8 +53,7 @@ public class CoursesController : ControllerBase
     [Route("summary/{blockId:int}")]
     public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId)
     {
-        var summary = await _context.SummaryBlocks.Include(block => block.Module)
-            .FirstOrDefaultAsync(block => block.Id == blockId);
+        var summary = await _blockRepository.GetSummaryBlock(blockId);
         if (summary == null || summary.Module.CourseId != id)
             return NotFound();
         return _mapper.Map<SummaryBlockDto>(summary);
@@ -67,8 +63,7 @@ public class CoursesController : ControllerBase
     [Route("video/{blockId:int}")]
     public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId)
     {
-        var block = await _context.VideoBlocks.Include(block => block.Module)
-            .FirstOrDefaultAsync(block => block.Id == blockId);
+        var block = await _blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
         return _mapper.Map<VideoBlockDto>(block);
@@ -78,11 +73,7 @@ public class CoursesController : ControllerBase
     [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
     {
-        var block = await _context.TasksBlocks
-            .Include(block => block.Module)
-            .Include(block => block.Tasks)
-            .ThenInclude(task => ((VariantsTask)task).Variants)
-            .FirstOrDefaultAsync(block => block.Id == blockId);
+        var block = await _blockRepository.GetTasksBlock(blockId, includeVariants: true);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
         return _mapper.Map<TasksBlockDto>(block);
@@ -92,10 +83,7 @@ public class CoursesController : ControllerBase
     [Route("tasks/{blockId:int}/points")]
     public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
     {
-        var block = await _context.TasksBlocks
-            .Include(block => block.Module)
-            .Include(block => block.Tasks)
-            .FirstOrDefaultAsync(block => block.Id == blockId);
+        var block = await _blockRepository.GetTasksBlock(blockId, includeVariants: true);
 
         if (block == null || block.Module.CourseId != id)
             return NotFound();
@@ -124,13 +112,10 @@ public class CoursesController : ControllerBase
         if (inputsDto.Any(inputDto => inputDto is null))
             return BadRequest();
 
-        var block = await _context.TasksBlocks
-            .Include(block => block.Module)
-            .Include(block => block.Tasks)
-                .ThenInclude(task => ((VariantsTask)task).Variants)
-            .Include(block => block.Tasks)
-                .ThenInclude(task => ((InputTask)task).Answers)
-            .FirstOrDefaultAsync(block => block.Id == blockId);
+        var block = await _blockRepository.GetTasksBlock(
+            blockId,
+            includeVariants: true,
+            includeAnswers: true);
 
         if (block is null || block.Module.CourseId != id)
             return NotFound();

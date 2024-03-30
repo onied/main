@@ -19,9 +19,15 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             .ThenInclude(c => c.Category)
             .FirstOrDefaultAsync(u => u.Id == id);
 
-    public async Task SaveUserAsync(User user)
+    public async Task AddUserAsync(User user)
     {
         await dbContext.AddAsync(user);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateUserAsync(User user)
+    {
+        dbContext.Update(user);
         await dbContext.SaveChangesAsync();
     }
 }

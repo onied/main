@@ -7,5 +7,6 @@ public interface IUserRepository
 {
     public Task<User?> GetUserAsync(Guid id);
     public Task<User?> GetUserWithCoursesAsync(Guid id);
-    public Task SaveUserAsync(User user);
+    public Task AddUserAsync(User user);
+    public Task UpdateUserAsync(User user);
 }

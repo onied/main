@@ -1,8 +1,8 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Helpers;
+using Courses.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Courses.Controllers;
 
@@ -10,23 +10,28 @@ namespace Courses.Controllers;
 [Route("api/v1/[controller]")]
 public class CatalogController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ICourseRepository _courseRepository;
     private readonly ILogger<CatalogController> _logger;
     private readonly IMapper _mapper;
 
-    public CatalogController(ILogger<CatalogController> logger, IMapper mapper, AppDbContext context)
+    public CatalogController(ILogger<CatalogController> logger, IMapper mapper, ICourseRepository courseRepository)
     {
         _logger = logger;
         _mapper = mapper;
-        _context = context;
+        _courseRepository = courseRepository;
     }
 
     [HttpGet]
     public async Task<Page<CourseCardDto>> Get([FromQuery] PageQuery pageQuery)
     {
-        var courses = _context.Courses.Include(course => course.Author).Include(course => course.Category);
-        var page = Page<CourseCardDto>.Prepare(pageQuery, await courses.CountAsync(), out var offset);
-        page.Elements = _mapper.Map<IEnumerable<CourseCardDto>>(courses.Skip(offset).Take(page.ElementsPerPage));
+        var page = Page<CourseCardDto>.Prepare(
+            pageQuery,
+            await _courseRepository.CountAsync(),
+            out var offset);
+        var courses = await _courseRepository.GetCoursesAsync(
+            offset,
+            page.ElementsPerPage);
+        page.Elements = _mapper.Map<IEnumerable<CourseCardDto>>(courses);
         return page;
     }
 }
