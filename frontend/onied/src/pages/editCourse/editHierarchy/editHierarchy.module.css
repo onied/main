@@ -1,0 +1,90 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 3rem 5rem;
+  background-color: aqua;
+}
+
+.pageHeaderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: antiquewhite;
+  width: fit-content;
+}
+
+.back {
+  color: #686868;
+  font-size: 12pt;
+  font-weight: 200;
+}
+
+.title {
+  margin: 0rem;
+}
+
+.pageBodyContainer {
+  display: flex;
+  flex-direction: column;
+  padding-right: 10%;
+  background-color: aquamarine;
+}
+
+.buttonsUp {
+  background-color: azure;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.moduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: azure;
+}
+
+.buttonsDown {
+  background-color: azure;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: end;
+}
+
+.moduleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.module {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 10px;
+  font-size: 14pt;
+}
+
+.blockList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.block {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background-color: #dbdbdb;
+  color: black;
+  border-radius: 10px;
+  font-size: 14pt;
+}
