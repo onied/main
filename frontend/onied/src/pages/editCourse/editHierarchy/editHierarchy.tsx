@@ -98,35 +98,41 @@ function EditCourseHierarchy() {
 
   const renderModule = (module: Module, index: number) => {
     return (
-      <div className={classes.moduleContainer} key={module.id}>
-        <Draggable draggableId={"module" + module.id} index={index}>
-          {(provided: any, snapshot: any) => (
-            <div
-              className={classes.module}
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-            >
+      <Draggable
+        draggableId={"module" + module.id}
+        index={index}
+        key={module.id}
+      >
+        {(provided: any, snapshot: any) => (
+          <div
+            className={classes.moduleContainer}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            <div className={classes.module}>
               {index + 1}. {module.title}
             </div>
-          )}
-        </Draggable>
-        <Droppable
-          droppableId={"module" + module.id}
-          isDropDisabled={moduleDropDisabled}
-        >
-          {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className={classes.blockList}
+            <Droppable
+              droppableId={"module" + module.id}
+              isDropDisabled={moduleDropDisabled}
             >
-              {module.blocks.map((block, bi) => renderBlock(block, bi, index))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </div>
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className={classes.blockList}
+                >
+                  {module.blocks.map((block, bi) =>
+                    renderBlock(block, bi, index)
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
+        )}
+      </Draggable>
     );
   };
 
