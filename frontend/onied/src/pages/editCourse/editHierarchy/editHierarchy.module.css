@@ -56,7 +56,6 @@
   color: white;
   border-radius: 10px;
   font-size: 14pt;
-  margin-bottom: 1rem;
 }
 
 .block {
@@ -68,5 +67,19 @@
   color: black;
   border-radius: 10px;
   font-size: 14pt;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.accordion {
+  background-color: transparent;
+}
+
+.accordionDetails {
+  margin: 0;
+  padding: 0;
+}
+
+.expandMoreIcon {
+  color: white;
+  font-size: 32pt;
 }
