@@ -1,5 +1,5 @@
-import { useState, useEffect, MouseEventHandler, MouseEvent } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import api from "../../../config/axios";
 import classes from "./editHierarchy.module.css";
 import Button from "../../../components/general/button/button";
