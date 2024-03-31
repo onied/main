@@ -139,6 +139,34 @@
   color: white;
 }
 
-.addDropdown {
-  display: inline-block;
+.blockIndex {
+  display: flex;
+  align-items: center;
+}
+
+.blockTitle {
+  font-size: inherit;
+  background-color: inherit;
+  font-weight: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid black;
+  outline: none;
+  color: inherit;
+}
+
+.moduleIndex {
+  display: flex;
+  align-items: center;
+}
+
+.moduleTitle {
+  font-size: inherit;
+  background-color: inherit;
+  font-weight: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid white;
+  outline: none;
+  color: inherit;
 }

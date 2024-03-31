@@ -106,6 +106,24 @@ function EditCourseHierarchy() {
     setAnchorEl(null);
   };
 
+  const renameBlock = (moduleIndex: number, blockId: number, value: string) => {
+    const newArray = Array.from(hierarchy!.modules);
+    const blockIndex = newArray[moduleIndex].blocks.findIndex(
+      (block) => block.id == blockId
+    );
+    if (blockIndex == -1) return;
+    newArray[moduleIndex].blocks[blockIndex].title = value;
+    setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
+  const renameModule = (moduleId: number, value: string) => {
+    const newArray = Array.from(hierarchy!.modules);
+    const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
+    if (moduleIndex == -1) return;
+    newArray[moduleIndex].title = value;
+    setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
   const onDragStart = (start: DragStart) => {
     setModuleDropDisabled(start.draggableId.startsWith("module"));
     setHierarchyDropDisabled(start.draggableId.startsWith("block"));
@@ -181,16 +199,21 @@ function EditCourseHierarchy() {
               <span className={classes.blockIndex}>
                 {moduleIndex + 1}.{index + 1}.
               </span>
-              <span className={classes.blockTitle}>{block.title}</span>
+              <input
+                type="text"
+                className={classes.blockTitle}
+                value={block.title}
+                onChange={(event) =>
+                  renameBlock(moduleIndex, block.id, event.target.value)
+                }
+              />
               <span className={classes.blockButtons}>
                 <Link
                   className={classes.blockButton}
-                  to={
-                    new URL(
-                      "../" + block.id + "/" + blockTypes[block.blockType],
-                      window.location.href
-                    )
-                  }
+                  to={new URL(
+                    "" + block.id + "/" + blockTypes[block.blockType],
+                    window.location.href
+                  ).toString()}
                 >
                   <FontAwesomeIcon icon={faPencil} />
                 </Link>
@@ -259,9 +282,14 @@ function EditCourseHierarchy() {
                         <span className={classes.moduleIndex}>
                           {index + 1}.
                         </span>
-                        <span className={classes.moduleTitle}>
-                          {module.title}
-                        </span>
+                        <input
+                          type="text"
+                          className={classes.moduleTitle}
+                          value={module.title}
+                          onChange={(event) =>
+                            renameModule(module.id, event.target.value)
+                          }
+                        />
                         <span className={classes.moduleButtons}>
                           <a
                             className={classes.moduleButton}
