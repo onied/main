@@ -24,7 +24,6 @@ function EditVideoBlockComponent() {
     title: "",
     href: "",
   });
-  const [link, setLink] = useState<string>("");
   const [errorLink, setErrorLink] = useState<string>("");
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
   const parsedCourseId = Number(courseId);
@@ -57,7 +56,6 @@ function EditVideoBlockComponent() {
         console.log(response.data);
         setCourseAndBlockFound(true);
         setCurrentBlock(response.data);
-        setLink(response.data.href);
       })
       .catch((error) => {
         console.log(error);
