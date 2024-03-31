@@ -10,6 +10,14 @@ import YoutubeVideoProvider from "../../../blocks/video/youtubeVideoProvider";
 import VkVideoProvider from "../../../blocks/video/vkVideoProvider";
 import RutubeVideoProvider from "../../../blocks/video/rutubeVideoProvider";
 
+type Block = {
+  id: string;
+  title: string;
+  href: string;
+  blockType: string;
+  isCompleted: boolean;
+};
+
 const embedElements = [
   new YoutubeVideoProvider(),
   new VkVideoProvider(),
@@ -19,13 +27,13 @@ const embedElements = [
 function EditVideoBlockComponent() {
   const navigator = useNavigate();
   const { courseId, blockId } = useParams();
+
   const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
-  const [currentBlock, setCurrentBlock] = useState({
-    title: "",
-    href: "",
-  });
+  const [currentBlock, setCurrentBlock] = useState<Block | undefined>();
   const [errorLink, setErrorLink] = useState<string>("");
+
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);
 
@@ -38,7 +46,7 @@ function EditVideoBlockComponent() {
 
   const addLink = (e: ChangeEvent<HTMLInputElement>) => {
     validationLink(e.target.value);
-    setCurrentBlock({ ...currentBlock, href: e.target.value });
+    setCurrentBlock({ ...currentBlock!, href: e.target.value });
   };
 
   const saveChanges = () => {
@@ -88,15 +96,15 @@ function EditVideoBlockComponent() {
         >
           ⟵ к редактированию иерархии
         </ButtonGoBack>
-        <div className={classes.title}>{currentBlock.title}</div>
-        {!errorLink && <EmbedVideo href={currentBlock.href}></EmbedVideo>}
+        <div className={classes.title}>{currentBlock!.title}</div>
+        {!errorLink && <EmbedVideo href={currentBlock!.href}></EmbedVideo>}
         <p className={classes.addingLinkText}>
-          Вы можете {currentBlock.href ? "изменить" : "добавить"} видео, добавив
-          ссылку на него с YouTube, Rutube или VK Видео
+          Вы можете {currentBlock!.href ? "изменить" : "добавить"} видео,
+          добавив ссылку на него с YouTube, Rutube или VK Видео
         </p>
         <InputForm
           placeholder="Вставьте сюда ссылку на видео"
-          value={currentBlock.href}
+          value={currentBlock!.href}
           style={{ width: "60%" }}
           onChange={addLink}
         />
