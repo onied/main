@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect, MouseEventHandler, MouseEvent } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import api from "../../../config/axios";
 import classes from "./editHierarchy.module.css";
 import Button from "../../../components/general/button/button";
@@ -10,7 +10,17 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { StyledEngineProvider } from "@mui/material/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faVideo,
+  faFileLines,
+  faListCheck,
+  faPencil,
+  faTrash,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import type { DropResult, DragStart } from "@hello-pangea/dnd";
+import { Menu, MenuItem } from "@mui/material";
 
 type Block = {
   id: number;
@@ -35,9 +45,66 @@ function EditCourseHierarchy() {
   const [hierarchy, setHierarchy] = useState<Course | null | undefined>();
   const [moduleDropDisabled, setModuleDropDisabled] = useState(false);
   const [hierarchyDropDisabled, setHierarchyDropDisabled] = useState(false);
+  const [createdModulesCounter, setCreatedModulesCounter] = useState(1);
+  const [createdBlocksCounter, setCreatedBlocksCounter] = useState(1);
+  const [expandedModules, setExpandedModules] = useState<Array<number>>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
   const id = Number(courseId);
-  const blockTypes = ["", "summary", "video", "tasks"];
+  const blockTypes = [<></>, "summary", "video", "tasks"];
+  const blockIcons = [
+    <></>,
+    <FontAwesomeIcon icon={faFileLines} />,
+    <FontAwesomeIcon icon={faVideo} />,
+    <FontAwesomeIcon icon={faListCheck} />,
+  ];
+
+  const deleteBlock = (moduleIndex: number, blockId: number) => {
+    const newArray = Array.from(hierarchy!.modules);
+    const blockIndex = newArray[moduleIndex].blocks.findIndex(
+      (block) => block.id == blockId
+    );
+    if (blockIndex == -1) return;
+    newArray[moduleIndex].blocks.splice(blockIndex, 1);
+    setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
+  const deleteModule = (moduleId: number) => {
+    const newArray = Array.from(hierarchy!.modules);
+    const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
+    if (moduleIndex == -1) return;
+    newArray.splice(moduleIndex, 1);
+    setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
+  const addModule = () => {
+    const newArray = Array.from(hierarchy!.modules);
+    newArray.push({
+      id: -createdModulesCounter,
+      blocks: [],
+      title: "Новый модуль",
+    });
+    setCreatedModulesCounter(createdModulesCounter + 1);
+    setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
+  const addBlock = (moduleId: number, blockType: number) => {
+    const newArray = Array.from(hierarchy!.modules);
+    const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
+    newArray[moduleIndex].blocks.push({
+      id: -createdBlocksCounter,
+      title: "Новый блок",
+      blockType: blockType,
+    });
+    setCreatedBlocksCounter(createdBlocksCounter + 1);
+    setHierarchy({ ...hierarchy!, modules: newArray });
+    const exp = Array.from(expandedModules);
+    if (!exp.includes(moduleId)) exp.push(moduleId);
+    setExpandedModules(exp);
+    setOpenedMenus([]);
+    setAnchorEl(null);
+  };
 
   const onDragStart = (start: DragStart) => {
     setModuleDropDisabled(start.draggableId.startsWith("module"));
@@ -115,7 +182,28 @@ function EditCourseHierarchy() {
                 {moduleIndex + 1}.{index + 1}.
               </span>
               <span className={classes.blockTitle}>{block.title}</span>
-              <span className={classes.blockButtons}>кнопки</span>
+              <span className={classes.blockButtons}>
+                <Link
+                  className={classes.blockButton}
+                  to={
+                    new URL(
+                      "../" + block.id + "/" + blockTypes[block.blockType],
+                      window.location.href
+                    )
+                  }
+                >
+                  <FontAwesomeIcon icon={faPencil} />
+                </Link>
+                <a
+                  onClick={() => deleteBlock(moduleIndex, block.id)}
+                  className={classes.blockButton}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </a>
+              </span>
+            </div>
+            <div className={classes.blockType}>
+              {blockIcons[block.blockType]}
             </div>
           </div>
         )}
@@ -141,30 +229,80 @@ function EditCourseHierarchy() {
               disableGutters
               elevation={0}
               className={classes.accordion}
-              defaultExpanded
+              expanded={expandedModules.includes(module.id)}
             >
               <Droppable
                 droppableId={"combineModule" + module.id}
-                isCombineEnabled
                 isDropDisabled={moduleDropDisabled}
               >
                 {(provided, _) => (
-                  <AccordionSummary
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    expandIcon={
-                      <ExpandMoreIcon className={classes.expandMoreIcon} />
-                    }
-                    className={classes.module}
-                  >
-                    <div className={classes.moduleHeader}>
-                      <span className={classes.moduleIndex}>{index + 1}.</span>
-                      <span className={classes.moduleTitle}>
-                        {module.title}
-                      </span>
-                      <span className={classes.moduleButtons}>кнопки</span>
-                    </div>
-                  </AccordionSummary>
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    <AccordionSummary
+                      expandIcon={
+                        <ExpandMoreIcon
+                          className={classes.expandMoreIcon}
+                          onClick={() => {
+                            const newArray = Array.from(expandedModules);
+                            if (newArray.includes(module.id))
+                              newArray.splice(
+                                newArray.findIndex((m) => m == module.id),
+                                1
+                              );
+                            else newArray.push(module.id);
+                            setExpandedModules(newArray);
+                          }}
+                        />
+                      }
+                      className={classes.module}
+                    >
+                      <div className={classes.moduleHeader}>
+                        <span className={classes.moduleIndex}>
+                          {index + 1}.
+                        </span>
+                        <span className={classes.moduleTitle}>
+                          {module.title}
+                        </span>
+                        <span className={classes.moduleButtons}>
+                          <a
+                            className={classes.moduleButton}
+                            onClick={(event) => {
+                              const newArray = Array.from(openedMenus);
+                              newArray.push(module.id);
+                              setOpenedMenus(newArray);
+                              setAnchorEl(event.currentTarget);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faPlus} />
+                          </a>
+                          <Menu
+                            open={openedMenus.includes(module.id)}
+                            anchorEl={anchorEl}
+                            onClose={() => {
+                              setOpenedMenus([]);
+                              setAnchorEl(null);
+                            }}
+                          >
+                            <MenuItem onClick={() => addBlock(module.id, 1)}>
+                              Конспект
+                            </MenuItem>
+                            <MenuItem onClick={() => addBlock(module.id, 2)}>
+                              Видео
+                            </MenuItem>
+                            <MenuItem onClick={() => addBlock(module.id, 3)}>
+                              Задания
+                            </MenuItem>
+                          </Menu>
+                          <a
+                            onClick={() => deleteModule(module.id)}
+                            className={classes.moduleButton}
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </a>
+                        </span>
+                      </div>
+                    </AccordionSummary>
+                    {provided.placeholder}
+                  </div>
                 )}
               </Droppable>
 
@@ -240,7 +378,7 @@ function EditCourseHierarchy() {
         </div>
         <div className={classes.pageBodyContainer}>
           <div className={classes.buttonsUp}>
-            <Button>добавить модуль</Button>
+            <Button onClick={addModule}>добавить модуль</Button>
           </div>
           <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
             <Droppable
@@ -259,9 +397,6 @@ function EditCourseHierarchy() {
               )}
             </Droppable>
           </DragDropContext>
-          <div className={classes.buttonsDown}>
-            <Button>сохранить</Button>
-          </div>
         </div>
       </div>
     </StyledEngineProvider>
