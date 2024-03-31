@@ -2,6 +2,9 @@ import api from "../config/axios";
 
 class LoginService {
   static interval: NodeJS.Timeout | null = null;
+  static setRefreshingTokens:
+    | ((refreshingTokens: boolean) => void)
+    | undefined = undefined;
 
   static registerAutomaticRefresh() {
     LoginService.unregisterAutomaticRefresh();
@@ -9,7 +12,8 @@ class LoginService {
     // refresh tokens every 10 minutes
   }
 
-  static initialize() {
+  static initialize(setRefreshingTokens: (refreshingTokens: boolean) => void) {
+    LoginService.setRefreshingTokens = setRefreshingTokens;
     const accessToken = localStorage.getItem("access_token");
     if (accessToken)
       api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
@@ -56,7 +60,9 @@ class LoginService {
 
   static refreshTokens() {
     const refreshToken = localStorage.getItem("refresh_token");
-    if (refreshToken === null) return;
+    if (refreshToken === null || LoginService.setRefreshingTokens === undefined)
+      return;
+    LoginService.setRefreshingTokens(true);
     console.log("Token refresh requested");
     api
       .post("refresh", {
@@ -70,9 +76,16 @@ class LoginService {
         );
         console.log("Tokens updated");
       })
-      .catch((_) => {
-        LoginService.clearTokens();
-        console.log("Tokens expired");
+      .catch((error) => {
+        if ("response" in error && error.response.status == 401) {
+          LoginService.clearTokens();
+          console.log("Tokens expired");
+        } else {
+          console.log(error);
+        }
+      })
+      .finally(() => {
+        LoginService.setRefreshingTokens!(false);
       });
   }
 }

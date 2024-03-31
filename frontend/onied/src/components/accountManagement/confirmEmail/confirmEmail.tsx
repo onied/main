@@ -37,7 +37,7 @@ function ConfirmEmailComponent() {
       navigator("/login");
       return;
     }
-    if (!LoginService.checkLoggedIn() || profile == null) {
+    if (profile == null) {
       navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
       return;
     }
