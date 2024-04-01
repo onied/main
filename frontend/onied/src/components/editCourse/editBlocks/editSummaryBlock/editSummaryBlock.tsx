@@ -1,12 +1,13 @@
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import classes from "../editVideoBlock/editVideoBlock.module.css";
+import classes from "./editSummaryBlock.module.css";
 import api from "../../../../config/axios";
 import Button from "../../../general/button/button";
 import MDEditor from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
 import FileLink from "../../../blocks/summary/fileLink";
+import RecycleBinIcon from "../../../../assets/recycleBinIcon.svg";
 
 function EditSummaryBlockComponent() {
   const navigator = useNavigate();
@@ -58,25 +59,39 @@ function EditSummaryBlockComponent() {
   return (
     <>
       <div>
-        <ButtonGoBack
-          onClick={() => navigator("../../hierarchy", { relative: "path" })}
-        >
-          ⟵ к редактированию иерархии
-        </ButtonGoBack>
-        <div className={classes.title}>{currentBlock.title}</div>
+        <div className={classes.editHeader}>
+          <ButtonGoBack
+            onClick={() => navigator("../../hierarchy", { relative: "path" })}
+          >
+            ⟵ к редактированию иерархии
+          </ButtonGoBack>
+          <div className={classes.title}>{currentBlock.title}</div>
+        </div>
         <MDEditor
           value={currentBlock.markdownText}
           previewOptions={{
             rehypePlugins: [[rehypeSanitize]],
           }}
         />
-        <FileLink
-          fileName={currentBlock.fileName}
-          fileHref={currentBlock.fileHref}
-        />
+        <div className={classes.fileAddingContainer}>
+          <div className={classes.fileAddingFirstRow}>
+            <span>Добавленный файл</span>
+            <Button style={{ padding: "8px 30px" }}>загрузить файл</Button>
+          </div>
+          <div className={classes.fileAddingFileIcon}>
+            <FileLink
+              fileName={currentBlock.fileName}
+              fileHref={currentBlock.fileHref}
+            />
+            <img src={RecycleBinIcon} />
+          </div>
+        </div>
+
         <div className={classes.line}></div>
         <div className={classes.saveChanges}>
-          <Button onClick={saveChanges}>сохранить изменения</Button>
+          <Button style={{ padding: "8px 50px" }} onClick={saveChanges}>
+            сохранить изменения
+          </Button>
         </div>
       </div>
     </>
