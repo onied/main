@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/axios";
 import classes from "./editHierarchy.module.css";
 import Button from "../../../components/general/button/button";
@@ -21,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { DropResult, DragStart } from "@hello-pangea/dnd";
 import { Menu, MenuItem } from "@mui/material";
+import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack";
 
 type Block = {
   id: number;
@@ -41,6 +42,7 @@ type Course = {
 };
 
 function EditCourseHierarchy() {
+  const navigator = useNavigate();
   const { courseId } = useParams();
   const [hierarchy, setHierarchy] = useState<Course | null | undefined>();
   const [moduleDropDisabled, setModuleDropDisabled] = useState(false);
@@ -399,9 +401,12 @@ function EditCourseHierarchy() {
     <StyledEngineProvider injectFirst>
       <div className={classes.container}>
         <div className={classes.pageHeaderContainer}>
-          <Link to={"/courses/" + courseId + "/edit"} className={classes.back}>
+          <ButtonGoBack
+            onClick={() => navigator("../", { relative: "path" })}
+            style={{ width: "fit-content" }}
+          >
             ⟵ к редактированию превью
-          </Link>
+          </ButtonGoBack>
           <h1 className={classes.title}>{hierarchy!.title}</h1>
         </div>
         <div className={classes.pageBodyContainer}>
