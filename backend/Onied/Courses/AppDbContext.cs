@@ -39,12 +39,17 @@ public class AppDbContext : DbContext
             .WithMany();
 
         modelBuilder.Entity<User>()
+            .HasMany<Course>(u => u.ModeratingCourses)
+            .WithMany()
+            .UsingEntity("course_moderator");
+
+        modelBuilder.Entity<User>()
             .HasMany<Course>(a => a.TeachingCourses)
             .WithOne(c => c.Author)
             .HasForeignKey(c => c.AuthorId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        var authorId = Guid.NewGuid();
+        var authorId = Guid.Parse("e768e60f-fa76-46d9-a936-4dd5ecbbf326");
         modelBuilder.Entity<User>().HasData(new User
         {
             Id = authorId,
