@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Users.Dtos;
 using Users.Dtos.VkUserInfoResponseDtos;
+using Users.Services.UserCreatedProducer;
 
 namespace Users.Controllers;
 
 [ApiController]
 [Route("/api/v1/[action]")]
-public class OauthController
+public class OauthController(IUserCreatedProducer userCreatedProducer)
 {
     [HttpPost]
     public async Task<IResult> SigninVk([FromBody] OauthCodeDto oauthCodeDto,
@@ -72,6 +73,7 @@ public class OauthController
         signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
 
         await signInManager.SignInAsync(user, false);
+        await userCreatedProducer.PublishAsync(user);
         return Results.Empty;
     }
 }

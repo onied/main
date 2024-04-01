@@ -1,6 +1,9 @@
 using Courses;
 using Courses.Profiles;
 using Courses.Services;
+using Courses.Services.Consumers;
+using MassTransit;
+using MassTransit.Data.Messages;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +19,23 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<ProfileUpdatedConsumer>();
+    x.AddConsumer<ProfilePhotoUpdatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"], builder.Configuration["RabbitMQ:VHost"], h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"]);
+            h.Password(builder.Configuration["RabbitMQ:Password"]);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
