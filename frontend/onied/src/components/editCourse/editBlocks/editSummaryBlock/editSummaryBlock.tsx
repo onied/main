@@ -1,0 +1,86 @@
+import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import classes from "../editVideoBlock/editVideoBlock.module.css";
+import api from "../../../../config/axios";
+import Button from "../../../general/button/button";
+import MDEditor from "@uiw/react-md-editor";
+import rehypeSanitize from "rehype-sanitize";
+import FileLink from "../../../blocks/summary/fileLink";
+
+function EditSummaryBlockComponent() {
+  const navigator = useNavigate();
+  const { courseId, blockId } = useParams();
+  const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
+  const [currentBlock, setCurrentBlock] = useState({
+    title: "",
+    markdownText: "",
+    fileName: "",
+    fileHref: "",
+  });
+  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const parsedCourseId = Number(courseId);
+  const parsedBlockId = Number(blockId);
+
+  const saveChanges = () => {
+    api.post("", currentBlock).then().catch();
+  };
+
+  useEffect(() => {
+    if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
+      setCourseAndBlockFound(false);
+      return;
+    }
+    api
+      .get("courses/" + courseId + "/summary/" + blockId)
+      .then((response) => {
+        console.log(response.data);
+        setCourseAndBlockFound(true);
+        setCurrentBlock(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+
+        if ("response" in error && error.response.status == 404) {
+          setCourseAndBlockFound(false);
+        }
+      });
+  }, []);
+
+  if (isNaN(parsedCourseId) && isNaN(parsedBlockId)) {
+    console.log(courseId);
+    console.log(blockId);
+    return notFound;
+  }
+
+  if (!courseAndBlockFound) return notFound;
+
+  return (
+    <>
+      <div>
+        <ButtonGoBack
+          onClick={() => navigator("../../hierarchy", { relative: "path" })}
+        >
+          ⟵ к редактированию иерархии
+        </ButtonGoBack>
+        <div className={classes.title}>{currentBlock.title}</div>
+        <MDEditor
+          value={currentBlock.markdownText}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }}
+        />
+        <FileLink
+          fileName={currentBlock.fileName}
+          fileHref={currentBlock.fileHref}
+        />
+        <div className={classes.line}></div>
+        <div className={classes.saveChanges}>
+          <Button onClick={saveChanges}>сохранить изменения</Button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default EditSummaryBlockComponent;
