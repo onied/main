@@ -159,6 +159,7 @@ public class CoursesController : ControllerBase
             });
         _mapper.Map(editCourseDto, course);
         course.Category = category;
+        course.CategoryId = category.Id;
         await _courseRepository.UpdateCourseAsync(course);
         return TypedResults.Ok(_mapper.Map<PreviewDto>(course));
     }
