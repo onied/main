@@ -19,6 +19,7 @@ import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 import ProfileService from "./services/profileService";
 import { LoadingContext } from "./hooks/profile/loadingContext";
 import TeachingPage from "./pages/teaching/teaching";
+import EditPreview from "./pages/editCourse/editPreview/editPreview";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -43,6 +44,10 @@ function App() {
                 path="/course/:courseId/learn/*"
                 element={<Course />}
               ></Route>
+              <Route
+                path="/course/:courseId/edit/preview"
+                element={<EditPreview />}
+              />
               <Route path="/course/:courseId" element={<Preview />}></Route>
               <Route path="/catalog" element={<Catalog />}></Route>
               <Route path="/register" element={<Register />}></Route>

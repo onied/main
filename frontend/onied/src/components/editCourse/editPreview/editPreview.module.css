@@ -1,0 +1,52 @@
+.firstBlock{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.inputChanges{
+    display: flex;
+}
+
+.inputChangesOneColumn{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    grid-row-gap: 25px;
+}
+
+.inputChangesOneColumn input,
+.inputChangesOneColumn textarea{
+    width: 95%;
+}
+
+.fixedHeightTextArea textarea{
+    height: 200px;
+    resize: none;
+}
+
+
+.previewPrompt{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: end;
+}
+
+.previewPrompt span{
+    font-size: 1rem;
+    font-weight: 200;
+    letter-spacing: 0.1rem;
+}
+
+.line{
+    border-top: 2px solid #DBDBDB;
+}
+
+.toggleChanges{
+    display: flex;
+}
+
+.formLabel{
+    font-size: 1.5rem;
+}
