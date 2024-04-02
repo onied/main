@@ -7,10 +7,7 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{id:guid}")]
-public class TeachingController(
-    IUserRepository userRepository,
-    IMapper mapper
-    ) : ControllerBase
+public class TeachingController(IUserRepository userRepository, IMapper mapper) : ControllerBase
 {
     [HttpGet]
     [Route("authored")]
@@ -19,7 +16,7 @@ public class TeachingController(
         var user = await userRepository.GetUserWithTeachingCoursesAsync(id);
         if (user is null) return NotFound();
 
-        return mapper.Map<List<CourseCardDto>>(user.Courses);
+        return mapper.Map<List<CourseCardDto>>(user.TeachingCourses);
     }
 
     [HttpGet]
@@ -29,6 +26,6 @@ public class TeachingController(
         var user = await userRepository.GetUserWithModeratingCoursesAsync(id);
         if (user is null) return NotFound();
 
-        return mapper.Map<List<CourseCardDto>>(user.Courses);
+        return mapper.Map<List<CourseCardDto>>(user.ModeratingCourses);
     }
 }
