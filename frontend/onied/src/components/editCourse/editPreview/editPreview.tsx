@@ -1,11 +1,17 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import api from "../../../config/axios";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import classes from "../editPreview/editPreview.module.css";
+import imagePlaceholder from "../../../assets/imagePlaceholder.svg";
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
 import InputFormArea from "../../general/inputform/inputFormArea";
 import Checkbox from "../../general/checkbox/checkbox";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
 
 type PreviewDto = {
   title: string;
@@ -24,7 +30,6 @@ type PreviewDto = {
 
 type Errors = {
   Title: string | null;
-  Description: string | null;
   Category: string | null;
   Price: string | null;
   CompleteTime: string | null;
@@ -32,24 +37,35 @@ type Errors = {
 };
 
 function EditPreviewComponent() {
-  const navigator = useNavigate();
   const { courseId } = useParams();
   const [previewInfo, setPreview] = useState<PreviewDto | undefined>();
   const [errors, setErrors] = useState<Errors>({
     Title: null,
-    Description: null,
     Category: null,
     Price: null,
     CompleteTime: null,
     Picture: null,
   });
   const [found, setFound] = useState<boolean | undefined>();
+  const [newImageHref, setNewImageHref] = useState<string>("");
+  const [isNewImageModalOpen, setIsNewImageModalOpen] =
+    useState<boolean>(false);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
 
   const checkPreview = () => {};
+
+  const saveChanges = () => {
+    api.put("", previewInfo).then().catch();
+  };
+
+  const saveNewImage = (e: any) => {
+    e.preventDefault();
+    setPreview({ ...previewInfo!, pictureHref: newImageHref });
+    setIsNewImageModalOpen(false);
+  };
 
   useEffect(() => {
     setFound(undefined);
@@ -105,7 +121,6 @@ function EditPreviewComponent() {
                     setPreview({ ...previewInfo!, description: e.target.value })
                   }
                 ></InputFormArea>
-                {errors.Description ? <div>{errors.Description}</div> : <></>}
               </div>
               <label className={classes.formLabel} htmlFor="preview_category">
                 Категория
@@ -197,12 +212,39 @@ function EditPreviewComponent() {
             посмотреть
           </Button>
         </div>
+        <div className={classes.newCoursePictureWrapper}>
+          <div className={classes.newCoursePicture}>
+            <label className={classes.formLabel}>Логотип</label>
+            <img
+              src={
+                previewInfo?.pictureHref.trim().length === 0
+                  ? imagePlaceholder
+                  : previewInfo!.pictureHref
+              }
+            />
+          </div>
+          <Button
+            style={{ width: "40%" }}
+            onClick={() => setIsNewImageModalOpen(true)}
+          >
+            загрузить
+          </Button>
+        </div>
       </div>
       <div className={classes.line}></div>
       <div className={classes.toggleChanges}>
         <div className={classes.toggleChangeWrapper}>
           <div className={classes.checkboxAndTitle}>
-            <Checkbox id="is-program-visible-checkbox" />
+            <Checkbox
+              id="is-program-visible-checkbox"
+              checked={previewInfo?.isContentProgramVisible}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPreview({
+                  ...previewInfo!,
+                  isContentProgramVisible: e.target.checked,
+                })
+              }
+            />
             <label
               className={classes.formLabel}
               htmlFor="is-program-visible-checkbox"
@@ -220,7 +262,16 @@ function EditPreviewComponent() {
         </div>
         <div className={classes.toggleChangeWrapper}>
           <div className={classes.checkboxAndTitle}>
-            <Checkbox id="has-certificates-checkbox" />
+            <Checkbox
+              id="has-certificates-checkbox"
+              checked={previewInfo?.hasCertificates}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPreview({
+                  ...previewInfo!,
+                  hasCertificates: e.target.checked,
+                })
+              }
+            />
             <label
               className={classes.formLabel}
               htmlFor="has-certificates-checkbox"
@@ -238,7 +289,16 @@ function EditPreviewComponent() {
         </div>
         <div className={classes.toggleChangeWrapper}>
           <div className={classes.checkboxAndTitle}>
-            <Checkbox id="is-archived-checkbox" />
+            <Checkbox
+              id="is-archived-checkbox"
+              checked={previewInfo?.isArchived}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPreview({
+                  ...previewInfo!,
+                  isArchived: e.target.checked,
+                })
+              }
+            />
             <label className={classes.formLabel} htmlFor="is-archived-checkbox">
               <p>Заархивировать курс</p>
             </label>
@@ -255,7 +315,7 @@ function EditPreviewComponent() {
       </div>
       <div className={classes.line}></div>
       <div className={classes.footerButtons}>
-        <Button>сохранить изменения</Button>
+        <Button onClick={saveChanges}>сохранить изменения</Button>
         <Link to={`../course/${courseId}/edit/hierarchy`}>
           <Button
             style={{
@@ -270,6 +330,34 @@ function EditPreviewComponent() {
           </Button>
         </Link>
       </div>
+      <Dialog
+        open={isNewImageModalOpen}
+        onClose={() => setIsNewImageModalOpen(false)}
+        PaperProps={{
+          component: "form",
+          onSubmit: saveNewImage,
+        }}
+      >
+        <DialogTitle>Загрузить файл</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Введите сслыку на ваше изображение
+          </DialogContentText>
+          <InputForm
+            value={newImageHref}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setNewImageHref(e.target.value)
+            }
+            style={{ margin: "1rem" }}
+            type="url"
+          ></InputForm>
+        </DialogContent>
+        <DialogActions>
+          <button type="submit" className={classes.submitNewFileButton}>
+            сохранить
+          </button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

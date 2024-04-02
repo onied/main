@@ -32,6 +32,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 3vw;
+    padding-bottom: 20px;
 }
 
 .inputChangesBlock{
@@ -41,6 +42,26 @@
 
 .inputChangesBlock input{
     width: 90%;
+}
+
+.newCoursePictureWrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.newCoursePicture{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    align-items: center;
+}
+
+.newCoursePicture img{
+    margin-left: 10px;
+    width: 128px;
+    height: 96px;
+    border-radius: 15px;
 }
 
 .previewPrompt{
