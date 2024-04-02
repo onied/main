@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
 using Courses.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -11,21 +12,21 @@ public class TeachingController(IUserRepository userRepository, IMapper mapper) 
 {
     [HttpGet]
     [Route("authored")]
-    public async Task<ActionResult<List<CourseCardDto>>> GetAuthoredCourses(Guid id)
+    public async Task<Results<Ok<List<CourseCardDto>>, NotFound>> GetAuthoredCourses(Guid id)
     {
         var user = await userRepository.GetUserWithTeachingCoursesAsync(id);
-        if (user is null) return NotFound();
+        if (user is null) return TypedResults.NotFound();
 
-        return mapper.Map<List<CourseCardDto>>(user.TeachingCourses);
+        return TypedResults.Ok(mapper.Map<List<CourseCardDto>>(user.TeachingCourses));
     }
 
     [HttpGet]
     [Route("moderated")]
-    public async Task<ActionResult<List<CourseCardDto>>> GetModeratedCourses(Guid id)
+    public async Task<Results<Ok<List<CourseCardDto>>, NotFound>> GetModeratedCourses(Guid id)
     {
         var user = await userRepository.GetUserWithModeratingCoursesAsync(id);
-        if (user is null) return NotFound();
+        if (user is null) return TypedResults.NotFound();
 
-        return mapper.Map<List<CourseCardDto>>(user.ModeratingCourses);
+        return TypedResults.Ok(mapper.Map<List<CourseCardDto>>(user.ModeratingCourses));
     }
 }
