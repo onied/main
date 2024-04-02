@@ -1,5 +1,6 @@
 import { PreviewDto } from "./editPreview";
 import classes from "../../../pages/preview/preview.module.css";
+import additionalClasses from "./previewModalAdditional.module.css";
 import Markdown from "react-markdown";
 import CourseProgram from "../../preview/courseProgram/courseProgram";
 import PreviewPicture from "../../preview/previewPicture/previewPicture";
@@ -8,7 +9,8 @@ import Button from "../../general/button/button";
 import AuthorBlock from "../../preview/authorBlock/authorBlock";
 import { AllowCertificate } from "../../preview/allowCertifiacte/allowCertificate";
 
-function PreviewForModal(previewInfo: PreviewDto) {
+function PreviewForModal(props: any) {
+  const previewInfo = props.previewInfo;
   return (
     <div className={classes.previewContainer}>
       <div className={classes.previewLeftBlock}>
@@ -37,10 +39,16 @@ function PreviewForModal(previewInfo: PreviewDto) {
           href={previewInfo.pictureHref}
           isArchived={previewInfo.isArchived}
         />
+
         <h2 className={classes.price}>{previewInfo.price}</h2>
         <Link to="learn">
           <Button
-            style={{ width: "100%", fontSize: "20pt", textDecorations: "none" }}
+            style={{
+              width: "100%",
+              fontSize: "20pt",
+              textDecorations: "none",
+              backgroundColor: "#9715d3",
+            }}
           >
             купить
           </Button>
@@ -51,6 +59,12 @@ function PreviewForModal(previewInfo: PreviewDto) {
         />
         {previewInfo.hasCertificates ? <AllowCertificate /> : <></>}
       </div>
+      <div
+        className={additionalClasses.close}
+        onClick={() => {
+          props.onCloseClick(false);
+        }}
+      ></div>
     </div>
   );
 }

@@ -63,8 +63,6 @@ function EditPreviewComponent() {
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
 
-  const checkPreview = () => {};
-
   const saveChanges = () => {
     api.put("", previewInfo).then().catch();
   };
@@ -367,11 +365,16 @@ function EditPreviewComponent() {
         </DialogActions>
       </Dialog>
       <Dialog
+        fullWidth={true}
+        maxWidth={"xl"}
         open={isCheckPreviewModalOpen}
         onClose={() => setIsCheckPreviewModalOpen(false)}
       >
         <DialogContent>
-          <PreviewModal {...previewInfo!} />
+          <PreviewModal
+            previewInfo={previewInfo!}
+            onCloseClick={setIsCheckPreviewModalOpen}
+          />
         </DialogContent>
       </Dialog>
     </>
