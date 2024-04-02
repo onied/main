@@ -8,7 +8,7 @@ namespace Courses.Controllers;
 [ApiController]
 [Route("api/v1/[controller]/{id:guid}")]
 public class TeachingController(
-    UserRepository userRepository,
+    IUserRepository userRepository,
     IMapper mapper
     ) : ControllerBase
 {
@@ -26,7 +26,7 @@ public class TeachingController(
     [Route("moderated")]
     public async Task<ActionResult<List<CourseCardDto>>> GetModeratedCourses(Guid id)
     {
-        var user = await userRepository.GetUserWithTeachingCoursesAsync(id);
+        var user = await userRepository.GetUserWithModeratingCoursesAsync(id);
         if (user is null) return NotFound();
 
         return mapper.Map<List<CourseCardDto>>(user.Courses);
