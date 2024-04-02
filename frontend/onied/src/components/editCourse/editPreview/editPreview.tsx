@@ -12,8 +12,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
+import PreviewModal from "./previewModal";
 
-type PreviewDto = {
+export type PreviewDto = {
   title: string;
   pictureHref: string;
   description: string;
@@ -23,9 +24,14 @@ type PreviewDto = {
     id: number;
     name: string;
   };
+  courseAuthor: {
+    name: string;
+    avatarHref: string;
+  };
   isArchived: boolean;
   hasCertificates: boolean;
   isContentProgramVisible: boolean;
+  courseProgram: Array<string> | undefined;
 };
 
 type Errors = {
@@ -49,6 +55,8 @@ function EditPreviewComponent() {
   const [found, setFound] = useState<boolean | undefined>();
   const [newImageHref, setNewImageHref] = useState<string>("");
   const [isNewImageModalOpen, setIsNewImageModalOpen] =
+    useState<boolean>(false);
+  const [isCheckPreviewModalOpen, setIsCheckPreviewModalOpen] =
     useState<boolean>(false);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
 
@@ -207,7 +215,7 @@ function EditPreviewComponent() {
           </span>
           <Button
             style={{ width: "50%", margin: "25px 0" }}
-            onClick={checkPreview}
+            onClick={() => setIsCheckPreviewModalOpen(true)}
           >
             посмотреть
           </Button>
@@ -357,6 +365,14 @@ function EditPreviewComponent() {
             сохранить
           </button>
         </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isCheckPreviewModalOpen}
+        onClose={() => setIsCheckPreviewModalOpen(false)}
+      >
+        <DialogContent>
+          <PreviewModal {...previewInfo!} />
+        </DialogContent>
       </Dialog>
     </>
   );
