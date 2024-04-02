@@ -15,13 +15,16 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class CoursesControllerTests
 {
+    private readonly Mock<IBlockRepository> _blockRepository = new();
+    private readonly Mock<ICategoryRepository> _categoryRepository = new();
+    private readonly Mock<ICheckTasksService> _checkTasksService = new();
     private readonly CoursesController _controller;
-    private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
+    private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Fixture _fixture = new();
     private readonly Mock<ILogger<CoursesController>> _logger = new();
-    private readonly Mock<ICourseRepository> _courseRepository = new();
-    private readonly Mock<IBlockRepository> _blockRepository = new();
-    private readonly Mock<ICheckTasksService> _checkTasksService = new();
+
+    private readonly IMapper _mapper =
+        new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
 
     public CoursesControllerTests()
     {
@@ -30,7 +33,7 @@ public class CoursesControllerTests
             _mapper,
             _courseRepository.Object,
             _blockRepository.Object,
-            _checkTasksService.Object);
+            _checkTasksService.Object, _categoryRepository.Object);
     }
 
     [Fact]
@@ -814,7 +817,7 @@ public class CoursesControllerTests
         _checkTasksService.Setup(cts => cts.CheckTask(It.IsAny<TaskProj>(), It.IsAny<UserInputDto>()))
             .Returns(new UserTaskPoints
             {
-                TaskId = task.Id,
+                TaskId = task.Id
             });
 
         // Act

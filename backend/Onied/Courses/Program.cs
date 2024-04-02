@@ -3,7 +3,6 @@ using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Consumers;
 using MassTransit;
-using MassTransit.Data.Messages;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +40,7 @@ builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
