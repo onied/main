@@ -28,6 +28,8 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     public async Task<User?> GetUserWithModeratingCoursesAsync(Guid id)
         => await dbContext.Users
             .Include(u => u.ModeratingCourses)
+            .ThenInclude(c => c.Author)
+            .Include(u => u.ModeratingCourses)
             .ThenInclude(c => c.Category)
             .FirstOrDefaultAsync(u => u.Id == id);
 
