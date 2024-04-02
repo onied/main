@@ -19,6 +19,8 @@ import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 import ProfileService from "./services/profileService";
 import { LoadingContext } from "./hooks/profile/loadingContext";
 import TeachingPage from "./pages/teaching/teaching";
+import EditVideoBlock from "./pages/editCourse/editBlocks/editVideoBlock/editVideoBlock";
+import EditSummaryBlock from "./pages/editCourse/editBlocks/editSummaryBlock/editSummaryBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
 
 function App() {
@@ -43,6 +45,14 @@ function App() {
               <Route
                 path="/course/:courseId/learn/*"
                 element={<Course />}
+              ></Route>
+              <Route
+                path="/course/:courseId/edit/:blockId/video"
+                element={<EditVideoBlock />}
+              ></Route>
+              <Route
+                path="/course/:courseId/edit/:blockId/summary"
+                element={<EditSummaryBlock />}
               ></Route>
               <Route
                 path="/course/:courseId/edit/preview"
