@@ -19,6 +19,20 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             .ThenInclude(c => c.Category)
             .FirstOrDefaultAsync(u => u.Id == id);
 
+    public async Task<User?> GetUserWithTeachingCoursesAsync(Guid id)
+        => await dbContext.Users
+            .Include(u => u.TeachingCourses)
+            .ThenInclude(c => c.Category)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+    public async Task<User?> GetUserWithModeratingCoursesAsync(Guid id)
+        => await dbContext.Users
+            .Include(u => u.ModeratingCourses)
+            .ThenInclude(c => c.Author)
+            .Include(u => u.ModeratingCourses)
+            .ThenInclude(c => c.Category)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
     public async Task AddUserAsync(User user)
     {
         await dbContext.AddAsync(user);
