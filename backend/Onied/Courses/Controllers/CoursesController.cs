@@ -165,6 +165,23 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPut]
+    [Route("edit/hierarchy")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditHierarchy(
+        int id,
+        [FromQuery] string? userId,
+        [FromBody] CourseDto courseDto)
+    {
+        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+        _mapper.Map(courseDto, course);
+
+        return TypedResults.Ok();
+    }
+
+    [HttpPut]
     [Route("video/{blockId:int}/edit")]
     public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditVideoBlock(
         int id,
