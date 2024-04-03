@@ -124,3 +124,30 @@
     justify-content: space-between;
     width: 100%;
 }
+
+.previewInfoSaved {
+    display: block;
+    color: #419341;
+    text-align: center;
+    width: 100%;
+}
+
+.previewInfoError {
+    padding-top: 10px;
+    font-size: 10pt;
+    color: #ed4956;
+    text-align: left;
+}
+
+.submitNewFileButton{
+    padding: 0.5rem 2rem;
+    border-radius: 0.75rem;
+    background-color: #9715d3;
+    box-shadow: 0 4px 7px 0 #9715d380;
+    font-weight: 400;
+    font-size: 14pt;
+    color: white;
+    border: 0;
+    cursor: pointer;
+    margin: 0 1rem 0.5rem 1rem;
+}

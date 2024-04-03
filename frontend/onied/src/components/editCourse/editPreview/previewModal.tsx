@@ -1,4 +1,3 @@
-import { PreviewDto } from "./editPreview";
 import classes from "../../../pages/preview/preview.module.css";
 import additionalClasses from "./previewModalAdditional.module.css";
 import Markdown from "react-markdown";
@@ -9,38 +8,57 @@ import Button from "../../general/button/button";
 import AuthorBlock from "../../preview/authorBlock/authorBlock";
 import { AllowCertificate } from "../../preview/allowCertifiacte/allowCertificate";
 
-function PreviewForModal(props: any) {
-  const previewInfo = props.previewInfo;
+type PreviewModalProps = {
+  title: string;
+  pictureHref: string;
+  description: string;
+  hoursCount: number;
+  price: number;
+  category: {
+    id: number;
+    name: string;
+  };
+  courseAuthor: {
+    name: string;
+    avatarHref: string;
+  };
+  isArchived: boolean;
+  hasCertificates: boolean;
+  isProgramVisible: boolean;
+  courseProgram: Array<string> | undefined;
+  onCloseClick: (isOpen: boolean) => void;
+};
+
+function PreviewForModal(props: PreviewModalProps) {
   return (
     <div className={classes.previewContainer}>
       <div className={classes.previewLeftBlock}>
-        <h2 className={classes.previewTitle}>{previewInfo.title}</h2>
+        <h2 className={classes.previewTitle}>{props.title}</h2>
         <div className={classes.additionalInfoLine}>
           <a
             className={classes.additionalInfo}
-            href={`/catalog?=category=${previewInfo.category.id}`}
+            href={`/catalog?=category=${props.category.id}`}
           >
-            категория: {previewInfo.category.name}
+            категория: {props.category.name}
           </a>
           <span className={classes.additionalInfo}>
-            время прохождения: {previewInfo.hoursCount} часов
+            время прохождения: {props.hoursCount} часов
           </span>
         </div>
-        <Markdown>{previewInfo.description}</Markdown>
-        {previewInfo.isContentProgramVisible &&
-        previewInfo.courseProgram !== null ? (
-          <CourseProgram modules={previewInfo.courseProgram!} />
+        <Markdown>{props.description}</Markdown>
+        {props.isProgramVisible && props.courseProgram !== null ? (
+          <CourseProgram modules={props.courseProgram!} />
         ) : (
           <></>
         )}
       </div>
       <div className={classes.previewRightBlock}>
         <PreviewPicture
-          href={previewInfo.pictureHref}
-          isArchived={previewInfo.isArchived}
+          href={props.pictureHref}
+          isArchived={props.isArchived}
         />
 
-        <h2 className={classes.price}>{previewInfo.price}</h2>
+        <h2 className={classes.price}>{props.price}</h2>
         <Link to="learn">
           <Button
             style={{
@@ -54,10 +72,10 @@ function PreviewForModal(props: any) {
           </Button>
         </Link>
         <AuthorBlock
-          authorName={previewInfo.courseAuthor.name}
-          authorAvatarHref={previewInfo.courseAuthor.avatarHref}
+          authorName={props.courseAuthor.name}
+          authorAvatarHref={props.courseAuthor.avatarHref}
         />
-        {previewInfo.hasCertificates ? <AllowCertificate /> : <></>}
+        {props.hasCertificates ? <AllowCertificate /> : <></>}
       </div>
       <div
         className={additionalClasses.close}

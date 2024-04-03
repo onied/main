@@ -6,6 +6,7 @@ import imagePlaceholder from "../../../assets/imagePlaceholder.svg";
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
 import InputFormArea from "../../general/inputform/inputFormArea";
+import Select from "../../general/inputform/select";
 import Checkbox from "../../general/checkbox/checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -13,8 +14,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import PreviewModal from "./previewModal";
+import BeatLoader from "react-spinners/BeatLoader";
 
-export type PreviewDto = {
+type PreviewDto = {
   title: string;
   pictureHref: string;
   description: string;
@@ -30,13 +32,18 @@ export type PreviewDto = {
   };
   isArchived: boolean;
   hasCertificates: boolean;
-  isContentProgramVisible: boolean;
+  isProgramVisible: boolean;
   courseProgram: Array<string> | undefined;
+};
+
+type CategoryDto = {
+  id: number;
+  name: string;
 };
 
 type Errors = {
   Title: string | null;
-  Category: string | null;
+  Description: string | null;
   Price: string | null;
   CompleteTime: string | null;
   Picture: string | null;
@@ -45,9 +52,12 @@ type Errors = {
 function EditPreviewComponent() {
   const { courseId } = useParams();
   const [previewInfo, setPreview] = useState<PreviewDto | undefined>();
+  const [categories, setCategories] = useState<
+    Array<CategoryDto> | undefined
+  >();
   const [errors, setErrors] = useState<Errors>({
     Title: null,
-    Category: null,
+    Description: null,
     Price: null,
     CompleteTime: null,
     Picture: null,
@@ -58,13 +68,63 @@ function EditPreviewComponent() {
     useState<boolean>(false);
   const [isCheckPreviewModalOpen, setIsCheckPreviewModalOpen] =
     useState<boolean>(false);
+  const [isNewPreviewInfoSaved, setIsNewPreviewInfoSaved] =
+    useState<boolean>(false);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
 
   const saveChanges = () => {
-    api.put("", previewInfo).then().catch();
+    setIsNewPreviewInfoSaved(false);
+    api
+      .put("courses/" + courseId, {
+        title: previewInfo?.title,
+        description: previewInfo?.description,
+        categoryId: previewInfo?.category.id,
+        price: previewInfo?.price,
+        hoursCount: previewInfo?.hoursCount,
+        pictureHref: previewInfo?.pictureHref,
+        isProgramVisible: previewInfo?.isProgramVisible,
+        hasCertificates: previewInfo?.hasCertificates,
+        isArchived: previewInfo?.isArchived,
+      })
+      .then((_) => setIsNewPreviewInfoSaved(true))
+      .catch((error) => {
+        if (error.response.status == 400) {
+          if (error.response.data.errors.Title)
+            setErrors({
+              ...errors,
+              Title:
+                previewInfo?.title.length === 0
+                  ? "Это обязательное поле"
+                  : "Название не может иметь больше 200 символов",
+            });
+          if (error.response.data.errors.Description)
+            setErrors({
+              ...errors,
+              Description:
+                previewInfo?.description.length === 0
+                  ? "Это обязательное поле"
+                  : "Описание не может иметь больше 15000 символов",
+            });
+          if (
+            error.response.data.errors.PictureHref &&
+            previewInfo?.pictureHref.length !== 0
+          )
+            setErrors({ ...errors, Picture: "Введите корректный URL." });
+          if (error.response.data.errors.HoursCount)
+            setErrors({
+              ...errors,
+              CompleteTime: "Введите число от 0 до 35000",
+            });
+          if (error.response.data.errors.Price)
+            setErrors({
+              ...errors,
+              Price: "Введите число от 0 до 1000000",
+            });
+        }
+      });
   };
 
   const saveNewImage = (e: any) => {
@@ -81,6 +141,8 @@ function EditPreviewComponent() {
         console.log(response.data);
         setFound(true);
         setPreview(response.data);
+        if (previewInfo?.pictureHref.trim().length === 0)
+          setPreview({ ...previewInfo!, pictureHref: imagePlaceholder });
       })
       .catch((error) => {
         console.log(error);
@@ -90,6 +152,21 @@ function EditPreviewComponent() {
         }
       });
   }, [courseId]);
+
+  useEffect(() => {
+    api
+      .get("categories")
+      .then((response) => {
+        console.log(response.data);
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  if (previewInfo == undefined || categories == undefined)
+    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
 
   if (!found) return notFound;
 
@@ -111,7 +188,11 @@ function EditPreviewComponent() {
                   }
                   style={{ position: "static" }}
                 ></InputForm>
-                {errors.Title ? <div>{errors.Title}</div> : <></>}
+                {errors.Title ? (
+                  <div className={classes.previewInfoError}>{errors.Title}</div>
+                ) : (
+                  <></>
+                )}
               </div>
               <label
                 className={classes.formLabel}
@@ -127,25 +208,34 @@ function EditPreviewComponent() {
                     setPreview({ ...previewInfo!, description: e.target.value })
                   }
                 ></InputFormArea>
+                {errors.Description ? (
+                  <div className={classes.previewInfoError}>
+                    {errors.Description}
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
               <label className={classes.formLabel} htmlFor="preview_category">
                 Категория
               </label>
-              <div>
-                <InputForm
-                  id="preview_category"
-                  value={previewInfo?.category.name}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              <div className={classes.customSelect}>
+                <Select
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    let categoryId = Number(e.target.value);
                     setPreview({
                       ...previewInfo!,
                       category: {
-                        ...previewInfo!.category,
-                        name: e.target.value,
+                        id: categoryId,
+                        name: categories![categoryId - 1].name,
                       },
-                    })
-                  }
-                ></InputForm>
-                {errors.Category ? <div>{errors.Category}</div> : <></>}
+                    });
+                  }}
+                >
+                  {categories!.map((categoryDto) => (
+                    <option value={categoryDto.id}>{categoryDto.name}</option>
+                  ))}
+                </Select>
               </div>
             </div>
             <div className={classes.inputChangesTwoColumns}>
@@ -161,6 +251,7 @@ function EditPreviewComponent() {
                 </label>
                 <div className={classes.fixedHeightTextArea}>
                   <InputForm
+                    type="number"
                     id="preview_price"
                     value={previewInfo?.price}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -170,7 +261,13 @@ function EditPreviewComponent() {
                       })
                     }
                   ></InputForm>
-                  {errors.Price ? <div>{errors.Price}</div> : <></>}
+                  {errors.Price ? (
+                    <div className={classes.previewInfoError}>
+                      {errors.Price}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
               <div className={classes.inputChangesBlock}>
@@ -188,6 +285,7 @@ function EditPreviewComponent() {
                 </label>
                 <div className={classes.fixedHeightTextArea}>
                   <InputForm
+                    type="number"
                     id="preview_complete_time"
                     value={previewInfo?.hoursCount}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -198,7 +296,9 @@ function EditPreviewComponent() {
                     }
                   ></InputForm>
                   {errors.CompleteTime ? (
-                    <div>{errors.CompleteTime}</div>
+                    <div className={classes.previewInfoError}>
+                      {errors.CompleteTime}
+                    </div>
                   ) : (
                     <></>
                   )}
@@ -221,13 +321,7 @@ function EditPreviewComponent() {
         <div className={classes.newCoursePictureWrapper}>
           <div className={classes.newCoursePicture}>
             <label className={classes.formLabel}>Логотип</label>
-            <img
-              src={
-                previewInfo?.pictureHref.trim().length === 0
-                  ? imagePlaceholder
-                  : previewInfo!.pictureHref
-              }
-            />
+            <img src={previewInfo.pictureHref} />
           </div>
           <Button
             style={{ width: "40%" }}
@@ -243,11 +337,11 @@ function EditPreviewComponent() {
           <div className={classes.checkboxAndTitle}>
             <Checkbox
               id="is-program-visible-checkbox"
-              checked={previewInfo?.isContentProgramVisible}
+              checked={previewInfo?.isProgramVisible}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setPreview({
                   ...previewInfo!,
-                  isContentProgramVisible: e.target.checked,
+                  isProgramVisible: e.target.checked,
                 })
               }
             />
@@ -321,7 +415,14 @@ function EditPreviewComponent() {
       </div>
       <div className={classes.line}></div>
       <div className={classes.footerButtons}>
-        <Button onClick={saveChanges}>сохранить изменения</Button>
+        <div>
+          <Button onClick={saveChanges}>сохранить изменения</Button>
+          {isNewPreviewInfoSaved ? (
+            <label className={classes.previewInfoSaved}>Сохранено</label>
+          ) : (
+            <></>
+          )}
+        </div>
         <Link to={`../course/${courseId}/edit/hierarchy`}>
           <Button
             style={{
@@ -372,8 +473,7 @@ function EditPreviewComponent() {
       >
         <DialogContent>
           <PreviewModal
-            previewInfo={previewInfo!}
-            onCloseClick={setIsCheckPreviewModalOpen}
+            {...{ ...previewInfo!, onCloseClick: setIsCheckPreviewModalOpen }}
           />
         </DialogContent>
       </Dialog>
