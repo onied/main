@@ -3,6 +3,7 @@ using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Consumers;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,8 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+    .AddNegotiate();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreatedConsumer>();
@@ -55,6 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
