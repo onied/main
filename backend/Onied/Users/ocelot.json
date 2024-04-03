@@ -19,6 +19,24 @@
       }
     },
     {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/api/v1/teaching/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5135
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/teaching/{userId}/{everything}",
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/v1/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -27,7 +45,10 @@
           "Port": 5135
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/{everything}"
+      "UpstreamPathTemplate": "/api/v1/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
     }
   ],
   "GlobalConfiguration": {

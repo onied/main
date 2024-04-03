@@ -35,7 +35,7 @@ public class ProfileController : ControllerBase
         return Ok(userProfile);
     }
 
-    [HttpPut("")]
+    [HttpPut]
     public async Task<ActionResult> EditProfile(
         [FromServices] UserManager<AppUser> userManager,
         [FromBody] ProfileChangedDto profileChanged)
