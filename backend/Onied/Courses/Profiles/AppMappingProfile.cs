@@ -22,9 +22,9 @@ public class AppMappingProfile : Profile
             .ForMember(preview => preview.Price, options => options.MapFrom(course => course.PriceRubles))
             .ForMember(preview => preview.CourseProgram,
                 options => options.MapFrom(new CourseProgramResolver()));
-        CreateMap<SummaryBlock, SummaryBlockDto>();
+        CreateMap<SummaryBlock, SummaryBlockDto>().ReverseMap();
         CreateMap<VideoBlock, VideoBlockDto>().ForMember(dest => dest.Href,
-            expression => expression.MapFrom(block => block.Url));
+            expression => expression.MapFrom(block => block.Url)).ReverseMap();
         CreateMap<TaskVariant, VariantDto>();
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
