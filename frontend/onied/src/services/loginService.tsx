@@ -5,6 +5,7 @@ class LoginService {
   static setRefreshingTokens:
     | ((refreshingTokens: boolean) => void)
     | undefined = undefined;
+  static noConnection = false;
 
   static registerAutomaticRefresh() {
     LoginService.unregisterAutomaticRefresh();
@@ -41,7 +42,12 @@ class LoginService {
     const accessToken = localStorage.getItem("access_token");
     const refreshToken = localStorage.getItem("refresh_token");
     const expiresString = localStorage.getItem("expires");
-    if (accessToken === null || refreshToken === null || expiresString === null)
+    if (
+      accessToken === null ||
+      refreshToken === null ||
+      expiresString === null ||
+      LoginService.noConnection
+    )
       return false;
     const expires = new Date(localStorage.getItem("expires")!);
     if (expires <= new Date()) {
@@ -81,6 +87,7 @@ class LoginService {
           LoginService.clearTokens();
           console.log("Tokens expired");
         } else {
+          LoginService.noConnection = true;
           console.log(error);
         }
       })

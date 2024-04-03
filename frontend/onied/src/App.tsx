@@ -32,7 +32,7 @@ function App() {
   ProfileService.initialize(setProfile, setLoading);
   useEffect(() => {
     if (refreshingTokens) setLoading(true);
-    if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
+    else if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
     else setLoading(false);
   }, [refreshingTokens]);
   return (
