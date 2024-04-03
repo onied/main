@@ -34,6 +34,19 @@ public class AppMappingProfile : Profile
         CreateMap<EditCourseDto, Course>()
             .ForMember(dest => dest.PriceRubles, opt => opt.MapFrom(src => src.Price)).ReverseMap();
 
+        CreateMap<CourseDto, Course>()
+            .ForMember(dest => dest.Modules, opt => opt.MapFrom(
+                (courseDto, course, i, context) =>
+                    context.Mapper.Map<List<Module>>(courseDto.Modules)
+                ));
+        CreateMap<ModuleDto, Module>()
+            .ForMember(dest => dest.Blocks, opt => opt.MapFrom(
+                (moduleDto, module, i, context) =>
+                    context.Mapper.Map<List<Block>>(moduleDto.Blocks)
+            ));
+        CreateMap<BlockDto, Block>();
+
+
         //MassTransit
         CreateMap<UserCreated, User>();
     }
