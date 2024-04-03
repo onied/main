@@ -62,6 +62,13 @@ function EditCourseHierarchy() {
     <FontAwesomeIcon icon={faListCheck} />,
   ];
 
+  useEffect(() => {
+    api
+      .put("courses/" + courseId + "/edit/hierarchy", hierarchy)
+      .then((res) => console.log(res))
+      .catch((res) => console.log(res));
+  }, [hierarchy]);
+
   const deleteBlock = (moduleIndex: number, blockId: number) => {
     const newArray = Array.from(hierarchy!.modules);
     const blockIndex = newArray[moduleIndex].blocks.findIndex(
