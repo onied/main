@@ -163,4 +163,87 @@ public class CoursesController : ControllerBase
         await _courseRepository.UpdateCourseAsync(course);
         return TypedResults.Ok(_mapper.Map<PreviewDto>(course));
     }
+
+    [HttpPut]
+    [Route("video/{blockId:int}/edit")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditVideoBlock(
+        int id,
+        int blockId,
+        [FromQuery] string? userId,
+        [FromBody] VideoBlockDto videoBlockDto)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        var block = await _blockRepository.GetVideoBlock(blockId);
+        if (block == null || block.Module.CourseId != id)
+            return TypedResults.NotFound();
+
+        _mapper.Map(videoBlockDto, block);
+        await _blockRepository.UpdateVideoBlock(block);
+        return TypedResults.Ok();
+    }
+
+    [HttpPut]
+    [Route("summary/{blockId:int}/edit")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditSummaryBlock(
+        int id,
+        int blockId,
+        [FromQuery] string? userId,
+        [FromBody] SummaryBlockDto summaryBlockDto)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        var block = await _blockRepository.GetSummaryBlock(blockId);
+        if (block == null || block.Module.CourseId != id)
+            return TypedResults.NotFound();
+
+        _mapper.Map(summaryBlockDto, block);
+        await _blockRepository.UpdateSummaryBlock(block);
+        return TypedResults.Ok();
+    }
+
+    [HttpPut]
+    [Route("tasks/{blockId:int}/edit")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditTasksBlock(
+        int id,
+        int blockId,
+        [FromQuery] string? userId,
+        [FromBody] TasksBlockDto tasksBlockDto)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        var block = await _blockRepository.GetTasksBlock(blockId);
+        if (block == null || block.Module.CourseId != id)
+            return TypedResults.NotFound();
+
+        _mapper.Map(tasksBlockDto, block);
+        await _blockRepository.UpdateTasksBlock(block);
+        return TypedResults.Ok();
+    }
+
+    [HttpGet]
+    [Route("CheckEditCourse")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> CheckEditCourse(
+        int id,
+        [FromQuery] string? userId)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+        return TypedResults.Ok();
+    }
 }
