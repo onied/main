@@ -1,0 +1,27 @@
+.taskContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.taskRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 16pt;
+  font-weight: bold;
+}
+
+.taskGrid {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  align-items: center;
+  gap: 0.5rem;
+  row-gap: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}

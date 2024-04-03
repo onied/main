@@ -1,7 +1,7 @@
 import classes from "./editVideoBlock.module.css";
 import { useProfile } from "../../../../hooks/profile/useProfile";
 import { Navigate } from "react-router-dom";
-import EditTasksBlockComponent from "../../../../components/editCourse/editBlocks/editTasksBlock/editTasksBlock";
+import EditTasksBlockComponent from "../../../../components/editCourse/editBlocks/editTasksBlockComponent/editTasksBlockComponent";
 
 function EditTasksBlock() {
   const [profile, loading] = useProfile();

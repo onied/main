@@ -1,0 +1,18 @@
+.textareafrom {
+  background-color: #fafafa;
+  border: 0.01rem solid;
+  border-color: #dbdbdb;
+  border-radius: 0.2rem;
+  color: #494949;
+  font-size: 10pt;
+  font-weight: 200;
+  letter-spacing: 0.04rem;
+  padding: 0.7rem;
+  position: relative;
+  min-height: 12rem;
+}
+
+.textareafrom:focus {
+  outline: none;
+  border-color: #a0a0a0;
+}

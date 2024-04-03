@@ -22,7 +22,7 @@ import TeachingPage from "./pages/teaching/teaching";
 import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
 import EditVideoBlock from "./pages/editCourse/editBlocks/editVideoBlock/editVideoBlock";
 import EditSummaryBlock from "./pages/editCourse/editBlocks/editSummaryBlock/editSummaryBlock";
-import EditTasksBlock from "./components/editCourse/editBlocks/editTasksBlock/editTasksBlock";
+import EditTasksBlock from "./pages/editCourse/editBlocks/editTasksBlock/editTasksBlock";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
