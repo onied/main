@@ -1,5 +1,6 @@
 using Courses.Models;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
@@ -39,4 +40,21 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
         return query.FirstOrDefaultAsync(block => block.Id == id);
     }
 
+    public async Task UpdateSummaryBlock(SummaryBlock summaryBlock)
+    {
+        dbContext.SummaryBlocks.Update(summaryBlock);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateVideoBlock(VideoBlock videoBlock)
+    {
+        dbContext.VideoBlocks.Update(videoBlock);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateTasksBlock(TasksBlock tasksBlock)
+    {
+        dbContext.TasksBlocks.Update(tasksBlock);
+        await dbContext.SaveChangesAsync();
+    }
 }
