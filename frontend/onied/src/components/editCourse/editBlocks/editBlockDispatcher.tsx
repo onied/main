@@ -1,4 +1,4 @@
-import EditTasksBlock from "./editTasksBlockComponent/editTasksBlock";
+import EditTasksBlock from "./editTasksBlock";
 
 type BlockInfo = {
   id: number;

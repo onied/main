@@ -5,7 +5,7 @@ export enum TaskType {
   ManualReview,
 }
 
-export type Answer = {
+export type Variant = {
   id: number;
   description: string;
 };
@@ -15,5 +15,14 @@ export type Task = {
   title: string;
   taskType: TaskType;
   maxPoints: number;
-  variants: Answer[] | null;
+};
+
+export type SingleAnswerTask = Task & {
+  variants: Variant[] | null;
+  rightVariant: number;
+};
+
+export type MultipleAnswersTask = Task & {
+  variants: Variant[] | null;
+  rightVariants: number[] | null;
 };

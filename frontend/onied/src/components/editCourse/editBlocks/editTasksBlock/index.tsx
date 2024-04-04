@@ -1,17 +1,45 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../../config/axios";
-import EditSingleAnswerTask from "../../editTasks/editSingleAnswerTask/editSingleAnswerTask";
 import { TasksBlock } from "../../../../types/block";
 import { Task, TaskType } from "../../../../types/task";
 import { BeatLoader } from "react-spinners";
+import EditTask from "../../editTasks/editTask";
+import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
 
 function EditTasksBlockComponent() {
+  const navigator = useNavigate();
   const { courseId, blockId } = useParams();
   const [loading, setLoading] = useState(false);
   const [currentBlock, setCurrentBlock] = useState<
     TasksBlock | undefined | null
   >(undefined);
+
+  const [task, setTask] = useState<Task>({
+    id: 1,
+    taskType: 1,
+    title: "1. Что произошло на пло́щади Тяньаньмэ́нь в 1989 году?",
+    maxPoints: 1,
+    variants: [
+      {
+        id: 1,
+        description: "Ничего 1",
+      },
+      {
+        id: 2,
+        description: "Ничего 2",
+      },
+      {
+        id: 3,
+        description: "Ничего 3",
+      },
+      {
+        id: 4,
+        description: "Ничего 4",
+      },
+    ],
+    rightVariants: [1],
+  });
 
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
 
@@ -46,18 +74,18 @@ function EditTasksBlockComponent() {
 
   if (!loading && currentBlock === null) return notFound;
 
-  const task: Task = {
-    id: 145,
-    title: "типовое задание",
-    taskType: TaskType.ManualReview,
-    maxPoints: 1,
-    variants: null,
+  const handleChange = (id: number, task: Task) => {
+    console.log(task);
+    setTask(task);
   };
 
   return (
     <>
+      <ButtonGoBack
+        onClick={() => navigator("../../hierarchy", { relative: "path" })}
+      />
       <h2>{currentBlock?.title}</h2>
-      <EditSingleAnswerTask task={task} />
+      <EditTask task={task} onChange={handleChange} />
     </>
   );
 }
