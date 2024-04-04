@@ -89,7 +89,9 @@ function EditPreviewComponent() {
         hasCertificates: previewInfo?.hasCertificates,
         isArchived: previewInfo?.isArchived,
       })
-      .then((_) => setIsNewPreviewInfoSaved(true))
+      .then((_) => {
+        setIsNewPreviewInfoSaved(true);
+      })
       .catch((error) => {
         if (error.response.status == 400) {
           if (error.response.data.errors.Title)
@@ -136,7 +138,7 @@ function EditPreviewComponent() {
   useEffect(() => {
     setFound(undefined);
     api
-      .get("courses/" + id)
+      .get("courses/" + courseId)
       .then((response) => {
         console.log(response.data);
         setFound(true);
@@ -221,6 +223,7 @@ function EditPreviewComponent() {
               </label>
               <div className={classes.customSelect}>
                 <Select
+                  value={previewInfo.category.id}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     let categoryId = Number(e.target.value);
                     setPreview({
@@ -233,7 +236,9 @@ function EditPreviewComponent() {
                   }}
                 >
                   {categories!.map((categoryDto) => (
-                    <option value={categoryDto.id}>{categoryDto.name}</option>
+                    <option key={categoryDto.id} value={categoryDto.id}>
+                      {categoryDto.name}
+                    </option>
                   ))}
                 </Select>
               </div>

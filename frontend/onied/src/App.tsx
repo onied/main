@@ -54,10 +54,7 @@ function App() {
                 path="/course/:courseId/edit/:blockId/summary"
                 element={<EditSummaryBlock />}
               ></Route>
-              <Route
-                path="/course/:courseId/edit/preview"
-                element={<EditPreview />}
-              />
+              <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
               <Route path="/catalog" element={<Catalog />}></Route>
               <Route path="/register" element={<Register />}></Route>
