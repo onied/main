@@ -71,4 +71,14 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
         dbContext.TasksBlocks.Update(tasksBlock);
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task DeleteBlockAsync(int id)
+    {
+        var block = await dbContext.Blocks.FirstOrDefaultAsync(b => b.Id == id);
+        if (block != null)
+        {
+            dbContext.Blocks.Remove(block);
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }
