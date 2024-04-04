@@ -28,4 +28,14 @@ public class ModuleRepository(AppDbContext dbContext) : IModuleRepository
         dbContext.Modules.Update(module);
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task DeleteModuleAsync(int id)
+    {
+        var module = await dbContext.Modules.FirstOrDefaultAsync(m => m.Id == id);
+        if (module != null)
+        {
+            dbContext.Modules.Remove(module);
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }
