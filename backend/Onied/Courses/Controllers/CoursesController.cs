@@ -189,6 +189,24 @@ public class CoursesController : ControllerBase
         return TypedResults.Ok(addedModuleId);
     }
 
+    [HttpDelete]
+    [Route("edit/delete-module")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> AddModule(
+        int id,
+        [FromQuery] int moduleId,
+        [FromQuery] string? userId)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        await _moduleRepository.DeleteModuleAsync(moduleId);
+
+        return TypedResults.Ok();
+    }
+
     [HttpPost]
     [Route("edit/add-block/{moduleId:int}")]
     public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddBlock(

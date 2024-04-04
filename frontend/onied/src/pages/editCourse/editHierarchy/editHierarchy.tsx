@@ -83,6 +83,11 @@ function EditCourseHierarchy() {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     if (moduleIndex == -1) return;
+    api
+      .delete(
+        "courses/" + courseId + "/edit/delete-module?moduleId=" + moduleId
+      )
+      .catch((res) => console.log(res));
     newArray.splice(moduleIndex, 1);
     setHierarchy({ ...hierarchy!, modules: newArray });
   };
