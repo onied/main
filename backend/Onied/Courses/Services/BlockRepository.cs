@@ -76,10 +76,18 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
 
     public async Task DeleteBlockAsync(int id)
     {
-        var block = await dbContext.Blocks.FirstOrDefaultAsync(b => b.Id == id);
-        if (block != null)
+        var removedBlock = await dbContext.Blocks.FirstOrDefaultAsync(b => b.Id == id);
+        if (removedBlock != null)
         {
-            dbContext.Blocks.Remove(block);
+            dbContext.Blocks.Remove(removedBlock);
+            var blocks = dbContext.Blocks
+                .Where(m => m.ModuleId == removedBlock.ModuleId && m.Id != id)
+                .OrderBy(m => m.Index);
+            var newIndex = 0;
+            foreach (var block in blocks)
+            {
+                block.Index = newIndex++;
+            }
             await dbContext.SaveChangesAsync();
         }
     }
