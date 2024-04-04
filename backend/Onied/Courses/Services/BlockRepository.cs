@@ -42,12 +42,14 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
 
     public async Task AddBlockAsync(Block block)
     {
+        block.Index = await dbContext.Blocks.Where(b => b.ModuleId == block.ModuleId).CountAsync();
         await dbContext.Blocks.AddAsync(block);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task<int> AddBlockReturnIdAsync(Block block)
     {
+        block.Index = await dbContext.Blocks.Where(b => b.ModuleId == block.ModuleId).CountAsync();
         await dbContext.Blocks.AddAsync(block);
         await dbContext.SaveChangesAsync();
 

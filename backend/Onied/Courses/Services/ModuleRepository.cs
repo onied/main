@@ -12,12 +12,14 @@ public class ModuleRepository(AppDbContext dbContext) : IModuleRepository
 
     public async Task AddModuleAsync(Module module)
     {
+        module.Index = await dbContext.Modules.Where(m => m.CourseId == module.CourseId).CountAsync();
         await dbContext.Modules.AddAsync(module);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task<int> AddModuleReturnIdAsync(Module module)
     {
+        module.Index = await dbContext.Modules.Where(m => m.CourseId == module.CourseId).CountAsync();
         await dbContext.Modules.AddAsync(module);
         await dbContext.SaveChangesAsync();
         return module.Id;
