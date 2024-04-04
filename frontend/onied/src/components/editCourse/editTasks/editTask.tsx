@@ -1,7 +1,5 @@
-import { useState } from "react";
-
 import classes from "./editTask.module.css";
-import { Task, TaskType, Variant } from "../../../types/task";
+import { SingleAnswerTask, Task, TaskType } from "../../../types/task";
 import InputForm from "../../general/inputform/inputform";
 import TextAreaForm from "../../general/textareaform/textareaform";
 import SelectForm from "../../general/selectform/select";
@@ -32,15 +30,27 @@ function EditTask({
     onChange(task.id, task);
   };
 
+  const setMaxPoints = (event: any) => {
+    const min = 0;
+    const max = 1000;
+    var inputValue = Number.parseInt(event.target.value);
+    handleChange("maxPoints", Math.max(min, Math.min(max, inputValue)));
+  };
+
   return (
-    <div className={classes.taskGrid}>
+    <div className={classes.taskContainer}>
       <label className={classes.label} htmlFor="title">
         Текст задания
       </label>
       <TextAreaForm
         id="title"
+        style={{
+          "min-height": "4.5rem",
+          resize: "vertical",
+        }}
+        maxLength="280"
         value={task.title}
-        onChange={(event) => handleChange("title", event.target.value)}
+        onChange={(event: any) => handleChange("title", event.target.value)}
       />
 
       <label className={classes.label} htmlFor="taskType">
@@ -58,7 +68,7 @@ function EditTask({
       </label>
       <SingleAnswerTaskExtension
         id="variants"
-        task={task}
+        task={task as SingleAnswerTask}
         onChange={handleChange}
       />
 
@@ -68,10 +78,11 @@ function EditTask({
       <InputForm
         type="number"
         id="maxPoints"
+        min="0"
+        maX="1000"
+        style={{ width: "max-content" }}
         value={task.maxPoints}
-        onChange={(event) =>
-          handleChange("maxPoints", Number.parseInt(event.target.value))
-        }
+        onChange={setMaxPoints}
       />
     </div>
   );

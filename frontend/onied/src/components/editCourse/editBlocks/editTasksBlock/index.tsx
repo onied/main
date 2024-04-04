@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../../config/axios";
 import { TasksBlock } from "../../../../types/block";
-import { Task, TaskType } from "../../../../types/task";
+import { SingleAnswerTask, Task } from "../../../../types/task";
 import { BeatLoader } from "react-spinners";
 import EditTask from "../../editTasks/editTask";
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
+import classes from "./index.module.css";
 
 function EditTasksBlockComponent() {
   const navigator = useNavigate();
@@ -38,8 +39,8 @@ function EditTasksBlockComponent() {
         description: "Ничего 4",
       },
     ],
-    rightVariants: [1],
-  });
+    rightVariant: 1,
+  } as Task);
 
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
 
@@ -80,13 +81,15 @@ function EditTasksBlockComponent() {
   };
 
   return (
-    <>
+    <div className={classes.container}>
       <ButtonGoBack
         onClick={() => navigator("../../hierarchy", { relative: "path" })}
-      />
+      >
+        ⟵ к редактированию иерархии
+      </ButtonGoBack>
       <h2>{currentBlock?.title}</h2>
       <EditTask task={task} onChange={handleChange} />
-    </>
+    </div>
   );
 }
 

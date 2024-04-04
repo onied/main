@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import classes from "./index.module.css";
-import { SingleAnswerTask, Variant } from "../../../../types/task";
+import { SingleAnswerTask } from "../../../../types/task";
 import Radio from "../../../general/radio/radio";
 import InputForm from "../../../general/inputform/inputform";
 import Button from "../../../general/button/button";
@@ -25,7 +25,7 @@ function SingleAnswerTaskExtension({
     onChange("variants", newVariants);
   };
 
-  const addVariant = (event) => {
+  const addVariant = (event: any) => {
     event.preventDefault();
     const newId = task.variants![task.variants!.length - 1].id + 1;
     onChange("variants", task.variants!.concat({ id: newId, description: "" }));
@@ -53,12 +53,12 @@ function SingleAnswerTaskExtension({
             <InputForm
               style={{ width: "100%" }}
               value={variant.description}
-              onChange={(event) =>
+              onChange={(event: any) =>
                 updateVariantInput(variant.id, event.target.value)
               }
             />
             <TrashButton
-              onClick={(event) => {
+              onClick={(event: any) => {
                 event.preventDefault();
                 removeVariant(variant.id);
               }}
