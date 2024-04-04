@@ -25,9 +25,14 @@ type SummaryBlock = {
   fileHref: string | null;
 };
 
-function EditSummaryBlockComponent() {
+function EditSummaryBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
   const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState<SummaryBlock | undefined>();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
@@ -101,7 +106,7 @@ function EditSummaryBlockComponent() {
   if (!courseAndBlockFound) return notFound;
 
   return (
-    <>
+    <div className={classes.summaryEditWrapper}>
       <div>
         <div className={classes.editHeader}>
           <ButtonGoBack
@@ -193,7 +198,7 @@ function EditSummaryBlockComponent() {
           </button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
 

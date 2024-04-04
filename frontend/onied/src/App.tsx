@@ -23,6 +23,7 @@ import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy"
 import EditVideoBlock from "./pages/editCourse/editBlocks/editVideoBlock/editVideoBlock";
 import EditSummaryBlock from "./pages/editCourse/editBlocks/editSummaryBlock/editSummaryBlock";
 import EditTasksBlock from "./pages/editCourse/editBlocks/editTasksBlock/editTasksBlock";
+import EditBlock from "./pages/editCourse/EditBlock";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -62,6 +63,10 @@ function App() {
               <Route
                 path="/course/:courseId/edit/:blockId/tasks"
                 element={<EditTasksBlock />}
+              ></Route>
+              <Route
+                path="/course/:courseId/edit/:blockId"
+                element={<EditBlock />}
               ></Route>
               <Route path="/course/:courseId" element={<Preview />}></Route>
               <Route path="/catalog" element={<Catalog />}></Route>

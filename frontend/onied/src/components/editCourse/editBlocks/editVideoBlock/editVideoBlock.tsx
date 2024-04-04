@@ -24,9 +24,14 @@ const embedElements = [
   new RutubeVideoProvider(),
 ];
 
-function EditVideoBlockComponent() {
+function EditVideoBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
 
   const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState<Block | undefined>();

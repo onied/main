@@ -9,9 +9,14 @@ import classes from "./index.module.css";
 import { TasksBlock } from "../../../../types/block";
 import TrashButton from "../../../general/trashButton";
 
-function EditTasksBlockComponent() {
+function EditTasksBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
   const [loading, setLoading] = useState(true);
   const [currentBlock, setCurrentBlock] = useState<
     TasksBlock | undefined | null
@@ -171,7 +176,7 @@ function EditTasksBlockComponent() {
       <h2>{currentBlock?.title}</h2>
       {currentBlock!.tasks.map((task, index) => (
         <div className={classes.deletableTaskRow}>
-          <span className={classes.taskNumber}>{index}.</span>
+          <span className={classes.taskNumber}>{index + 1}.</span>
           <TrashButton />
           <EditTask key={task.id} task={task} onChange={handleChange} />
         </div>
