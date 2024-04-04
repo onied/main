@@ -25,12 +25,14 @@ import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack"
 
 type Block = {
   id: number;
+  index: number;
   title: string;
   blockType: number;
 };
 
 type Module = {
   id: number;
+  index: number;
   title: string;
   blocks: Array<Block>;
 };
@@ -405,6 +407,13 @@ function EditCourseHierarchy() {
       .get("courses/" + id + "/hierarchy/")
       .then((response) => {
         console.log(response.data);
+        if ("modules" in response.data) {
+          response.data.modules.sort((a, b) => (a.Index > b.Index ? -1 : 1));
+          response.data.modules.forEach((module) => {
+            if ("blocks" in module)
+              module.blocks.sort((a, b) => (a.Index > b.Index ? -1 : 1));
+          });
+        }
         setHierarchy(response.data);
       })
       .catch((error) => {
