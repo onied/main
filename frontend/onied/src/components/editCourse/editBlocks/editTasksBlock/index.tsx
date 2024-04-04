@@ -175,10 +175,10 @@ function EditTasksBlockComponent({
       </ButtonGoBack>
       <h2>{currentBlock?.title}</h2>
       {currentBlock!.tasks.map((task, index) => (
-        <div className={classes.deletableTaskRow}>
+        <div key={task.id} className={classes.deletableTaskRow}>
           <span className={classes.taskNumber}>{index + 1}.</span>
           <TrashButton />
-          <EditTask key={task.id} task={task} onChange={handleChange} />
+          <EditTask task={task} onChange={handleChange} />
         </div>
       ))}
     </div>
