@@ -27,6 +27,7 @@ function EditPreviewComponent() {
   const [errors, setErrors] = useState<Errors>({
     Title: null,
     Description: null,
+    PictureHref: null,
     Price: null,
     CompleteTime: null,
   });
@@ -51,6 +52,7 @@ function EditPreviewComponent() {
     setErrors({
       Title: null,
       Description: null,
+      PictureHref: null,
       Price: null,
       CompleteTime: null,
     });
@@ -65,6 +67,7 @@ function EditPreviewComponent() {
         let newErrors: Errors = {
           Title: null,
           Description: null,
+          PictureHref: null,
           Price: null,
           CompleteTime: null,
         };
@@ -80,6 +83,13 @@ function EditPreviewComponent() {
               previewInfo?.description.length === 0
                 ? "Это обязательное поле"
                 : "Описание не может иметь больше 15000 символов";
+          }
+          if (
+            error.response.data.errors.PictureHref &&
+            previewInfo?.pictureHref.length !== 0
+          ) {
+            newErrors.PictureHref = "Введите корректный URL";
+            setPreview({ ...previewInfo!, pictureHref: imagePlaceholder });
           }
           if (error.response.data.errors.HoursCount)
             newErrors.CompleteTime = "Введите число от 0 до 35000";
@@ -320,6 +330,11 @@ function EditPreviewComponent() {
           >
             загрузить
           </Button>
+          {errors.PictureHref ? (
+            <div className={classes.previewInfoError}>{errors.PictureHref}</div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className={classes.line}></div>
@@ -480,6 +495,7 @@ type CategoryDto = {
 type Errors = {
   Title: string | null;
   Description: string | null;
+  PictureHref: string | null;
   Price: string | null;
   CompleteTime: string | null;
 };
