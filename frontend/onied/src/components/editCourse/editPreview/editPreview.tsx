@@ -15,39 +15,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import PreviewModal from "./previewModal";
 import BeatLoader from "react-spinners/BeatLoader";
-
-type PreviewDto = {
-  title: string;
-  pictureHref: string;
-  description: string;
-  hoursCount: number;
-  price: number;
-  category: {
-    id: number;
-    name: string;
-  };
-  courseAuthor: {
-    name: string;
-    avatarHref: string;
-  };
-  isArchived: boolean;
-  hasCertificates: boolean;
-  isProgramVisible: boolean;
-  courseProgram: Array<string> | undefined;
-};
-
-type CategoryDto = {
-  id: number;
-  name: string;
-};
-
-type Errors = {
-  Title: string | null;
-  Description: string | null;
-  Price: string | null;
-  CompleteTime: string | null;
-  Picture: string | null;
-};
+import { AxiosResponse } from "axios";
+import { mapPreviewToEditPreview, PreviewDto } from "./mapPreviewDtos";
 
 function EditPreviewComponent() {
   const { courseId } = useParams();
@@ -60,7 +29,6 @@ function EditPreviewComponent() {
     Description: null,
     Price: null,
     CompleteTime: null,
-    Picture: null,
   });
   const [found, setFound] = useState<boolean | undefined>();
   const [newImageHref, setNewImageHref] = useState<string>("");
@@ -70,62 +38,64 @@ function EditPreviewComponent() {
     useState<boolean>(false);
   const [isNewPreviewInfoSaved, setIsNewPreviewInfoSaved] =
     useState<boolean>(false);
+  const [canAccess, setCanAccess] = useState<boolean | undefined>();
+  const noAccess = (
+    <h1 style={{ margin: "3rem" }}>У вас нет доступа к этой странице</h1>
+  );
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
 
   const saveChanges = () => {
+    setErrors({
+      Title: null,
+      Description: null,
+      Price: null,
+      CompleteTime: null,
+    });
     setIsNewPreviewInfoSaved(false);
     api
-      .put("courses/" + courseId, {
-        title: previewInfo?.title,
-        description: previewInfo?.description,
-        categoryId: previewInfo?.category.id,
-        price: previewInfo?.price,
-        hoursCount: previewInfo?.hoursCount,
-        pictureHref: previewInfo?.pictureHref,
-        isProgramVisible: previewInfo?.isProgramVisible,
-        hasCertificates: previewInfo?.hasCertificates,
-        isArchived: previewInfo?.isArchived,
-      })
-      .then((_) => {
+      .put("courses/" + courseId, mapPreviewToEditPreview(previewInfo!))
+      .then((response) => {
         setIsNewPreviewInfoSaved(true);
+        setPreview(handleNewPreview(response));
       })
       .catch((error) => {
+        let newErrors: Errors = {
+          Title: null,
+          Description: null,
+          Price: null,
+          CompleteTime: null,
+        };
         if (error.response.status == 400) {
-          if (error.response.data.errors.Title)
-            setErrors({
-              ...errors,
-              Title:
-                previewInfo?.title.length === 0
-                  ? "Это обязательное поле"
-                  : "Название не может иметь больше 200 символов",
-            });
-          if (error.response.data.errors.Description)
-            setErrors({
-              ...errors,
-              Description:
-                previewInfo?.description.length === 0
-                  ? "Это обязательное поле"
-                  : "Описание не может иметь больше 15000 символов",
-            });
-          if (
-            error.response.data.errors.PictureHref &&
-            previewInfo?.pictureHref.length !== 0
-          )
-            setErrors({ ...errors, Picture: "Введите корректный URL." });
+          if (error.response.data.errors.Title) {
+            newErrors.Title =
+              previewInfo?.title.length === 0
+                ? "Это обязательное поле"
+                : "Название не может иметь больше 200 символов";
+          }
+          if (error.response.data.errors.Description) {
+            newErrors.Description =
+              previewInfo?.description.length === 0
+                ? "Это обязательное поле"
+                : "Описание не может иметь больше 15000 символов";
+          }
           if (error.response.data.errors.HoursCount)
-            setErrors({
-              ...errors,
-              CompleteTime: "Введите число от 0 до 35000",
-            });
+            newErrors.CompleteTime = "Введите число от 0 до 35000";
           if (error.response.data.errors.Price)
-            setErrors({
-              ...errors,
-              Price: "Введите число от 0 до 1000000",
-            });
+            newErrors.Price = "Введите число от 0 до 1000000";
         }
+        setErrors(newErrors);
+      });
+  };
+
+  const requestForAccess = (validPreview: PreviewDto) => {
+    api
+      .put("courses/" + courseId, mapPreviewToEditPreview(validPreview))
+      .then((_) => setCanAccess(true))
+      .catch((error) => {
+        if (error.response.status == 401) setCanAccess(false);
       });
   };
 
@@ -135,6 +105,16 @@ function EditPreviewComponent() {
     setIsNewImageModalOpen(false);
   };
 
+  const handleNewPreview = (response: AxiosResponse<any, any>) => {
+    let preview = response.data as PreviewDto;
+    console.log(preview);
+    if (preview.pictureHref.trim().length === 0)
+      preview.pictureHref = imagePlaceholder;
+    preview.isProgramVisible =
+      Array.isArray(preview.courseProgram) && preview.courseProgram.length > 0;
+    return preview;
+  };
+
   useEffect(() => {
     setFound(undefined);
     api
@@ -142,9 +122,9 @@ function EditPreviewComponent() {
       .then((response) => {
         console.log(response.data);
         setFound(true);
-        setPreview(response.data);
-        if (previewInfo?.pictureHref.trim().length === 0)
-          setPreview({ ...previewInfo!, pictureHref: imagePlaceholder });
+        const validPreview = handleNewPreview(response);
+        requestForAccess(validPreview);
+        setPreview(validPreview);
       })
       .catch((error) => {
         console.log(error);
@@ -167,8 +147,14 @@ function EditPreviewComponent() {
       });
   }, []);
 
-  if (previewInfo == undefined || categories == undefined)
+  if (
+    previewInfo == undefined ||
+    categories == undefined ||
+    canAccess == undefined
+  )
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+
+  if (!canAccess) return noAccess;
 
   if (!found) return notFound;
 
@@ -389,7 +375,7 @@ function EditPreviewComponent() {
             className={classes.formFieldDescription}
             htmlFor="has-certificates-checkbox"
           >
-            Выдача сертификатов достпуна только с полной подпиской
+            Выдача сертификатов доступна только с полной подпиской
           </label>
         </div>
         <div className={classes.toggleChangeWrapper}>
@@ -485,5 +471,17 @@ function EditPreviewComponent() {
     </>
   );
 }
+
+type CategoryDto = {
+  id: number;
+  name: string;
+};
+
+type Errors = {
+  Title: string | null;
+  Description: string | null;
+  Price: string | null;
+  CompleteTime: string | null;
+};
 
 export default EditPreviewComponent;
