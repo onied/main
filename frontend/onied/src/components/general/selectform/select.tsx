@@ -11,17 +11,20 @@ function SelectForm({
   options,
   value,
   onChange,
+  disabled,
 }: {
   id: any;
   options: Option[];
   value: number;
   onChange: (event: SelectChangeEvent) => void;
+  disabled?: boolean;
 }) {
   return (
     <Select
       className={classes.select}
       id={id}
       value={value.toString()}
+      disabled={disabled}
       onChange={onChange}
     >
       {options.map((opt) => (

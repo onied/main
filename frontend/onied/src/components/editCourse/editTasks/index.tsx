@@ -62,6 +62,7 @@ function EditTask({
         title: previousTask.title,
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.SingleAnswer,
+        isNew: true,
         variants: [{ id: 0, description: "" }],
         rightVariant: 0,
       }) as SingleAnswerTask,
@@ -71,6 +72,7 @@ function EditTask({
         title: previousTask.title,
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.MultipleAnswers,
+        isNew: true,
         variants: [
           { id: 0, description: "" },
           { id: 1, description: "" },
@@ -83,6 +85,7 @@ function EditTask({
         title: previousTask.title,
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.InputAnswer,
+        isNew: true,
         answers: [
           { id: 0, description: "" },
           { id: 1, description: "" },
@@ -97,6 +100,7 @@ function EditTask({
         title: previousTask.title,
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.ManualReview,
+        isNew: true,
       }) as Task,
   };
 
@@ -144,6 +148,7 @@ function EditTask({
         id="taskType"
         value={task.taskType}
         onChange={setTaskType}
+        disabled={!task.isNew}
       />
 
       {task.taskType === null

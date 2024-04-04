@@ -37,6 +37,7 @@ function EditTasksBlockComponent({
           taskType: 1,
           title: "1. Что произошло на пло́щади Тяньаньмэ́нь в 1989 году?",
           maxPoints: 1,
+          isNew: true,
           variants: [
             {
               id: 1,
@@ -62,6 +63,7 @@ function EditTasksBlockComponent({
           taskType: 0,
           title: "2. Чипи чипи чапа чапа дуби дуби даба даба?",
           maxPoints: 1,
+          isNew: true,
           variants: [
             {
               id: 5,
@@ -87,6 +89,7 @@ function EditTasksBlockComponent({
           taskType: 2,
           title: "3. Кто?",
           maxPoints: 5,
+          isNew: true,
           answers: [
             {
               id: 5,
@@ -114,6 +117,7 @@ function EditTasksBlockComponent({
           taskType: 3,
           title: "4. Напишите эссе на тему: “Как я провел лето”",
           maxPoints: 1,
+          isNew: false,
         },
       ],
     });
@@ -178,6 +182,7 @@ function EditTasksBlockComponent({
       title: "",
       taskType: TaskType.ManualReview,
       maxPoints: 0,
+      isNew: true,
     };
     const newTasks = [...currentBlock!.tasks, newTask];
 

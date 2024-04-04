@@ -20,6 +20,7 @@ export type Task = {
   title: string;
   taskType: TaskType;
   maxPoints: number;
+  isNew: boolean;
 };
 
 export type SingleAnswerTask = Task & {
