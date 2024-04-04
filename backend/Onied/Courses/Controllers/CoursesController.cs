@@ -235,6 +235,24 @@ public class CoursesController : ControllerBase
         return TypedResults.Ok(addedBlockId);
     }
 
+    [HttpDelete]
+    [Route("edit/delete-block")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> AddBlock(
+        int id,
+        [FromQuery] int blockId,
+        [FromQuery] string? userId)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        await _blockRepository.DeleteBlockAsync(blockId);
+
+        return TypedResults.Ok();
+    }
+
     [HttpPut]
     [Route("video/{blockId:int}/edit")]
     public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditVideoBlock(
