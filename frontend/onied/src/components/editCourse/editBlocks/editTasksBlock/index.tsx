@@ -18,7 +18,7 @@ function EditTasksBlockComponent() {
 
   const [task, setTask] = useState<Task>({
     id: 1,
-    taskType: 1,
+    taskType: 0,
     title: "1. Что произошло на пло́щади Тяньаньмэ́нь в 1989 году?",
     maxPoints: 1,
     variants: [

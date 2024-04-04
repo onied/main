@@ -1,19 +1,25 @@
 import classes from "./index.module.css";
-import { SingleAnswerTask } from "../../../../types/task";
-import Radio from "../../../general/radio/radio";
+import { MultipleAnswersTask } from "../../../../types/task";
 import InputForm from "../../../general/inputform/inputform";
 import Button from "../../../general/button/button";
 import TrashButton from "../../../general/trashButton";
+import Checkbox from "../../../general/checkbox/checkbox";
 
-function SingleAnswerTaskExtension({
+function MultipleAnswersTaskExtension({
   task,
   onChange,
 }: {
-  task: SingleAnswerTask;
+  task: MultipleAnswersTask;
   onChange: (attr: string, value: any) => void;
 }) {
-  const setRightVariant = (event: any) =>
-    onChange("rightVariant", Number.parseInt(event.target.value));
+  const updateRightVariants = (event: any) => {
+    const currentVariantId = Number(event.target.value);
+
+    const newRightVariants = !task.rightVariants!.includes(currentVariantId)
+      ? [...task.rightVariants!, currentVariantId]
+      : task.rightVariants!.filter((v) => v != currentVariantId);
+    onChange("rightVariants", newRightVariants);
+  };
 
   const updateVariantInput = (id: number, description: string) => {
     const newVariants = task.variants;
@@ -39,13 +45,13 @@ function SingleAnswerTaskExtension({
       {task.variants?.map((variant) => {
         return (
           <div key={variant.id} className={classes.variant}>
-            <Radio
+            <Checkbox
               name={task.id}
               id={variant.id}
               value={variant.id}
-              onChange={setRightVariant}
-              checked={task.rightVariant == variant.id ? "t" : ""}
-            ></Radio>
+              onChange={updateRightVariants}
+              checked={task.rightVariants!.includes(variant.id) ? "t" : ""}
+            ></Checkbox>
             <InputForm
               style={{ width: "100%" }}
               value={variant.description}
@@ -69,4 +75,4 @@ function SingleAnswerTaskExtension({
   );
 }
 
-export default SingleAnswerTaskExtension;
+export default MultipleAnswersTaskExtension;

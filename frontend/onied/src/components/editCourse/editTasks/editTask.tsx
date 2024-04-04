@@ -1,9 +1,16 @@
 import classes from "./editTask.module.css";
-import { SingleAnswerTask, Task, TaskType } from "../../../types/task";
+import {
+  MultipleAnswersTask,
+  SingleAnswerTask,
+  Task,
+  TaskType,
+} from "../../../types/task";
 import InputForm from "../../general/inputform/inputform";
 import TextAreaForm from "../../general/textareaform/textareaform";
 import SelectForm from "../../general/selectform/select";
 import SingleAnswerTaskExtension from "./SingleAnswerTaskExtension";
+import MultipleAnswersTaskExtension from "./MultipleAnswersTaskExtension";
+import SingleAnswersTask from "../../blocks/tasks/singleAnswerTask";
 
 function EditTask({
   task,
@@ -22,12 +29,59 @@ function EditTask({
     { value: TaskType.InputAnswer, label: "Задание с текстовым ответом" },
   ];
 
+  const answerExtensions = {
+    [TaskType.SingleAnswer]: () => (
+      <SingleAnswerTaskExtension
+        id="answer"
+        task={task as SingleAnswerTask}
+        onChange={handleChange}
+      />
+    ),
+    [TaskType.MultipleAnswers]: () => (
+      <MultipleAnswersTaskExtension
+        id="answer"
+        task={task as MultipleAnswersTask}
+        onChange={handleChange}
+      />
+    ),
+    [TaskType.InputAnswer]: null,
+    [TaskType.ManualReview]: null,
+  };
+
+  const taskTypeConverters = {
+    [TaskType.SingleAnswer]: (previousTask: Task) =>
+      ({
+        id: previousTask.id,
+        title: previousTask.title,
+        maxPoints: previousTask.maxPoints,
+        taskType: TaskType.SingleAnswer,
+        variants: [{ id: 0, description: "" }],
+        rightVariant: 0,
+      }) as SingleAnswerTask,
+    [TaskType.MultipleAnswers]: (previousTask: Task) =>
+      ({
+        id: previousTask.id,
+        title: previousTask.title,
+        maxPoints: previousTask.maxPoints,
+        taskType: TaskType.MultipleAnswers,
+        variants: [{ id: 0, description: "" }],
+        rightVariants: [],
+      }) as MultipleAnswersTask,
+    [TaskType.InputAnswer]: (task: Task) => null,
+    [TaskType.ManualReview]: (task: Task) => null,
+  };
+
   const handleChange = (attr: string, value: any): void => {
     task = {
       ...task,
       [attr]: value,
     };
     onChange(task.id, task);
+  };
+
+  const setTaskType = (event: any) => {
+    const taskType: TaskType = Number.parseInt(event.target.value);
+    onChange(task.id, taskTypeConverters[taskType](task) as Task);
   };
 
   const setMaxPoints = (event: any) => {
@@ -45,7 +99,7 @@ function EditTask({
       <TextAreaForm
         id="title"
         style={{
-          "min-height": "4.5rem",
+          minHeight: "4.5rem",
           resize: "vertical",
         }}
         maxLength="280"
@@ -60,17 +114,17 @@ function EditTask({
         options={options}
         id="taskType"
         value={task.taskType}
-        onChange={(event) => handleChange("taskType", event.target.value)}
+        onChange={setTaskType}
       />
 
-      <label className={classes.label} htmlFor="variants">
+      <label className={classes.label} htmlFor="answer">
         Ответ
       </label>
-      <SingleAnswerTaskExtension
-        id="variants"
-        task={task as SingleAnswerTask}
-        onChange={handleChange}
-      />
+      {task.taskType !== null
+        ? answerExtensions[task.taskType]
+          ? answerExtensions[task.taskType]!()
+          : null
+        : null}
 
       <label className={classes.label} htmlFor="maxPoints">
         Количество баллов
@@ -78,8 +132,6 @@ function EditTask({
       <InputForm
         type="number"
         id="maxPoints"
-        min="0"
-        maX="1000"
         style={{ width: "max-content" }}
         value={task.maxPoints}
         onChange={setMaxPoints}
