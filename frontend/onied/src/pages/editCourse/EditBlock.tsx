@@ -10,10 +10,17 @@ function EditBlock() {
   const [found, setFound] = useState<boolean | undefined>();
   const [block, setBlock] = useState<BlockInfo | null | undefined>(undefined);
 
-  const blockIdNumber = Number.parseInt(blockId!);
+  const parsedCourseId = Number(courseId);
+  const parsedBlockId = Number(blockId);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
 
   useEffect(() => {
+    if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
+      setFound(false);
+      setBlock(null);
+      return;
+    }
+
     api
       .get("courses/" + courseId + "/hierarchy")
       .then((response) => {
@@ -28,7 +35,7 @@ function EditBlock() {
         const block = response.data.modules
           .map((m: any) => m.blocks)
           .reduce((x: BlockInfo[], y: BlockInfo[]) => x.concat(y))
-          .find((b: BlockInfo) => blockIdNumber == b.id);
+          .find((b: BlockInfo) => parsedBlockId == b.id);
         setBlock(block);
       })
       .catch((error) => {
