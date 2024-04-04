@@ -55,6 +55,10 @@ function EditCourseHierarchy() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const [isForbid, setIsForbid] = useState(false);
+  const forbid = (
+    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
+  );
   const id = Number(courseId);
   const blockTypes = [<></>, "summary", "video", "tasks"];
   const blockIcons = [
@@ -68,34 +72,44 @@ function EditCourseHierarchy() {
     console.log(hierarchy);
   }, [hierarchy]);
 
+  const handleErrors = (error: any) => {
+    if ("response" in error && error.response.status == 404) {
+      setHierarchy(null);
+    } else if ("response" in error && error.response.status == 403) {
+      setHierarchy(null);
+      setIsForbid(true);
+    }
+  };
+
   const deleteBlock = (moduleIndex: number, blockId: number) => {
     const newArray = Array.from(hierarchy!.modules);
     const blockIndex = newArray[moduleIndex].blocks.findIndex(
       (block) => block.id == blockId
     );
-    api
-      .delete("courses/" + courseId + "/edit/delete-block/?blockId=" + blockId)
-      .catch((res) => console.log(res));
+
     if (blockIndex == -1) return;
     newArray[moduleIndex].blocks.splice(blockIndex, 1);
     newArray[moduleIndex].blocks.forEach(
       (block, index) => (block.index = index)
     );
-    setHierarchy({ ...hierarchy!, modules: newArray });
+    api
+      .delete("courses/" + courseId + "/edit/delete-block/?blockId=" + blockId)
+      .then(() => setHierarchy({ ...hierarchy!, modules: newArray }))
+      .catch((error) => handleErrors(error));
   };
 
   const deleteModule = (moduleId: number) => {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     if (moduleIndex == -1) return;
+    newArray.splice(moduleIndex, 1);
+    newArray.forEach((module, index) => (module.index = index));
     api
       .delete(
         "courses/" + courseId + "/edit/delete-module?moduleId=" + moduleId
       )
-      .catch((res) => console.log(res));
-    newArray.splice(moduleIndex, 1);
-    newArray.forEach((module, index) => (module.index = index));
-    setHierarchy({ ...hierarchy!, modules: newArray });
+      .then(() => setHierarchy({ ...hierarchy!, modules: newArray }))
+      .catch((error) => handleErrors(error));
   };
 
   const addModule = () => {
@@ -109,11 +123,10 @@ function EditCourseHierarchy() {
           blocks: [],
           title: "Новый модуль",
         });
+        setCreatedModulesCounter(createdModulesCounter + 1);
+        setHierarchy({ ...hierarchy!, modules: newArray });
       })
-      .catch((res) => console.log(res));
-
-    setCreatedModulesCounter(createdModulesCounter + 1);
-    setHierarchy({ ...hierarchy!, modules: newArray });
+      .catch((error) => handleErrors(error));
   };
 
   const addBlock = (moduleId: number, blockType: number) => {
@@ -135,11 +148,11 @@ function EditCourseHierarchy() {
           title: "Новый блок",
           blockType: blockType,
         });
+        setCreatedBlocksCounter(createdBlocksCounter + 1);
+        setHierarchy({ ...hierarchy!, modules: newArray });
       })
-      .catch((res) => console.log(res));
+      .catch((error) => handleErrors(error));
 
-    setCreatedBlocksCounter(createdBlocksCounter + 1);
-    setHierarchy({ ...hierarchy!, modules: newArray });
     const exp = Array.from(expandedModules);
     if (!exp.includes(moduleId)) exp.push(moduleId);
     setExpandedModules(exp);
@@ -187,8 +200,8 @@ function EditCourseHierarchy() {
           ...hierarchy!,
           modules: newArray,
         })
-        .catch((res) => console.log(res));
-      setHierarchy({ ...hierarchy!, modules: newArray });
+        .then(() => setHierarchy({ ...hierarchy!, modules: newArray }))
+        .catch((error) => handleErrors(error));
     } else if (result.draggableId.startsWith("block")) {
       if (result.destination.droppableId.startsWith("combineModule")) {
         const newArrayModules = Array.from(hierarchy!.modules);
@@ -217,7 +230,8 @@ function EditCourseHierarchy() {
             ...hierarchy!,
             modules: newArrayModules,
           })
-          .catch((res) => console.log(res));
+          .then(() => setHierarchy({ ...hierarchy!, modules: newArrayModules }))
+          .catch((error) => handleErrors(error));
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
       }
       if (result.destination.droppableId.startsWith("module")) {
@@ -251,7 +265,8 @@ function EditCourseHierarchy() {
             ...hierarchy!,
             modules: newArrayModules,
           })
-          .catch((res) => console.log(res));
+          .then(() => setHierarchy({ ...hierarchy!, modules: newArrayModules }))
+          .catch((error) => handleErrors(error));
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
       }
     }
@@ -464,6 +479,8 @@ function EditCourseHierarchy() {
     console.log(courseId);
     return notFound;
   }
+
+  if (isForbid) return forbid;
 
   if (hierarchy === undefined)
     return (
