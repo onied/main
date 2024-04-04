@@ -100,7 +100,10 @@ function InputAnswersTaskExtension({
       </div>
       {task.isNumber ? (
         <div className={classes.line}>
-          <Checkbox onChange={changeAccuracy} />
+          <Checkbox
+            checked={task.checkAccuracy != null}
+            onChange={changeAccuracy}
+          />
           <p>
             проверять на равенство с точностью до
             <InputForm
@@ -115,6 +118,7 @@ function InputAnswersTaskExtension({
       ) : (
         <div className={classes.line}>
           <Checkbox
+            checked={task.checkRegister}
             onChange={(event: any) =>
               onChange("checkRegister", event.target.checked)
             }
