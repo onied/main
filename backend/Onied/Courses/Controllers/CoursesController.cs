@@ -15,6 +15,7 @@ public class CoursesController : ControllerBase
     private readonly ICategoryRepository _categoryRepository;
     private readonly ICheckTasksService _checkTasksService;
     private readonly ICourseRepository _courseRepository;
+    private readonly IModuleRepository _moduleRepository;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
 
@@ -23,7 +24,9 @@ public class CoursesController : ControllerBase
         IMapper mapper,
         ICourseRepository courseRepository,
         IBlockRepository blockRepository,
-        ICheckTasksService checkTasksService, ICategoryRepository categoryRepository)
+        ICheckTasksService checkTasksService,
+        ICategoryRepository categoryRepository,
+        IModuleRepository moduleRepository)
     {
         _logger = logger;
         _mapper = mapper;
@@ -31,6 +34,7 @@ public class CoursesController : ControllerBase
         _blockRepository = blockRepository;
         _checkTasksService = checkTasksService;
         _categoryRepository = categoryRepository;
+        _moduleRepository = moduleRepository;
     }
 
     [HttpGet]
@@ -164,19 +168,40 @@ public class CoursesController : ControllerBase
         return TypedResults.Ok(_mapper.Map<PreviewDto>(course));
     }
 
-    [HttpPut]
-    [Route("edit/hierarchy")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditHierarchy(
+    [HttpPost]
+    [Route("edit/add-module")]
+    public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddModule(
         int id,
-        [FromQuery] string? userId,
-        [FromBody] CourseDto courseDto)
+        [FromQuery] string? userId)
     {
         var course = await _courseRepository.GetCourseWithBlocksAsync(id);
         if (course == null)
             return TypedResults.NotFound();
         if (userId == null || course.Author?.Id.ToString() != userId)
             return TypedResults.Forbid();
-        _mapper.Map(courseDto, course);
+
+        var addedModuleId = await _moduleRepository.AddModuleReturnIdAsync(new Module
+        {
+            CourseId = id,
+            Title = "Новый модуль"
+        });
+
+        return TypedResults.Ok(addedModuleId);
+    }
+
+    [HttpPost]
+    [Route("edit/add-block/{moduleId:int}")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> AddBlock(
+        int id,
+        int moduleId,
+        [FromQuery] string? userId)
+    {
+        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
 
         return TypedResults.Ok();
     }
