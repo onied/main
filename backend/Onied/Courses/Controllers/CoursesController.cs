@@ -168,6 +168,25 @@ public class CoursesController : ControllerBase
         return TypedResults.Ok(_mapper.Map<PreviewDto>(course));
     }
 
+    [HttpPut]
+    [Route("edit/hierarchy")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditHierarchy(
+        int id,
+        [FromQuery] string? userId,
+        [FromBody] CourseDto courseDto)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        _mapper.Map(courseDto, course);
+        await _courseRepository.UpdateCourseAsync(course);
+
+        return TypedResults.Ok();
+    }
+
     [HttpPost]
     [Route("edit/add-module")]
     public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddModule(
