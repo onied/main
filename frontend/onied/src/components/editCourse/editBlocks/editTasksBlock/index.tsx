@@ -169,7 +169,7 @@ function EditTasksBlockComponent({
   return (
     <div className={classes.container}>
       <ButtonGoBack
-        onClick={() => navigator("../../hierarchy", { relative: "path" })}
+        onClick={() => navigator("../hierarchy", { relative: "path" })}
       >
         ⟵ к редактированию иерархии
       </ButtonGoBack>

@@ -110,7 +110,7 @@ function EditSummaryBlockComponent({
       <div>
         <div className={classes.editHeader}>
           <ButtonGoBack
-            onClick={() => navigator("../../hierarchy", { relative: "path" })}
+            onClick={() => navigator("../hierarchy", { relative: "path" })}
           >
             ⟵ к редактированию иерархии
           </ButtonGoBack>
