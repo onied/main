@@ -62,12 +62,12 @@ function EditCourseHierarchy() {
     <FontAwesomeIcon icon={faListCheck} />,
   ];
 
-  useEffect(() => {
+  /*useEffect(() => {
     api
       .put("courses/" + courseId + "/edit/hierarchy", hierarchy)
       .then((res) => console.log(res))
       .catch((res) => console.log(res));
-  }, [hierarchy]);
+  }, [hierarchy]);*/
 
   const deleteBlock = (moduleIndex: number, blockId: number) => {
     const newArray = Array.from(hierarchy!.modules);
@@ -89,11 +89,18 @@ function EditCourseHierarchy() {
 
   const addModule = () => {
     const newArray = Array.from(hierarchy!.modules);
-    newArray.push({
-      id: -createdModulesCounter,
-      blocks: [],
-      title: "Новый модуль",
-    });
+    api
+      .post("courses/" + courseId + "/edit/add-module")
+      .then((response) => {
+        newArray.push({
+          id: response.data,
+          blocks: [],
+          title: "Новый модуль",
+        });
+        console.log(newArray);
+      })
+      .catch((res) => console.log(res));
+
     setCreatedModulesCounter(createdModulesCounter + 1);
     setHierarchy({ ...hierarchy!, modules: newArray });
   };
