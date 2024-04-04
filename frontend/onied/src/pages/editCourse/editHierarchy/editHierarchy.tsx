@@ -64,12 +64,9 @@ function EditCourseHierarchy() {
     <FontAwesomeIcon icon={faListCheck} />,
   ];
 
-  /*useEffect(() => {
-    api
-      .put("courses/" + courseId + "/edit/hierarchy", hierarchy)
-      .then((res) => console.log(res))
-      .catch((res) => console.log(res));
-  }, [hierarchy]);*/
+  useEffect(() => {
+    console.log(hierarchy);
+  }, [hierarchy]);
 
   const deleteBlock = (moduleIndex: number, blockId: number) => {
     const newArray = Array.from(hierarchy!.modules);
@@ -81,6 +78,9 @@ function EditCourseHierarchy() {
       .catch((res) => console.log(res));
     if (blockIndex == -1) return;
     newArray[moduleIndex].blocks.splice(blockIndex, 1);
+    newArray[moduleIndex].blocks.forEach(
+      (block, index) => (block.index = index)
+    );
     setHierarchy({ ...hierarchy!, modules: newArray });
   };
 
@@ -94,6 +94,7 @@ function EditCourseHierarchy() {
       )
       .catch((res) => console.log(res));
     newArray.splice(moduleIndex, 1);
+    newArray.forEach((module, index) => (module.index = index));
     setHierarchy({ ...hierarchy!, modules: newArray });
   };
 
@@ -104,6 +105,7 @@ function EditCourseHierarchy() {
       .then((response) => {
         newArray.push({
           id: response.data,
+          index: newArray.length,
           blocks: [],
           title: "Новый модуль",
         });
@@ -129,6 +131,7 @@ function EditCourseHierarchy() {
       .then((response) => {
         newArray[moduleIndex].blocks.push({
           id: response.data,
+          index: newArray[moduleIndex].blocks.length,
           title: "Новый блок",
           blockType: blockType,
         });
@@ -178,6 +181,13 @@ function EditCourseHierarchy() {
       const newArray = Array.from(hierarchy!.modules);
       const [removed] = newArray.splice(result.source.index, 1);
       newArray.splice(result.destination.index, 0, removed);
+      newArray.forEach((module, index) => (module.index = index));
+      api
+        .put("courses/" + courseId + "/edit/hierarchy", {
+          ...hierarchy!,
+          modules: newArrayModules,
+        })
+        .catch((res) => console.log(res));
       setHierarchy({ ...hierarchy!, modules: newArray });
     } else if (result.draggableId.startsWith("block")) {
       if (result.destination.droppableId.startsWith("combineModule")) {
@@ -195,7 +205,19 @@ function EditCourseHierarchy() {
           result.source.index,
           1
         );
+        newArrayModules[fromModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
         newArrayModules[toModule].blocks.push(removed);
+        newArrayModules[toModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
+        api
+          .put("courses/" + courseId + "/edit/hierarchy", {
+            ...hierarchy!,
+            modules: newArrayModules,
+          })
+          .catch((res) => console.log(res));
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
       }
       if (result.destination.droppableId.startsWith("module")) {
@@ -213,11 +235,23 @@ function EditCourseHierarchy() {
           result.source.index,
           1
         );
+        newArrayModules[fromModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
         newArrayModules[toModule].blocks.splice(
           result.destination.index,
           0,
           removed
         );
+        newArrayModules[toModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
+        api
+          .put("courses/" + courseId + "/edit/hierarchy", {
+            ...hierarchy!,
+            modules: newArrayModules,
+          })
+          .catch((res) => console.log(res));
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
       }
     }
@@ -408,10 +442,10 @@ function EditCourseHierarchy() {
       .then((response) => {
         console.log(response.data);
         if ("modules" in response.data) {
-          response.data.modules.sort((a, b) => (a.Index > b.Index ? -1 : 1));
+          response.data.modules.sort((a, b) => (a.index > b.index ? 1 : -1));
           response.data.modules.forEach((module) => {
             if ("blocks" in module)
-              module.blocks.sort((a, b) => (a.Index > b.Index ? -1 : 1));
+              module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
           });
         }
         setHierarchy(response.data);
