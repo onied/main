@@ -33,10 +33,18 @@ public class ModuleRepository(AppDbContext dbContext) : IModuleRepository
 
     public async Task DeleteModuleAsync(int id)
     {
-        var module = await dbContext.Modules.FirstOrDefaultAsync(m => m.Id == id);
-        if (module != null)
+        var removedModule = await dbContext.Modules.FirstOrDefaultAsync(m => m.Id == id);
+        if (removedModule != null)
         {
-            dbContext.Modules.Remove(module);
+            dbContext.Modules.Remove(removedModule);
+            var modules = dbContext.Modules
+                .Where(m => m.CourseId == removedModule.CourseId && m.Id != id)
+                .OrderBy(m => m.Index);
+            var newIndex = 0;
+            foreach (var module in modules)
+            {
+                module.Index = newIndex++;
+            }
             await dbContext.SaveChangesAsync();
         }
     }
