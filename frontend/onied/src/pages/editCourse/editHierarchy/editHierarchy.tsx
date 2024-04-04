@@ -185,7 +185,7 @@ function EditCourseHierarchy() {
       api
         .put("courses/" + courseId + "/edit/hierarchy", {
           ...hierarchy!,
-          modules: newArrayModules,
+          modules: newArray,
         })
         .catch((res) => console.log(res));
       setHierarchy({ ...hierarchy!, modules: newArray });
