@@ -6,9 +6,11 @@ import Button from "../../../general/button/button";
 import TrashButton from "../../../general/trashButton";
 
 function SingleAnswerTaskExtension({
+  id,
   task,
   onChange,
 }: {
+  id: string;
   task: SingleAnswerTask;
   onChange: (attr: string, value: any) => void;
 }) {
@@ -35,7 +37,7 @@ function SingleAnswerTaskExtension({
   };
 
   return (
-    <div className={classes.variantsContainer}>
+    <div id={id} className={classes.variantsContainer}>
       {task.variants?.map((variant) => {
         return (
           <div key={variant.id} className={classes.variant}>

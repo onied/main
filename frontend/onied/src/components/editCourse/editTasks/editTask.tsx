@@ -10,7 +10,6 @@ import TextAreaForm from "../../general/textareaform/textareaform";
 import SelectForm from "../../general/selectform/select";
 import SingleAnswerTaskExtension from "./SingleAnswerTaskExtension";
 import MultipleAnswersTaskExtension from "./MultipleAnswersTaskExtension";
-import SingleAnswersTask from "../../blocks/tasks/singleAnswerTask";
 
 function EditTask({
   task,
@@ -67,8 +66,20 @@ function EditTask({
         variants: [{ id: 0, description: "" }],
         rightVariants: [],
       }) as MultipleAnswersTask,
-    [TaskType.InputAnswer]: (task: Task) => null,
-    [TaskType.ManualReview]: (task: Task) => null,
+    [TaskType.InputAnswer]: (previousTask: Task) =>
+      ({
+        id: previousTask.id,
+        title: previousTask.title,
+        maxPoints: previousTask.maxPoints,
+        taskType: TaskType.InputAnswer,
+      }) as Task,
+    [TaskType.ManualReview]: (previousTask: Task) =>
+      ({
+        id: previousTask.id,
+        title: previousTask.title,
+        maxPoints: previousTask.maxPoints,
+        taskType: TaskType.ManualReview,
+      }) as Task,
   };
 
   const handleChange = (attr: string, value: any): void => {
@@ -99,7 +110,7 @@ function EditTask({
       <TextAreaForm
         id="title"
         style={{
-          minHeight: "4.5rem",
+          minHeight: "8rem",
           resize: "vertical",
         }}
         maxLength="280"
@@ -117,14 +128,16 @@ function EditTask({
         onChange={setTaskType}
       />
 
-      <label className={classes.label} htmlFor="answer">
-        Ответ
-      </label>
-      {task.taskType !== null
-        ? answerExtensions[task.taskType]
-          ? answerExtensions[task.taskType]!()
-          : null
-        : null}
+      {task.taskType === null
+        ? null
+        : answerExtensions[task.taskType] && (
+            <>
+              <label className={classes.label} htmlFor="answer">
+                Ответ
+              </label>
+              {answerExtensions[task.taskType]!()}
+            </>
+          )}
 
       <label className={classes.label} htmlFor="maxPoints">
         Количество баллов
@@ -132,7 +145,7 @@ function EditTask({
       <InputForm
         type="number"
         id="maxPoints"
-        style={{ width: "max-content" }}
+        style={{ width: "5rem" }}
         value={task.maxPoints}
         onChange={setMaxPoints}
       />

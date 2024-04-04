@@ -6,9 +6,11 @@ import TrashButton from "../../../general/trashButton";
 import Checkbox from "../../../general/checkbox/checkbox";
 
 function MultipleAnswersTaskExtension({
+  id,
   task,
   onChange,
 }: {
+  id: string;
   task: MultipleAnswersTask;
   onChange: (attr: string, value: any) => void;
 }) {
@@ -41,7 +43,7 @@ function MultipleAnswersTaskExtension({
   };
 
   return (
-    <div className={classes.variantsContainer}>
+    <div id={id} className={classes.variantsContainer}>
       {task.variants?.map((variant) => {
         return (
           <div key={variant.id} className={classes.variant}>
