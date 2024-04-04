@@ -40,6 +40,20 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
         return query.FirstOrDefaultAsync(block => block.Id == id);
     }
 
+    public async Task AddBlockAsync(Block block)
+    {
+        await dbContext.Blocks.AddAsync(block);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> AddBlockReturnIdAsync(Block block)
+    {
+        await dbContext.Blocks.AddAsync(block);
+        await dbContext.SaveChangesAsync();
+
+        return block.Id;
+    }
+
     public async Task UpdateSummaryBlock(SummaryBlock summaryBlock)
     {
         dbContext.SummaryBlocks.Update(summaryBlock);

@@ -13,6 +13,9 @@ public interface IBlockRepository
         bool includeVariants = false,
         bool includeAnswers = false);
 
+    public Task AddBlockAsync(Block block);
+    public Task<int> AddBlockReturnIdAsync(Block block);
+
     public Task UpdateSummaryBlock(SummaryBlock summaryBlock);
     public Task UpdateVideoBlock(VideoBlock videoBlock);
     public Task UpdateTasksBlock(TasksBlock tasksBlock);
