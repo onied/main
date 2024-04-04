@@ -31,7 +31,10 @@ function MultipleAnswersTaskExtension({
 
   const addVariant = (event: any) => {
     event.preventDefault();
-    const newId = task.variants![task.variants!.length - 1].id + 1;
+    const newId =
+      task.variants.length == 0
+        ? 1
+        : task.variants[task.variants.length - 1].id + 1;
     onChange("variants", task.variants!.concat({ id: newId, description: "" }));
   };
 
@@ -52,7 +55,7 @@ function MultipleAnswersTaskExtension({
               id={variant.id}
               value={variant.id}
               onChange={updateRightVariants}
-              checked={task.rightVariants!.includes(variant.id) ? "t" : ""}
+              checked={task.rightVariants.includes(variant.id) ? "t" : ""}
             ></Checkbox>
             <InputForm
               style={{ width: "100%" }}
@@ -61,12 +64,14 @@ function MultipleAnswersTaskExtension({
                 updateVariantInput(variant.id, event.target.value)
               }
             />
-            <TrashButton
-              onClick={(event: any) => {
-                event.preventDefault();
-                removeVariant(variant.id);
-              }}
-            />
+            {task.variants.length > 2 && (
+              <TrashButton
+                onClick={(event: any) => {
+                  event.preventDefault();
+                  removeVariant(variant.id);
+                }}
+              />
+            )}
           </div>
         );
       })}

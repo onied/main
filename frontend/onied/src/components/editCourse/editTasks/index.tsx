@@ -1,5 +1,6 @@
-import classes from "./editTask.module.css";
+import classes from "./index.module.css";
 import {
+  InputAnswersTask,
   MultipleAnswersTask,
   SingleAnswerTask,
   Task,
@@ -10,13 +11,14 @@ import TextAreaForm from "../../general/textareaform/textareaform";
 import SelectForm from "../../general/selectform/select";
 import SingleAnswerTaskExtension from "./SingleAnswerTaskExtension";
 import MultipleAnswersTaskExtension from "./MultipleAnswersTaskExtension";
+import InputAnswersTaskExtension from "./InputAnswersTaskExtension";
 
 function EditTask({
   task,
   onChange,
 }: {
   task: Task;
-  onChange: (id: number, task: Task) => void;
+  onChange: (task: Task) => void;
 }) {
   const options = [
     { value: TaskType.SingleAnswer, label: "Задание с выбором одного ответа" },
@@ -43,7 +45,13 @@ function EditTask({
         onChange={handleChange}
       />
     ),
-    [TaskType.InputAnswer]: null,
+    [TaskType.InputAnswer]: () => (
+      <InputAnswersTaskExtension
+        id="answer"
+        task={task as InputAnswersTask}
+        onChange={handleChange}
+      />
+    ),
     [TaskType.ManualReview]: null,
   };
 
@@ -63,7 +71,10 @@ function EditTask({
         title: previousTask.title,
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.MultipleAnswers,
-        variants: [{ id: 0, description: "" }],
+        variants: [
+          { id: 0, description: "" },
+          { id: 1, description: "" },
+        ],
         rightVariants: [],
       }) as MultipleAnswersTask,
     [TaskType.InputAnswer]: (previousTask: Task) =>
@@ -72,7 +83,14 @@ function EditTask({
         title: previousTask.title,
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.InputAnswer,
-      }) as Task,
+        answers: [
+          { id: 0, description: "" },
+          { id: 1, description: "" },
+        ],
+        isNumber: false,
+        checkAccuracy: null,
+        checkRegister: false,
+      }) as InputAnswersTask,
     [TaskType.ManualReview]: (previousTask: Task) =>
       ({
         id: previousTask.id,
@@ -87,12 +105,12 @@ function EditTask({
       ...task,
       [attr]: value,
     };
-    onChange(task.id, task);
+    onChange(task);
   };
 
   const setTaskType = (event: any) => {
     const taskType: TaskType = Number.parseInt(event.target.value);
-    onChange(task.id, taskTypeConverters[taskType](task) as Task);
+    onChange(taskTypeConverters[taskType](task) as Task);
   };
 
   const setMaxPoints = (event: any) => {

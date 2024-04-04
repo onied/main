@@ -10,6 +10,11 @@ export type Variant = {
   description: string;
 };
 
+export type Answer = {
+  id: number;
+  description: string;
+};
+
 export type Task = {
   id: number;
   title: string;
@@ -18,11 +23,18 @@ export type Task = {
 };
 
 export type SingleAnswerTask = Task & {
-  variants: Variant[] | null;
+  variants: Variant[];
   rightVariant: number;
 };
 
 export type MultipleAnswersTask = Task & {
-  variants: Variant[] | null;
-  rightVariants: number[] | null;
+  variants: Variant[];
+  rightVariants: number[];
+};
+
+export type InputAnswersTask = Task & {
+  answers: Answer[];
+  isNumber: boolean;
+  checkRegister: boolean;
+  checkAccuracy: number | null;
 };

@@ -2,7 +2,21 @@
   display: flex;
   align-items: flex-start;
   flex-direction: column;
+  gap: 1rem;
   margin: 29px auto;
   width: 60%;
   max-width: 800px;
+}
+
+.deletableTaskRow {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.taskNumber {
+  display: inline;
+  font-size: 24pt;
+  font-weight: bold;
 }

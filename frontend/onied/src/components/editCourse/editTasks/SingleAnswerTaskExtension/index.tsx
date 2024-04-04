@@ -25,7 +25,10 @@ function SingleAnswerTaskExtension({
 
   const addVariant = (event: any) => {
     event.preventDefault();
-    const newId = task.variants![task.variants!.length - 1].id + 1;
+    const newId =
+      task.variants.length == 0
+        ? 1
+        : task.variants[task.variants.length - 1].id + 1;
     onChange("variants", task.variants!.concat({ id: newId, description: "" }));
   };
 
@@ -55,12 +58,14 @@ function SingleAnswerTaskExtension({
                 updateVariantInput(variant.id, event.target.value)
               }
             />
-            <TrashButton
-              onClick={(event: any) => {
-                event.preventDefault();
-                removeVariant(variant.id);
-              }}
-            />
+            {task.variants.length > 2 && (
+              <TrashButton
+                onClick={(event: any) => {
+                  event.preventDefault();
+                  removeVariant(variant.id);
+                }}
+              />
+            )}
           </div>
         );
       })}
