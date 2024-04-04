@@ -17,9 +17,10 @@
 }
 
 .taskGrid {
+  min-width: max-content;
   display: grid;
   grid-template-columns: 30% 70%;
-  align-items: center;
+  align-items: top;
   gap: 0.5rem;
   row-gap: 0.5rem;
   margin-top: 2rem;

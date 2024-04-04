@@ -5,6 +5,7 @@ import { SingleAnswerTask, Variant } from "../../../../types/task";
 import Radio from "../../../general/radio/radio";
 import InputForm from "../../../general/inputform/inputform";
 import Button from "../../../general/button/button";
+import TrashButton from "../../../general/trashButton";
 
 function SingleAnswerTaskExtension({
   task,
@@ -18,7 +19,11 @@ function SingleAnswerTaskExtension({
   const handleChange = (event: { target: { value: any } }) =>
     setRightVariant(event.target.value);
 
-  const updateVariantInput = (id: number, value: string) => {};
+  const updateVariantInput = (id: number, description: string) => {
+    const newVariants = task.variants;
+    newVariants!.find((v) => v.id == id)!.description = description;
+    onChange("variants", newVariants);
+  };
 
   const addVariant = (event) => {
     event.preventDefault();
@@ -47,23 +52,23 @@ function SingleAnswerTaskExtension({
             ></Radio>
             <InputForm
               style={{ width: "100%" }}
+              value={variant.description}
               onChange={(event) =>
                 updateVariantInput(variant.id, event.target.value)
               }
             />
-            <Button
+            <TrashButton
               onClick={(event) => {
                 event.preventDefault();
                 removeVariant(variant.id);
               }}
-            >
-              rm
-            </Button>
-            ;
+            />
           </div>
         );
       })}
-      <Button onClick={addVariant}>добавить пункт</Button>
+      <Button onClick={addVariant} style={{ width: "fit-content" }}>
+        добавить пункт
+      </Button>
     </div>
   );
 }
