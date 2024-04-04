@@ -54,6 +54,10 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("block_type");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("integer")
+                        .HasColumnName("index");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_completed");
@@ -209,6 +213,10 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("course_id");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("integer")
+                        .HasColumnName("index");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -228,12 +236,14 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             CourseId = 1,
+                            Index = 0,
                             Title = "Такой-то"
                         },
                         new
                         {
                             Id = 2,
                             CourseId = 1,
+                            Index = 1,
                             Title = "Сякой-то"
                         });
                 });
@@ -514,6 +524,7 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             BlockType = 0,
+                            Index = 0,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Титульник",
@@ -536,6 +547,7 @@ namespace Courses.Migrations
                         {
                             Id = 5,
                             BlockType = 0,
+                            Index = 4,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Заголовок блока с заданиями"
@@ -561,6 +573,7 @@ namespace Courses.Migrations
                         {
                             Id = 2,
                             BlockType = 0,
+                            Index = 1,
                             IsCompleted = true,
                             ModuleId = 1,
                             Title = "MAKIMA BEAN",
@@ -570,6 +583,7 @@ namespace Courses.Migrations
                         {
                             Id = 3,
                             BlockType = 0,
+                            Index = 2,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Техас покидает родную гавань",
@@ -579,6 +593,7 @@ namespace Courses.Migrations
                         {
                             Id = 4,
                             BlockType = 0,
+                            Index = 3,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Александр Асафов о предстоящих президентских выборах",

@@ -83,16 +83,19 @@ public class AppDbContext : DbContext
         {
             Id = 1,
             Title = "Такой-то",
-            CourseId = 1
+            CourseId = 1,
+            Index = 0
         }, new Module
         {
             Id = 2,
             Title = "Сякой-то",
-            CourseId = 1
+            CourseId = 1,
+            Index = 1
         });
         modelBuilder.Entity<SummaryBlock>().HasData(new SummaryBlock
         {
             Id = 1,
+            Index = 0,
             ModuleId = 1,
             FileHref = "/assets/react.svg",
             FileName = "file_name.svg",
@@ -103,6 +106,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<VideoBlock>().HasData(new VideoBlock
         {
             Id = 2,
+            Index = 1,
             ModuleId = 1,
             Title = "MAKIMA BEAN",
             IsCompleted = true,
@@ -110,12 +114,14 @@ public class AppDbContext : DbContext
         }, new VideoBlock
         {
             Id = 3,
+            Index = 2,
             ModuleId = 1,
             Title = "Техас покидает родную гавань",
             Url = "https://vk.com/video-50883936_456243146"
         }, new VideoBlock
         {
             Id = 4,
+            Index = 3,
             ModuleId = 1,
             Title = "Александр Асафов о предстоящих президентских выборах",
             Url = "https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"
@@ -123,6 +129,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<TasksBlock>().HasData(new TasksBlock
         {
             Id = 5,
+            Index = 4,
             ModuleId = 1,
             Title = "Заголовок блока с заданиями"
         });
