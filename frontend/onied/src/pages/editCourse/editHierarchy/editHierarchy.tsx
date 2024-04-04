@@ -97,7 +97,6 @@ function EditCourseHierarchy() {
           blocks: [],
           title: "Новый модуль",
         });
-        console.log(newArray);
       })
       .catch((res) => console.log(res));
 
@@ -108,11 +107,24 @@ function EditCourseHierarchy() {
   const addBlock = (moduleId: number, blockType: number) => {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
-    newArray[moduleIndex].blocks.push({
-      id: -createdBlocksCounter,
-      title: "Новый блок",
-      blockType: blockType,
-    });
+    api
+      .post(
+        "courses/" +
+          courseId +
+          "/edit/add-block/" +
+          moduleId +
+          "?blockType=" +
+          blockType
+      )
+      .then((response) => {
+        newArray[moduleIndex].blocks.push({
+          id: response.data,
+          title: "Новый блок",
+          blockType: blockType,
+        });
+      })
+      .catch((res) => console.log(res));
+
     setCreatedBlocksCounter(createdBlocksCounter + 1);
     setHierarchy({ ...hierarchy!, modules: newArray });
     const exp = Array.from(expandedModules);

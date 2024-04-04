@@ -174,7 +174,7 @@ public class CoursesController : ControllerBase
         int id,
         [FromQuery] string? userId)
     {
-        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
+        var course = await _courseRepository.GetCourseAsync(id);
         if (course == null)
             return TypedResults.NotFound();
         if (userId == null || course.Author?.Id.ToString() != userId)
@@ -191,19 +191,30 @@ public class CoursesController : ControllerBase
 
     [HttpPost]
     [Route("edit/add-block/{moduleId:int}")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> AddBlock(
+    public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddBlock(
         int id,
         int moduleId,
+        [FromQuery] int blockType,
         [FromQuery] string? userId)
     {
-        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
+        var course = await _courseRepository.GetCourseAsync(id);
         if (course == null)
             return TypedResults.NotFound();
         if (userId == null || course.Author?.Id.ToString() != userId)
             return TypedResults.Forbid();
 
+        var module = await _moduleRepository.GetModuleAsync(moduleId);
+        if (module == null)
+            return TypedResults.NotFound();
 
-        return TypedResults.Ok();
+        var addedBlockId = await _blockRepository.AddBlockReturnIdAsync(new Block
+        {
+            ModuleId = moduleId,
+            Title = "Новый блок",
+            BlockType = (BlockType)blockType
+        });
+
+        return TypedResults.Ok(addedBlockId);
     }
 
     [HttpPut]
