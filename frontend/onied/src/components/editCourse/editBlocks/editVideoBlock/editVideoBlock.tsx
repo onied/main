@@ -32,7 +32,9 @@ function EditVideoBlockComponent() {
   const [currentBlock, setCurrentBlock] = useState<
     VideoBlock | null | undefined
   >();
-  const [errorLink, setErrorLink] = useState<string>("");
+  const [errorLink, setErrorLink] = useState<string>(
+    "Неверный формат ссылки на видео"
+  );
 
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
   const [isForbid, setIsForbid] = useState(false);
@@ -45,8 +47,9 @@ function EditVideoBlockComponent() {
 
   const validationLink = (link: string) => {
     const embedRegex = embedElements.filter((item) => item.regex.test(link));
-
-    if (embedRegex.length == 0) setErrorLink("Неверный формат ссылки на видео");
+    console.log(link);
+    if (embedRegex.length == 0 || link === null)
+      setErrorLink("Неверный формат ссылки на видео");
     else setErrorLink("");
   };
 
