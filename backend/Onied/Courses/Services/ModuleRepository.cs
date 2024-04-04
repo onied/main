@@ -8,7 +8,6 @@ public class ModuleRepository(AppDbContext dbContext) : IModuleRepository
 {
     public Task<Module?> GetModuleAsync(int id) =>
         dbContext.Modules
-            .Include(m => m.Blocks)
             .FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task AddModuleAsync(Module module)
