@@ -85,7 +85,7 @@ function InputAnswersTaskExtension({
         onClick={(event: any) => addAnswer(event)}
         style={{ width: "fit-content" }}
       >
-        добавить пункт
+        добавить ответ
       </Button>
       <div className={classes.line}>
         <Checkbox onChange={changeAccuracy} />

@@ -10,15 +10,26 @@
   max-width: 1000px;
 }
 
-.deletableTaskRow {
+.containerItem {
   display: flex;
   flex-direction: row;
   width: 100%;
   gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbdbdb;
+}
+
+.containerFooter {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbdbdb;
 }
 
 .taskNumber {
   display: inline;
-  font-size: 24pt;
+  font-size: 16pt;
   font-weight: bold;
 }

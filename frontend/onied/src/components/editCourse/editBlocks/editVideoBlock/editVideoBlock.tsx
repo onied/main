@@ -4,7 +4,7 @@ import EmbedVideo from "../../../blocks/video/embedVideo";
 import InputForm from "../../../general/inputform/inputform";
 import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../../general/button/button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../../../config/axios";
 import YoutubeVideoProvider from "../../../blocks/video/youtubeVideoProvider";
 import VkVideoProvider from "../../../blocks/video/vkVideoProvider";
@@ -97,7 +97,7 @@ function EditVideoBlockComponent({
     <>
       <div className={classes.container}>
         <ButtonGoBack
-          onClick={() => navigator("../hierarchy", { relative: "path" })}
+          onClick={() => navigator("../../hierarchy", { relative: "path" })}
         >
           ⟵ к редактированию иерархии
         </ButtonGoBack>

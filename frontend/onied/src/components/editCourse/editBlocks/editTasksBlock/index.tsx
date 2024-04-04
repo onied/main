@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../../../config/axios";
-import { Task } from "../../../../types/task";
+import { Task, TaskType } from "../../../../types/task";
 import { BeatLoader } from "react-spinners";
 import EditTask from "../../editTasks";
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
 import classes from "./index.module.css";
 import { TasksBlock } from "../../../../types/block";
 import TrashButton from "../../../general/trashButton";
+import Button from "../../../general/button/button";
 
 function EditTasksBlockComponent({
   courseId,
@@ -166,6 +167,41 @@ function EditTasksBlockComponent({
     setCurrentBlock(newCurrentBlock);
   };
 
+  const saveChanges = () => {};
+
+  const addTask = () => {
+    const newTask: Task = {
+      id:
+        currentBlock!.tasks.length > 0
+          ? currentBlock!.tasks[currentBlock!.tasks.length - 1].id + 1
+          : 1,
+      title: "",
+      taskType: TaskType.ManualReview,
+      maxPoints: 0,
+    };
+    const newTasks = [...currentBlock!.tasks, newTask];
+
+    const newCurrentBlock = {
+      ...currentBlock!,
+      tasks: newTasks,
+    };
+
+    console.log(newCurrentBlock);
+    setCurrentBlock(newCurrentBlock);
+  };
+
+  const removeTask = (taskId: number) => {
+    const newTasks = currentBlock!.tasks.filter((t) => taskId != t.id);
+
+    const newCurrentBlock = {
+      ...currentBlock!,
+      tasks: newTasks,
+    };
+
+    console.log(newCurrentBlock);
+    setCurrentBlock(newCurrentBlock);
+  };
+
   return (
     <div className={classes.container}>
       <ButtonGoBack
@@ -175,12 +211,25 @@ function EditTasksBlockComponent({
       </ButtonGoBack>
       <h2>{currentBlock?.title}</h2>
       {currentBlock!.tasks.map((task, index) => (
-        <div key={task.id} className={classes.deletableTaskRow}>
+        <div key={task.id} className={classes.containerItem}>
           <span className={classes.taskNumber}>{index + 1}.</span>
-          <TrashButton />
+          <TrashButton
+            onClick={(event: any) => {
+              event.preventDefault();
+              removeTask(task.id);
+            }}
+          />
           <EditTask task={task} onChange={handleChange} />
         </div>
       ))}
+      <div className={classes.containerItem}>
+        <Button onClick={saveChanges} style={{ width: "100%" }}>
+          Сохранить изменения
+        </Button>
+        <Button onClick={addTask} style={{ width: "100%" }}>
+          Добавить задание
+        </Button>
+      </div>
     </div>
   );
 }
