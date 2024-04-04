@@ -5,6 +5,7 @@ import Button from "../../../general/button/button";
 import TrashButton from "../../../general/trashButton";
 import Checkbox from "../../../general/checkbox/checkbox";
 import { useState } from "react";
+import SwitchForm from "../../../general/switch";
 
 function InputAnswersTaskExtension({
   id,
@@ -88,24 +89,39 @@ function InputAnswersTaskExtension({
         добавить ответ
       </Button>
       <div className={classes.line}>
-        <Checkbox onChange={changeAccuracy} />
-        <p>Проверять на равенство с точностью до</p>
-        <InputForm
-          type="number"
-          style={{ width: "5rem" }}
-          value={accuracyLevel}
-          onChange={changeAccuracyLevel}
+        <p>строка</p>
+        <SwitchForm
+          value={task.isNumber}
+          onChange={(event) => {
+            onChange("isNumber", event.target.checked);
+          }}
         />
-        <p>знаков после запятой</p>
+        <p>число</p>
       </div>
-      <div className={classes.line}>
-        <Checkbox
-          onChange={(event: any) =>
-            onChange("checkRegister", event.target.checked)
-          }
-        />
-        <p>Игнорировать регистр</p>
-      </div>
+      {task.isNumber ? (
+        <div className={classes.line}>
+          <Checkbox onChange={changeAccuracy} />
+          <p>
+            проверять на равенство с точностью до
+            <InputForm
+              type="number"
+              style={{ width: "5rem", margin: "0 0.5rem" }}
+              value={accuracyLevel}
+              onChange={changeAccuracyLevel}
+            />
+            знаков после запятой
+          </p>
+        </div>
+      ) : (
+        <div className={classes.line}>
+          <Checkbox
+            onChange={(event: any) =>
+              onChange("checkRegister", event.target.checked)
+            }
+          />
+          <p>игнорировать регистр</p>
+        </div>
+      )}
     </div>
   );
 }

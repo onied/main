@@ -14,12 +14,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .line > p {
   display: inline;
   text-wrap: wrap;
-  font-size: 8pt;
 }
