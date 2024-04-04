@@ -2,7 +2,7 @@ import { BlockType } from "../../../types/block";
 import EditSummaryBlockComponent from "./editSummaryBlock/editSummaryBlock";
 import EditTasksBlockComponent from "./editTasksBlock";
 import EditVideoBlockComponent from "./editVideoBlock/editVideoBlock";
-import classes from "./editBlocvkDispatcher.module.css";
+import classes from "./editBlockDispatcher.module.css";
 
 type BlockInfo = {
   id: number;
