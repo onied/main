@@ -212,10 +212,7 @@ function EditCourseHierarchy() {
               <span className={classes.blockButtons}>
                 <Link
                   className={classes.blockButton}
-                  to={new URL(
-                    "" + block.id + "/" + blockTypes[block.blockType],
-                    window.location.href
-                  ).toString()}
+                  to={new URL("" + block.id, window.location.href).toString()}
                 >
                   <FontAwesomeIcon icon={faPencil} />
                 </Link>
