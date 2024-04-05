@@ -14,7 +14,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import InputForm from "../../../general/inputform/inputform";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
-import { BeatLoader } from "react-spinners";
 
 type SummaryBlock = {
   id: number;
@@ -26,10 +25,14 @@ type SummaryBlock = {
   fileHref: string | null;
 };
 
-function EditSummaryBlockComponent() {
+function EditSummaryBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
-
   const [currentBlock, setCurrentBlock] = useState<
     SummaryBlock | null | undefined
   >();
@@ -142,11 +145,11 @@ function EditSummaryBlockComponent() {
   if (currentBlock === null) return notFound;
 
   return (
-    <>
+    <div className={classes.summaryEditWrapper}>
       <div>
         <div className={classes.editHeader}>
           <ButtonGoBack
-            onClick={() => navigator("../../hierarchy", { relative: "path" })}
+            onClick={() => navigator("../hierarchy", { relative: "path" })}
           >
             ⟵ к редактированию иерархии
           </ButtonGoBack>
@@ -234,7 +237,7 @@ function EditSummaryBlockComponent() {
           </button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
 
