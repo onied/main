@@ -7,11 +7,11 @@ import {
   TaskType,
 } from "../../../../types/task";
 import InputForm from "../../../general/inputform/inputform";
-import TextAreaForm from "../../../general/textareaform/textareaform";
 import SingleAnswerTaskExtension from "../SingleAnswerTaskExtension";
 import MultipleAnswersTaskExtension from "../MultipleAnswersTaskExtension";
 import InputAnswersTaskExtension from "../InputAnswersTaskExtension";
 import Select from "../../../general/inputform/select";
+import InputFormArea from "../../../general/inputform/inputFormArea";
 
 function EditTask({
   task,
@@ -129,7 +129,7 @@ function EditTask({
       <label className={classes.label} htmlFor="title">
         Текст задания
       </label>
-      <TextAreaForm
+      <InputFormArea
         id="title"
         style={{
           minHeight: "8rem",
