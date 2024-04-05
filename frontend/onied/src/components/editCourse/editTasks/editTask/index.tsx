@@ -8,10 +8,10 @@ import {
 } from "../../../../types/task";
 import InputForm from "../../../general/inputform/inputform";
 import TextAreaForm from "../../../general/textareaform/textareaform";
-import SelectForm from "../../../general/selectform/select";
 import SingleAnswerTaskExtension from "../SingleAnswerTaskExtension";
 import MultipleAnswersTaskExtension from "../MultipleAnswersTaskExtension";
 import InputAnswersTaskExtension from "../InputAnswersTaskExtension";
+import Select from "../../../general/inputform/select";
 
 function EditTask({
   task,
@@ -143,13 +143,13 @@ function EditTask({
       <label className={classes.label} htmlFor="taskType">
         Тип задания
       </label>
-      <SelectForm
-        options={options}
-        id="taskType"
-        value={task.taskType}
-        onChange={setTaskType}
-        disabled={!task.isNew}
-      />
+      <Select id="taskType" value={task.taskType} onChange={setTaskType}>
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </Select>
 
       {task.taskType === null
         ? null
