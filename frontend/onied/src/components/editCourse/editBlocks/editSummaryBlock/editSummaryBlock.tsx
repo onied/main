@@ -1,5 +1,5 @@
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import classes from "./editSummaryBlock.module.css";
 import api from "../../../../config/axios";
@@ -25,9 +25,14 @@ type SummaryBlock = {
   fileHref: string | null;
 };
 
-function EditSummaryBlockComponent() {
+function EditSummaryBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
   const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState<SummaryBlock | undefined>();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
@@ -101,11 +106,11 @@ function EditSummaryBlockComponent() {
   if (!courseAndBlockFound) return notFound;
 
   return (
-    <>
+    <div className={classes.summaryEditWrapper}>
       <div>
         <div className={classes.editHeader}>
           <ButtonGoBack
-            onClick={() => navigator("../../hierarchy", { relative: "path" })}
+            onClick={() => navigator("../hierarchy", { relative: "path" })}
           >
             ⟵ к редактированию иерархии
           </ButtonGoBack>
@@ -193,7 +198,7 @@ function EditSummaryBlockComponent() {
           </button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
 
