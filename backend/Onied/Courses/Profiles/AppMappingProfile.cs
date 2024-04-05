@@ -11,6 +11,7 @@ public class AppMappingProfile : Profile
 {
     public AppMappingProfile()
     {
+        AllowNullCollections = true;
         CreateMap<Block, BlockDto>().ForMember(dest => dest.Completed,
             expression => expression.MapFrom(block => block.IsCompleted));
         CreateMap<Course, CourseDto>();

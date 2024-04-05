@@ -22,6 +22,7 @@ import TeachingPage from "./pages/teaching/teaching";
 import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
 import EditVideoBlock from "./pages/editCourse/editBlocks/editVideoBlock/editVideoBlock";
 import EditSummaryBlock from "./pages/editCourse/editBlocks/editSummaryBlock/editSummaryBlock";
+import EditPreview from "./pages/editCourse/editPreview/editPreview";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -32,7 +33,7 @@ function App() {
   ProfileService.initialize(setProfile, setLoading);
   useEffect(() => {
     if (refreshingTokens) setLoading(true);
-    if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
+    else if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
     else setLoading(false);
   }, [refreshingTokens]);
   return (
@@ -58,6 +59,7 @@ function App() {
                 path="/course/:courseId/edit/:blockId/summary"
                 element={<EditSummaryBlock />}
               ></Route>
+              <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
               <Route path="/catalog" element={<Catalog />}></Route>
               <Route path="/register" element={<Register />}></Route>
