@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import EditBlockDispathcer from "../../components/editCourse/editBlocks/editBlockDispatcher";
+import { EditBlockDispathcer } from "../../components/editCourse/editBlocks";
 import api from "../../config/axios";
 import { BeatLoader } from "react-spinners";
 import { BlockInfo } from "../../types/course";
