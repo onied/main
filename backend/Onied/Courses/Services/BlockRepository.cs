@@ -74,7 +74,7 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task RenameBlockAsync(int id, string title)
+    public async Task<bool> RenameBlockAsync(int id, string title)
     {
         var block = await dbContext.Blocks.FirstOrDefaultAsync(m => m.Id == id);
         if (block != null && title != block.Title)
@@ -84,7 +84,7 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
         }
     }
 
-    public async Task DeleteBlockAsync(int id)
+    public async Task<bool> DeleteBlockAsync(int id)
     {
         var removedBlock = await dbContext.Blocks.FirstOrDefaultAsync(b => b.Id == id);
         if (removedBlock != null)
