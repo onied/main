@@ -23,6 +23,7 @@ import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy"
 import EditVideoBlock from "./pages/editCourse/editBlocks/editVideoBlock/editVideoBlock";
 import EditSummaryBlock from "./pages/editCourse/editBlocks/editSummaryBlock/editSummaryBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
+import CheckTask from "./pages/checkTasks/checkTask/checkTask";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -43,6 +44,10 @@ function App() {
           <Header></Header>
           <main>
             <Routes>
+              <Route
+                path="/check/:taskToCheckId" // TODO: to be determined actually, don't use it yet
+                element={<CheckTask />}
+              ></Route>
               <Route
                 path="/course/:courseId/learn/*"
                 element={<Course />}
