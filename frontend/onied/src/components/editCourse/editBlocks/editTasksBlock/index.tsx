@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../../config/axios";
 import { Task, TaskType } from "../../../../types/task";
 import { BeatLoader } from "react-spinners";
-import EditTask from "../../editTasks";
+import { EditTask } from "../../editTasks";
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
 import classes from "./index.module.css";
 import { TasksBlock } from "../../../../types/block";
