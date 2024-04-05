@@ -31,7 +31,10 @@ function InputAnswersTaskExtension({
       task.answers.length == 0
         ? 1
         : task.answers[task.answers.length - 1].id + 1;
-    onChange("answers", task.answers!.concat({ id: newId, description: "" }));
+    onChange(
+      "answers",
+      task.answers!.concat({ id: newId, description: "", isNew: true })
+    );
   };
 
   const removeAnswer = (answerId: number) => {

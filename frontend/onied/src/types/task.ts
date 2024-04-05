@@ -4,15 +4,18 @@ export enum TaskType {
   InputAnswer,
   ManualReview,
 }
+``;
 
 export type Variant = {
   id: number;
   description: string;
+  isNew: boolean;
 };
 
 export type Answer = {
   id: number;
   description: string;
+  isNew: boolean;
 };
 
 export type Task = {

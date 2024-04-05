@@ -42,18 +42,22 @@ function EditTasksBlockComponent({
             {
               id: 1,
               description: "Ничего 1",
+              isNew: false,
             },
             {
               id: 2,
               description: "Ничего 2",
+              isNew: false,
             },
             {
               id: 3,
               description: "Ничего 3",
+              isNew: false,
             },
             {
               id: 4,
               description: "Ничего 4",
+              isNew: false,
             },
           ],
           rightVariants: [1, 3],
@@ -68,18 +72,22 @@ function EditTasksBlockComponent({
             {
               id: 5,
               description: "Чипи чипи",
+              isNew: false,
             },
             {
               id: 6,
               description: "Чапа чапа",
+              isNew: false,
             },
             {
               id: 7,
               description: "Дуби дуби",
+              isNew: false,
             },
             {
               id: 8,
               description: "Даба даба",
+              isNew: false,
             },
           ],
           rightVariant: 5,
@@ -94,18 +102,22 @@ function EditTasksBlockComponent({
             {
               id: 5,
               description: "Чипи чипи",
+              isNew: false,
             },
             {
               id: 6,
               description: "Чапа чапа",
+              isNew: false,
             },
             {
               id: 7,
               description: "Дуби дуби",
+              isNew: false,
             },
             {
               id: 8,
               description: "Даба даба",
+              isNew: false,
             },
           ],
           isNumber: false,

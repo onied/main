@@ -35,7 +35,10 @@ function MultipleAnswersTaskExtension({
       task.variants.length == 0
         ? 1
         : task.variants[task.variants.length - 1].id + 1;
-    onChange("variants", task.variants!.concat({ id: newId, description: "" }));
+    onChange(
+      "variants",
+      task.variants!.concat({ id: newId, description: "", isNew: true })
+    );
   };
 
   const removeVariant = (variantId: number) => {
