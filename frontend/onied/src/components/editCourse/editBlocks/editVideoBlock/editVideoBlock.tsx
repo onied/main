@@ -65,7 +65,7 @@ function EditVideoBlockComponent({
 
   const saveChanges = () => {
     api
-      .put("courses/" + courseId + "/video/" + blockId + "/edit", currentBlock)
+      .put("editcourses/" + courseId + "/video/" + blockId, currentBlock)
       .catch((error) => {
         if ("response" in error && error.response.status == 404) {
           setCurrentBlock(null);
@@ -82,26 +82,14 @@ function EditVideoBlockComponent({
       return;
     }
     api
-      .get("courses/" + courseId + "/CheckEditCourse")
-      .then(() => {
-        api
-          .get("courses/" + courseId + "/video/" + blockId)
-          .then((response) => {
-            console.log(response.data);
-            setCurrentBlock(response.data);
-          })
-          .catch((error) => {
-            if ("response" in error && error.response.status == 404) {
-              setCurrentBlock(null);
-            }
-          });
+      .get("courses/" + courseId + "/video/" + blockId)
+      .then((response) => {
+        console.log(response.data);
+        setCurrentBlock(response.data);
       })
       .catch((error) => {
         if ("response" in error && error.response.status == 404) {
           setCurrentBlock(null);
-        } else if ("response" in error && error.response.status == 403) {
-          setCurrentBlock(null);
-          setIsForbid(true);
         }
       });
   }, []);

@@ -92,7 +92,7 @@ function EditCourseHierarchy() {
     );
     setHierarchy({ ...hierarchy!, modules: newArray });
     api
-      .delete("courses/" + courseId + "/edit/delete-block/?blockId=" + blockId)
+      .delete("editcourses/" + courseId + "/delete-block/?blockId=" + blockId)
       .catch((error) => handleErrors(error));
   };
 
@@ -104,16 +104,14 @@ function EditCourseHierarchy() {
     newArray.forEach((module, index) => (module.index = index));
     setHierarchy({ ...hierarchy!, modules: newArray });
     api
-      .delete(
-        "courses/" + courseId + "/edit/delete-module?moduleId=" + moduleId
-      )
+      .delete("editcourses/" + courseId + "/delete-module?moduleId=" + moduleId)
       .catch((error) => handleErrors(error));
   };
 
   const addModule = () => {
     const newArray = Array.from(hierarchy!.modules);
     api
-      .post("courses/" + courseId + "/edit/add-module")
+      .post("editcourses/" + courseId + "/add-module")
       .then((response) => {
         newArray.push({
           id: response.data,
@@ -131,9 +129,9 @@ function EditCourseHierarchy() {
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     api
       .post(
-        "courses/" +
+        "editcourses/" +
           courseId +
-          "/edit/add-block/" +
+          "/add-block/" +
           moduleId +
           "?blockType=" +
           blockType
@@ -169,9 +167,9 @@ function EditCourseHierarchy() {
   const sendNameBlock = (blockId: number, value: string) => {
     api
       .put(
-        "courses/" +
+        "editcourses/" +
           courseId +
-          "/edit/rename-block?blockId=" +
+          "/rename-block?blockId=" +
           blockId +
           "&title=" +
           value
@@ -190,9 +188,9 @@ function EditCourseHierarchy() {
   const sendNameModule = (moduleId: number, value: string) => {
     api
       .put(
-        "courses/" +
+        "editcourses/" +
           courseId +
-          "/edit/rename-module?moduleId=" +
+          "/rename-module?moduleId=" +
           moduleId +
           "&title=" +
           value
@@ -219,7 +217,7 @@ function EditCourseHierarchy() {
       newArray.forEach((module, index) => (module.index = index));
       setHierarchy({ ...hierarchy!, modules: newArray });
       api
-        .put("courses/" + courseId + "/edit/hierarchy", {
+        .put("editcourses/" + courseId + "/hierarchy", {
           ...hierarchy!,
           modules: newArray,
         })
@@ -249,7 +247,7 @@ function EditCourseHierarchy() {
         );
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
         api
-          .put("courses/" + courseId + "/edit/hierarchy", {
+          .put("editcourses/" + courseId + "/hierarchy", {
             ...hierarchy!,
             modules: newArrayModules,
           })
@@ -283,7 +281,7 @@ function EditCourseHierarchy() {
         );
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
         api
-          .put("courses/" + courseId + "/edit/hierarchy", {
+          .put("editcourses/" + courseId + "/hierarchy", {
             ...hierarchy!,
             modules: newArrayModules,
           })

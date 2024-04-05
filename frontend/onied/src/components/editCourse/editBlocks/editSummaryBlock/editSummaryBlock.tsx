@@ -14,6 +14,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import InputForm from "../../../general/inputform/inputform";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
+import { BeatLoader } from "react-spinners";
 
 type SummaryBlock = {
   id: number;
@@ -51,7 +52,7 @@ function EditSummaryBlockComponent({
   const parsedBlockId = Number(blockId);
 
   const saveChanges = () => {
-    sendingBlock();
+    sendingBlock(currentBlock!);
   };
 
   const saveNewFile = (e: any) => {
@@ -61,20 +62,21 @@ function EditSummaryBlockComponent({
       fileName: newFileName,
       fileHref: newFileHref,
     });
-    sendingBlock().then(() => setFileLoadModalOpen(false));
+    sendingBlock({
+      ...currentBlock!,
+      fileName: newFileName,
+      fileHref: newFileHref,
+    }).then(() => setFileLoadModalOpen(false));
   };
 
   const deleteCurrentFile = () => {
     setCurrentBlock({ ...currentBlock!, fileName: null, fileHref: null });
-    sendingBlock();
+    sendingBlock({ ...currentBlock!, fileName: null, fileHref: null });
   };
 
-  const sendingBlock = () => {
+  const sendingBlock = (block: SummaryBlock) => {
     return api
-      .put(
-        "courses/" + courseId + "/summary/" + blockId + "/edit",
-        currentBlock
-      )
+      .put("editcourses/" + courseId + "/summary/" + blockId, block)
       .catch((error) => {
         if ("response" in error && error.response.status == 404) {
           setCurrentBlock(null);
@@ -102,26 +104,14 @@ function EditSummaryBlockComponent({
       return;
     }
     api
-      .get("courses/" + courseId + "/CheckEditCourse")
-      .then(() => {
-        api
-          .get("courses/" + courseId + "/summary/" + blockId)
-          .then((response) => {
-            console.log(response.data);
-            setCurrentBlock(response.data);
-          })
-          .catch((error) => {
-            if ("response" in error && error.response.status == 404) {
-              setCurrentBlock(null);
-            }
-          });
+      .get("courses/" + courseId + "/summary/" + blockId)
+      .then((response) => {
+        console.log(response.data);
+        setCurrentBlock(response.data);
       })
       .catch((error) => {
         if ("response" in error && error.response.status == 404) {
           setCurrentBlock(null);
-        } else if ("response" in error && error.response.status == 403) {
-          setCurrentBlock(null);
-          setIsForbid(true);
         }
       });
   }, []);
