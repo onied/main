@@ -48,7 +48,7 @@ function EditBlock() {
 
   if (!found && block === null) return notFound;
 
-  if (block === undefined) return <BeatLoader />;
+  if (block === undefined) return <BeatLoader color="var(--accent-color)" />;
 
   return (
     <>
