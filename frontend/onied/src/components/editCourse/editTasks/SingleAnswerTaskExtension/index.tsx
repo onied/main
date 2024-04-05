@@ -36,10 +36,10 @@ function SingleAnswerTaskExtension({
   };
 
   const removeVariant = (variantId: number) => {
-    onChange(
-      "variants",
-      task.variants!.filter((v) => v.id != variantId)
-    );
+    const newTaskVariants = task.variants.filter((v) => v.id != variantId);
+    onChange("variants", newTaskVariants);
+    if (variantId == task.rightVariant)
+      onChange("rightVariant", newTaskVariants[0].id);
   };
 
   return (

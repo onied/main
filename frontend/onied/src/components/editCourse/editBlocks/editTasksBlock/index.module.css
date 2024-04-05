@@ -33,3 +33,10 @@
   font-size: 16pt;
   font-weight: bold;
 }
+
+.title {
+  color: #000000;
+  font-size: 32pt;
+  font-weight: 800;
+  margin-top: -10px;
+}

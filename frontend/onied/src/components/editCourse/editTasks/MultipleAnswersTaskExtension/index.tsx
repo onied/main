@@ -44,7 +44,11 @@ function MultipleAnswersTaskExtension({
   const removeVariant = (variantId: number) => {
     onChange(
       "variants",
-      task.variants!.filter((v) => v.id != variantId)
+      task.variants.filter((v) => v.id != variantId)
+    );
+    onChange(
+      "rightVariants",
+      task.rightVariants.filter((vid) => vid != variantId)
     );
   };
 

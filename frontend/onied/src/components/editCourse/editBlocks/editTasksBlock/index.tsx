@@ -226,7 +226,7 @@ function EditTasksBlockComponent({
       >
         ⟵ к редактированию иерархии
       </ButtonGoBack>
-      <h2>{currentBlock?.title}</h2>
+      <h2 className={classes.title}>{currentBlock?.title}</h2>
       {currentBlock!.tasks.map((task, index) => (
         <div key={task.id} className={classes.containerItem}>
           <span className={classes.taskNumber}>{index + 1}.</span>
