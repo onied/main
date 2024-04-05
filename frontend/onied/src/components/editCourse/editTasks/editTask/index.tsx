@@ -63,7 +63,10 @@ function EditTask({
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.SingleAnswer,
         isNew: true,
-        variants: [{ id: 0, description: "" }],
+        variants: [
+          { id: 0, description: "" },
+          { id: 1, description: "" },
+        ],
         rightVariant: 0,
       }) as SingleAnswerTask,
     [TaskType.MultipleAnswers]: (previousTask: Task) =>
@@ -86,10 +89,7 @@ function EditTask({
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.InputAnswer,
         isNew: true,
-        answers: [
-          { id: 0, description: "" },
-          { id: 1, description: "" },
-        ],
+        answers: [{ id: 0, description: "" }],
         isNumber: false,
         checkAccuracy: null,
         checkRegister: false,
