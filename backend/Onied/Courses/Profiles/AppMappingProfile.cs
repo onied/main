@@ -30,6 +30,12 @@ public class AppMappingProfile : Profile
         CreateMap<Task, TaskDto>().Include<VariantsTask, TaskDto>();
         CreateMap<VariantsTask, TaskDto>();
         CreateMap<TasksBlock, TasksBlockDto>();
+
+        CreateMap<TasksBlock, EditTasksBlockDto>();
+        CreateMap<Task, EditTaskDto>().Include<VariantsTask, EditTaskDto>();
+        CreateMap<VariantsTask, EditTaskDto>();
+        CreateMap<TaskVariant, EditAnswersDto>();
+
         CreateMap<Course, CourseCardDto>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceRubles));
         CreateMap<UserTaskPoints, UserTaskPointsDto>();
         CreateMap<EditCourseDto, Course>()
