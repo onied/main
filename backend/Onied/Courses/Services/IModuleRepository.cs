@@ -9,5 +9,6 @@ public interface IModuleRepository
     public Task AddModuleAsync(Module module);
     public Task<int> AddModuleReturnIdAsync(Module module);
     public Task UpdateModuleAsync(Module module);
+    public Task RenameModuleAsync(int id, string title);
     public Task DeleteModuleAsync(int id);
 }

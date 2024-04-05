@@ -19,6 +19,7 @@ public interface IBlockRepository
     public Task UpdateSummaryBlock(SummaryBlock summaryBlock);
     public Task UpdateVideoBlock(VideoBlock videoBlock);
     public Task UpdateTasksBlock(TasksBlock tasksBlock);
+    public Task RenameBlockAsync(int id, string title);
 
     public Task DeleteBlockAsync(int id);
 }

@@ -31,6 +31,16 @@ public class ModuleRepository(AppDbContext dbContext) : IModuleRepository
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task RenameModuleAsync(int id, string title)
+    {
+        var module = await dbContext.Modules.FirstOrDefaultAsync(m => m.Id == id);
+        if (module != null && title != module.Title)
+        {
+            module.Title = title;
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
     public async Task DeleteModuleAsync(int id)
     {
         var removedModule = await dbContext.Modules.FirstOrDefaultAsync(m => m.Id == id);
