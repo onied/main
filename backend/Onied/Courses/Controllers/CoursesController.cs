@@ -226,6 +226,25 @@ public class CoursesController : ControllerBase
         return TypedResults.Ok();
     }
 
+    [HttpPut]
+    [Route("edit/rename-module")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> RenameModule(
+        int id,
+        [FromQuery] int moduleId,
+        [FromQuery] string title,
+        [FromQuery] string? userId)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        await _moduleRepository.RenameModuleAsync(moduleId, title);
+
+        return TypedResults.Ok();
+    }
+
     [HttpPost]
     [Route("edit/add-block/{moduleId:int}")]
     public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddBlock(
@@ -268,6 +287,25 @@ public class CoursesController : ControllerBase
             return TypedResults.Forbid();
 
         await _blockRepository.DeleteBlockAsync(blockId);
+
+        return TypedResults.Ok();
+    }
+
+    [HttpPut]
+    [Route("edit/rename-block")]
+    public async Task<Results<Ok, NotFound, ForbidHttpResult>> RenameBlock(
+        int id,
+        [FromQuery] int blockId,
+        [FromQuery] string title,
+        [FromQuery] string? userId)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (userId == null || course.Author?.Id.ToString() != userId)
+            return TypedResults.Forbid();
+
+        await _blockRepository.RenameBlockAsync(blockId, title);
 
         return TypedResults.Ok();
     }

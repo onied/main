@@ -49,8 +49,6 @@ function EditCourseHierarchy() {
   const [hierarchy, setHierarchy] = useState<Course | null | undefined>();
   const [moduleDropDisabled, setModuleDropDisabled] = useState(false);
   const [hierarchyDropDisabled, setHierarchyDropDisabled] = useState(false);
-  const [createdModulesCounter, setCreatedModulesCounter] = useState(1);
-  const [createdBlocksCounter, setCreatedBlocksCounter] = useState(1);
   const [expandedModules, setExpandedModules] = useState<Array<number>>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
@@ -92,9 +90,9 @@ function EditCourseHierarchy() {
     newArray[moduleIndex].blocks.forEach(
       (block, index) => (block.index = index)
     );
+    setHierarchy({ ...hierarchy!, modules: newArray });
     api
       .delete("courses/" + courseId + "/edit/delete-block/?blockId=" + blockId)
-      .then(() => setHierarchy({ ...hierarchy!, modules: newArray }))
       .catch((error) => handleErrors(error));
   };
 
@@ -104,11 +102,11 @@ function EditCourseHierarchy() {
     if (moduleIndex == -1) return;
     newArray.splice(moduleIndex, 1);
     newArray.forEach((module, index) => (module.index = index));
+    setHierarchy({ ...hierarchy!, modules: newArray });
     api
       .delete(
         "courses/" + courseId + "/edit/delete-module?moduleId=" + moduleId
       )
-      .then(() => setHierarchy({ ...hierarchy!, modules: newArray }))
       .catch((error) => handleErrors(error));
   };
 
@@ -123,7 +121,6 @@ function EditCourseHierarchy() {
           blocks: [],
           title: "Новый модуль",
         });
-        setCreatedModulesCounter(createdModulesCounter + 1);
         setHierarchy({ ...hierarchy!, modules: newArray });
       })
       .catch((error) => handleErrors(error));
@@ -148,7 +145,6 @@ function EditCourseHierarchy() {
           title: "Новый блок",
           blockType: blockType,
         });
-        setCreatedBlocksCounter(createdBlocksCounter + 1);
         setHierarchy({ ...hierarchy!, modules: newArray });
       })
       .catch((error) => handleErrors(error));
@@ -170,12 +166,38 @@ function EditCourseHierarchy() {
     setHierarchy({ ...hierarchy!, modules: newArray });
   };
 
+  const sendNameBlock = (blockId: number, value: string) => {
+    api
+      .put(
+        "courses/" +
+          courseId +
+          "/edit/rename-block?blockId=" +
+          blockId +
+          "&title=" +
+          value
+      )
+      .catch((error) => handleErrors(error));
+  };
+
   const renameModule = (moduleId: number, value: string) => {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     if (moduleIndex == -1) return;
     newArray[moduleIndex].title = value;
     setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
+  const sendNameModule = (moduleId: number, value: string) => {
+    api
+      .put(
+        "courses/" +
+          courseId +
+          "/edit/rename-module?moduleId=" +
+          moduleId +
+          "&title=" +
+          value
+      )
+      .catch((error) => handleErrors(error));
   };
 
   const onDragStart = (start: DragStart) => {
@@ -195,12 +217,12 @@ function EditCourseHierarchy() {
       const [removed] = newArray.splice(result.source.index, 1);
       newArray.splice(result.destination.index, 0, removed);
       newArray.forEach((module, index) => (module.index = index));
+      setHierarchy({ ...hierarchy!, modules: newArray });
       api
         .put("courses/" + courseId + "/edit/hierarchy", {
           ...hierarchy!,
           modules: newArray,
         })
-        .then(() => setHierarchy({ ...hierarchy!, modules: newArray }))
         .catch((error) => handleErrors(error));
     } else if (result.draggableId.startsWith("block")) {
       if (result.destination.droppableId.startsWith("combineModule")) {
@@ -225,14 +247,13 @@ function EditCourseHierarchy() {
         newArrayModules[toModule].blocks.forEach(
           (block, index) => (block.index = index)
         );
+        setHierarchy({ ...hierarchy!, modules: newArrayModules });
         api
           .put("courses/" + courseId + "/edit/hierarchy", {
             ...hierarchy!,
             modules: newArrayModules,
           })
-          .then(() => setHierarchy({ ...hierarchy!, modules: newArrayModules }))
           .catch((error) => handleErrors(error));
-        setHierarchy({ ...hierarchy!, modules: newArrayModules });
       }
       if (result.destination.droppableId.startsWith("module")) {
         const newArrayModules = Array.from(hierarchy!.modules);
@@ -260,14 +281,13 @@ function EditCourseHierarchy() {
         newArrayModules[toModule].blocks.forEach(
           (block, index) => (block.index = index)
         );
+        setHierarchy({ ...hierarchy!, modules: newArrayModules });
         api
           .put("courses/" + courseId + "/edit/hierarchy", {
             ...hierarchy!,
             modules: newArrayModules,
           })
-          .then(() => setHierarchy({ ...hierarchy!, modules: newArrayModules }))
           .catch((error) => handleErrors(error));
-        setHierarchy({ ...hierarchy!, modules: newArrayModules });
       }
     }
   };
@@ -293,6 +313,7 @@ function EditCourseHierarchy() {
                 onChange={(event) =>
                   renameBlock(moduleIndex, block.id, event.target.value)
                 }
+                onBlur={(event) => sendNameBlock(block.id, event.target.value)}
               />
               <span className={classes.blockButtons}>
                 <Link
@@ -376,6 +397,9 @@ function EditCourseHierarchy() {
                           onChange={(event) =>
                             renameModule(module.id, event.target.value)
                           }
+                          onBlur={(event) => {
+                            sendNameModule(module.id, event.target.value);
+                          }}
                         />
                         <span className={classes.moduleButtons}>
                           <a
