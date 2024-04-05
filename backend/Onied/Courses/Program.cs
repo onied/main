@@ -39,6 +39,7 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
+builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
