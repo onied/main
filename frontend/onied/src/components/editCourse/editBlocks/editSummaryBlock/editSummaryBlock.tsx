@@ -1,5 +1,5 @@
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import classes from "./editSummaryBlock.module.css";
 import api from "../../../../config/axios";
