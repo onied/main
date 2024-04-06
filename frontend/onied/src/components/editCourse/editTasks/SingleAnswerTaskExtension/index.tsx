@@ -14,8 +14,16 @@ function SingleAnswerTaskExtension({
   task: SingleAnswerTask;
   onChange: (attr: string, value: any) => void;
 }) {
-  const setRightVariant = (event: any) =>
-    onChange("rightVariant", Number.parseInt(event.target.value));
+  const setRightVariant = (event: any) => {
+    const currentVariantId = Number(event.target.value);
+    const updatedVariants = task.variants.map((variant) => {
+      if (variant.id === currentVariantId) {
+        return { ...variant, isCorrect: true };
+      }
+      return { ...variant, isCorrect: false };
+    });
+    onChange("variants", updatedVariants);
+  };
 
   const updateVariantInput = (id: number, description: string) => {
     const newVariants = task.variants;
@@ -31,15 +39,28 @@ function SingleAnswerTaskExtension({
         : task.variants[task.variants.length - 1].id + 1;
     onChange(
       "variants",
-      task.variants!.concat({ id: newId, description: "", isNew: true })
+      task.variants!.concat({
+        id: newId,
+        description: "",
+        isNew: true,
+        isCorrect: false,
+      })
     );
   };
 
   const removeVariant = (variantId: number) => {
     const newTaskVariants = task.variants.filter((v) => v.id != variantId);
     onChange("variants", newTaskVariants);
-    if (variantId == task.rightVariant)
-      onChange("rightVariant", newTaskVariants[0].id);
+    if (newTaskVariants.every((v) => !v.isCorrect))
+      onChange(
+        "variants",
+        newTaskVariants.map((v, i) => {
+          if (i == 0) {
+            return { ...v, isCorrect: true };
+          }
+          return v;
+        })
+      );
   };
 
   return (
@@ -52,7 +73,7 @@ function SingleAnswerTaskExtension({
               id={variant.id}
               value={variant.id}
               onChange={setRightVariant}
-              checked={task.rightVariant == variant.id ? "t" : ""}
+              checked={variant.isCorrect ? "t" : ""}
             ></Radio>
             <InputForm
               style={{ width: "100%" }}
