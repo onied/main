@@ -21,7 +21,7 @@ function InputAnswersTaskExtension({
 
   const updateAnswer = (id: number, description: string) => {
     const newAnswers = task.answers;
-    newAnswers!.find((v) => v.id == id)!.description = description;
+    newAnswers!.find((v) => v.id == id)!.answer = description;
     onChange("answers", newAnswers);
   };
 
@@ -33,7 +33,7 @@ function InputAnswersTaskExtension({
         : task.answers[task.answers.length - 1].id + 1;
     onChange(
       "answers",
-      task.answers!.concat({ id: newId, description: "", isNew: true })
+      task.answers!.concat({ id: newId, answer: "", isNew: true })
     );
   };
 
@@ -53,13 +53,13 @@ function InputAnswersTaskExtension({
     );
 
     setAccuracyLevel(value);
-    if (accuracyStatus) onChange("checkAccuracy", value);
+    if (accuracyStatus) onChange("accuracy", value);
   };
 
   const changeAccuracy = (event: any) => {
     setAccuracyStatus(event.target.checked);
-    if (event.target.checked) onChange("checkAccuracy", accuracyLevel);
-    else onChange("checkAccuracy", null);
+    if (event.target.checked) onChange("accuracy", accuracyLevel);
+    else onChange("accuracy", null);
   };
 
   return (
@@ -69,7 +69,7 @@ function InputAnswersTaskExtension({
           <div key={answer.id} className={classes.answer}>
             <InputForm
               style={{ width: "100%" }}
-              value={answer.description}
+              value={answer.answer}
               onChange={(event: any) =>
                 updateAnswer(answer.id, event.target.value)
               }
@@ -94,7 +94,7 @@ function InputAnswersTaskExtension({
       <div className={classes.line}>
         <p>строка</p>
         <SwitchForm
-          value={task.isNumber}
+          checked={task.isNumber}
           onChange={(event) => {
             onChange("isNumber", event.target.checked);
           }}
@@ -103,10 +103,7 @@ function InputAnswersTaskExtension({
       </div>
       {task.isNumber ? (
         <div className={classes.line}>
-          <Checkbox
-            checked={task.checkAccuracy != null}
-            onChange={changeAccuracy}
-          />
+          <Checkbox checked={task.accuracy != null} onChange={changeAccuracy} />
           <p>
             проверять на равенство с точностью до
             <InputForm
@@ -121,12 +118,12 @@ function InputAnswersTaskExtension({
       ) : (
         <div className={classes.line}>
           <Checkbox
-            checked={task.checkRegister}
+            checked={task.isCaseSensitive}
             onChange={(event: any) =>
-              onChange("checkRegister", event.target.checked)
+              onChange("isCaseSensitive", event.target.checked)
             }
           />
-          <p>игнорировать регистр</p>
+          <p>чувствительность к регистру</p>
         </div>
       )}
     </div>
