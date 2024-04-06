@@ -75,7 +75,7 @@ function App() {
               <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
               <Route path="/profile/*" element={<ProfilePage />}></Route>
               <Route
-                path="/teaching/check/:taskCheckId" // taskCheckId: guid, no dependency on module or block or task
+                path="/teaching/check/:taskCheckId"
                 element={<CheckTask />}
               ></Route>
               <Route path="/teaching/*" element={<TeachingPage />}></Route>
