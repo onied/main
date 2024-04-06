@@ -12,10 +12,9 @@ namespace Courses.Controllers;
 public class CheckTasksController(
     ILogger<CoursesController> logger,
     IMapper mapper,
-    IBlockRepository blockRepository,
     ICheckTasksService checkTasksService,
-    IUserCourseInfoRepository userCourseInfoRepository,
-    IStoreUserTaskPointsService storeUserTaskPointsService) : ControllerBase
+    IUserTaskPointsRepository userTaskPointsRepository,
+    ICheckTaskManagementService checkTaskManagementService) : ControllerBase
 {
     [HttpGet]
     [Route("points")]
@@ -24,13 +23,14 @@ public class CheckTasksController(
         int blockId,
         [FromQuery] Guid userId)
     {
-        var block = await blockRepository.GetTasksBlock(blockId, true);
+        var response = await checkTaskManagementService
+            .ValidateVisitPageAsync(userId, courseId, blockId);
+        if (response.Result.GetType() != typeof(Ok<Block>))
+            return (dynamic)response.Result;
+        var block = ((Ok<TasksBlock>)response.Result).Value!;
 
-        if (block == null || block.Module.CourseId != courseId)
-            return TypedResults.NotFound();
-
-        var storedPoints = await storeUserTaskPointsService.GetUserTaskPointsByBlock(userId, courseId, blockId);
-        if (storedPoints is null) return TypedResults.Forbid();
+        var storedPoints = await userTaskPointsRepository
+            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId);
 
         var points = block.Tasks.Select(
             task => storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id)
@@ -50,19 +50,18 @@ public class CheckTasksController(
 
     [HttpPost]
     [Route("check")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
-        int courseId,
-        int blockId,
-        [FromQuery] Guid userId,
-        [FromBody] List<UserInputDto> inputsDto)
+    public async Task<Results<Ok<List<UserTaskPointsDto>>, NotFound<string>, ForbidHttpResult, BadRequest<string>>>
+        CheckTaskBlock(
+            int courseId,
+            int blockId,
+            [FromQuery] Guid userId,
+            [FromBody] List<UserInputDto> inputsDto)
     {
-        if (inputsDto.Any(inputDto => inputDto is null)) return BadRequest();
-
-        var block = await blockRepository.GetTasksBlock(blockId, true, true);
-        if (block is null || block.Module.CourseId != courseId) return NotFound();
-
-        var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId);
-        if (userCourseInfo is null) return Forbid();
+        var response = await checkTaskManagementService
+            .ValidateVisitPageAsync(userId, courseId, blockId);
+        if (response.Result.GetType() != typeof(Ok<Block>))
+            return (dynamic)response.Result;
+        var block = ((Ok<TasksBlock>)response.Result).Value!;
 
         var points = new List<UserTaskPoints?>();
         foreach (var inputDto in inputsDto)
@@ -70,20 +69,24 @@ public class CheckTasksController(
             var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
 
             if (task is null)
-                return NotFound($"Task with id={inputDto.TaskId} not found.");
+                return TypedResults.NotFound($"Task with id={inputDto.TaskId} not found.");
 
             if (task.TaskType != inputDto.TaskType)
-                return BadRequest($"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
+                return TypedResults.BadRequest(
+                    $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
 
             points.Add(checkTasksService.CheckTask(task, inputDto));
         }
 
-        await storeUserTaskPointsService.StoreUserTaskPoints(
-            userCourseInfo,
+        await userTaskPointsRepository.StoreUserTaskPointsForConcreteUserAndBlock(
             points.Where(tp => tp != null)
-                .Select(tp => tp!)
-                .ToList());
+                .Select(tp =>
+                {
+                    tp!.UserId = userId;
+                    return tp;
+                })
+                .ToList(), userId, courseId, blockId);
 
-        return mapper.Map<List<UserTaskPointsDto>>(points);
+        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(points));
     }
 }

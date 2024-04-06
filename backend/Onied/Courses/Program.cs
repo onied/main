@@ -1,6 +1,7 @@
 using Courses;
 using Courses.Profiles;
 using Courses.Services;
+using Courses.Services.Abstractions;
 using Courses.Services.Consumers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
+        .EnableSensitiveDataLogging()
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
@@ -37,10 +39,12 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
+builder.Services.AddScoped<IUserTaskPointsRepository, UserTaskPointsRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
 
 var app = builder.Build();
 

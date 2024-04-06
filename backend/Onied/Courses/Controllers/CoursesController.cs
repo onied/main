@@ -13,7 +13,6 @@ public class CoursesController : ControllerBase
 {
     private readonly IBlockRepository _blockRepository;
     private readonly ICategoryRepository _categoryRepository;
-    private readonly ICheckTasksService _checkTasksService;
     private readonly ICourseRepository _courseRepository;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
@@ -23,13 +22,12 @@ public class CoursesController : ControllerBase
         IMapper mapper,
         ICourseRepository courseRepository,
         IBlockRepository blockRepository,
-        ICheckTasksService checkTasksService, ICategoryRepository categoryRepository)
+        ICategoryRepository categoryRepository)
     {
         _logger = logger;
         _mapper = mapper;
         _courseRepository = courseRepository;
         _blockRepository = blockRepository;
-        _checkTasksService = checkTasksService;
         _categoryRepository = categoryRepository;
     }
 
@@ -81,65 +79,6 @@ public class CoursesController : ControllerBase
             return NotFound();
         return _mapper.Map<TasksBlockDto>(block);
     }
-
-    [HttpGet]
-    [Route("tasks/{blockId:int}/points")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
-    {
-        var block = await _blockRepository.GetTasksBlock(blockId, true);
-
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-
-        var points = block.Tasks.Select(
-            task => task.TaskType is TaskType.ManualReview
-                ? null
-                : new UserTaskPoints
-                {
-                    TaskId = task.Id,
-                    Points = 0
-                });
-        // Заменить на нормальное обращение к базе
-        // с нулевыми баллами для автомат. пров. заданий по умолчанию
-
-        return _mapper.Map<List<UserTaskPointsDto>>(points);
-    }
-
-    [HttpPost]
-    [Route("tasks/{blockId:int}/check")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
-        int id,
-        int blockId,
-        [FromBody] List<UserInputDto> inputsDto)
-    {
-        if (inputsDto.Any(inputDto => inputDto is null))
-            return BadRequest();
-
-        var block = await _blockRepository.GetTasksBlock(
-            blockId,
-            true,
-            true);
-
-        if (block is null || block.Module.CourseId != id)
-            return NotFound();
-
-        var points = new List<UserTaskPoints?>();
-        foreach (var inputDto in inputsDto)
-        {
-            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
-
-            if (task is null)
-                return NotFound($"Task with id={inputDto.TaskId} not found.");
-
-            if (task.TaskType != inputDto.TaskType)
-                return BadRequest($"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
-
-            points.Add(_checkTasksService.CheckTask(task, inputDto));
-        }
-
-        return _mapper.Map<List<UserTaskPointsDto>>(points);
-    }
-
 
     [HttpPut]
     public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, UnauthorizedHttpResult>> EditCourse(int id,

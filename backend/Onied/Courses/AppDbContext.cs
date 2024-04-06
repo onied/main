@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<UserCourseInfo> UserCourseInfos { get; set; } = null!;
+    public DbSet<UserTaskPoints> UserTaskPoints { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<Module> Modules { get; set; } = null!;
