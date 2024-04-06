@@ -141,12 +141,7 @@ function EditTask({
       <label className={classes.label} htmlFor="taskType">
         Тип задания
       </label>
-      <Select
-        id="taskType"
-        value={task.taskType}
-        disabled={!task.isNew}
-        onChange={setTaskType}
-      >
+      <Select id="taskType" value={task.taskType} onChange={setTaskType}>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
