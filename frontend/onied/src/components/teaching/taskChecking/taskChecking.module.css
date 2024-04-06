@@ -1,0 +1,12 @@
+.taskWrapper{
+    padding: 15px 30px;
+}
+
+.moduleAndBlockName{
+    display: flex;
+    padding-top: 0.75rem;
+}
+
+.moduleAndBlockName img{
+    padding: 0 0.5rem
+}

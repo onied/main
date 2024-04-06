@@ -14,6 +14,7 @@ function TeachingHeader() {
   const tabs: Array<Tab> = [
     { title: "Авторство", url: "" },
     { title: "Модерация", url: "moderating" },
+    { title: "Проверка заданий", url: "tasksList" },
   ];
   const renderBlock = (tab: Tab, index: number) => {
     if (currentTabUrl == tab.url)

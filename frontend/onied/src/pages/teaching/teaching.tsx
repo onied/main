@@ -4,6 +4,7 @@ import TeachingHeader from "../../components/teaching/teachingHeader/teachingHea
 import classes from "./teaching.module.css";
 import TeachingAuthored from "../../components/teaching/authored";
 import TeachingModerated from "../../components/teaching/moderated";
+import TaskChecking from "../../components/teaching/taskChecking/taskChecking";
 
 function TeachingPage() {
   const [profile, loading] = useProfile();
@@ -16,6 +17,7 @@ function TeachingPage() {
           <Route path="/" element={<TeachingAuthored />} />
           <Route path="/moderating" element={<TeachingModerated />} />
           <Route path="*" element={<Navigate to="/teaching" />} />
+          <Route path="/tasksList" element={<TaskChecking />} />
         </Routes>
       </div>
     </>
