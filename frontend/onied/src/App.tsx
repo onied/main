@@ -45,10 +45,6 @@ function App() {
           <main>
             <Routes>
               <Route
-                path="/check/:taskToCheckId" // TODO: to be determined actually, don't use it yet
-                element={<CheckTask />}
-              ></Route>
-              <Route
                 path="/course/:courseId/learn/*"
                 element={<Course />}
               ></Route>
@@ -78,6 +74,10 @@ function App() {
               <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
               <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
               <Route path="/profile/*" element={<ProfilePage />}></Route>
+              <Route
+                path="/teaching/check/:taskCheckId" // taskCheckId: guid, no dependency on module or block or task
+                element={<CheckTask />}
+              ></Route>
               <Route path="/teaching/*" element={<TeachingPage />}></Route>
             </Routes>
           </main>
