@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Courses.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]/{id:int}")]
+[Route("api/v1/courses/{id:int}/edit")]
 public class EditCoursesController(
     ILogger<CoursesController> logger,
     IMapper mapper,
     ICourseRepository courseRepository,
     IBlockRepository blockRepository,
-    ICheckTasksService checkTasksService,
     ICourseManagementService courseManagementService,
     ICategoryRepository categoryRepository,
-    IModuleRepository moduleRepository)
+    IModuleRepository moduleRepository,
+    IUpdateTasksBlockService updateTasksBlockService)
 {
 
     [HttpPut]
@@ -220,11 +220,11 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("tasks/{blockId:int}")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditTasksBlock(
+    public async Task<Results<Ok<EditTasksBlockDto>, NotFound, ForbidHttpResult>> EditTasksBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
-        [FromBody] TasksBlockDto tasksBlockDto)
+        [FromBody] EditTasksBlockDto tasksBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result.GetType() != typeof(Ok<Course>))
@@ -234,9 +234,11 @@ public class EditCoursesController(
         if (block == null || block.Module.CourseId != id)
             return TypedResults.NotFound();
 
-        mapper.Map(tasksBlockDto, block);
-        await blockRepository.UpdateTasksBlock(block);
-        return TypedResults.Ok();
+
+        var updatedBlock = await updateTasksBlockService.UpdateTasksBlock(tasksBlockDto);
+        var updatedBlockDto = mapper.Map<EditTasksBlockDto>(updatedBlock);
+
+        return TypedResults.Ok(updatedBlockDto);
     }
 
     [HttpGet]
