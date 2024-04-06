@@ -26,142 +26,31 @@ function EditTasksBlockComponent({
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
 
   useEffect(() => {
-    setCurrentBlock({
-      id: 5,
-      title: "Заголовок блока с заданиями",
-      blockType: 3,
-      isCompleted: false,
-      tasks: [
-        {
-          id: 1,
-          taskType: 1,
-          title: "1. Что произошло на пло́щади Тяньаньмэ́нь в 1989 году?",
-          maxPoints: 1,
-          isNew: true,
-          variants: [
-            {
-              id: 1,
-              description: "Ничего 1",
-              isNew: false,
-            },
-            {
-              id: 2,
-              description: "Ничего 2",
-              isNew: false,
-            },
-            {
-              id: 3,
-              description: "Ничего 3",
-              isNew: false,
-            },
-            {
-              id: 4,
-              description: "Ничего 4",
-              isNew: false,
-            },
-          ],
-          rightVariants: [1, 3],
-        },
-        {
-          id: 2,
-          taskType: 0,
-          title: "2. Чипи чипи чапа чапа дуби дуби даба даба?",
-          maxPoints: 1,
-          isNew: true,
-          variants: [
-            {
-              id: 5,
-              description: "Чипи чипи",
-              isNew: false,
-            },
-            {
-              id: 6,
-              description: "Чапа чапа",
-              isNew: false,
-            },
-            {
-              id: 7,
-              description: "Дуби дуби",
-              isNew: false,
-            },
-            {
-              id: 8,
-              description: "Даба даба",
-              isNew: false,
-            },
-          ],
-          rightVariant: 5,
-        },
-        {
-          id: 3,
-          taskType: 2,
-          title: "3. Кто?",
-          maxPoints: 5,
-          isNew: true,
-          answers: [
-            {
-              id: 5,
-              description: "Чипи чипи",
-              isNew: false,
-            },
-            {
-              id: 6,
-              description: "Чапа чапа",
-              isNew: false,
-            },
-            {
-              id: 7,
-              description: "Дуби дуби",
-              isNew: false,
-            },
-            {
-              id: 8,
-              description: "Даба даба",
-              isNew: false,
-            },
-          ],
-          isNumber: false,
-          checkAccuracy: null,
-          checkRegister: false,
-        },
-        {
-          id: 4,
-          taskType: 3,
-          title: "4. Напишите эссе на тему: “Как я провел лето”",
-          maxPoints: 1,
-          isNew: false,
-        },
-      ],
-    });
-    setLoading(false);
+    const parsedCourseId = Number(courseId);
+    const parsedBlockId = Number(blockId);
+    if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
+      setLoading(false);
+      setCurrentBlock(null);
+      return;
+    }
+
+    setLoading(true);
+    api
+      .get("courses/" + courseId + "/tasks/" + blockId + "/for-edit")
+      .then((response) => {
+        console.log(response.data);
+        setLoading(false);
+        setCurrentBlock(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+
+        if ("response" in error && error.response.status == 404) {
+          setLoading(false);
+          setCurrentBlock(null);
+        }
+      });
   }, []);
-
-  // useEffect(() => {
-  //   const parsedCourseId = Number(courseId);
-  //   const parsedBlockId = Number(blockId);
-  //   if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
-  //     setLoading(false);
-  //     setCurrentBlock(null);
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   api
-  //     .get("courses/" + courseId + "/tasks/" + blockId)
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       setLoading(false);
-  //       setCurrentBlock(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-
-  //       if ("response" in error && error.response.status == 404) {
-  //         setLoading(false);
-  //         setCurrentBlock(null);
-  //       }
-  //     });
-  // }, []);
 
   if (loading) return <BeatLoader />;
 
@@ -183,7 +72,16 @@ function EditTasksBlockComponent({
     setCurrentBlock(newCurrentBlock);
   };
 
-  const saveChanges = () => {};
+  const saveChanges = () => {
+    api
+      .put("courses/" + courseId + "/edit/tasks/" + blockId, currentBlock)
+      .then((response) => {
+        console.log(response.data);
+        setLoading(false);
+        setCurrentBlock(response.data);
+      })
+      .catch((res) => console.log(res));
+  };
 
   const addTask = () => {
     const newTask: Task = {
