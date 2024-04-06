@@ -9,6 +9,7 @@ import api from "../../../../config/axios";
 import YoutubeVideoProvider from "../../../blocks/video/youtubeVideoProvider";
 import VkVideoProvider from "../../../blocks/video/vkVideoProvider";
 import RutubeVideoProvider from "../../../blocks/video/rutubeVideoProvider";
+import NotFound from "../../../general/responses/notFound/notFound";
 
 type Block = {
   id: string;
@@ -32,7 +33,7 @@ function EditVideoBlockComponent() {
   const [currentBlock, setCurrentBlock] = useState<Block | undefined>();
   const [errorLink, setErrorLink] = useState<string>("");
 
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const notFound = <NotFound>Курс или блок не найден.</NotFound>;
 
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);

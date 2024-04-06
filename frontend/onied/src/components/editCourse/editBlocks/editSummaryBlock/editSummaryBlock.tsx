@@ -14,6 +14,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import InputForm from "../../../general/inputform/inputform";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
+import NotFound from "../../../general/responses/notFound/notFound";
 
 type SummaryBlock = {
   id: number;
@@ -34,7 +35,7 @@ function EditSummaryBlockComponent() {
   const [newFileName, setNewFileName] = useState<string>("");
   const [newFileHref, setNewFileHref] = useState<string>("");
   const [newFileHrefError, setNewFileHrefError] = useState<string | null>(null);
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);
 

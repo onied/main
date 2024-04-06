@@ -4,13 +4,14 @@ import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BlockDispatcher from "../../components/blocks/blockDispatcher";
 import api from "../../config/axios";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 function Course() {
   const { courseId } = useParams();
   const [hierarchy, setHierarchy] = useState();
   const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
   const id = Number(courseId);
 
   useEffect(() => {

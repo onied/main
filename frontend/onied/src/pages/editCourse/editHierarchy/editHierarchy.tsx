@@ -22,6 +22,7 @@ import {
 import type { DropResult, DragStart } from "@hello-pangea/dnd";
 import { Menu, MenuItem } from "@mui/material";
 import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack";
+import NotFound from "../../../components/general/responses/notFound/notFound";
 
 type Block = {
   id: number;
@@ -52,7 +53,7 @@ function EditCourseHierarchy() {
   const [expandedModules, setExpandedModules] = useState<Array<number>>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
   const id = Number(courseId);
   const blockTypes = [<></>, "summary", "video", "tasks"];
   const blockIcons = [
