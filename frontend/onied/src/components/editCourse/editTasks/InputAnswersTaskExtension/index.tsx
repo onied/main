@@ -16,8 +16,12 @@ function InputAnswersTaskExtension({
   task: InputAnswersTask;
   onChange: (attr: string, value: any) => void;
 }) {
-  const [accuracyStatus, setAccuracyStatus] = useState<boolean>(false);
-  const [accuracyLevel, setAccuracyLevel] = useState<number>(0);
+  const [accuracyStatus, setAccuracyStatus] = useState<boolean>(
+    task.accuracy !== null
+  );
+  const [accuracyLevel, setAccuracyLevel] = useState<number>(
+    task.accuracy === null ? 0 : task.accuracy
+  );
 
   const updateAnswer = (id: number, description: string) => {
     const newAnswers = task.answers;
