@@ -1,14 +1,24 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Courses.Models;
 
 public class UserTaskPoints
 {
-    public int UserId { get; set; } = -1;
-    public int TaskId { get; set; }
-    // при сохранении в БД связка (UserId, TaskId) дожлна быть primary key
+    [Required]
+    public Guid UserId { get; set; }
+    public User User { get; set; } = null!;
 
-    // public User User { get; set; }
-    // public Task Task { get; set; }
-    // пока не вижу смысла
+    [Required]
+    public int TaskId { get; set; }
+    public Task Task { get; set; } = null!;
+
+    [Required]
+    public int CourseId { get; set; }
+    public Course Course { get; set; } = null!;
 
     public int Points { get; set; }
+
+    [Required]
+    public UserCourseInfo UserCourseInfo { get; set; } = null!;
 }

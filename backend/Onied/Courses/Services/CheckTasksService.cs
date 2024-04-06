@@ -12,7 +12,7 @@ public class CheckTasksService : ICheckTasksService
         {
             return new UserTaskPoints()
             {
-                UserId = input.UserId,
+                UserId = Guid.NewGuid(),
                 TaskId = input.TaskId,
                 Points = 0
             };
@@ -30,7 +30,7 @@ public class CheckTasksService : ICheckTasksService
     {
         return new UserTaskPoints()
         {
-            UserId = input.UserId,
+            UserId = Guid.NewGuid(),
             TaskId = input.TaskId,
             Points = task.Variants
                 .Where(variant => variant.IsCorrect)
@@ -43,7 +43,7 @@ public class CheckTasksService : ICheckTasksService
     {
         return new UserTaskPoints()
         {
-            UserId = input.UserId,
+            UserId = Guid.NewGuid(),
             TaskId = input.TaskId,
             Points = task.Answers.Any(
                     answer => answer.IsCaseSensitive
