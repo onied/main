@@ -5,6 +5,7 @@ using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class CoursesControllerTests
 {
+    private readonly Mock<IStoreUserTaskPointsService> _storeUserTaskPointsService = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<ICheckTasksService> _checkTasksService = new();
@@ -34,7 +36,8 @@ public class CoursesControllerTests
             _mapper,
             _courseRepository.Object,
             _blockRepository.Object,
-            _checkTasksService.Object, _categoryRepository.Object);
+            _checkTasksService.Object,
+            _categoryRepository.Object);
     }
 
     [Fact]
@@ -452,7 +455,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -486,7 +489,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -527,7 +530,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
@@ -584,7 +587,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId);
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
