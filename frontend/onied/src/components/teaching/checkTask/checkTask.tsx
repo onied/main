@@ -3,7 +3,13 @@ import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack"
 import classes from "./checkTask.module.css";
 import Markdown from "react-markdown";
 import Button from "../../../components/general/button/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../../../config/axios";
+import { Navigate, useParams } from "react-router-dom";
+import { BeatLoader } from "react-spinners";
+import NotFound from "../../general/responses/notFound/notFound";
+import { AxiosError } from "axios";
+import NoAccess from "../../general/responses/noAccess/noAccess";
 
 type CourseInfo = {
   title: string;
@@ -36,35 +42,49 @@ type TaskCheckInfo = {
 };
 
 function CheckTaskComponent() {
-  const [taskInfo, setTaskInfo] = useState<TaskCheckInfo>({
-    task: {
-      block: {
-        module: {
-          course: {
-            title: "Название курса. Как я встретил вашу маму. Осуждаю.",
-          },
-          index: 1,
-          title: "Первый модуль",
-        },
-        index: 2,
-        title: "Второй блок",
-      },
-      index: 4,
-      title: "Напишите эссе на тему: “Как я провел лето”",
-      maxPoints: 5,
-    },
-    contents:
-      "Здравствуйте учитель я нихрена не сделал поставьте 5/5 пжпж asdfadsf",
-    checked: false,
-    points: 0,
-  });
-  const [points, setPointsRaw] = useState(taskInfo.points);
+  const { taskCheckId } = useParams();
+  const [loadStatus, setLoadStatus] = useState(0); // 0 - still loading, other -> statusCode
+  const [taskInfo, setTaskInfoRaw] = useState<TaskCheckInfo | undefined>();
+  const [points, setPointsRaw] = useState(0);
+  const notFound = <NotFound>Задание на проверке не было найдено.</NotFound>;
+  const noAccess = (
+    <NoAccess>У вас нет права на проверку этого задания.</NoAccess>
+  );
   const setPoints = (points: number) => {
     if (points < 0) setPointsRaw(0);
-    else if (points > taskInfo.task.maxPoints)
-      setPointsRaw(taskInfo.task.maxPoints);
+    else if (points > taskInfo!.task.maxPoints)
+      setPointsRaw(taskInfo!.task.maxPoints);
     else setPointsRaw(points);
   };
+  const setTaskInfo = (taskInfo: TaskCheckInfo | undefined) => {
+    setTaskInfoRaw(taskInfo);
+    if (taskInfo !== undefined) setPointsRaw(taskInfo.points);
+    else setPointsRaw(0);
+  };
+  const saveAndReturn = () => {
+    console.log("Do you really think this will ever end?");
+  };
+
+  useEffect(() => {
+    setLoadStatus(0);
+    setTaskInfo(undefined);
+    api
+      .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
+      .then((response) => {
+        setTaskInfo(response.data);
+        setLoadStatus(200);
+      })
+      .catch((error) => {
+        setLoadStatus(error.response?.status);
+      });
+  }, [taskCheckId]);
+
+  if (loadStatus === 0)
+    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (loadStatus === 401) return <Navigate to="/login"></Navigate>;
+  if (loadStatus === 404) return notFound;
+  if (loadStatus === 403) return noAccess;
+  if (loadStatus !== 200 || taskInfo === undefined) return <></>;
 
   return (
     <div className={classes.container}>
@@ -164,7 +184,7 @@ function CheckTaskComponent() {
       <div className={classes.footer}>
         <div className={classes.line}></div>
         <div className={classes.saveChanges}>
-          <Button onClick={() => console.log("todo: bind a function")}>
+          <Button onClick={saveAndReturn}>
             сохранить и вернуться в список проверки
           </Button>
         </div>
