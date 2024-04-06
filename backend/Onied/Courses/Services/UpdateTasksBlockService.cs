@@ -73,7 +73,7 @@ public class UpdateTasksBlockService(
                         Title = task.Title,
                         MaxPoints = task.MaxPoints,
                         IsNumber = updatedTask.IsNumber ?? false,
-                        Accuracy = updatedTask.Accuracy ?? 0,
+                        Accuracy = updatedTask.Accuracy,
                         IsCaseSensitive = updatedTask.IsCaseSensitive ?? false
                     };
                     await dbContext.InputTasks.AddAsync(answersTask);
