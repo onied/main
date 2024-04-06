@@ -154,7 +154,10 @@ public class AppDbContext : DbContext
             TasksBlockId = 5,
             MaxPoints = 5,
             TaskType = TaskType.InputAnswer,
-            Title = "3. Кто?"
+            Title = "3. Кто?",
+            IsCaseSensitive = true,
+            IsNumber = false,
+            Accuracy = 0
         });
         modelBuilder.Entity<Task>().HasData(new Task
         {
@@ -217,8 +220,7 @@ public class AppDbContext : DbContext
         {
             Id = 1,
             TaskId = 3,
-            Answer = "Жак Фреско",
-            IsCaseSensitive = true
+            Answer = "Жак Фреско"
         });
     }
 }

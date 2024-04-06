@@ -90,7 +90,7 @@ public class CoursesController : ControllerBase
     [Route("tasks/{blockId:int}/for-edit")]
     public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId)
     {
-        var block = await _blockRepository.GetTasksBlock(blockId, true);
+        var block = await _blockRepository.GetTasksBlock(blockId, true, true);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
         return _mapper.Map<EditTasksBlockDto>(block);
