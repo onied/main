@@ -76,7 +76,7 @@ function EditSummaryBlockComponent({
 
   const sendingBlock = (block: SummaryBlock) => {
     return api
-      .put("editcourses/" + courseId + "/summary/" + blockId, block)
+      .put("courses/" + courseId + "/edit/summary/" + blockId, block)
       .catch((error) => {
         if ("response" in error && error.response.status == 404) {
           setCurrentBlock(null);

@@ -65,7 +65,7 @@ function EditVideoBlockComponent({
 
   const saveChanges = () => {
     api
-      .put("editcourses/" + courseId + "/video/" + blockId, currentBlock)
+      .put("courses/" + courseId + "/edit/video/" + blockId, currentBlock)
       .catch((error) => {
         if ("response" in error && error.response.status == 404) {
           setCurrentBlock(null);
