@@ -34,7 +34,7 @@ public class ModuleRepository(AppDbContext dbContext) : IModuleRepository
     public async Task<bool> RenameModuleAsync(int id, string title)
     {
         var module = await dbContext.Modules.FirstOrDefaultAsync(m => m.Id == id);
-        if (module != null && title != module.Title)
+        if (module != null)
         {
             module.Title = title;
             await dbContext.SaveChangesAsync();

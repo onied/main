@@ -77,11 +77,14 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
     public async Task<bool> RenameBlockAsync(int id, string title)
     {
         var block = await dbContext.Blocks.FirstOrDefaultAsync(m => m.Id == id);
-        if (block != null && title != block.Title)
+        if (block != null)
         {
             block.Title = title;
             await dbContext.SaveChangesAsync();
+            return true;
         }
+
+        return false;
     }
 
     public async Task<bool> DeleteBlockAsync(int id)
@@ -99,6 +102,9 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
                 block.Index = newIndex++;
             }
             await dbContext.SaveChangesAsync();
+            return true;
         }
+
+        return false;
     }
 }
