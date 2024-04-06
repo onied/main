@@ -5,6 +5,8 @@ namespace Courses.Services.Abstractions;
 
 public interface ICheckTaskManagementService
 {
-    public Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> ValidateVisitPageAsync(
-        Guid userId, int courseId, int blockId);
+    public Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
+        Guid userId, int courseId, int blockId,
+        bool includeVariants = false,
+        bool includeAnswers = false);
 }

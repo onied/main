@@ -45,6 +45,7 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
+builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
 
 var app = builder.Build();
 

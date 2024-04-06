@@ -9,10 +9,12 @@ public class CheckTaskManagementService(
     IUserCourseInfoRepository userCourseInfoRepository)
     : ICheckTaskManagementService
 {
-    public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> ValidateVisitPageAsync(
-        Guid userId, int courseId, int blockId)
+    public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
+        Guid userId, int courseId, int blockId,
+        bool includeVariants = false,
+        bool includeAnswers = false)
     {
-        var block = await blockRepository.GetTasksBlock(blockId, true);
+        var block = await blockRepository.GetTasksBlock(blockId, includeVariants, includeAnswers);
 
         if (block == null || block.Module.CourseId != courseId)
             return TypedResults.NotFound();

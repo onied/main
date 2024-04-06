@@ -24,8 +24,8 @@ public class CheckTasksController(
         [FromQuery] Guid userId)
     {
         var response = await checkTaskManagementService
-            .ValidateVisitPageAsync(userId, courseId, blockId);
-        if (response.Result.GetType() != typeof(Ok<Block>))
+            .TryGetTaskBlock(userId, courseId, blockId, true);
+        if (response.Result.GetType() != typeof(Ok<TasksBlock>))
             return (dynamic)response.Result;
         var block = ((Ok<TasksBlock>)response.Result).Value!;
 
@@ -58,8 +58,8 @@ public class CheckTasksController(
             [FromBody] List<UserInputDto> inputsDto)
     {
         var response = await checkTaskManagementService
-            .ValidateVisitPageAsync(userId, courseId, blockId);
-        if (response.Result.GetType() != typeof(Ok<Block>))
+            .TryGetTaskBlock(userId, courseId, blockId, true, true);
+        if (response.Result.GetType() != typeof(Ok<TasksBlock>))
             return (dynamic)response.Result;
         var block = ((Ok<TasksBlock>)response.Result).Value!;
 
