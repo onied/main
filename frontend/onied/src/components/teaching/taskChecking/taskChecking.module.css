@@ -1,12 +1,52 @@
+.accordionsWrapper{
+    margin: 30px;
+}
+
 .taskWrapper{
-    padding: 15px 30px;
+}
+
+.accordion{
+    margin-bottom: 30px;
+}
+
+.accordionSummary img{
+    transform: rotate(90deg);
+    scale: 2;
+}
+
+.accordionSummary p{
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.accordionDetails a{
+    line-height: 1rem;
+}
+
+.taskName{
+    font-size: 1.5rem;
 }
 
 .moduleAndBlockName{
     display: flex;
     padding-top: 0.75rem;
+    align-items: end;
+}
+
+.moduleAndBlockName span{
+    line-height: 1rem;
 }
 
 .moduleAndBlockName img{
     padding: 0 0.5rem
 }
+
+.checkButton{
+    padding: 10px 15px;
+    background-color: white;
+    border: 2px solid #DBDBDB;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #686868;
+}
+

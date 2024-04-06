@@ -1,0 +1,41 @@
+.MuiAccordion-root{
+    border-radius: 10px;
+    box-shadow: none;
+    border: 2px solid #DBDBDB;
+}
+
+.MuiAccordion-root::before{
+    display: none;
+}
+
+.MuiAccordion-root:first-of-type{
+    border-radius: 10px;
+}
+
+.MuiAccordion-root:last-of-type{
+    border-radius: 10px;
+}
+
+.MuiAccordionSummary-root{
+    margin: 5px 30px;
+    padding: 0;
+}
+
+.MuiAccordion-rounded{
+
+}
+
+.MuiAccordionDetails-root{
+    background-color: #DBDBDB60;
+    padding: 15px 30px;
+    margin: 0 30px 15px 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    line-height: 1.25;
+}
+
+.MuiCollapse-wrapperInner{
+    margin-bottom: 10px;
+}
