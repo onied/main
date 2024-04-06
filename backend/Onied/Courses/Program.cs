@@ -41,6 +41,7 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
+builder.Services.AddScoped<IUpdateTasksBlockService, UpdateTasksBlockService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
