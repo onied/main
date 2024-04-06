@@ -5,10 +5,9 @@ import Markdown from "react-markdown";
 import Button from "../../../components/general/button/button";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import NotFound from "../../general/responses/notFound/notFound";
-import { AxiosError } from "axios";
 import NoAccess from "../../general/responses/noAccess/noAccess";
 
 type CourseInfo = {
@@ -41,10 +40,16 @@ type TaskCheckInfo = {
   points: number;
 };
 
+type Errors = {
+  points: string | undefined;
+};
+
 function CheckTaskComponent() {
-  const { taskCheckId } = useParams();
+  const navigate = useNavigate();
+  const { taskCheckId } = useParams(); // taskCheckId: guid, no dependency on module or block or task
   const [loadStatus, setLoadStatus] = useState(0); // 0 - still loading, other -> statusCode
   const [taskInfo, setTaskInfoRaw] = useState<TaskCheckInfo | undefined>();
+  const [errors, setErrors] = useState<Errors>({ points: undefined });
   const [points, setPointsRaw] = useState(0);
   const notFound = <NotFound>Задание на проверке не было найдено.</NotFound>;
   const noAccess = (
@@ -55,6 +60,9 @@ function CheckTaskComponent() {
     else if (points > taskInfo!.task.maxPoints)
       setPointsRaw(taskInfo!.task.maxPoints);
     else setPointsRaw(points);
+    setErrors({
+      points: undefined,
+    });
   };
   const setTaskInfo = (taskInfo: TaskCheckInfo | undefined) => {
     setTaskInfoRaw(taskInfo);
@@ -62,22 +70,72 @@ function CheckTaskComponent() {
     else setPointsRaw(0);
   };
   const saveAndReturn = () => {
-    console.log("Do you really think this will ever end?");
-  };
-
-  useEffect(() => {
-    setLoadStatus(0);
-    setTaskInfo(undefined);
+    setErrors({
+      points: undefined,
+    });
     api
-      .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
-      .then((response) => {
-        setTaskInfo(response.data);
-        setLoadStatus(200);
+      .put("/teaching/check/" + encodeURIComponent(taskCheckId!), {
+        points: points,
+      })
+      .then((_) => {
+        navigate(-1); // go back to task check list
       })
       .catch((error) => {
-        setLoadStatus(error.response?.status);
+        //// ---Commented out for testing purposes---
+        // if (!error.response) return;
+        // if (error.response.status !== 400)
+        //   return setLoadStatus(error.response.status);
+        // if (error.response.data.errors.Points)
+        //// ---Commented out for testing purposes---
+        setErrors({ points: "Значение некорректно." });
       });
-  }, [taskCheckId]);
+  };
+
+  //// ---Commented out for testing purposes---
+  // useEffect(() => {
+  //   setLoadStatus(0);
+  //   setTaskInfo(undefined);
+  //   api
+  //     .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
+  //     .then((response) => {
+  //       setTaskInfo(response.data);
+  //       setLoadStatus(200);
+  //     })
+  //     .catch((error) => {
+  //       setLoadStatus(error.response?.status);
+  //     });
+  // }, [taskCheckId]);
+  //// ---Commented out for testing purposes---
+
+  //// ---Written for testing purposes---
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadStatus(200);
+      setTaskInfo({
+        task: {
+          block: {
+            module: {
+              course: {
+                title: "Название курса. Как я встретил вашу маму. Осуждаю.",
+              },
+              index: 1,
+              title: "Первый модуль",
+            },
+            index: 2,
+            title: "Второй блок",
+          },
+          index: 4,
+          title: "Напишите эссе на тему: “Как я провел лето”",
+          maxPoints: 5,
+        },
+        contents:
+          "Здравствуйте учитель я нихрена не сделал поставьте 5/5 пжпж asdfadsf",
+        checked: false,
+        points: 0,
+      });
+    }, 500);
+  }, []);
+  //// ---Written for testing purposes---
 
   if (loadStatus === 0)
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;
@@ -143,43 +201,50 @@ function CheckTaskComponent() {
           <Markdown>{taskInfo.contents}</Markdown>
         </div>
       </div>
-      <div className={classes.pointsContainer}>
-        <label htmlFor="points" className={classes.label}>
-          Количество баллов:
-        </label>
-        <div className={classes.badge + " " + classes.points} id="points">
-          <div className={classes.spinbox}>
-            <input
-              type="number"
-              className={classes.spinboxContent}
-              max={taskInfo.task.maxPoints}
-              min={0}
-              value={points}
-              style={{
-                width: taskInfo.task.maxPoints.toString().length + "rem",
-              }}
-              onChange={(event) => {
-                setPoints(event.target.valueAsNumber);
-                event.target.value = event.target.valueAsNumber.toString();
-              }}
-            ></input>
-            <div className={classes.spinButtons}>
-              <button
-                className={classes.spinButton}
-                onClick={() => setPoints(points + 1)}
-              >
-                <span className={classes.spinButtonArrowUp}>⌃</span>
-              </button>
-              <button
-                className={classes.spinButton}
-                onClick={() => setPoints(points - 1)}
-              >
-                <span className={classes.spinButtonArrowDown}>⌄</span>
-              </button>
+      <div className={classes.pointsContainerContainer}>
+        <div className={classes.pointsContainer}>
+          <label htmlFor="points" className={classes.label}>
+            Количество баллов:
+          </label>
+          <div className={classes.badge + " " + classes.points} id="points">
+            <div className={classes.spinbox}>
+              <input
+                type="number"
+                className={classes.spinboxContent}
+                max={taskInfo.task.maxPoints}
+                min={0}
+                value={points}
+                style={{
+                  width: taskInfo.task.maxPoints.toString().length + "rem",
+                }}
+                onChange={(event) => {
+                  setPoints(event.target.valueAsNumber);
+                  event.target.value = event.target.valueAsNumber.toString();
+                }}
+              ></input>
+              <div className={classes.spinButtons}>
+                <button
+                  className={classes.spinButton}
+                  onClick={() => setPoints(points + 1)}
+                >
+                  <span className={classes.spinButtonArrowUp}>⌃</span>
+                </button>
+                <button
+                  className={classes.spinButton}
+                  onClick={() => setPoints(points - 1)}
+                >
+                  <span className={classes.spinButtonArrowDown}>⌄</span>
+                </button>
+              </div>
             </div>
+            /<p className={classes.maxPoints}>{taskInfo.task.maxPoints}</p>
           </div>
-          /<p className={classes.maxPoints}>{taskInfo.task.maxPoints}</p>
         </div>
+        {errors.points ? (
+          <p className={classes.error}>{errors.points}</p>
+        ) : (
+          <></>
+        )}
       </div>
       <div className={classes.footer}>
         <div className={classes.line}></div>

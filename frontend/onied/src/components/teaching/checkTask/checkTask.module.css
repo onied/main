@@ -251,3 +251,18 @@
   margin-top: 30px;
   border-top: 1px solid #dbdbdb;
 }
+
+.pointsContainerContainer {
+  display: flex;
+  align-items: end;
+  width: 100%;
+  flex-direction: column;
+  gap: 0;
+}
+
+.error {
+  color: #ed4956;
+  font-size: 14pt;
+  font-weight: 600;
+  margin: 0;
+}
