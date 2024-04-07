@@ -1,9 +1,14 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.TaskCheckDtos;
 using Courses.Models;
 using Courses.Profiles.Resolvers;
 using MassTransit.Data.Messages;
+using BlockDto = Courses.Dtos.BlockDto;
+using CourseDto = Courses.Dtos.CourseDto;
+using ModuleDto = Courses.Dtos.ModuleDto;
 using Task = Courses.Models.Task;
+using TaskDto = Courses.Dtos.TaskDto;
 
 namespace Courses.Profiles;
 
@@ -56,6 +61,12 @@ public class AppMappingProfile : Profile
                     context.Mapper.Map<List<Block>>(moduleDto.Blocks)
             ));
         CreateMap<BlockDto, Block>();
+        CreateMap<TasksBlock, Dtos.TaskCheckDtos.BlockDto>();
+        CreateMap<Course, Dtos.TaskCheckDtos.CourseDto>();
+        CreateMap<Module, Dtos.TaskCheckDtos.ModuleDto>();
+        CreateMap<TaskCheck, TaskCheckDto>();
+        CreateMap<Task, Dtos.TaskCheckDtos.TaskDto>()
+            .ForMember(dest => dest.Block, opt => opt.MapFrom(src => src.TasksBlock));
 
 
         //MassTransit

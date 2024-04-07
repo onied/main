@@ -47,6 +47,8 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<ITaskCheckRepository, TaskCheckRepository>();
+builder.Services.AddScoped<ITaskCheckService, TaskCheckService>();
 
 var app = builder.Build();
 

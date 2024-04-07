@@ -1,5 +1,6 @@
 using Courses.Models;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
@@ -44,5 +45,13 @@ public class TaskCheckRepository(AppDbContext context) : ITaskCheckRepository
         var teachingCourse = teacher.TeachingCourses.SingleOrDefault(course => course.Id == targetCourse.Id);
         var moderatingCourse = teacher.ModeratingCourses.SingleOrDefault(course => course.Id == targetCourse.Id);
         return teachingCourse != null || moderatingCourse != null;
+    }
+
+    public async Task CheckTask(TaskCheck taskCheck, int points)
+    {
+        taskCheck.Checked = true;
+        taskCheck.Points = points;
+        context.TaskChecks.Update(taskCheck);
+        await context.SaveChangesAsync();
     }
 }
