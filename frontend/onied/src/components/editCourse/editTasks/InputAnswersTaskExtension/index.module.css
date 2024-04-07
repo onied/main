@@ -1,0 +1,23 @@
+.answersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.answer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.line > p {
+  display: inline;
+  text-wrap: wrap;
+}

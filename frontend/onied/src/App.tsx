@@ -20,8 +20,7 @@ import ProfileService from "./services/profileService";
 import { LoadingContext } from "./hooks/profile/loadingContext";
 import TeachingPage from "./pages/teaching/teaching";
 import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
-import EditVideoBlock from "./pages/editCourse/editBlocks/editVideoBlock/editVideoBlock";
-import EditSummaryBlock from "./pages/editCourse/editBlocks/editSummaryBlock/editSummaryBlock";
+import EditBlock from "./pages/editCourse/EditBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
 import CheckTask from "./pages/checkTasks/checkTask/checkTask";
 
@@ -53,12 +52,8 @@ function App() {
                 element={<EditCourseHierarchy />}
               ></Route>
               <Route
-                path="/course/:courseId/edit/:blockId/video"
-                element={<EditVideoBlock />}
-              ></Route>
-              <Route
-                path="/course/:courseId/edit/:blockId/summary"
-                element={<EditSummaryBlock />}
+                path="/course/:courseId/edit/:blockId"
+                element={<EditBlock />}
               ></Route>
               <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>

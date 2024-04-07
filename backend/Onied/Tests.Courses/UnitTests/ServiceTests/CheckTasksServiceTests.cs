@@ -79,10 +79,10 @@ public class CheckTasksServiceTests
         // Arrange
         var task = _fixture.Build<InputTask>()
             .With(task1 => task1.TaskType, TaskType.InputAnswer)
+            .With(task1 => task1.IsCaseSensitive, isCaseSensitive)
             .Do(task1 => task1.Answers.Add(new TaskTextInputAnswer
             {
-                Answer = "Тест",
-                IsCaseSensitive = isCaseSensitive
+                Answer = "Тест"
             }))
             .Create();
 

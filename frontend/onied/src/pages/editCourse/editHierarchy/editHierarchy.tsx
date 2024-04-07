@@ -26,12 +26,14 @@ import NotFound from "../../../components/general/responses/notFound/notFound";
 
 type Block = {
   id: number;
+  index: number;
   title: string;
   blockType: number;
 };
 
 type Module = {
   id: number;
+  index: number;
   title: string;
   blocks: Array<Block>;
 };
@@ -48,12 +50,14 @@ function EditCourseHierarchy() {
   const [hierarchy, setHierarchy] = useState<Course | null | undefined>();
   const [moduleDropDisabled, setModuleDropDisabled] = useState(false);
   const [hierarchyDropDisabled, setHierarchyDropDisabled] = useState(false);
-  const [createdModulesCounter, setCreatedModulesCounter] = useState(1);
-  const [createdBlocksCounter, setCreatedBlocksCounter] = useState(1);
   const [expandedModules, setExpandedModules] = useState<Array<number>>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
   const notFound = <NotFound>Курс не найден.</NotFound>;
+  const [isForbid, setIsForbid] = useState(false);
+  const forbid = (
+    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
+  );
   const id = Number(courseId);
   const blockTypes = [<></>, "summary", "video", "tasks"];
   const blockIcons = [
@@ -63,14 +67,34 @@ function EditCourseHierarchy() {
     <FontAwesomeIcon icon={faListCheck} />,
   ];
 
+  useEffect(() => {
+    console.log(hierarchy);
+  }, [hierarchy]);
+
+  const handleErrors = (error: any) => {
+    if ("response" in error && error.response.status == 404) {
+      setHierarchy(null);
+    } else if ("response" in error && error.response.status == 403) {
+      setHierarchy(null);
+      setIsForbid(true);
+    }
+  };
+
   const deleteBlock = (moduleIndex: number, blockId: number) => {
     const newArray = Array.from(hierarchy!.modules);
     const blockIndex = newArray[moduleIndex].blocks.findIndex(
       (block) => block.id == blockId
     );
+
     if (blockIndex == -1) return;
     newArray[moduleIndex].blocks.splice(blockIndex, 1);
+    newArray[moduleIndex].blocks.forEach(
+      (block, index) => (block.index = index)
+    );
     setHierarchy({ ...hierarchy!, modules: newArray });
+    api
+      .delete("courses/" + courseId + "/edit/delete-block/?blockId=" + blockId)
+      .catch((error) => handleErrors(error));
   };
 
   const deleteModule = (moduleId: number) => {
@@ -78,30 +102,54 @@ function EditCourseHierarchy() {
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     if (moduleIndex == -1) return;
     newArray.splice(moduleIndex, 1);
+    newArray.forEach((module, index) => (module.index = index));
     setHierarchy({ ...hierarchy!, modules: newArray });
+    api
+      .delete(
+        "courses/" + courseId + "/edit/delete-module?moduleId=" + moduleId
+      )
+      .catch((error) => handleErrors(error));
   };
 
   const addModule = () => {
     const newArray = Array.from(hierarchy!.modules);
-    newArray.push({
-      id: -createdModulesCounter,
-      blocks: [],
-      title: "Новый модуль",
-    });
-    setCreatedModulesCounter(createdModulesCounter + 1);
-    setHierarchy({ ...hierarchy!, modules: newArray });
+    api
+      .post("courses/" + courseId + "/edit/add-module")
+      .then((response) => {
+        newArray.push({
+          id: response.data,
+          index: newArray.length,
+          blocks: [],
+          title: "Новый модуль",
+        });
+        setHierarchy({ ...hierarchy!, modules: newArray });
+      })
+      .catch((error) => handleErrors(error));
   };
 
   const addBlock = (moduleId: number, blockType: number) => {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
-    newArray[moduleIndex].blocks.push({
-      id: -createdBlocksCounter,
-      title: "Новый блок",
-      blockType: blockType,
-    });
-    setCreatedBlocksCounter(createdBlocksCounter + 1);
-    setHierarchy({ ...hierarchy!, modules: newArray });
+    api
+      .post(
+        "courses/" +
+          courseId +
+          "/edit/add-block/" +
+          moduleId +
+          "?blockType=" +
+          blockType
+      )
+      .then((response) => {
+        newArray[moduleIndex].blocks.push({
+          id: response.data,
+          index: newArray[moduleIndex].blocks.length,
+          title: "Новый блок",
+          blockType: blockType,
+        });
+        setHierarchy({ ...hierarchy!, modules: newArray });
+      })
+      .catch((error) => handleErrors(error));
+
     const exp = Array.from(expandedModules);
     if (!exp.includes(moduleId)) exp.push(moduleId);
     setExpandedModules(exp);
@@ -119,12 +167,38 @@ function EditCourseHierarchy() {
     setHierarchy({ ...hierarchy!, modules: newArray });
   };
 
+  const sendNameBlock = (blockId: number, value: string) => {
+    api
+      .put(
+        "courses/" +
+          courseId +
+          "/edit/rename-block?blockId=" +
+          blockId +
+          "&title=" +
+          value
+      )
+      .catch((error) => handleErrors(error));
+  };
+
   const renameModule = (moduleId: number, value: string) => {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     if (moduleIndex == -1) return;
     newArray[moduleIndex].title = value;
     setHierarchy({ ...hierarchy!, modules: newArray });
+  };
+
+  const sendNameModule = (moduleId: number, value: string) => {
+    api
+      .put(
+        "courses/" +
+          courseId +
+          "/edit/rename-module?moduleId=" +
+          moduleId +
+          "&title=" +
+          value
+      )
+      .catch((error) => handleErrors(error));
   };
 
   const onDragStart = (start: DragStart) => {
@@ -143,7 +217,14 @@ function EditCourseHierarchy() {
       const newArray = Array.from(hierarchy!.modules);
       const [removed] = newArray.splice(result.source.index, 1);
       newArray.splice(result.destination.index, 0, removed);
+      newArray.forEach((module, index) => (module.index = index));
       setHierarchy({ ...hierarchy!, modules: newArray });
+      api
+        .put("courses/" + courseId + "/edit/hierarchy", {
+          ...hierarchy!,
+          modules: newArray,
+        })
+        .catch((error) => handleErrors(error));
     } else if (result.draggableId.startsWith("block")) {
       if (result.destination.droppableId.startsWith("combineModule")) {
         const newArrayModules = Array.from(hierarchy!.modules);
@@ -160,8 +241,20 @@ function EditCourseHierarchy() {
           result.source.index,
           1
         );
+        newArrayModules[fromModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
         newArrayModules[toModule].blocks.push(removed);
+        newArrayModules[toModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
+        api
+          .put("courses/" + courseId + "/edit/hierarchy", {
+            ...hierarchy!,
+            modules: newArrayModules,
+          })
+          .catch((error) => handleErrors(error));
       }
       if (result.destination.droppableId.startsWith("module")) {
         const newArrayModules = Array.from(hierarchy!.modules);
@@ -178,12 +271,24 @@ function EditCourseHierarchy() {
           result.source.index,
           1
         );
+        newArrayModules[fromModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
         newArrayModules[toModule].blocks.splice(
           result.destination.index,
           0,
           removed
         );
+        newArrayModules[toModule].blocks.forEach(
+          (block, index) => (block.index = index)
+        );
         setHierarchy({ ...hierarchy!, modules: newArrayModules });
+        api
+          .put("courses/" + courseId + "/edit/hierarchy", {
+            ...hierarchy!,
+            modules: newArrayModules,
+          })
+          .catch((error) => handleErrors(error));
       }
     }
   };
@@ -209,14 +314,12 @@ function EditCourseHierarchy() {
                 onChange={(event) =>
                   renameBlock(moduleIndex, block.id, event.target.value)
                 }
+                onBlur={(event) => sendNameBlock(block.id, event.target.value)}
               />
               <span className={classes.blockButtons}>
                 <Link
                   className={classes.blockButton}
-                  to={new URL(
-                    "" + block.id + "/" + blockTypes[block.blockType],
-                    window.location.href
-                  ).toString()}
+                  to={new URL("" + block.id, window.location.href).toString()}
                 >
                   <FontAwesomeIcon icon={faPencil} />
                 </Link>
@@ -292,6 +395,9 @@ function EditCourseHierarchy() {
                           onChange={(event) =>
                             renameModule(module.id, event.target.value)
                           }
+                          onBlur={(event) => {
+                            sendNameModule(module.id, event.target.value);
+                          }}
                         />
                         <span className={classes.moduleButtons}>
                           <a
@@ -372,6 +478,13 @@ function EditCourseHierarchy() {
       .get("courses/" + id + "/hierarchy/")
       .then((response) => {
         console.log(response.data);
+        if ("modules" in response.data) {
+          response.data.modules.sort((a, b) => (a.index > b.index ? 1 : -1));
+          response.data.modules.forEach((module) => {
+            if ("blocks" in module)
+              module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
+          });
+        }
         setHierarchy(response.data);
       })
       .catch((error) => {
@@ -388,6 +501,8 @@ function EditCourseHierarchy() {
     console.log(courseId);
     return notFound;
   }
+
+  if (isForbid) return forbid;
 
   if (hierarchy === undefined)
     return (

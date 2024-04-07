@@ -1,5 +1,6 @@
 using Courses.Models;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
@@ -39,4 +40,71 @@ public class BlockRepository(AppDbContext dbContext) : IBlockRepository
         return query.FirstOrDefaultAsync(block => block.Id == id);
     }
 
+    public async Task AddBlockAsync(Block block)
+    {
+        block.Index = await dbContext.Blocks.Where(b => b.ModuleId == block.ModuleId).CountAsync();
+        await dbContext.Blocks.AddAsync(block);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> AddBlockReturnIdAsync(Block block)
+    {
+        block.Index = await dbContext.Blocks.Where(b => b.ModuleId == block.ModuleId).CountAsync();
+        await dbContext.Blocks.AddAsync(block);
+        await dbContext.SaveChangesAsync();
+
+        return block.Id;
+    }
+
+    public async Task UpdateSummaryBlock(SummaryBlock summaryBlock)
+    {
+        dbContext.SummaryBlocks.Update(summaryBlock);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateVideoBlock(VideoBlock videoBlock)
+    {
+        dbContext.VideoBlocks.Update(videoBlock);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateTasksBlock(TasksBlock tasksBlock)
+    {
+        dbContext.TasksBlocks.Update(tasksBlock);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> RenameBlockAsync(int id, string title)
+    {
+        var block = await dbContext.Blocks.FirstOrDefaultAsync(m => m.Id == id);
+        if (block != null)
+        {
+            block.Title = title;
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> DeleteBlockAsync(int id)
+    {
+        var removedBlock = await dbContext.Blocks.FirstOrDefaultAsync(b => b.Id == id);
+        if (removedBlock != null)
+        {
+            dbContext.Blocks.Remove(removedBlock);
+            var blocks = dbContext.Blocks
+                .Where(m => m.ModuleId == removedBlock.ModuleId && m.Id != id)
+                .OrderBy(m => m.Index);
+            var newIndex = 0;
+            foreach (var block in blocks)
+            {
+                block.Index = newIndex++;
+            }
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
 }
