@@ -9,6 +9,7 @@ import classes from "./index.module.css";
 import { TasksBlock } from "../../../../types/block";
 import TrashButton from "../../../general/trashButton";
 import Button from "../../../general/button/button";
+import NotFound from "../../../general/responses/notFound/notFound";
 
 function EditTasksBlockComponent({
   courseId,
@@ -23,7 +24,7 @@ function EditTasksBlockComponent({
     TasksBlock | undefined | null
   >(undefined);
 
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const notFound = <NotFound>Курс или блок не найден.</NotFound>;
 
   useEffect(() => {
     const parsedCourseId = Number(courseId);

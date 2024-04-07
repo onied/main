@@ -16,6 +16,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
+import Forbid from "../../../general/responses/forbid/forbid";
 
 type SummaryBlock = {
   id: number;
@@ -45,9 +46,7 @@ function EditSummaryBlockComponent({
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
-  const forbid = (
-    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
-  );
+  const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
 
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);

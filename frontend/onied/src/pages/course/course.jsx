@@ -71,9 +71,7 @@ function Course() {
           />
           <Route
             path="*"
-            element={
-              <h1 style={{ margin: "3rem" }}>Выберите блок из списка.</h1>
-            }
+            element={<NotFound>Выберите блок из списка.</NotFound>}
           />
         </Routes>
       </BlockViewContainer>

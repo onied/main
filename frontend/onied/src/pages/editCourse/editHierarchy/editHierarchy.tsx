@@ -23,6 +23,7 @@ import type { DropResult, DragStart } from "@hello-pangea/dnd";
 import { Menu, MenuItem } from "@mui/material";
 import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack";
 import NotFound from "../../../components/general/responses/notFound/notFound";
+import Forbid from "../../../components/general/responses/forbid/forbid";
 
 type Block = {
   id: number;
@@ -55,9 +56,7 @@ function EditCourseHierarchy() {
   const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
   const notFound = <NotFound>Курс не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
-  const forbid = (
-    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
-  );
+  const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
   const id = Number(courseId);
   const blockTypes = [<></>, "summary", "video", "tasks"];
   const blockIcons = [
