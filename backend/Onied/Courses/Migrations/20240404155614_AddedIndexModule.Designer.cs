@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240404155614_AddedIndexModule")]
+    partial class AddedIndexModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,10 +56,6 @@ namespace Courses.Migrations
                     b.Property<int>("BlockType")
                         .HasColumnType("integer")
                         .HasColumnName("block_type");
-
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean")
@@ -318,6 +317,10 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("answer");
 
+                    b.Property<bool>("IsCaseSensitive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_case_sensitive");
+
                     b.Property<int>("TaskId")
                         .HasColumnType("integer")
                         .HasColumnName("task_id");
@@ -335,6 +338,7 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             Answer = "Жак Фреско",
+                            IsCaseSensitive = true,
                             TaskId = 3
                         });
                 });
@@ -519,7 +523,6 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             BlockType = 0,
-                            Index = 0,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Титульник",
@@ -542,7 +545,6 @@ namespace Courses.Migrations
                         {
                             Id = 5,
                             BlockType = 0,
-                            Index = 4,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Заголовок блока с заданиями"
@@ -568,7 +570,6 @@ namespace Courses.Migrations
                         {
                             Id = 2,
                             BlockType = 0,
-                            Index = 1,
                             IsCompleted = true,
                             ModuleId = 1,
                             Title = "MAKIMA BEAN",
@@ -578,7 +579,6 @@ namespace Courses.Migrations
                         {
                             Id = 3,
                             BlockType = 0,
-                            Index = 2,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Техас покидает родную гавань",
@@ -588,7 +588,6 @@ namespace Courses.Migrations
                         {
                             Id = 4,
                             BlockType = 0,
-                            Index = 3,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Александр Асафов о предстоящих президентских выборах",
@@ -599,18 +598,6 @@ namespace Courses.Migrations
             modelBuilder.Entity("Courses.Models.InputTask", b =>
                 {
                     b.HasBaseType("Courses.Models.Task");
-
-                    b.Property<int>("Accuracy")
-                        .HasColumnType("integer")
-                        .HasColumnName("accuracy");
-
-                    b.Property<bool>("IsCaseSensitive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_case_sensitive");
-
-                    b.Property<bool>("IsNumber")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_number");
 
                     b.ToTable("tasks", (string)null);
 
@@ -623,10 +610,7 @@ namespace Courses.Migrations
                             MaxPoints = 5,
                             TaskType = 2,
                             TasksBlockId = 5,
-                            Title = "3. Кто?",
-                            Accuracy = 0,
-                            IsCaseSensitive = true,
-                            IsNumber = false
+                            Title = "3. Кто?"
                         });
                 });
 

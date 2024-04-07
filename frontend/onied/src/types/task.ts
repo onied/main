@@ -10,11 +10,12 @@ export type Variant = {
   id: number;
   description: string;
   isNew: boolean;
+  isCorrect: boolean;
 };
 
 export type Answer = {
   id: number;
-  description: string;
+  answer: string;
   isNew: boolean;
 };
 
@@ -28,17 +29,15 @@ export type Task = {
 
 export type SingleAnswerTask = Task & {
   variants: Variant[];
-  rightVariant: number;
 };
 
 export type MultipleAnswersTask = Task & {
   variants: Variant[];
-  rightVariants: number[];
 };
 
 export type InputAnswersTask = Task & {
   answers: Answer[];
   isNumber: boolean;
-  checkRegister: boolean;
-  checkAccuracy: number | null;
+  isCaseSensitive: boolean;
+  accuracy: number | null;
 };

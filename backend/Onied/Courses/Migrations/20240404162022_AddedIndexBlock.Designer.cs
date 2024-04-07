@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240404162022_AddedIndexBlock")]
+    partial class AddedIndexBlock
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -318,6 +321,10 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("answer");
 
+                    b.Property<bool>("IsCaseSensitive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_case_sensitive");
+
                     b.Property<int>("TaskId")
                         .HasColumnType("integer")
                         .HasColumnName("task_id");
@@ -335,6 +342,7 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             Answer = "Жак Фреско",
+                            IsCaseSensitive = true,
                             TaskId = 3
                         });
                 });
@@ -600,18 +608,6 @@ namespace Courses.Migrations
                 {
                     b.HasBaseType("Courses.Models.Task");
 
-                    b.Property<int>("Accuracy")
-                        .HasColumnType("integer")
-                        .HasColumnName("accuracy");
-
-                    b.Property<bool>("IsCaseSensitive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_case_sensitive");
-
-                    b.Property<bool>("IsNumber")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_number");
-
                     b.ToTable("tasks", (string)null);
 
                     b.HasDiscriminator().HasValue("InputTask");
@@ -623,10 +619,7 @@ namespace Courses.Migrations
                             MaxPoints = 5,
                             TaskType = 2,
                             TasksBlockId = 5,
-                            Title = "3. Кто?",
-                            Accuracy = 0,
-                            IsCaseSensitive = true,
-                            IsNumber = false
+                            Title = "3. Кто?"
                         });
                 });
 

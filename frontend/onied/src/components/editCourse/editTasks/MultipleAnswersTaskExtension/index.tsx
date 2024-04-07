@@ -16,11 +16,21 @@ function MultipleAnswersTaskExtension({
 }) {
   const updateRightVariants = (event: any) => {
     const currentVariantId = Number(event.target.value);
+    const updatedVariants = task.variants.map((variant) => {
+      if (
+        variant.id === currentVariantId &&
+        task.variants.every((v) =>
+          v.id === currentVariantId ? true : !v.isCorrect
+        )
+      ) {
+        return { ...variant, isCorrect: true };
+      } else if (variant.id === currentVariantId) {
+        return { ...variant, isCorrect: !variant.isCorrect };
+      }
+      return variant;
+    });
 
-    const newRightVariants = !task.rightVariants!.includes(currentVariantId)
-      ? [...task.rightVariants!, currentVariantId]
-      : task.rightVariants!.filter((v) => v != currentVariantId);
-    onChange("rightVariants", newRightVariants);
+    onChange("variants", updatedVariants);
   };
 
   const updateVariantInput = (id: number, description: string) => {
@@ -37,24 +47,34 @@ function MultipleAnswersTaskExtension({
         : task.variants[task.variants.length - 1].id + 1;
     onChange(
       "variants",
-      task.variants!.concat({ id: newId, description: "", isNew: true })
+      task.variants!.concat({
+        id: newId,
+        description: "",
+        isNew: true,
+        isCorrect: false,
+      })
     );
   };
 
   const removeVariant = (variantId: number) => {
-    onChange(
-      "variants",
-      task.variants.filter((v) => v.id != variantId)
-    );
-    onChange(
-      "rightVariants",
-      task.rightVariants.filter((vid) => vid != variantId)
-    );
+    const newTaskVariants = task.variants.filter((v) => v.id != variantId);
+    onChange("variants", newTaskVariants);
+    if (newTaskVariants.every((v) => !v.isCorrect))
+      onChange(
+        "variants",
+        newTaskVariants.map((v, i) => {
+          if (i == 0) {
+            return { ...v, isCorrect: true };
+          }
+          return v;
+        })
+      );
   };
 
   return (
     <div id={id} className={classes.variantsContainer}>
       {task.variants?.map((variant) => {
+        console.log(variant);
         return (
           <div key={variant.id} className={classes.variant}>
             <Checkbox
@@ -62,7 +82,7 @@ function MultipleAnswersTaskExtension({
               id={variant.id}
               value={variant.id}
               onChange={updateRightVariants}
-              checked={task.rightVariants.includes(variant.id) ? "t" : ""}
+              checked={variant.isCorrect ? "t" : ""}
             ></Checkbox>
             <InputForm
               style={{ width: "100%" }}
