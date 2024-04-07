@@ -2,7 +2,6 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -12,11 +11,8 @@ namespace Courses.Controllers;
 public class CoursesController : ControllerBase
 {
     private readonly IBlockRepository _blockRepository;
-    private readonly ICategoryRepository _categoryRepository;
     private readonly ICourseRepository _courseRepository;
     private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
-    private readonly IModuleRepository _moduleRepository;
-    private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
 
     public CoursesController(
@@ -24,17 +20,12 @@ public class CoursesController : ControllerBase
         IMapper mapper,
         ICourseRepository courseRepository,
         IBlockRepository blockRepository,
-        ICategoryRepository categoryRepository,
         IBlockCompletedInfoRepository blockCompletedInfoRepository)
-        IModuleRepository moduleRepository)
     {
-        _logger = logger;
         _mapper = mapper;
         _courseRepository = courseRepository;
         _blockRepository = blockRepository;
-        _categoryRepository = categoryRepository;
         _blockCompletedInfoRepository = blockCompletedInfoRepository;
-        _moduleRepository = moduleRepository;
     }
 
     [HttpGet]
