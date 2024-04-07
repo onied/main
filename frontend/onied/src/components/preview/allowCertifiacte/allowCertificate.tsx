@@ -18,9 +18,9 @@ function AllowCertificate(): ReactNode {
                 23.119L9.56411 20.4358L6.88101 19.6875L7.57445 16.9897L5.625 15L7.57445 13.0103L6.88101
                 10.3125L9.56411 9.56411L10.3125 6.88101L13.0103 7.57445L15 5.625Z"
           stroke="#686868"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
       <span>курс выдает сертификаты</span>

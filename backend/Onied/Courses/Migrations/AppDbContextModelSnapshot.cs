@@ -54,6 +54,10 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("block_type");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("integer")
+                        .HasColumnName("index");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_completed");
@@ -209,6 +213,10 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("course_id");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("integer")
+                        .HasColumnName("index");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -228,12 +236,14 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             CourseId = 1,
+                            Index = 0,
                             Title = "Такой-то"
                         },
                         new
                         {
                             Id = 2,
                             CourseId = 1,
+                            Index = 1,
                             Title = "Сякой-то"
                         });
                 });
@@ -308,10 +318,6 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("answer");
 
-                    b.Property<bool>("IsCaseSensitive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_case_sensitive");
-
                     b.Property<int>("TaskId")
                         .HasColumnType("integer")
                         .HasColumnName("task_id");
@@ -329,7 +335,6 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             Answer = "Жак Фреско",
-                            IsCaseSensitive = true,
                             TaskId = 3
                         });
                 });
@@ -467,6 +472,25 @@ namespace Courses.Migrations
                         });
                 });
 
+            modelBuilder.Entity("course_moderator", b =>
+                {
+                    b.Property<int>("ModeratingCoursesId")
+                        .HasColumnType("integer")
+                        .HasColumnName("moderating_courses_id");
+
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user1id");
+
+                    b.HasKey("ModeratingCoursesId", "User1Id")
+                        .HasName("pk_course_moderator");
+
+                    b.HasIndex("User1Id")
+                        .HasDatabaseName("ix_course_moderator_user1id");
+
+                    b.ToTable("course_moderator", (string)null);
+                });
+
             modelBuilder.Entity("Courses.Models.SummaryBlock", b =>
                 {
                     b.HasBaseType("Courses.Models.Block");
@@ -495,6 +519,7 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             BlockType = 0,
+                            Index = 0,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Титульник",
@@ -517,6 +542,7 @@ namespace Courses.Migrations
                         {
                             Id = 5,
                             BlockType = 0,
+                            Index = 4,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Заголовок блока с заданиями"
@@ -542,6 +568,7 @@ namespace Courses.Migrations
                         {
                             Id = 2,
                             BlockType = 0,
+                            Index = 1,
                             IsCompleted = true,
                             ModuleId = 1,
                             Title = "MAKIMA BEAN",
@@ -551,6 +578,7 @@ namespace Courses.Migrations
                         {
                             Id = 3,
                             BlockType = 0,
+                            Index = 2,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Техас покидает родную гавань",
@@ -560,6 +588,7 @@ namespace Courses.Migrations
                         {
                             Id = 4,
                             BlockType = 0,
+                            Index = 3,
                             IsCompleted = false,
                             ModuleId = 1,
                             Title = "Александр Асафов о предстоящих президентских выборах",
@@ -570,6 +599,18 @@ namespace Courses.Migrations
             modelBuilder.Entity("Courses.Models.InputTask", b =>
                 {
                     b.HasBaseType("Courses.Models.Task");
+
+                    b.Property<int>("Accuracy")
+                        .HasColumnType("integer")
+                        .HasColumnName("accuracy");
+
+                    b.Property<bool>("IsCaseSensitive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_case_sensitive");
+
+                    b.Property<bool>("IsNumber")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_number");
 
                     b.ToTable("tasks", (string)null);
 
@@ -582,7 +623,10 @@ namespace Courses.Migrations
                             MaxPoints = 5,
                             TaskType = 2,
                             TasksBlockId = 5,
-                            Title = "3. Кто?"
+                            Title = "3. Кто?",
+                            Accuracy = 0,
+                            IsCaseSensitive = true,
+                            IsNumber = false
                         });
                 });
 
@@ -708,6 +752,23 @@ namespace Courses.Migrations
                         .HasConstraintName("fk_task_variants_tasks_task_id");
 
                     b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("course_moderator", b =>
+                {
+                    b.HasOne("Courses.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("ModeratingCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_course_moderator_courses_moderating_courses_id");
+
+                    b.HasOne("Courses.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_course_moderator_users_user1id");
                 });
 
             modelBuilder.Entity("Courses.Models.Category", b =>

@@ -12,6 +12,4 @@ public class TaskTextInputAnswer
     [MinLength(1)]
     [MaxLength(200)]
     public string Answer { get; set; } = null!;
-
-    public bool IsCaseSensitive { get; set; }
 }

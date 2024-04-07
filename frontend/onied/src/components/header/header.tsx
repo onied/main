@@ -20,6 +20,9 @@ function Header() {
           <Link to="/catalog" className={classes.link}>
             Каталог
           </Link>
+          <Link to="/teaching" className={classes.link}>
+            Преподавание
+          </Link>
         </div>
       </div>
       <div className={classes.rightWrapper}>

@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  margin: 0 auto;
+  width: 60%;
+  max-width: 1000px;
+}
+
+.containerItem {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbdbdb;
+}
+
+.containerFooter {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbdbdb;
+}
+
+.taskNumber {
+  display: inline;
+  font-size: 16pt;
+  font-weight: bold;
+}
+
+.title {
+  color: #000000;
+  font-size: 32pt;
+  font-weight: 800;
+  margin-top: -10px;
+}

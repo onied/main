@@ -18,18 +18,23 @@ import ProfilePage from "./pages/profile/profile";
 import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
 import ProfileService from "./services/profileService";
 import { LoadingContext } from "./hooks/profile/loadingContext";
+import TeachingPage from "./pages/teaching/teaching";
+import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
+import EditBlock from "./pages/editCourse/EditBlock";
+import EditPreview from "./pages/editCourse/editPreview/editPreview";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  LoginService.initialize();
+  const [refreshingTokens, setRefreshingTokens] = useState(false);
+  LoginService.initialize(setRefreshingTokens);
   LoginService.registerAutomaticRefresh();
   ProfileService.initialize(setProfile, setLoading);
   useEffect(() => {
-    if (profile == null && LoginService.checkLoggedIn())
-      ProfileService.fetchProfile();
+    if (refreshingTokens) setLoading(true);
+    else if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
     else setLoading(false);
-  }, []);
+  }, [refreshingTokens]);
   return (
     <>
       <ProfileContext.Provider value={profile}>
@@ -41,6 +46,15 @@ function App() {
                 path="/course/:courseId/learn/*"
                 element={<Course />}
               ></Route>
+              <Route
+                path="/course/:courseId/edit/hierarchy"
+                element={<EditCourseHierarchy />}
+              ></Route>
+              <Route
+                path="/course/:courseId/edit/:blockId"
+                element={<EditBlock />}
+              ></Route>
+              <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
               <Route path="/catalog" element={<Catalog />}></Route>
               <Route path="/register" element={<Register />}></Route>
@@ -54,6 +68,7 @@ function App() {
               <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
               <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
               <Route path="/profile/*" element={<ProfilePage />}></Route>
+              <Route path="/teaching/*" element={<TeachingPage />}></Route>
             </Routes>
           </main>
         </LoadingContext.Provider>

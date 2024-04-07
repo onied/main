@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ocelot.DependencyInjection;
@@ -5,6 +6,8 @@ using Ocelot.Middleware;
 using Users;
 using Users.Profiles;
 using Users.Services.EmailSender;
+using Users.Services.ProfileProducer;
+using Users.Services.UserCreatedProducer;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json");
@@ -25,8 +28,24 @@ builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
+builder.Services.AddMassTransit(x =>
+{
+    // A Transport
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"], builder.Configuration["RabbitMQ:VHost"], h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"]);
+            h.Password(builder.Configuration["RabbitMQ:Password"]);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
+builder.Services.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
+builder.Services.AddScoped<IProfileProducer, ProfileProducer>();
 
 var app = builder.Build();
 app.UseRouting();

@@ -2,6 +2,7 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -10,24 +11,30 @@ namespace Courses.Controllers;
 [Route("api/v1/[controller]/{id:int}")]
 public class CoursesController : ControllerBase
 {
-    private readonly ICourseRepository _courseRepository;
     private readonly IBlockRepository _blockRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly ICheckTasksService _checkTasksService;
+    private readonly ICourseRepository _courseRepository;
+    private readonly IModuleRepository _moduleRepository;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
-    private readonly ICheckTasksService _checkTasksService;
 
     public CoursesController(
         ILogger<CoursesController> logger,
         IMapper mapper,
         ICourseRepository courseRepository,
         IBlockRepository blockRepository,
-        ICheckTasksService checkTasksService)
+        ICheckTasksService checkTasksService,
+        ICategoryRepository categoryRepository,
+        IModuleRepository moduleRepository)
     {
         _logger = logger;
         _mapper = mapper;
         _courseRepository = courseRepository;
         _blockRepository = blockRepository;
         _checkTasksService = checkTasksService;
+        _categoryRepository = categoryRepository;
+        _moduleRepository = moduleRepository;
     }
 
     [HttpGet]
@@ -73,17 +80,27 @@ public class CoursesController : ControllerBase
     [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
     {
-        var block = await _blockRepository.GetTasksBlock(blockId, includeVariants: true);
+        var block = await _blockRepository.GetTasksBlock(blockId, true);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
         return _mapper.Map<TasksBlockDto>(block);
     }
 
     [HttpGet]
+    [Route("tasks/{blockId:int}/for-edit")]
+    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId)
+    {
+        var block = await _blockRepository.GetTasksBlock(blockId, true, true);
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+        return _mapper.Map<EditTasksBlockDto>(block);
+    }
+
+    [HttpGet]
     [Route("tasks/{blockId:int}/points")]
     public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
     {
-        var block = await _blockRepository.GetTasksBlock(blockId, includeVariants: true);
+        var block = await _blockRepository.GetTasksBlock(blockId, true);
 
         if (block == null || block.Module.CourseId != id)
             return NotFound();
@@ -91,7 +108,7 @@ public class CoursesController : ControllerBase
         var points = block.Tasks.Select(
             task => task.TaskType is TaskType.ManualReview
                 ? null
-                : new UserTaskPoints()
+                : new UserTaskPoints
                 {
                     TaskId = task.Id,
                     Points = 0
@@ -114,8 +131,8 @@ public class CoursesController : ControllerBase
 
         var block = await _blockRepository.GetTasksBlock(
             blockId,
-            includeVariants: true,
-            includeAnswers: true);
+            true,
+            true);
 
         if (block is null || block.Module.CourseId != id)
             return NotFound();

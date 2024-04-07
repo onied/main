@@ -27,4 +27,6 @@ public class User
     public ICollection<Course> Courses { get; } = new List<Course>();
 
     public ICollection<Course> TeachingCourses { get; } = new List<Course>();
+
+    public ICollection<Course> ModeratingCourses { get; } = new List<Course>();
 }
