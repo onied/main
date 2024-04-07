@@ -15,6 +15,7 @@ public class CoursesController : ControllerBase
     private readonly ICategoryRepository _categoryRepository;
     private readonly ICourseRepository _courseRepository;
     private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
+    private readonly IModuleRepository _moduleRepository;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
 
@@ -25,6 +26,7 @@ public class CoursesController : ControllerBase
         IBlockRepository blockRepository,
         ICategoryRepository categoryRepository,
         IBlockCompletedInfoRepository blockCompletedInfoRepository)
+        IModuleRepository moduleRepository)
     {
         _logger = logger;
         _mapper = mapper;
@@ -32,6 +34,7 @@ public class CoursesController : ControllerBase
         _blockRepository = blockRepository;
         _categoryRepository = categoryRepository;
         _blockCompletedInfoRepository = blockCompletedInfoRepository;
+        _moduleRepository = moduleRepository;
     }
 
     [HttpGet]
@@ -95,6 +98,15 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
+    [Route("tasks/{blockId:int}/for-edit")]
+    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId)
+    {
+        var block = await _blockRepository.GetTasksBlock(blockId, true, true);
+        if (block == null || block.Module.CourseId != id)
+            return NotFound();
+        return _mapper.Map<EditTasksBlockDto>(block);
+    }
+
     [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId)
     {
@@ -107,29 +119,5 @@ public class CoursesController : ControllerBase
             await _blockCompletedInfoRepository.AddCompletedCourseBlocksAsync(userId, blockId);
         dto.IsCompleted = true;
         return dto;
-    }
-
-    [HttpPut]
-    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, UnauthorizedHttpResult>> EditCourse(
-        int id,
-        [FromQuery] string? userId,
-        [FromBody] EditCourseDto editCourseDto)
-    {
-        var course = await _courseRepository.GetCourseAsync(id);
-        if (course == null)
-            return TypedResults.NotFound();
-        if (userId == null || course.Author?.Id.ToString() != userId)
-            return TypedResults.Unauthorized();
-        var category = await _categoryRepository.GetCategoryById(editCourseDto.CategoryId);
-        if (category == null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                [nameof(editCourseDto.CategoryId)] = ["This category does not exist."]
-            });
-        _mapper.Map(editCourseDto, course);
-        course.Category = category;
-        course.CategoryId = category.Id;
-        await _courseRepository.UpdateCourseAsync(course);
-        return TypedResults.Ok(_mapper.Map<PreviewDto>(course));
     }
 }

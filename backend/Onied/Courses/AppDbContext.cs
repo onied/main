@@ -127,16 +127,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             Id = 1,
             Title = "Такой-то",
-            CourseId = 1
+            CourseId = 1,
+            Index = 0
         }, new Module
         {
             Id = 2,
             Title = "Сякой-то",
-            CourseId = 1
+            CourseId = 1,
+            Index = 1
         });
         modelBuilder.Entity<SummaryBlock>().HasData(new SummaryBlock
         {
             Id = 1,
+            Index = 0,
             ModuleId = 1,
             FileHref = "/assets/react.svg",
             FileName = "file_name.svg",
@@ -147,18 +150,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<VideoBlock>().HasData(new VideoBlock
         {
             Id = 2,
+            Index = 1,
             ModuleId = 1,
             Title = "MAKIMA BEAN",
             Url = "https://www.youtube.com/watch?v=YfBlwC44gDQ"
         }, new VideoBlock
         {
             Id = 3,
+            Index = 2,
             ModuleId = 1,
             Title = "Техас покидает родную гавань",
             Url = "https://vk.com/video-50883936_456243146"
         }, new VideoBlock
         {
             Id = 4,
+            Index = 3,
             ModuleId = 1,
             Title = "Александр Асафов о предстоящих президентских выборах",
             Url = "https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"
@@ -166,6 +172,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<TasksBlock>().HasData(new TasksBlock
         {
             Id = 5,
+            Index = 4,
             ModuleId = 1,
             Title = "Заголовок блока с заданиями"
         });
@@ -190,7 +197,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             TasksBlockId = 5,
             MaxPoints = 5,
             TaskType = TaskType.InputAnswer,
-            Title = "3. Кто?"
+            Title = "3. Кто?",
+            IsCaseSensitive = true,
+            IsNumber = false,
+            Accuracy = 0
         });
         modelBuilder.Entity<Task>().HasData(new Task
         {
@@ -253,8 +263,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             Id = 1,
             TaskId = 3,
-            Answer = "Жак Фреско",
-            IsCaseSensitive = true
+            Answer = "Жак Фреско"
         });
     }
 }

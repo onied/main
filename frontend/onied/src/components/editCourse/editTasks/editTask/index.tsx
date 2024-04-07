@@ -64,10 +64,9 @@ function EditTask({
         taskType: TaskType.SingleAnswer,
         isNew: true,
         variants: [
-          { id: 0, description: "", isNew: true },
-          { id: 1, description: "", isNew: true },
+          { id: 0, description: "", isNew: true, isCorrect: true },
+          { id: 1, description: "", isNew: true, isCorrect: false },
         ],
-        rightVariant: 0,
       }) as SingleAnswerTask,
     [TaskType.MultipleAnswers]: (previousTask: Task) =>
       ({
@@ -77,10 +76,9 @@ function EditTask({
         taskType: TaskType.MultipleAnswers,
         isNew: true,
         variants: [
-          { id: 0, description: "", isNew: true },
-          { id: 1, description: "", isNew: true },
+          { id: 0, description: "", isNew: true, isCorrect: true },
+          { id: 1, description: "", isNew: true, isCorrect: false },
         ],
-        rightVariants: [],
       }) as MultipleAnswersTask,
     [TaskType.InputAnswer]: (previousTask: Task) =>
       ({
@@ -89,10 +87,10 @@ function EditTask({
         maxPoints: previousTask.maxPoints,
         taskType: TaskType.InputAnswer,
         isNew: true,
-        answers: [{ id: 0, description: "", isNew: true }],
+        answers: [{ id: 0, answer: "", isNew: true }],
         isNumber: false,
-        checkAccuracy: null,
-        checkRegister: false,
+        accuracy: null,
+        isCaseSensitive: false,
       }) as InputAnswersTask,
     [TaskType.ManualReview]: (previousTask: Task) =>
       ({
@@ -143,12 +141,7 @@ function EditTask({
       <label className={classes.label} htmlFor="taskType">
         Тип задания
       </label>
-      <Select
-        id="taskType"
-        value={task.taskType}
-        disabled={!task.isNew}
-        onChange={setTaskType}
-      >
+      <Select id="taskType" value={task.taskType} onChange={setTaskType}>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}

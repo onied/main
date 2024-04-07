@@ -21,6 +21,7 @@ public class CoursesControllerTests
         new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
+    private readonly Mock<IModuleRepository> _moduleRepository = new();
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
     private readonly CoursesController _controller;
@@ -35,6 +36,7 @@ public class CoursesControllerTests
             _blockRepository.Object,
             _categoryRepository.Object,
             _blockCompletedInfoRepository.Object);
+            _moduleRepository.Object);
     }
 
     [Fact]
@@ -579,5 +581,5 @@ public class CoursesControllerTests
         Assert.IsType<Ok<PreviewDto>>(result.Result);
         var actualResult = (result.Result as Ok<PreviewDto>)?.Value;
         Assert.Equivalent(coursePreview, actualResult);
-    }
+    }*/
 }
