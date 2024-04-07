@@ -122,7 +122,7 @@ function CheckTaskComponent() {
             <div className={classes.moduleBlockContainer}>
               <div className={classes.module}>
                 <label htmlFor="moduleTitle" className={classes.label}>
-                  Модуль {taskInfo.task.block.module.index}:
+                  Модуль {taskInfo.task.block.module.index + 1}:
                 </label>
                 <p id="moduleTitle" className={classes.moduleTitle}>
                   {taskInfo.task.block.module.title}
@@ -130,7 +130,7 @@ function CheckTaskComponent() {
               </div>
               <div className={classes.block}>
                 <label htmlFor="blockTitle" className={classes.label}>
-                  Блок {taskInfo.task.block.index}:
+                  Блок {taskInfo.task.block.index + 1}:
                 </label>
                 <p id="blockTitle" className={classes.blockTitle}>
                   {taskInfo.task.block.title}
@@ -139,7 +139,7 @@ function CheckTaskComponent() {
             </div>
             <div className={classes.task}>
               <label htmlFor="taskTitle" className={classes.taskLabel}>
-                Задание {taskInfo.task.index}:
+                Задание {taskInfo.task.index + 1}:
               </label>
               <p className={classes.taskTitle} id="taskTitle">
                 {taskInfo.task.title}

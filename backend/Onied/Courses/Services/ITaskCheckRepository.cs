@@ -10,5 +10,5 @@ public interface ITaskCheckRepository
     public Task<List<TaskCheck>> GetCheckedTasks(User teacher);
     public Task<TaskCheck?> GetTaskCheck(Guid taskCheckId);
     public bool CanCheckTask(User teacher, TaskCheck taskCheck);
-    public Task CheckTask(TaskCheck taskCheck, int points);
+    public Task CheckTask(Guid taskCheckId, int points);
 }

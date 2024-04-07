@@ -41,7 +41,7 @@ public class TaskCheckService(IUserRepository userRepository, ITaskCheckReposito
         if (result.Result is not Ok<TaskCheck> ok)
             return (dynamic)result.Result;
         var taskCheck = ok.Value!;
-        await taskCheckRepository.CheckTask(taskCheck, checkTaskDto.Points);
+        await taskCheckRepository.CheckTask(taskCheck.Id, checkTaskDto.Points);
         return TypedResults.Ok();
     }
 }

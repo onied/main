@@ -47,8 +47,9 @@ public class TaskCheckRepository(AppDbContext context) : ITaskCheckRepository
         return teachingCourse != null || moderatingCourse != null;
     }
 
-    public async Task CheckTask(TaskCheck taskCheck, int points)
+    public async Task CheckTask(Guid taskCheckId, int points)
     {
+        var taskCheck = (await context.TaskChecks.FindAsync(taskCheckId))!;
         taskCheck.Checked = true;
         taskCheck.Points = points;
         context.TaskChecks.Update(taskCheck);
