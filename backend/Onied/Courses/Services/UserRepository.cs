@@ -44,4 +44,12 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         dbContext.Update(user);
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<User?> GetUserWithModeratingAndTeachingCoursesAsync(Guid id)
+    {
+        return await dbContext.Users
+            .Include(u => u.TeachingCourses)
+            .Include(u => u.ModeratingCourses)
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
 }

@@ -81,61 +81,27 @@ function CheckTaskComponent() {
         navigate(-1); // go back to task check list
       })
       .catch((error) => {
-        //// ---Commented out for testing purposes---
-        // if (!error.response) return;
-        // if (error.response.status !== 400)
-        //   return setLoadStatus(error.response.status);
-        // if (error.response.data.errors.Points)
-        //// ---Commented out for testing purposes---
-        setErrors({ points: "Значение некорректно." });
+        if (!error.response) return;
+        if (error.response.status !== 400)
+          return setLoadStatus(error.response.status);
+        if (error.response.data.errors.Points)
+          setErrors({ points: "Значение некорректно." });
       });
   };
 
-  //// ---Commented out for testing purposes---
-  // useEffect(() => {
-  //   setLoadStatus(0);
-  //   setTaskInfo(undefined);
-  //   api
-  //     .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
-  //     .then((response) => {
-  //       setTaskInfo(response.data);
-  //       setLoadStatus(200);
-  //     })
-  //     .catch((error) => {
-  //       setLoadStatus(error.response?.status);
-  //     });
-  // }, [taskCheckId]);
-  //// ---Commented out for testing purposes---
-
-  //// ---Written for testing purposes---
   useEffect(() => {
-    setTimeout(() => {
-      setLoadStatus(200);
-      setTaskInfo({
-        task: {
-          block: {
-            module: {
-              course: {
-                title: "Название курса. Как я встретил вашу маму. Осуждаю.",
-              },
-              index: 1,
-              title: "Первый модуль",
-            },
-            index: 2,
-            title: "Второй блок",
-          },
-          index: 4,
-          title: "Напишите эссе на тему: “Как я провел лето”",
-          maxPoints: 5,
-        },
-        contents:
-          "Здравствуйте учитель я нихрена не сделал поставьте 5/5 пжпж asdfadsf",
-        checked: false,
-        points: 0,
+    setLoadStatus(0);
+    setTaskInfo(undefined);
+    api
+      .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
+      .then((response) => {
+        setTaskInfo(response.data);
+        setLoadStatus(200);
+      })
+      .catch((error) => {
+        setLoadStatus(error.response?.status);
       });
-    }, 500);
-  }, []);
-  //// ---Written for testing purposes---
+  }, [taskCheckId]);
 
   if (loadStatus === 0)
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;

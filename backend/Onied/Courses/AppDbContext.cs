@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<InputTask> InputTasks { get; set; } = null!;
     public DbSet<TaskVariant> TaskVariants { get; set; } = null!;
     public DbSet<TaskTextInputAnswer> TaskTextInputAnswers { get; set; } = null!;
+    public DbSet<TaskCheck> TaskChecks { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

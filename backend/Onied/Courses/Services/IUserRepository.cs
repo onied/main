@@ -11,4 +11,5 @@ public interface IUserRepository
     public Task<User?> GetUserWithModeratingCoursesAsync(Guid id);
     public Task AddUserAsync(User user);
     public Task UpdateUserAsync(User user);
+    public Task<User?> GetUserWithModeratingAndTeachingCoursesAsync(Guid id);
 }
