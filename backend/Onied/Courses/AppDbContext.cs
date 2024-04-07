@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<UserCourseInfo> UserCourseInfos { get; set; } = null!;
+    public DbSet<BlockCompletedInfo> BlockCompletedInfos { get; set; } = null!;
     public DbSet<UserTaskPoints> UserTaskPoints { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
@@ -51,6 +52,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                         .WithOne(tp => tp.UserCourseInfo)
                         .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
                 });
+
+        modelBuilder.Entity<BlockCompletedInfo>()
+            .HasKey(b => new { b.UserId, b.BlockId });
+        modelBuilder.Entity<BlockCompletedInfo>()
+            .HasOne<User>(b => b.User)
+            .WithMany()
+            .HasForeignKey(b => b.UserId);
+        modelBuilder.Entity<BlockCompletedInfo>()
+            .HasOne<Block>(b => b.Block)
+            .WithMany()
+            .HasForeignKey(b => b.BlockId);
 
         modelBuilder.Entity<User>()
             .HasMany<Course>(u => u.ModeratingCourses)

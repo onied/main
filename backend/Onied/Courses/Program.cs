@@ -16,7 +16,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
-        .EnableSensitiveDataLogging()
         .UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
@@ -46,6 +45,7 @@ builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
 builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
+builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
 
 var app = builder.Build();
 

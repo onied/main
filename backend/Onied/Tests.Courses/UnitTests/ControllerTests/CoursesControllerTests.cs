@@ -16,15 +16,15 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 
 public class CoursesControllerTests
 {
-    private readonly Mock<IBlockRepository> _blockRepository = new();
-    private readonly Mock<ICategoryRepository> _categoryRepository = new();
-    private readonly CoursesController _controller;
-    private readonly Mock<ICourseRepository> _courseRepository = new();
-    private readonly Fixture _fixture = new();
     private readonly Mock<ILogger<CoursesController>> _logger = new();
-
     private readonly IMapper _mapper =
         new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
+    private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<IBlockRepository> _blockRepository = new();
+    private readonly Mock<ICategoryRepository> _categoryRepository = new();
+    private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
+    private readonly CoursesController _controller;
+    private readonly Fixture _fixture = new();
 
     public CoursesControllerTests()
     {
@@ -33,7 +33,8 @@ public class CoursesControllerTests
             _mapper,
             _courseRepository.Object,
             _blockRepository.Object,
-            _categoryRepository.Object);
+            _categoryRepository.Object,
+            _blockCompletedInfoRepository.Object);
     }
 
     [Fact]
@@ -135,12 +136,13 @@ public class CoursesControllerTests
     {
         // Arrange
         var courseId = -1;
+        var userId = Guid.NewGuid();
 
         _courseRepository.Setup(r => r.GetCourseWithBlocksAsync(courseId))
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.GetCourseHierarchy(courseId);
+        var result = await _controller.GetCourseHierarchy(courseId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -154,6 +156,7 @@ public class CoursesControllerTests
             .With(c => c.IsProgramVisible, true)
             .Create();
         var courseId = course.Id;
+        var userId = Guid.NewGuid();
 
         var sequenceModule = 1;
         var modules = _fixture.Build<Module>()
@@ -168,7 +171,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.GetCourseHierarchy(courseId);
+        var result = await _controller.GetCourseHierarchy(courseId, userId);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<CourseDto>>(result);
@@ -184,12 +187,13 @@ public class CoursesControllerTests
         // Arrange
         var courseId = -1;
         var blockId = -1;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -218,12 +222,13 @@ public class CoursesControllerTests
 
         var courseId = -1;
         var blockId = block.Id;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -251,12 +256,13 @@ public class CoursesControllerTests
 
         var courseId = course.Id;
         var blockId = block.Id;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<SummaryBlockDto>>(result);
@@ -271,12 +277,13 @@ public class CoursesControllerTests
     {
         var courseId = -1;
         var blockId = -1;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId);
+        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -304,12 +311,13 @@ public class CoursesControllerTests
 
         var courseId = -1;
         var blockId = block.Id;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
             .Returns(Task.FromResult<VideoBlock?>(block));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId);
+        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -338,12 +346,13 @@ public class CoursesControllerTests
 
         var courseId = course.Id;
         var blockId = block.Id;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
             .Returns(Task.FromResult<VideoBlock?>(block));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId);
+        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<VideoBlockDto>>(result);
@@ -358,12 +367,13 @@ public class CoursesControllerTests
         // Arrange
         var courseId = -1;
         var blockId = -1;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId);
+        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -392,12 +402,13 @@ public class CoursesControllerTests
 
         var courseId = -1;
         var blockId = block.Id;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId);
+        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -426,12 +437,13 @@ public class CoursesControllerTests
 
         var courseId = course.Id;
         var blockId = block.Id;
+        var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId);
+        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<TasksBlockDto>>(result);
