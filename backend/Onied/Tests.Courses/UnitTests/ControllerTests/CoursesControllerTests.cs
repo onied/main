@@ -166,6 +166,9 @@ public class CoursesControllerTests
 
         _courseRepository.Setup(r => r.GetCourseWithBlocksAsync(courseId))
             .Returns(Task.FromResult<Course?>(course));
+        _blockCompletedInfoRepository
+            .Setup(r => r.GetAllCompletedCourseBlocksByUser(userId, courseId))
+            .Returns(Task.FromResult<List<BlockCompletedInfo>>([]));
 
         // Act
         var result = await _controller.GetCourseHierarchy(courseId, userId);
