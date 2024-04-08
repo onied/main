@@ -4,8 +4,11 @@ import classes from "./tasks.module.css";
 import BeatLoader from "react-spinners/BeatLoader";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
+import { useAppSelector } from "../../../hooks";
 
 function Tasks({ courseId, blockId }) {
+  const hierarchyState = useAppSelector((state) => state.hierarchy);
+
   const [tasks, setTasks] = useState();
   const [found, setFound] = useState();
   const [taskInputs, setTaskInputs] = useState();
@@ -91,9 +94,22 @@ function Tasks({ courseId, blockId }) {
               taskInputs
             )
             .then((response) => {
+              const newTaskPoints = response.data;
               console.log(response.data);
-              setTaskPointsSequence(response.data);
+              setTaskPointsSequence(newTaskPoints);
               setReloadNeeded(reloadNeeded + 1);
+
+              if (
+                tasks.tasks.every(
+                  (t, index) => t.maxPoints == newTaskPoints[index]?.points
+                )
+              ) {
+                const blocks = hierarchyState.hierarchy.modules
+                  .flatMap((module) => module.blocks)
+                  .reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {});
+                blocks[blockId].completed = true;
+                console.log(hierarchyState.hierarchy);
+              }
             })
             .catch((error) => console.log(error));
         }}

@@ -3,6 +3,7 @@ import classes from "./sidebar.module.css";
 import BarLoader from "react-spinners/BarLoader";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
+import { BlockType } from "../../types/block";
 
 function CoursesSidebar({ currentBlock }) {
   const hierarchyState = useAppSelector((state) => state.hierarchy);
@@ -30,7 +31,8 @@ function CoursesSidebar({ currentBlock }) {
         key={moduleIndex + "." + index + "block"}
         to={`/course/${hierarchy.id}/learn/${hierarchy.modules[moduleIndex].blocks[index].id}/`}
         onClick={() => {
-          hierarchy.modules[moduleIndex].blocks[index].completed = true;
+          const block = hierarchy.modules[moduleIndex].blocks[index];
+          if (block.blockType != BlockType.TasksBlock) block.completed = true;
         }}
       >
         {moduleIndex + 1}.{index + 1}. {block.title}
