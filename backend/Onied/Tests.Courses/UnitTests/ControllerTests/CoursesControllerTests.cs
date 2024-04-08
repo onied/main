@@ -5,7 +5,6 @@ using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -22,6 +21,7 @@ public class CoursesControllerTests
     private readonly Mock<ICheckTasksService> _checkTasksService = new();
     private readonly CoursesController _controller;
     private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Fixture _fixture = new();
     private readonly Mock<ILogger<CoursesController>> _logger = new();
 
@@ -37,7 +37,8 @@ public class CoursesControllerTests
             _blockRepository.Object,
             _checkTasksService.Object,
             _categoryRepository.Object,
-            _moduleRepository.Object);
+            _moduleRepository.Object,
+            _userRepository.Object);
     }
 
     [Fact]

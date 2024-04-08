@@ -46,10 +46,11 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
 
-    public async Task AddCourseAsync(Course course)
+    public async Task<Course> AddCourseAsync(Course course)
     {
-        await dbContext.Courses.AddAsync(course);
+        var newCourse = await dbContext.Courses.AddAsync(course);
         await dbContext.SaveChangesAsync();
+        return newCourse.Entity;
     }
 
     public async Task UpdateCourseAsync(Course course)

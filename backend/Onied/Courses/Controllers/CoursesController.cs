@@ -18,6 +18,7 @@ public class CoursesController : ControllerBase
     private readonly IModuleRepository _moduleRepository;
     private readonly ILogger<CoursesController> _logger;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
     public CoursesController(
         ILogger<CoursesController> logger,
@@ -26,7 +27,7 @@ public class CoursesController : ControllerBase
         IBlockRepository blockRepository,
         ICheckTasksService checkTasksService,
         ICategoryRepository categoryRepository,
-        IModuleRepository moduleRepository)
+        IModuleRepository moduleRepository, IUserRepository userRepository)
     {
         _logger = logger;
         _mapper = mapper;
@@ -35,6 +36,7 @@ public class CoursesController : ControllerBase
         _checkTasksService = checkTasksService;
         _categoryRepository = categoryRepository;
         _moduleRepository = moduleRepository;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
@@ -152,5 +154,29 @@ public class CoursesController : ControllerBase
         }
 
         return _mapper.Map<List<UserTaskPointsDto>>(points);
+    }
+
+    [HttpPost]
+    [Route("/api/v1/[controller]/create")]
+    public async Task<Results<Ok<CreateCourseResponseDto>, UnauthorizedHttpResult>> CreateCourse(
+        [FromQuery] string? userId)
+    {
+        if (userId == null || !Guid.TryParse(userId, out var authorId))
+            return TypedResults.Unauthorized();
+        var user = await _userRepository.GetUserAsync(authorId);
+        if (user == null)
+            return TypedResults.Unauthorized();
+        var newCourse = await _courseRepository.AddCourseAsync(new Course
+        {
+            AuthorId = user.Id,
+            Title = "Без названия",
+            Description = "Без описания",
+            PictureHref = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg",
+            CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id
+        });
+        return TypedResults.Ok(new CreateCourseResponseDto
+        {
+            Id = newCourse.Id
+        });
     }
 }
