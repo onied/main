@@ -25,9 +25,9 @@ public class CheckTasksController(
     {
         var response = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true);
-        if (response.Result.GetType() != typeof(Ok<TasksBlock>))
+        if (response.Result is not Ok<TasksBlock> ok)
             return (dynamic)response.Result;
-        var block = ((Ok<TasksBlock>)response.Result).Value!;
+        var block = ok.Value!;
 
         var storedPoints = await userTaskPointsRepository
             .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId);
