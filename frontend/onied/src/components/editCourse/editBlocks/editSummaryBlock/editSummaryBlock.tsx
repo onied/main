@@ -1,5 +1,5 @@
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import classes from "./editSummaryBlock.module.css";
 import api from "../../../../config/axios";
@@ -14,6 +14,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import InputForm from "../../../general/inputform/inputform";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
+import { BeatLoader } from "react-spinners";
 
 type SummaryBlock = {
   id: number;
@@ -25,21 +26,33 @@ type SummaryBlock = {
   fileHref: string | null;
 };
 
-function EditSummaryBlockComponent() {
+function EditSummaryBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
-  const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
-  const [currentBlock, setCurrentBlock] = useState<SummaryBlock | undefined>();
+  const [currentBlock, setCurrentBlock] = useState<
+    SummaryBlock | null | undefined
+  >();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
   const [newFileName, setNewFileName] = useState<string>("");
   const [newFileHref, setNewFileHref] = useState<string>("");
   const [newFileHrefError, setNewFileHrefError] = useState<string | null>(null);
+
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const [isForbid, setIsForbid] = useState(false);
+  const forbid = (
+    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
+  );
+
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);
 
   const saveChanges = () => {
-    api.put("", currentBlock).then().catch();
+    sendingBlock(currentBlock!);
   };
 
   const saveNewFile = (e: any) => {
@@ -49,15 +62,29 @@ function EditSummaryBlockComponent() {
       fileName: newFileName,
       fileHref: newFileHref,
     });
-    api
-      .put("", currentBlock)
-      .then(() => setFileLoadModalOpen(false))
-      .catch();
+    sendingBlock({
+      ...currentBlock!,
+      fileName: newFileName,
+      fileHref: newFileHref,
+    }).then(() => setFileLoadModalOpen(false));
   };
 
   const deleteCurrentFile = () => {
     setCurrentBlock({ ...currentBlock!, fileName: null, fileHref: null });
-    api.put("", currentBlock).then().catch();
+    sendingBlock({ ...currentBlock!, fileName: null, fileHref: null });
+  };
+
+  const sendingBlock = (block: SummaryBlock) => {
+    return api
+      .put("courses/" + courseId + "/edit/summary/" + blockId, block)
+      .catch((error) => {
+        if ("response" in error && error.response.status == 404) {
+          setCurrentBlock(null);
+        } else if ("response" in error && error.response.status == 403) {
+          setCurrentBlock(null);
+          setIsForbid(true);
+        }
+      });
   };
 
   const onMDChange = (
@@ -73,21 +100,18 @@ function EditSummaryBlockComponent() {
 
   useEffect(() => {
     if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
-      setCourseAndBlockFound(false);
+      setCurrentBlock(null);
       return;
     }
     api
       .get("courses/" + courseId + "/summary/" + blockId)
       .then((response) => {
         console.log(response.data);
-        setCourseAndBlockFound(true);
         setCurrentBlock(response.data);
       })
       .catch((error) => {
-        console.log(error);
-
         if ("response" in error && error.response.status == 404) {
-          setCourseAndBlockFound(false);
+          setCurrentBlock(null);
         }
       });
   }, []);
@@ -98,14 +122,24 @@ function EditSummaryBlockComponent() {
     return notFound;
   }
 
-  if (!courseAndBlockFound) return notFound;
+  if (isForbid) return forbid;
+
+  if (currentBlock === undefined)
+    return (
+      <BeatLoader
+        color="var(--accent-color)"
+        style={{ margin: "3rem" }}
+      ></BeatLoader>
+    );
+
+  if (currentBlock === null) return notFound;
 
   return (
-    <>
+    <div className={classes.summaryEditWrapper}>
       <div>
         <div className={classes.editHeader}>
           <ButtonGoBack
-            onClick={() => navigator("../../hierarchy", { relative: "path" })}
+            onClick={() => navigator("../hierarchy", { relative: "path" })}
           >
             ⟵ к редактированию иерархии
           </ButtonGoBack>
@@ -193,7 +227,7 @@ function EditSummaryBlockComponent() {
           </button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
 

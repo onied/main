@@ -1,80 +1,83 @@
-.editHeader{
-    margin: 20px 0
+.editHeader {
+  margin: 20px 0;
 }
 
 .goBack {
-    color: #676767;
-    font-size: 16pt;
-    font-weight: 200;
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: underline;
+  color: #676767;
+  font-size: 16pt;
+  font-weight: 200;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: underline;
 }
 
 .goBack:focus {
-    outline: none;
+  outline: none;
 }
 
 .title {
-    color: #000000;
-    font-size: 32pt;
-    font-weight: 800;
+  color: #000000;
+  font-size: 32pt;
+  font-weight: 800;
 }
 
-.fileAddingContainer{
-    margin: 10px 0;
+.fileAddingContainer {
+  margin: 10px 0;
 }
 
-.fileAddingFirstRow{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
+.fileAddingFirstRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
 }
 
-.fileAddingFirstRow span{
-    font-size: 20px;
-    font-weight: bold;
+.fileAddingFirstRow span {
+  font-size: 20px;
+  font-weight: bold;
 }
 
-.fileAddingFileIcon{
-    display: flex;
-    align-items: center;
+.fileAddingFileIcon {
+  display: flex;
+  align-items: center;
 }
 
-.fileAddingFileIcon img{
-    padding: 10px;
+.fileAddingFileIcon img {
+  padding: 10px;
 }
-
 
 .saveChanges {
-    display: flex;
-    align-content: flex-end;
-    justify-content: flex-end;
+  display: flex;
+  align-content: flex-end;
+  justify-content: flex-end;
 }
 
 .line {
-    width: 100%;
-    margin-top: 30px;
-    border-top: 2px solid #dbdbdb;
+  width: 100%;
+  margin-top: 30px;
+  border-top: 2px solid #dbdbdb;
 }
 
 .noFiles {
-    font-size: 20px;
-    font-weight: bold;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-.submitNewFileButton{
-    padding: 0.5rem 2rem;
-    border-radius: 0.75rem;
-    background-color: #9715d3;
-    box-shadow: 0 4px 7px 0 #9715d380;
-    font-weight: 400;
-    font-size: 14pt;
-    color: white;
-    border: 0;
-    cursor: pointer;
-    margin: 1rem 0;
+.submitNewFileButton {
+  padding: 0.5rem 2rem;
+  border-radius: 0.75rem;
+  background-color: #9715d3;
+  box-shadow: 0 4px 7px 0 #9715d380;
+  font-weight: 400;
+  font-size: 14pt;
+  color: white;
+  border: 0;
+  cursor: pointer;
+  margin: 1rem 0;
+}
+
+.summaryEditWrapper {
+  margin: 50px 15vw;
 }

@@ -4,13 +4,14 @@ import EmbedVideo from "../../../blocks/video/embedVideo";
 import InputForm from "../../../general/inputform/inputform";
 import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../../general/button/button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../../../config/axios";
 import YoutubeVideoProvider from "../../../blocks/video/youtubeVideoProvider";
 import VkVideoProvider from "../../../blocks/video/vkVideoProvider";
 import RutubeVideoProvider from "../../../blocks/video/rutubeVideoProvider";
+import { BeatLoader } from "react-spinners";
 
-type Block = {
+type VideoBlock = {
   id: string;
   title: string;
   href: string;
@@ -24,23 +25,36 @@ const embedElements = [
   new RutubeVideoProvider(),
 ];
 
-function EditVideoBlockComponent() {
+function EditVideoBlockComponent({
+  courseId,
+  blockId,
+}: {
+  courseId: number;
+  blockId: number;
+}) {
   const navigator = useNavigate();
-  const { courseId, blockId } = useParams();
 
-  const [courseAndBlockFound, setCourseAndBlockFound] = useState(false);
-  const [currentBlock, setCurrentBlock] = useState<Block | undefined>();
-  const [errorLink, setErrorLink] = useState<string>("");
+  const [currentBlock, setCurrentBlock] = useState<
+    VideoBlock | null | undefined
+  >();
+  const [errorLink, setErrorLink] = useState<string>(
+    "Неверный формат ссылки на видео"
+  );
 
   const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const [isForbid, setIsForbid] = useState(false);
+  const forbid = (
+    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
+  );
 
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);
 
   const validationLink = (link: string) => {
     const embedRegex = embedElements.filter((item) => item.regex.test(link));
-
-    if (embedRegex.length == 0) setErrorLink("Неверный формат ссылки на видео");
+    console.log(link);
+    if (embedRegex.length == 0 || link === null)
+      setErrorLink("Неверный формат ссылки на видео");
     else setErrorLink("");
   };
 
@@ -50,26 +64,32 @@ function EditVideoBlockComponent() {
   };
 
   const saveChanges = () => {
-    api.post("", currentBlock).then().catch();
+    api
+      .put("courses/" + courseId + "/edit/video/" + blockId, currentBlock)
+      .catch((error) => {
+        if ("response" in error && error.response.status == 404) {
+          setCurrentBlock(null);
+        } else if ("response" in error && error.response.status == 403) {
+          setCurrentBlock(null);
+          setIsForbid(true);
+        }
+      });
   };
 
   useEffect(() => {
     if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
-      setCourseAndBlockFound(false);
+      setCurrentBlock(null);
       return;
     }
     api
       .get("courses/" + courseId + "/video/" + blockId)
       .then((response) => {
         console.log(response.data);
-        setCourseAndBlockFound(true);
         setCurrentBlock(response.data);
       })
       .catch((error) => {
-        console.log(error);
-
         if ("response" in error && error.response.status == 404) {
-          setCourseAndBlockFound(false);
+          setCurrentBlock(null);
         }
       });
   }, []);
@@ -86,13 +106,23 @@ function EditVideoBlockComponent() {
     return notFound;
   }
 
-  if (!courseAndBlockFound) return notFound;
+  if (isForbid) return forbid;
+
+  if (currentBlock === undefined)
+    return (
+      <BeatLoader
+        color="var(--accent-color)"
+        style={{ margin: "3rem" }}
+      ></BeatLoader>
+    );
+
+  if (currentBlock === null) return notFound;
 
   return (
     <>
       <div className={classes.container}>
         <ButtonGoBack
-          onClick={() => navigator("../../hierarchy", { relative: "path" })}
+          onClick={() => navigator("../hierarchy", { relative: "path" })}
         >
           ⟵ к редактированию иерархии
         </ButtonGoBack>
