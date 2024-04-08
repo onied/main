@@ -17,6 +17,8 @@ import PreviewModal from "./previewModal";
 import BeatLoader from "react-spinners/BeatLoader";
 import { AxiosResponse } from "axios";
 import { mapPreviewToEditPreview, PreviewDto } from "./mapPreviewDtos";
+import NotFound from "../../general/responses/notFound/notFound";
+import NoAccess from "../../general/responses/noAccess/noAccess";
 
 function EditPreviewComponent() {
   const { courseId } = useParams();
@@ -40,10 +42,8 @@ function EditPreviewComponent() {
   const [isNewPreviewInfoSaved, setIsNewPreviewInfoSaved] =
     useState<boolean>(false);
   const [canAccess, setCanAccess] = useState<boolean | undefined>();
-  const noAccess = (
-    <h1 style={{ margin: "3rem" }}>У вас нет доступа к этой странице</h1>
-  );
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const noAccess = <NoAccess>У вас нет доступа к этой странице</NoAccess>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
