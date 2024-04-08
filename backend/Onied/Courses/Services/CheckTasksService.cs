@@ -12,7 +12,7 @@ public class CheckTasksService : ICheckTasksService
         {
             return new UserTaskPoints()
             {
-                UserId = input.UserId,
+                UserId = Guid.NewGuid(),
                 TaskId = input.TaskId,
                 Points = 0
             };
@@ -30,12 +30,12 @@ public class CheckTasksService : ICheckTasksService
     {
         return new UserTaskPoints()
         {
-            UserId = input.UserId,
+            UserId = Guid.NewGuid(),
             TaskId = input.TaskId,
             Points = task.Variants
                 .Where(variant => variant.IsCorrect)
-                .Select(variant => variant.Id)
-                .SequenceEqual(input.VariantsIds!) ? task.MaxPoints : 0
+                .Select(variant => variant.Id).OrderBy(vid => vid)
+                .SequenceEqual(input.VariantsIds!.OrderBy(vid => vid)) ? task.MaxPoints : 0
         };
     }
 
@@ -43,7 +43,7 @@ public class CheckTasksService : ICheckTasksService
     {
         return new UserTaskPoints()
         {
-            UserId = input.UserId,
+            UserId = Guid.NewGuid(),
             TaskId = input.TaskId,
             Points = task.Answers.Any(
                     answer => task.IsCaseSensitive

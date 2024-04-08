@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240406094633_AddedUserCourseInfo")]
+    partial class AddedUserCourseInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,10 +37,6 @@ namespace Courses.Migrations
                     b.Property<int>("BlockType")
                         .HasColumnType("integer")
                         .HasColumnName("block_type");
-
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean")
@@ -63,25 +62,6 @@ namespace Courses.Migrations
                     b.HasDiscriminator<int>("BlockType").HasValue(0);
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Courses.Models.BlockCompletedInfo", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("BlockId")
-                        .HasColumnType("integer")
-                        .HasColumnName("block_id");
-
-                    b.HasKey("UserId", "BlockId")
-                        .HasName("pk_block_completed_infos");
-
-                    b.HasIndex("BlockId")
-                        .HasDatabaseName("ix_block_completed_infos_block_id");
-
-                    b.ToTable("block_completed_infos", (string)null);
                 });
 
             modelBuilder.Entity("Courses.Models.Category", b =>
@@ -213,10 +193,6 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("course_id");
 
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -236,14 +212,12 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             CourseId = 1,
-                            Index = 0,
                             Title = "Такой-то"
                         },
                         new
                         {
                             Id = 2,
                             CourseId = 1,
-                            Index = 1,
                             Title = "Сякой-то"
                         });
                 });
@@ -318,6 +292,10 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("answer");
 
+                    b.Property<bool>("IsCaseSensitive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_case_sensitive");
+
                     b.Property<int>("TaskId")
                         .HasColumnType("integer")
                         .HasColumnName("task_id");
@@ -335,6 +313,7 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             Answer = "Жак Фреско",
+                            IsCaseSensitive = true,
                             TaskId = 3
                         });
                 });
@@ -571,7 +550,7 @@ namespace Courses.Migrations
                         {
                             Id = 1,
                             BlockType = 0,
-                            Index = 0,
+                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Титульник",
                             FileHref = "/assets/react.svg",
@@ -593,7 +572,7 @@ namespace Courses.Migrations
                         {
                             Id = 5,
                             BlockType = 0,
-                            Index = 4,
+                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Заголовок блока с заданиями"
                         });
@@ -618,7 +597,7 @@ namespace Courses.Migrations
                         {
                             Id = 2,
                             BlockType = 0,
-                            Index = 1,
+                            IsCompleted = true,
                             ModuleId = 1,
                             Title = "MAKIMA BEAN",
                             Url = "https://www.youtube.com/watch?v=YfBlwC44gDQ"
@@ -627,7 +606,7 @@ namespace Courses.Migrations
                         {
                             Id = 3,
                             BlockType = 0,
-                            Index = 2,
+                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Техас покидает родную гавань",
                             Url = "https://vk.com/video-50883936_456243146"
@@ -636,7 +615,7 @@ namespace Courses.Migrations
                         {
                             Id = 4,
                             BlockType = 0,
-                            Index = 3,
+                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Александр Асафов о предстоящих президентских выборах",
                             Url = "https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"
@@ -646,18 +625,6 @@ namespace Courses.Migrations
             modelBuilder.Entity("Courses.Models.InputTask", b =>
                 {
                     b.HasBaseType("Courses.Models.Task");
-
-                    b.Property<int>("Accuracy")
-                        .HasColumnType("integer")
-                        .HasColumnName("accuracy");
-
-                    b.Property<bool>("IsCaseSensitive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_case_sensitive");
-
-                    b.Property<bool>("IsNumber")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_number");
 
                     b.ToTable("tasks", (string)null);
 
@@ -670,10 +637,7 @@ namespace Courses.Migrations
                             MaxPoints = 5,
                             TaskType = 2,
                             TasksBlockId = 5,
-                            Title = "3. Кто?",
-                            Accuracy = 0,
-                            IsCaseSensitive = true,
-                            IsNumber = false
+                            Title = "3. Кто?"
                         });
                 });
 
@@ -714,27 +678,6 @@ namespace Courses.Migrations
                         .HasConstraintName("fk_blocks_modules_module_id");
 
                     b.Navigation("Module");
-                });
-
-            modelBuilder.Entity("Courses.Models.BlockCompletedInfo", b =>
-                {
-                    b.HasOne("Courses.Models.Block", "Block")
-                        .WithMany()
-                        .HasForeignKey("BlockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_block_completed_infos_blocks_block_id");
-
-                    b.HasOne("Courses.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_block_completed_infos_users_user_id");
-
-                    b.Navigation("Block");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Courses.Models.Course", b =>

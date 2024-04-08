@@ -1,6 +1,7 @@
 using Courses;
 using Courses.Profiles;
 using Courses.Services;
+using Courses.Services.Abstractions;
 using Courses.Services.Consumers;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.Negotiate;
@@ -41,11 +42,15 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
+builder.Services.AddScoped<IUserTaskPointsRepository, UserTaskPointsRepository>();
 builder.Services.AddScoped<IUpdateTasksBlockService, UpdateTasksBlockService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
+builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
+builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<ITaskCheckRepository, TaskCheckRepository>();
 builder.Services.AddScoped<ITaskCheckService, TaskCheckService>();
