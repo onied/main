@@ -1,8 +1,8 @@
 import classes from "./taskChecking.module.css";
 import Arrow from "../../../assets/arrow.svg";
-import { TaskToCheck } from "./taskChecking";
+import { TaskToCheckInfo } from "./tasksToCheck";
 
-function TaskToCheckDescription(props: TaskToCheck) {
+function TaskToCheckDescription(props: TaskToCheckInfo) {
   return (
     <div className={classes.taskWrapper}>
       <div className={classes.taskName}>{props.taskTitle}</div>

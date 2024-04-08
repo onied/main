@@ -5,43 +5,46 @@ import Arrow from "../../../assets/arrow.svg";
 import "./muiAccordionOverride.css";
 import classes from "./taskChecking.module.css";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material/styles";
 import TaskToCheckDescription from "./taskToCheckDescription";
 import BeatLoader from "react-spinners/BeatLoader";
+import NoAccess from "../../general/responses/noAccess/noAccess";
 
-function TaskChecking() {
+function TasksToCheck() {
+  const [loadStatus, setLoadStatus] = useState(0);
   const [coursesWithTasksList, setTaskList] = useState<
     Array<CourseWithTasks> | undefined
   >();
 
   useEffect(() => {
     setTimeout(() => {
+      setLoadStatus(200);
       setTaskList([
         {
           courseId: 1,
           courseName: "Название курса.",
           tasksToCheck: [
             {
-              taskId: 1,
+              taskId: "1",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
             },
             {
-              taskId: 2,
+              taskId: "2",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
             },
             {
-              taskId: 3,
+              taskId: "3",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
             },
             {
-              taskId: 4,
+              taskId: "4",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
@@ -53,13 +56,13 @@ function TaskChecking() {
           courseName: "Название курса. Второй",
           tasksToCheck: [
             {
-              taskId: 5,
+              taskId: "5",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
             },
             {
-              taskId: 6,
+              taskId: "6",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
@@ -71,13 +74,13 @@ function TaskChecking() {
           courseName: "Название курса. Третий",
           tasksToCheck: [
             {
-              taskId: 7,
+              taskId: "7",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
             },
             {
-              taskId: 8,
+              taskId: "8",
               moduleName: "Первый модуль",
               blockName: "Первый блок",
               taskTitle: "Напишите эссе",
@@ -88,19 +91,37 @@ function TaskChecking() {
     }, 750);
   }, []);
 
-  if (coursesWithTasksList == undefined)
+  switch (loadStatus) {
+    case 0:
+      return (
+        <BeatLoader
+          cssOverride={{ margin: "30px 30px" }}
+          color="var(--accent-color)"
+        ></BeatLoader>
+      );
+    case 401:
+      return <Navigate to="/login"></Navigate>;
+    case 403:
+      return <NoAccess>У вас нет прав для доступа к этой странице</NoAccess>;
+  }
+
+  if (loadStatus !== 200 || coursesWithTasksList === undefined) return <></>;
+
+  if (coursesWithTasksList.length == 0)
     return (
-      <BeatLoader
-        cssOverride={{ margin: "30px 30px" }}
-        color="var(--accent-color)"
-      ></BeatLoader>
+      <h1 style={{ margin: "3rem" }}>
+        Для вас нет ответов на задания, требующих проверки
+      </h1>
     );
 
   return (
     <StyledEngineProvider injectFirst>
       <div className={classes.accordionsWrapper}>
         {coursesWithTasksList.map((courseWithTask) => (
-          <Accordion className={classes.accordion}>
+          <Accordion
+            key={courseWithTask.courseId}
+            className={classes.accordion}
+          >
             <AccordionSummary
               className={classes.accordionSummary}
               expandIcon={<img src={Arrow} />}
@@ -111,7 +132,10 @@ function TaskChecking() {
               </div>
             </AccordionSummary>
             {courseWithTask.tasksToCheck.map((task) => (
-              <AccordionDetails className={classes.accordionDetails}>
+              <AccordionDetails
+                key={task.taskId}
+                className={classes.accordionDetails}
+              >
                 <TaskToCheckDescription {...task}></TaskToCheckDescription>
                 <Link
                   to={"/check/" + task.taskId}
@@ -131,14 +155,14 @@ function TaskChecking() {
 type CourseWithTasks = {
   courseId: number;
   courseName: string;
-  tasksToCheck: Array<TaskToCheck>;
+  tasksToCheck: Array<TaskToCheckInfo>;
 };
 
-export type TaskToCheck = {
-  taskId: number;
+export type TaskToCheckInfo = {
+  taskId: string;
   moduleName: string;
   blockName: string;
   taskTitle: string;
 };
 
-export default TaskChecking;
+export default TasksToCheck;
