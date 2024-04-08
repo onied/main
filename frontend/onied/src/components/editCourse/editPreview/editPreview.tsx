@@ -58,7 +58,10 @@ function EditPreviewComponent() {
     });
     setIsNewPreviewInfoSaved(false);
     api
-      .put("courses/" + courseId, mapPreviewToEditPreview(previewInfo!))
+      .put(
+        "courses/" + courseId + "/edit",
+        mapPreviewToEditPreview(previewInfo!)
+      )
       .then((response) => {
         setIsNewPreviewInfoSaved(true);
         setPreview(handleNewPreview(response));
@@ -102,7 +105,10 @@ function EditPreviewComponent() {
 
   const requestForAccess = (validPreview: PreviewDto) => {
     api
-      .put("courses/" + courseId, mapPreviewToEditPreview(validPreview))
+      .put(
+        "courses/" + courseId + "/edit",
+        mapPreviewToEditPreview(validPreview)
+      )
       .then((_) => setCanAccess(true))
       .catch((error) => {
         if (error.response.status == 401) setCanAccess(false);
