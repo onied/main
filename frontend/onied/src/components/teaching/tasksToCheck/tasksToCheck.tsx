@@ -10,6 +10,7 @@ import { StyledEngineProvider } from "@mui/material/styles";
 import TaskToCheckDescription from "./taskToCheckDescription";
 import BeatLoader from "react-spinners/BeatLoader";
 import NoAccess from "../../general/responses/noAccess/noAccess";
+import NoContent from "../../general/responses/noContent/noContent";
 
 function TasksToCheck() {
   const [loadStatus, setLoadStatus] = useState(0);
@@ -20,74 +21,75 @@ function TasksToCheck() {
   useEffect(() => {
     setTimeout(() => {
       setLoadStatus(200);
-      setTaskList([
-        {
-          courseId: 1,
-          courseName: "Название курса.",
-          tasksToCheck: [
-            {
-              taskId: "1",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-            {
-              taskId: "2",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-            {
-              taskId: "3",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-            {
-              taskId: "4",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-          ],
-        },
-        {
-          courseId: 2,
-          courseName: "Название курса. Второй",
-          tasksToCheck: [
-            {
-              taskId: "5",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-            {
-              taskId: "6",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-          ],
-        },
-        {
-          courseId: 3,
-          courseName: "Название курса. Третий",
-          tasksToCheck: [
-            {
-              taskId: "7",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-            {
-              taskId: "8",
-              moduleName: "Первый модуль",
-              blockName: "Первый блок",
-              taskTitle: "Напишите эссе",
-            },
-          ],
-        },
-      ]);
+      setTaskList([]);
+      // setTaskList([
+      //   {
+      //     courseId: 1,
+      //     courseName: "Название курса.",
+      //     tasksToCheck: [
+      //       {
+      //         taskId: "1",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //       {
+      //         taskId: "2",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //       {
+      //         taskId: "3",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //       {
+      //         taskId: "4",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     courseId: 2,
+      //     courseName: "Название курса. Второй",
+      //     tasksToCheck: [
+      //       {
+      //         taskId: "5",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //       {
+      //         taskId: "6",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     courseId: 3,
+      //     courseName: "Название курса. Третий",
+      //     tasksToCheck: [
+      //       {
+      //         taskId: "7",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //       {
+      //         taskId: "8",
+      //         moduleName: "Первый модуль",
+      //         blockName: "Первый блок",
+      //         taskTitle: "Напишите эссе",
+      //       },
+      //     ],
+      //   },
+      // ]);
     }, 750);
   }, []);
 
@@ -109,9 +111,7 @@ function TasksToCheck() {
 
   if (coursesWithTasksList.length == 0)
     return (
-      <h1 style={{ margin: "3rem" }}>
-        Для вас нет ответов на задания, требующих проверки
-      </h1>
+      <NoContent>Для вас нет ответов на задания, требующих проверки</NoContent>
     );
 
   return (
