@@ -4,10 +4,15 @@ import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BlockDispatcher from "../../components/blocks/blockDispatcher";
 import api from "../../config/axios";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../hooks";
+import { CourseHierarchyActionTypes } from "../../redux/reducers/courseHierarchyReducer";
 
 function Course() {
   const { courseId } = useParams();
-  const [hierarchy, setHierarchy] = useState();
+
+  const hierarchyState = useAppSelector((state) => state.hierarchy);
+  const dispatch = useDispatch();
   const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
   const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
@@ -15,7 +20,7 @@ function Course() {
 
   useEffect(() => {
     if (isNaN(id)) {
-      setHierarchy({});
+      dispatch({ type: CourseHierarchyActionTypes.FETCH_HIERARCHY_ERROR });
       setCourseFound(false);
       return;
     }
@@ -30,14 +35,17 @@ function Course() {
               module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
           });
         }
-        setHierarchy(response.data);
+        dispatch({
+          type: CourseHierarchyActionTypes.FETCH_HIERARCHY_SUCCESS,
+          payload: response.data,
+        });
         setCourseFound(true);
       })
       .catch((error) => {
         console.log(error);
 
         if ("response" in error && error.response.status == 404) {
-          setHierarchy({});
+          dispatch({ type: CourseHierarchyActionTypes.FETCH_HIERARCHY_ERROR });
           setCourseFound(false);
         }
       });
@@ -49,21 +57,18 @@ function Course() {
     return notFound;
   }
 
-  if (hierarchy != null && !courseFound) return notFound;
+  if (hierarchyState.hierarchy != null && !courseFound) return notFound;
 
   return (
     <>
-      <CoursesSidebar
-        hierarchy={hierarchy}
-        currentBlock={currentBlock}
-      ></CoursesSidebar>
+      <CoursesSidebar currentBlock={currentBlock}></CoursesSidebar>
       <BlockViewContainer>
         <Routes>
           <Route
             path=":blockId/"
             element={
               <BlockDispatcher
-                hierarchy={hierarchy}
+                hierarchy={hierarchyState.hierarchy}
                 setCurrentBlock={setCurrentBlock}
               />
             }
