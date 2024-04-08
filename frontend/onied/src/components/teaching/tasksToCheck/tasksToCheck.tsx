@@ -138,7 +138,7 @@ function TasksToCheck() {
               >
                 <TaskToCheckDescription {...task}></TaskToCheckDescription>
                 <Link
-                  to={"/check/" + task.taskId}
+                  to={task.taskId}
                   className={classes.checkButton}
                 >
                   проверить
