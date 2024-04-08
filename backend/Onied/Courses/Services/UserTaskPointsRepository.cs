@@ -52,4 +52,17 @@ public class UserTaskPointsRepository(AppDbContext dbContext)
         dbContext.UserTaskPoints.UpdateRange(toUpdate);
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task StoreConcreteUserTaskPoints(UserTaskPoints userTaskPoints)
+    {
+        if (await GetConcreteUserTaskPoints(userTaskPoints.UserId, userTaskPoints.TaskId) is null)
+        {
+            await dbContext.UserTaskPoints.AddAsync(userTaskPoints);
+        }
+        else
+        {
+            dbContext.UserTaskPoints.Update(userTaskPoints);
+        }
+        await dbContext.SaveChangesAsync();
+    }
 }
