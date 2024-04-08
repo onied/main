@@ -4,6 +4,7 @@ import { EditBlockDispathcer } from "../../components/editCourse/editBlocks";
 import api from "../../config/axios";
 import { BeatLoader } from "react-spinners";
 import { BlockInfo } from "../../types/course";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 function EditBlock() {
   const { courseId, blockId } = useParams();
@@ -12,7 +13,7 @@ function EditBlock() {
 
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const notFound = <NotFound>Курс или блок не найден.</NotFound>;
 
   useEffect(() => {
     if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {

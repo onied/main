@@ -10,6 +10,7 @@ import AuthorBlock from "../../components/preview/authorBlock/authorBlock";
 import { Link, useParams } from "react-router-dom";
 import BeatLoader from "react-spinners/BeatLoader";
 import api from "../../config/axios";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 type PreviewDto = {
   title: string;
@@ -34,7 +35,7 @@ function Preview(): ReactNode {
   const { courseId } = useParams();
   const [dto, setDto] = useState<PreviewDto | undefined>();
   const [found, setFound] = useState<boolean | undefined>();
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
