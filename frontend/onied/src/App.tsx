@@ -22,6 +22,7 @@ import TeachingPage from "./pages/teaching/teaching";
 import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
 import EditBlock from "./pages/editCourse/EditBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
+import CheckTask from "./pages/checkTasks/checkTask/checkTask";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -68,6 +69,10 @@ function App() {
               <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
               <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
               <Route path="/profile/*" element={<ProfilePage />}></Route>
+              <Route
+                path="/teaching/check/:taskCheckId"
+                element={<CheckTask />}
+              ></Route>
               <Route path="/teaching/*" element={<TeachingPage />}></Route>
             </Routes>
           </main>
