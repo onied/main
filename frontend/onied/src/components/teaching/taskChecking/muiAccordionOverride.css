@@ -1,3 +1,9 @@
+.MuiPaper-root,
+.MuiPaper-root:first-of-type,
+.MuiPaper-root:last-of-type{
+    border-radius: 10px;
+}
+
 .MuiAccordion-root{
     border-radius: 10px;
     box-shadow: none;
@@ -8,21 +14,9 @@
     display: none;
 }
 
-.MuiAccordion-root:first-of-type{
-    border-radius: 10px;
-}
-
-.MuiAccordion-root:last-of-type{
-    border-radius: 10px;
-}
-
 .MuiAccordionSummary-root{
     margin: 5px 30px;
     padding: 0;
-}
-
-.MuiAccordion-rounded{
-
 }
 
 .MuiAccordionDetails-root{
@@ -33,6 +27,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     line-height: 1.25;
 }
 

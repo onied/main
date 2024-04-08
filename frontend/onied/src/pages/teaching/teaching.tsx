@@ -17,7 +17,7 @@ function TeachingPage() {
           <Route path="/" element={<TeachingAuthored />} />
           <Route path="/moderating" element={<TeachingModerated />} />
           <Route path="*" element={<Navigate to="/teaching" />} />
-          <Route path="/tasksList" element={<TaskChecking />} />
+          <Route path="/check" element={<TaskChecking />} />
         </Routes>
       </div>
     </>
