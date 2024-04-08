@@ -303,46 +303,6 @@ namespace Courses.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Courses.Models.TaskCheck", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<bool>("Checked")
-                        .HasColumnType("boolean")
-                        .HasColumnName("checked");
-
-                    b.Property<string>("Contents")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("contents");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("integer")
-                        .HasColumnName("points");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("student_id");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("integer")
-                        .HasColumnName("task_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_task_checks");
-
-                    b.HasIndex("StudentId")
-                        .HasDatabaseName("ix_task_checks_student_id");
-
-                    b.HasIndex("TaskId")
-                        .HasDatabaseName("ix_task_checks_task_id");
-
-                    b.ToTable("task_checks", (string)null);
-                });
-
             modelBuilder.Entity("Courses.Models.TaskTextInputAnswer", b =>
                 {
                     b.Property<int>("Id")
@@ -640,7 +600,7 @@ namespace Courses.Migrations
                 {
                     b.HasBaseType("Courses.Models.Task");
 
-                    b.Property<int?>("Accuracy")
+                    b.Property<int>("Accuracy")
                         .HasColumnType("integer")
                         .HasColumnName("accuracy");
 
@@ -768,27 +728,6 @@ namespace Courses.Migrations
                         .HasConstraintName("fk_tasks_blocks_tasks_block_id");
 
                     b.Navigation("TasksBlock");
-                });
-
-            modelBuilder.Entity("Courses.Models.TaskCheck", b =>
-                {
-                    b.HasOne("Courses.Models.User", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_task_checks_users_student_id");
-
-                    b.HasOne("Courses.Models.Task", "Task")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_task_checks_tasks_task_id");
-
-                    b.Navigation("Student");
-
-                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("Courses.Models.TaskTextInputAnswer", b =>
