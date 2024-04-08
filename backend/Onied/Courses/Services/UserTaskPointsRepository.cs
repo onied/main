@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using Courses.Models;
 using Courses.Services.Abstractions;
-using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
@@ -10,6 +9,11 @@ namespace Courses.Services;
 public class UserTaskPointsRepository(AppDbContext dbContext)
     : IUserTaskPointsRepository
 {
+    public async Task<UserTaskPoints?> GetConcreteUserTaskPoints(Guid userId, int taskId)
+        => await dbContext.UserTaskPoints
+            .AsNoTracking()
+            .FirstOrDefaultAsync(tp => tp.UserId == userId && tp.TaskId == taskId);
+
     public async Task<List<UserTaskPoints>> GetUserTaskPointsByUserAndCourse(Guid userId, int courseId)
         => await dbContext.UserTaskPoints
             .Where(tp => tp.UserId == userId && tp.CourseId == courseId)
