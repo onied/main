@@ -22,7 +22,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<InputTask> InputTasks { get; set; } = null!;
     public DbSet<TaskVariant> TaskVariants { get; set; } = null!;
     public DbSet<TaskTextInputAnswer> TaskTextInputAnswers { get; set; } = null!;
-    public DbSet<TaskCheck> TaskChecks { get; set; } = null!;
+    public DbSet<ManualReviewTaskUserAnswer> ManualReviewTaskUserAnswers { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,6 +93,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<UserTaskPoints>().HasOne<UserCourseInfo>(tp => tp.UserCourseInfo)
             .WithMany(uci => uci.UserTaskPointsStorage)
             .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
+
+        modelBuilder.Entity<ManualReviewTaskUserAnswer>()
+            .HasOne<User>(tp => tp.User)
+            .WithMany()
+            .HasForeignKey(tp => tp.UserId);
+        modelBuilder.Entity<ManualReviewTaskUserAnswer>()
+            .HasOne<Task>(tp => tp.Task)
+            .WithMany()
+            .HasForeignKey(tp => tp.TaskId);
 
         var authorId = Guid.Parse("e768e60f-fa76-46d9-a936-4dd5ecbbf326");
         modelBuilder.Entity<User>().HasData(new User

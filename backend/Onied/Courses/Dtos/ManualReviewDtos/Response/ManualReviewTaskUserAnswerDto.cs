@@ -1,6 +1,6 @@
-namespace Courses.Dtos.TaskCheckDtos;
+namespace Courses.Dtos.ManualReviewDtos.Response;
 
-public class TaskCheckDto
+public class ManualReviewTaskUserAnswerDto
 {
     public TaskDto Task { get; set; } = null!;
     public string Contents { get; set; } = null!;

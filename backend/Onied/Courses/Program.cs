@@ -52,7 +52,7 @@ builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>(
 builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
 builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
-builder.Services.AddScoped<ITaskCheckRepository, TaskCheckRepository>();
+builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
 builder.Services.AddScoped<ITaskCheckService, TaskCheckService>();
 
 var app = builder.Build();

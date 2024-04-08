@@ -1,4 +1,4 @@
-namespace Courses.Dtos.TaskCheckDtos;
+namespace Courses.Dtos.ManualReviewDtos.Response;
 
 public class ModuleDto
 {

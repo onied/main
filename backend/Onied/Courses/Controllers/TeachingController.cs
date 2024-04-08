@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
-using Courses.Dtos.TaskCheckDtos;
-using Courses.Dtos.TaskCheckDtos.Request;
+using Courses.Dtos.ManualReviewDtos.Request;
+using Courses.Dtos.ManualReviewDtos.Response;
 using Courses.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +37,8 @@ public class TeachingController(
 
     [HttpGet]
     [Route("check/{taskCheckId:guid}")]
-    public async Task<Results<Ok<TaskCheckDto>, NotFound, UnauthorizedHttpResult, ForbidHttpResult>> GetTaskToCheck(
+    public async Task<Results<Ok<ManualReviewTaskUserAnswerDto>, NotFound, UnauthorizedHttpResult, ForbidHttpResult>>
+        GetTaskToCheck(
         Guid userId,
         Guid taskCheckId)
     {
@@ -48,8 +49,8 @@ public class TeachingController(
     [Route("check/{taskCheckId:guid}")]
     public async Task<Results<Ok, NotFound, UnauthorizedHttpResult, ForbidHttpResult, ValidationProblem>> CheckTask(
         Guid userId,
-        Guid taskCheckId, [FromBody] CheckTaskDto checkTaskDto)
+        Guid taskCheckId, [FromBody] ReviewTaskDto reviewTaskDto)
     {
-        return await taskCheckService.CheckTask(userId, taskCheckId, checkTaskDto);
+        return await taskCheckService.CheckTask(userId, taskCheckId, reviewTaskDto);
     }
 }
