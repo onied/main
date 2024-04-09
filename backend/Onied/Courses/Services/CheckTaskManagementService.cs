@@ -11,7 +11,6 @@ public class CheckTaskManagementService(
     IBlockRepository blockRepository,
     IBlockCompletedInfoRepository blockCompletedInfoRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
-    UserTaskPointsRepository userTaskPointsRepository,
     ICheckTasksService checkTasksService)
     : ICheckTaskManagementService
 {
