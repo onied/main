@@ -1,12 +1,16 @@
+using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
 public class CheckTaskManagementService(
     IBlockRepository blockRepository,
-    IUserCourseInfoRepository userCourseInfoRepository)
+    IBlockCompletedInfoRepository blockCompletedInfoRepository,
+    IUserCourseInfoRepository userCourseInfoRepository,
+    ICheckTasksService checkTasksService)
     : ICheckTaskManagementService
 {
     public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
@@ -23,5 +27,45 @@ public class CheckTaskManagementService(
             return TypedResults.Forbid();
 
         return TypedResults.Ok(block);
+    }
+
+    public Results<Ok<List<UserTaskPoints?>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
+        List<UserInputDto> inputsDto,
+        TasksBlock block,
+        Guid userId)
+    {
+        var points = new List<UserTaskPoints?>();
+        foreach (var inputDto in inputsDto)
+        {
+            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
+
+            if (task is null)
+                return TypedResults.NotFound($"Task with id={inputDto.TaskId} not found.");
+
+            if (task.TaskType != inputDto.TaskType)
+                return TypedResults.BadRequest(
+                    $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
+
+            var tp = checkTasksService.CheckTask(task, inputDto);
+            tp.UserId = userId;
+            points.Add(tp);
+        }
+
+        return TypedResults.Ok(points);
+    }
+
+    public async Task ManageTaskBlockCompleted(List<UserTaskPoints> pointsInfo, Guid userId, int blockId)
+    {
+        var bci = await blockCompletedInfoRepository
+            .GetCompletedCourseBlockAsync(userId, blockId);
+        if (pointsInfo.All(utp => utp.HasFullPoints) && bci is null)
+        {
+            await blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
+        }
+        else if (pointsInfo.Any(utp => !utp.HasFullPoints)
+                 && bci is not null)
+        {
+            await blockCompletedInfoRepository.DeleteCompletedCourseBlocksAsync(bci);
+        }
     }
 }
