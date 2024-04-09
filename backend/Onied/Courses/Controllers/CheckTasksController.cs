@@ -1,7 +1,6 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -30,8 +29,9 @@ public class CheckTasksController(
             return (dynamic)response.Result;
         var block = ok.Value!;
 
-        var storedPoints = await userTaskPointsRepository
-            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId);
+        var storedPoints = (await userTaskPointsRepository
+            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId))
+            .Where(utp => utp.Checked).ToList();
 
         var points = block.Tasks.Select(
             task => storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id)
@@ -42,7 +42,8 @@ public class CheckTasksController(
                             UserId = userId,
                             TaskId = task.Id,
                             CourseId = courseId,
-                            Points = 0
+                            Points = 0,
+                            Checked = false
                         })
         ).ToList();
 
