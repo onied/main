@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "Users\Users.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Data", "MassTransit.Data\MassTransit.Data.csproj", "{7C3E1D98-DAEA-4C0A-89C2-B79F4F375033}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases", "Purchases\Purchases.csproj", "{953DF9BD-4B35-45B2-96C9-C8A5B2232970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{BAA9985E-2077-4202-B689-A2466509E1B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{7C3E1D98-DAEA-4C0A-89C2-B79F4F375033}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C3E1D98-DAEA-4C0A-89C2-B79F4F375033}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C3E1D98-DAEA-4C0A-89C2-B79F4F375033}.Release|Any CPU.Build.0 = Release|Any CPU
+		{953DF9BD-4B35-45B2-96C9-C8A5B2232970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{953DF9BD-4B35-45B2-96C9-C8A5B2232970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{953DF9BD-4B35-45B2-96C9-C8A5B2232970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{953DF9BD-4B35-45B2-96C9-C8A5B2232970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAA9985E-2077-4202-B689-A2466509E1B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAA9985E-2077-4202-B689-A2466509E1B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAA9985E-2077-4202-B689-A2466509E1B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAA9985E-2077-4202-B689-A2466509E1B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
