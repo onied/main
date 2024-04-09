@@ -1,8 +1,7 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Models;
 using Courses.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -12,11 +11,8 @@ namespace Courses.Controllers;
 public class CoursesController : ControllerBase
 {
     private readonly IBlockRepository _blockRepository;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ICheckTasksService _checkTasksService;
     private readonly ICourseRepository _courseRepository;
-    private readonly IModuleRepository _moduleRepository;
-    private readonly ILogger<CoursesController> _logger;
+    private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
 
@@ -25,18 +21,15 @@ public class CoursesController : ControllerBase
         IMapper mapper,
         ICourseRepository courseRepository,
         IBlockRepository blockRepository,
-        ICheckTasksService checkTasksService,
         ICategoryRepository categoryRepository,
-        IModuleRepository moduleRepository, IUserRepository userRepository)
+        IUserRepository userRepository,
+        IBlockCompletedInfoRepository blockCompletedInfoRepository)
     {
-        _logger = logger;
         _mapper = mapper;
         _courseRepository = courseRepository;
         _blockRepository = blockRepository;
-        _checkTasksService = checkTasksService;
-        _categoryRepository = categoryRepository;
-        _moduleRepository = moduleRepository;
         _userRepository = userRepository;
+        _blockCompletedInfoRepository = blockCompletedInfoRepository;
     }
 
     [HttpGet]
@@ -50,42 +43,53 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Route("hierarchy")]
-    public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id)
+    public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id, [FromQuery] Guid userId)
     {
         var course = await _courseRepository.GetCourseWithBlocksAsync(id);
         if (course == null)
             return NotFound();
-        return _mapper.Map<CourseDto>(course);
+
+        var dto = _mapper.Map<CourseDto>(course);
+
+        var completed =
+            await _blockCompletedInfoRepository
+                .GetAllCompletedCourseBlocksByUser(userId, id);
+        var blocksLink = dto.Modules.Select(m => m.Blocks)
+            .Aggregate((prev, next) => prev.Concat(next).ToList());
+        foreach (var cm in completed)
+            blocksLink.Single(b => b.Id == cm.BlockId).Completed = true;
+
+        return dto;
     }
 
     [HttpGet]
     [Route("summary/{blockId:int}")]
-    public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId)
+    public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId)
     {
         var summary = await _blockRepository.GetSummaryBlock(blockId);
         if (summary == null || summary.Module.CourseId != id)
             return NotFound();
-        return _mapper.Map<SummaryBlockDto>(summary);
+
+        var dto = _mapper.Map<SummaryBlockDto>(summary);
+        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
+            await _blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
+        dto.IsCompleted = true;
+        return dto;
     }
 
     [HttpGet]
     [Route("video/{blockId:int}")]
-    public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId)
+    public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId)
     {
         var block = await _blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
-        return _mapper.Map<VideoBlockDto>(block);
-    }
 
-    [HttpGet]
-    [Route("tasks/{blockId:int}")]
-    public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
-    {
-        var block = await _blockRepository.GetTasksBlock(blockId, true);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-        return _mapper.Map<TasksBlockDto>(block);
+        var dto = _mapper.Map<VideoBlockDto>(block);
+        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
+            await _blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
+        dto.IsCompleted = true;
+        return dto;
     }
 
     [HttpGet]
@@ -99,61 +103,17 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("tasks/{blockId:int}/points")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
+    [Route("tasks/{blockId:int}")]
+    public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId)
     {
         var block = await _blockRepository.GetTasksBlock(blockId, true);
-
         if (block == null || block.Module.CourseId != id)
             return NotFound();
 
-        var points = block.Tasks.Select(
-            task => task.TaskType is TaskType.ManualReview
-                ? null
-                : new UserTaskPoints
-                {
-                    TaskId = task.Id,
-                    Points = 0
-                });
-        // Заменить на нормальное обращение к базе
-        // с нулевыми баллами для автомат. пров. заданий по умолчанию
-
-        return _mapper.Map<List<UserTaskPointsDto>>(points);
-    }
-
-    [HttpPost]
-    [Route("tasks/{blockId:int}/check")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
-        int id,
-        int blockId,
-        [FromBody] List<UserInputDto> inputsDto)
-    {
-        if (inputsDto.Any(inputDto => inputDto is null))
-            return BadRequest();
-
-        var block = await _blockRepository.GetTasksBlock(
-            blockId,
-            true,
-            true);
-
-        if (block is null || block.Module.CourseId != id)
-            return NotFound();
-
-        var points = new List<UserTaskPoints?>();
-        foreach (var inputDto in inputsDto)
-        {
-            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
-
-            if (task is null)
-                return NotFound($"Task with id={inputDto.TaskId} not found.");
-
-            if (task.TaskType != inputDto.TaskType)
-                return BadRequest($"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
-
-            points.Add(_checkTasksService.CheckTask(task, inputDto));
-        }
-
-        return _mapper.Map<List<UserTaskPointsDto>>(points);
+        var dto = _mapper.Map<TasksBlockDto>(block);
+        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is not null)
+            dto.IsCompleted = true;
+        return dto;
     }
 
     [HttpPost]

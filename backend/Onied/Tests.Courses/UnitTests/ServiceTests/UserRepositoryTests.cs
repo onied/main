@@ -2,6 +2,7 @@ using AutoFixture;
 using Courses;
 using Courses.Models;
 using Courses.Services;
+using Courses.Services.Abstractions;
 using Task = System.Threading.Tasks.Task;
 
 namespace Tests.Courses.UnitTests.ServiceTests;

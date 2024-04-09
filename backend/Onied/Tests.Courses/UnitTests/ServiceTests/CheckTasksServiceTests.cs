@@ -2,6 +2,7 @@
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services;
+using Courses.Services.Abstractions;
 using Task = Courses.Models.Task;
 
 namespace Tests.Courses.UnitTests.ServiceTests;
@@ -25,7 +26,6 @@ public class CheckTasksServiceTests
             .Create();
         var expected = new UserTaskPoints()
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = 0
         };
@@ -59,7 +59,6 @@ public class CheckTasksServiceTests
             .Create();
         var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = isMaxPoints ? task.MaxPoints : 0
         };
@@ -92,7 +91,6 @@ public class CheckTasksServiceTests
             .Create();
         var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = task.MaxPoints
         };

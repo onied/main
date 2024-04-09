@@ -1,7 +1,7 @@
 ﻿using Courses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Courses.Services;
+namespace Courses.Services.Abstractions;
 
 public interface ICourseManagementService
 {

@@ -4,13 +4,12 @@ using Task = Courses.Models.Task;
 
 namespace Courses;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<UserCourseInfo> UserCourseInfos { get; set; } = null!;
+    public DbSet<BlockCompletedInfo> BlockCompletedInfos { get; set; } = null!;
+    public DbSet<UserTaskPoints> UserTaskPoints { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<Module> Modules { get; set; } = null!;
@@ -36,7 +35,34 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<User>()
             .HasMany<Course>(u => u.Courses)
-            .WithMany();
+            .WithMany()
+            .UsingEntity<UserCourseInfo>(
+                j => j
+                    .HasOne<Course>(uci => uci.Course)
+                    .WithMany()
+                    .HasForeignKey(tp => tp.CourseId),
+                j => j
+                    .HasOne<User>(uci => uci.User)
+                    .WithMany()
+                    .HasForeignKey(tp => tp.UserId),
+                j =>
+                {
+                    j.HasKey(uci => new { uci.UserId, uci.CourseId });
+                    j.HasMany<UserTaskPoints>(uci => uci.UserTaskPointsStorage)
+                        .WithOne(tp => tp.UserCourseInfo)
+                        .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
+                });
+
+        modelBuilder.Entity<BlockCompletedInfo>()
+            .HasKey(b => new { b.UserId, b.BlockId });
+        modelBuilder.Entity<BlockCompletedInfo>()
+            .HasOne<User>(b => b.User)
+            .WithMany()
+            .HasForeignKey(b => b.UserId);
+        modelBuilder.Entity<BlockCompletedInfo>()
+            .HasOne<Block>(b => b.Block)
+            .WithMany()
+            .HasForeignKey(b => b.BlockId);
 
         modelBuilder.Entity<User>()
             .HasMany<Course>(u => u.ModeratingCourses)
@@ -48,6 +74,24 @@ public class AppDbContext : DbContext
             .WithOne(c => c.Author)
             .HasForeignKey(c => c.AuthorId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserTaskPoints>()
+            .HasKey(tp => new { tp.UserId, tp.TaskId });
+        modelBuilder.Entity<UserTaskPoints>()
+            .HasOne<User>(tp => tp.User)
+            .WithMany()
+            .HasForeignKey(tp => tp.UserId);
+        modelBuilder.Entity<UserTaskPoints>()
+            .HasOne<Task>(tp => tp.Task)
+            .WithMany()
+            .HasForeignKey(tp => tp.TaskId);
+        modelBuilder.Entity<UserTaskPoints>()
+            .HasOne(tp => tp.Course)
+            .WithMany()
+            .HasForeignKey(tp => tp.CourseId);
+        modelBuilder.Entity<UserTaskPoints>().HasOne<UserCourseInfo>(tp => tp.UserCourseInfo)
+            .WithMany(uci => uci.UserTaskPointsStorage)
+            .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
 
         var authorId = Guid.Parse("e768e60f-fa76-46d9-a936-4dd5ecbbf326");
         modelBuilder.Entity<User>().HasData(new User
@@ -109,7 +153,6 @@ public class AppDbContext : DbContext
             Index = 1,
             ModuleId = 1,
             Title = "MAKIMA BEAN",
-            IsCompleted = true,
             Url = "https://www.youtube.com/watch?v=YfBlwC44gDQ"
         }, new VideoBlock
         {
