@@ -98,6 +98,7 @@ public class CoursesController : ControllerBase
         return _mapper.Map<EditTasksBlockDto>(block);
     }
 
+    [HttpGet]
     [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId)
     {

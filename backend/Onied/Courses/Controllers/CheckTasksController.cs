@@ -28,7 +28,7 @@ public class CheckTasksController(
         var block = ok.Value!;
 
         var storedPoints = (await userTaskPointsRepository
-            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId))
+                .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId))
             .Where(utp => utp.Checked).ToList();
 
         var points = block.Tasks.Select(
@@ -77,6 +77,11 @@ public class CheckTasksController(
         await checkTaskManagementService
             .ManageTaskBlockCompleted(pointsInfo, userId, blockId);
 
-        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(pointsInfo));
+        var pointsPrepared = block.Tasks
+            .Select(task => task.TaskType is TaskType.ManualReview
+                ? null
+                : pointsInfo.SingleOrDefault(tp => tp.TaskId == task.Id));
+
+        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(pointsPrepared));
     }
 }
