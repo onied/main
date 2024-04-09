@@ -1,7 +1,7 @@
 using Courses.Models;
 using Task = System.Threading.Tasks.Task;
 
-namespace Courses.Services;
+namespace Courses.Services.Abstractions;
 
 public interface IUserRepository
 {

@@ -2,7 +2,7 @@ using Courses.Dtos;
 using Courses.Models;
 using Task = Courses.Models.Task;
 
-namespace Courses.Services;
+namespace Courses.Services.Abstractions;
 
 public interface ICheckTasksService
 {
