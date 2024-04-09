@@ -33,7 +33,6 @@ public class CheckTasksControllerTests
         _controller = new CheckTasksController(
             _logger.Object,
             _mapper,
-            _checkTasksService.Object,
             _userTaskPointsRepository.Object,
             _checkTaskManagementService.Object);
     }

@@ -26,7 +26,6 @@ public class CheckTasksServiceTests
             .Create();
         var expected = new UserTaskPoints()
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = 0
         };
@@ -60,7 +59,6 @@ public class CheckTasksServiceTests
             .Create();
         var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = isMaxPoints ? task.MaxPoints : 0
         };
@@ -93,7 +91,6 @@ public class CheckTasksServiceTests
             .Create();
         var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = task.MaxPoints
         };
