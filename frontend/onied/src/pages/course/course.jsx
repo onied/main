@@ -7,6 +7,7 @@ import api from "../../config/axios";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../hooks";
 import { CourseHierarchyActionTypes } from "../../redux/reducers/courseHierarchyReducer";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 function Course() {
   const { courseId } = useParams();
@@ -15,7 +16,7 @@ function Course() {
   const dispatch = useDispatch();
   const [courseFound, setCourseFound] = useState(false);
   const [currentBlock, setCurrentBlock] = useState();
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
   const id = Number(courseId);
 
   useEffect(() => {
@@ -75,9 +76,7 @@ function Course() {
           />
           <Route
             path="*"
-            element={
-              <h1 style={{ margin: "3rem" }}>Выберите блок из списка.</h1>
-            }
+            element={<NotFound>Выберите блок из списка.</NotFound>}
           />
         </Routes>
       </BlockViewContainer>

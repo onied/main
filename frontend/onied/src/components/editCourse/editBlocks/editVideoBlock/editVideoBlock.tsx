@@ -9,7 +9,9 @@ import api from "../../../../config/axios";
 import YoutubeVideoProvider from "../../../blocks/video/youtubeVideoProvider";
 import VkVideoProvider from "../../../blocks/video/vkVideoProvider";
 import RutubeVideoProvider from "../../../blocks/video/rutubeVideoProvider";
+import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
+import Forbid from "../../../general/responses/forbid/forbid";
 
 type VideoBlock = {
   id: string;
@@ -41,11 +43,9 @@ function EditVideoBlockComponent({
     "Неверный формат ссылки на видео"
   );
 
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
-  const forbid = (
-    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
-  );
+  const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
 
   const parsedCourseId = Number(courseId);
   const parsedBlockId = Number(blockId);

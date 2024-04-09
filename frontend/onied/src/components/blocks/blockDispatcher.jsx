@@ -5,6 +5,7 @@ import Video from "./video/video";
 import { useEffect } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import classes from "./blocks.module.css";
+import NotFound from "../general/responses/notFound/notFound";
 
 function BlockDispatcher({ hierarchy, setCurrentBlock }) {
   const { blockId } = useParams();
@@ -24,7 +25,7 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }) {
     isNaN(Number(blockId)) ||
     (blocks != null && !Object.keys(blocks).includes(blockId))
   )
-    return <h1 style={{ margin: "3rem" }}>Блок не найден.</h1>;
+    return <NotFound>Блок не найден.</NotFound>;
   useEffect(() => setCurrentBlock(Number(blockId)));
 
   return (
