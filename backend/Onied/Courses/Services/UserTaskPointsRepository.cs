@@ -40,8 +40,6 @@ public class UserTaskPointsRepository(AppDbContext dbContext)
         var toUpdate = new List<UserTaskPoints>();
         foreach (var tp in userTaskPointsList)
         {
-            tp.UserId = userId;
-            tp.CourseId = courseId;
             if (oldUserTaskPoints.Contains(tp.TaskId))
                 toUpdate.Add(tp);
             else

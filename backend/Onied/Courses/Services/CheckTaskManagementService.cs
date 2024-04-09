@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
@@ -10,6 +11,7 @@ public class CheckTaskManagementService(
     IBlockRepository blockRepository,
     IBlockCompletedInfoRepository blockCompletedInfoRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
+    UserTaskPointsRepository userTaskPointsRepository,
     ICheckTasksService checkTasksService)
     : ICheckTaskManagementService
 {
@@ -48,6 +50,7 @@ public class CheckTaskManagementService(
 
             var tp = checkTasksService.CheckTask(task, inputDto);
             tp.UserId = userId;
+            tp.CourseId = block.Module.CourseId;
             points.Add(tp);
         }
 
