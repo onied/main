@@ -15,15 +15,21 @@ public class BlockCompletedInfoRepository(AppDbContext dbContext) : IBlockComple
             .AsNoTracking()
             .ToListAsync();
 
-    public async Task<BlockCompletedInfo?> GetCompletedCourseBlocksAsync(Guid userId, int blockId)
+    public async Task<BlockCompletedInfo?> GetCompletedCourseBlockAsync(Guid userId, int blockId)
         => await dbContext.BlockCompletedInfos
             .AsNoTracking()
             .SingleOrDefaultAsync(b => b.UserId == userId && b.BlockId == blockId);
 
-    public async Task AddCompletedCourseBlocksAsync(Guid userId, int blockId)
+    public async Task AddCompletedCourseBlockAsync(Guid userId, int blockId)
     {
         await dbContext.BlockCompletedInfos
             .AddAsync(new BlockCompletedInfo { UserId = userId, BlockId = blockId });
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteCompletedCourseBlocksAsync(BlockCompletedInfo blockCompletedInfo)
+    {
+        dbContext.BlockCompletedInfos.Remove(blockCompletedInfo);
         await dbContext.SaveChangesAsync();
     }
 }

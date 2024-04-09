@@ -104,10 +104,12 @@ function Tasks({ courseId, blockId }) {
                   (t, index) => t.maxPoints == newTaskPoints[index]?.points
                 )
               ) {
-                const blocks = hierarchyState.hierarchy.modules
-                  .flatMap((module) => module.blocks)
-                  .reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {});
-                blocks[blockId].completed = true;
+                const moduleId = hierarchyState.hierarchy.modules.find(
+                  (module) => module.blocks.some((b) => b.id == blockId)
+                ).id;
+                const block =
+                  hierarchyState.hierarchy.modules[moduleId].blocks[blockId];
+                block.completed = true;
                 console.log(hierarchyState.hierarchy);
               }
             })

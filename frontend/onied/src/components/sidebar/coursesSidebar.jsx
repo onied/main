@@ -31,7 +31,8 @@ function CoursesSidebar({ currentBlock }) {
         key={moduleIndex + "." + index + "block"}
         to={`/course/${hierarchy.id}/learn/${hierarchy.modules[moduleIndex].blocks[index].id}/`}
         onClick={() => {
-          const block = hierarchy.modules[moduleIndex].blocks[index];
+          const block =
+            hierarchyState.hierarchy.modules[moduleIndex].blocks[index];
           if (block.blockType != BlockType.TasksBlock) block.completed = true;
         }}
       >

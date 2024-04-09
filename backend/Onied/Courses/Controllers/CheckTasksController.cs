@@ -14,7 +14,8 @@ public class CheckTasksController(
     IMapper mapper,
     ICheckTasksService checkTasksService,
     IUserTaskPointsRepository userTaskPointsRepository,
-    ICheckTaskManagementService checkTaskManagementService) : ControllerBase
+    ICheckTaskManagementService checkTaskManagementService,
+    IBlockCompletedInfoRepository blockCompletedInfoRepository) : ControllerBase
 {
     [HttpGet]
     [Route("points")]
@@ -78,14 +79,27 @@ public class CheckTasksController(
             points.Add(checkTasksService.CheckTask(task, inputDto));
         }
 
+        var pointsInfo = points.Where(tp => tp != null)
+            .Select(tp =>
+            {
+                tp!.UserId = userId;
+                return tp;
+            })
+            .ToList();
         await userTaskPointsRepository.StoreUserTaskPointsForConcreteUserAndBlock(
-            points.Where(tp => tp != null)
-                .Select(tp =>
-                {
-                    tp!.UserId = userId;
-                    return tp;
-                })
-                .ToList(), userId, courseId, blockId);
+            pointsInfo, userId, courseId, blockId);
+
+        var bci = await blockCompletedInfoRepository
+            .GetCompletedCourseBlockAsync(userId, blockId);
+        if (pointsInfo.All(utp => utp.HasFullPoints) && bci is null)
+        {
+            await blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
+        }
+        else if (pointsInfo.Any(utp => !utp.HasFullPoints)
+                 && bci is not null)
+        {
+            await blockCompletedInfoRepository.DeleteCompletedCourseBlocksAsync(bci);
+        }
 
         return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(points));
     }
