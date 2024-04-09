@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
@@ -30,12 +29,12 @@ public class CheckTaskManagementService(
         return TypedResults.Ok(block);
     }
 
-    public Results<Ok<List<UserTaskPoints?>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
+    public Results<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
         List<UserInputDto> inputsDto,
         TasksBlock block,
         Guid userId)
     {
-        var points = new List<UserTaskPoints?>();
+        var points = new List<UserTaskPoints>();
         foreach (var inputDto in inputsDto)
         {
             var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);

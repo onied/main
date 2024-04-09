@@ -12,7 +12,7 @@ public interface ICheckTaskManagementService
         bool includeVariants = false,
         bool includeAnswers = false);
 
-    public Results<Ok<List<UserTaskPoints?>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
+    public Results<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
         List<UserInputDto> inputsDto,
         TasksBlock block,
         Guid userId);

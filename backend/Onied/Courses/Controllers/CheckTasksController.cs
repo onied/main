@@ -64,10 +64,10 @@ public class CheckTasksController(
 
         var block = okGetTaskBlock.Value!;
 
-        var responseGeTaskPoints = checkTaskManagementService
+        var responseGetTaskPoints = checkTaskManagementService
             .GetUserTaskPoints(inputsDto, block, userId);
-        if (responseGetTaskBlock.Result is not Ok<List<UserTaskPoints>> okGetTaskPoints)
-            return (dynamic)responseGeTaskPoints.Result;
+        if (responseGetTaskPoints.Result is not Ok<List<UserTaskPoints>> okGetTaskPoints)
+            return (dynamic)responseGetTaskPoints.Result;
 
         var pointsInfo = okGetTaskPoints.Value!;
 
