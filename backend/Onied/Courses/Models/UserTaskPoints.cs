@@ -21,5 +21,7 @@ public class UserTaskPoints
     [Required]
     public UserCourseInfo UserCourseInfo { get; set; } = null!;
 
+    public bool Checked { get; set; }
+
     public bool HasFullPoints => Points == Task.MaxPoints;
 }
