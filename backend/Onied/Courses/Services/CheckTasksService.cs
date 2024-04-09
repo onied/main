@@ -1,20 +1,21 @@
 using Courses.Dtos;
 using Courses.Models;
+using Courses.Services.Abstractions;
 using Task = Courses.Models.Task;
 
 namespace Courses.Services;
 
 public class CheckTasksService : ICheckTasksService
 {
-    public UserTaskPoints? CheckTask(Task task, UserInputDto input)
+    public UserTaskPoints CheckTask(Task task, UserInputDto input)
     {
         if (!input.IsDone)
         {
             return new UserTaskPoints()
             {
-                UserId = input.UserId,
                 TaskId = input.TaskId,
-                Points = 0
+                Points = 0,
+                Checked = true,
             };
         }
 
@@ -22,7 +23,13 @@ public class CheckTasksService : ICheckTasksService
         {
             TaskType.SingleAnswer or TaskType.MultipleAnswers => CheckTask((VariantsTask)task, input),
             TaskType.InputAnswer => CheckTask((InputTask)task, input),
-            _ => null
+            TaskType.ManualReview => new UserTaskPoints()
+            {
+                TaskId = input.TaskId,
+                Points = 0,
+                Checked = false,
+            },
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 
@@ -30,12 +37,14 @@ public class CheckTasksService : ICheckTasksService
     {
         return new UserTaskPoints()
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = task.Variants
                 .Where(variant => variant.IsCorrect)
-                .Select(variant => variant.Id)
-                .SequenceEqual(input.VariantsIds!) ? task.MaxPoints : 0
+                .Select(variant => variant.Id).OrderBy(vid => vid)
+                .SequenceEqual(input.VariantsIds!.OrderBy(vid => vid))
+                ? task.MaxPoints
+                : 0,
+            Checked = true,
         };
     }
 
@@ -43,13 +52,15 @@ public class CheckTasksService : ICheckTasksService
     {
         return new UserTaskPoints()
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
             Points = task.Answers.Any(
-                    answer => task.IsCaseSensitive
-                        ? answer.Answer.Equals(input.Answer)
-                        : answer.Answer.ToLower().Equals(input.Answer.ToLower())
-                    ) ? task.MaxPoints : 0
+                answer => task.IsCaseSensitive
+                    ? answer.Answer.Equals(input.Answer)
+                    : answer.Answer.ToLower().Equals(input.Answer!.ToLower())
+            )
+                ? task.MaxPoints
+                : 0,
+            Checked = true,
         };
     }
 }

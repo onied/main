@@ -1,10 +1,15 @@
-import { useState } from "react";
 import { CompletedIcon } from "./completedIcon";
 import classes from "./sidebar.module.css";
 import BarLoader from "react-spinners/BarLoader";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../hooks";
+import { BlockType } from "../../types/block";
 
-function CoursesSidebar({ hierarchy, currentBlock }) {
+function CoursesSidebar({ currentBlock }) {
+  const hierarchyState = useAppSelector((state) => state.hierarchy);
+
+  const hierarchy = hierarchyState.hierarchy;
+
   const loaded = (attribute) => {
     return hierarchy != null ? attribute in hierarchy : false;
   };
@@ -25,6 +30,11 @@ function CoursesSidebar({ hierarchy, currentBlock }) {
         className={classes.block}
         key={moduleIndex + "." + index + "block"}
         to={`/course/${hierarchy.id}/learn/${hierarchy.modules[moduleIndex].blocks[index].id}/`}
+        onClick={() => {
+          const block =
+            hierarchyState.hierarchy.modules[moduleIndex].blocks[index];
+          if (block.blockType != BlockType.TasksBlock) block.completed = true;
+        }}
       >
         {moduleIndex + 1}.{index + 1}. {block.title}
         {block.completed ? <CompletedIcon></CompletedIcon> : <></>}
