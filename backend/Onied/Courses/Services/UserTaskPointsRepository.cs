@@ -40,8 +40,6 @@ public class UserTaskPointsRepository(AppDbContext dbContext)
         var toUpdate = new List<UserTaskPoints>();
         foreach (var tp in userTaskPointsList)
         {
-            tp.UserId = userId;
-            tp.CourseId = courseId;
             if (oldUserTaskPoints.Contains(tp.TaskId))
                 toUpdate.Add(tp);
             else
@@ -50,6 +48,19 @@ public class UserTaskPointsRepository(AppDbContext dbContext)
 
         await dbContext.UserTaskPoints.AddRangeAsync(toAdd);
         dbContext.UserTaskPoints.UpdateRange(toUpdate);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task StoreConcreteUserTaskPoints(UserTaskPoints userTaskPoints)
+    {
+        if (await GetConcreteUserTaskPoints(userTaskPoints.UserId, userTaskPoints.TaskId) is null)
+        {
+            await dbContext.UserTaskPoints.AddAsync(userTaskPoints);
+        }
+        else
+        {
+            dbContext.UserTaskPoints.Update(userTaskPoints);
+        }
         await dbContext.SaveChangesAsync();
     }
 }

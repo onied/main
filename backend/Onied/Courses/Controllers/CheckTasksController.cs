@@ -1,7 +1,6 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +11,6 @@ namespace Courses.Controllers;
 public class CheckTasksController(
     ILogger<CoursesController> logger,
     IMapper mapper,
-    ICheckTasksService checkTasksService,
     IUserTaskPointsRepository userTaskPointsRepository,
     ICheckTaskManagementService checkTaskManagementService) : ControllerBase
 {
@@ -29,8 +27,9 @@ public class CheckTasksController(
             return (dynamic)response.Result;
         var block = ok.Value!;
 
-        var storedPoints = await userTaskPointsRepository
-            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId);
+        var storedPoints = (await userTaskPointsRepository
+                .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId))
+            .Where(utp => utp.Checked).ToList();
 
         var points = block.Tasks.Select(
             task => storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id)
@@ -41,7 +40,8 @@ public class CheckTasksController(
                             UserId = userId,
                             TaskId = task.Id,
                             CourseId = courseId,
-                            Points = 0
+                            Points = 0,
+                            Checked = false
                         })
         ).ToList();
 
@@ -57,36 +57,31 @@ public class CheckTasksController(
             [FromQuery] Guid userId,
             [FromBody] List<UserInputDto> inputsDto)
     {
-        var response = await checkTaskManagementService
+        var responseGetTaskBlock = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true, true);
-        if (response.Result.GetType() != typeof(Ok<TasksBlock>))
-            return (dynamic)response.Result;
-        var block = ((Ok<TasksBlock>)response.Result).Value!;
+        if (responseGetTaskBlock.Result is not Ok<TasksBlock> okGetTaskBlock)
+            return (dynamic)responseGetTaskBlock.Result;
 
-        var points = new List<UserTaskPoints?>();
-        foreach (var inputDto in inputsDto)
-        {
-            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
+        var block = okGetTaskBlock.Value!;
 
-            if (task is null)
-                return TypedResults.NotFound($"Task with id={inputDto.TaskId} not found.");
+        var responseGetTaskPoints = checkTaskManagementService
+            .GetUserTaskPoints(inputsDto, block, userId);
+        if (responseGetTaskPoints.Result is not Ok<List<UserTaskPoints>> okGetTaskPoints)
+            return (dynamic)responseGetTaskPoints.Result;
 
-            if (task.TaskType != inputDto.TaskType)
-                return TypedResults.BadRequest(
-                    $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
+        var pointsInfo = okGetTaskPoints.Value!;
 
-            points.Add(checkTasksService.CheckTask(task, inputDto));
-        }
+        await userTaskPointsRepository
+            .StoreUserTaskPointsForConcreteUserAndBlock(
+                pointsInfo, userId, courseId, blockId);
+        await checkTaskManagementService
+            .ManageTaskBlockCompleted(pointsInfo, userId, blockId);
 
-        await userTaskPointsRepository.StoreUserTaskPointsForConcreteUserAndBlock(
-            points.Where(tp => tp != null)
-                .Select(tp =>
-                {
-                    tp!.UserId = userId;
-                    return tp;
-                })
-                .ToList(), userId, courseId, blockId);
+        var pointsPrepared = block.Tasks
+            .Select(task => task.TaskType is TaskType.ManualReview
+                ? null
+                : pointsInfo.SingleOrDefault(tp => tp.TaskId == task.Id));
 
-        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(points));
+        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(pointsPrepared));
     }
 }

@@ -113,7 +113,9 @@ function CheckTaskComponent() {
   return (
     <div className={classes.container}>
       <div className={classes.pageHeader}>
-        <ButtonGoBack>⟵ вернуться без сохранения</ButtonGoBack>
+        <ButtonGoBack onClick={() => navigate(-1)}>
+          ⟵ вернуться без сохранения
+        </ButtonGoBack>
         <div className={classes.header}>
           <h1 className={classes.courseTitle}>
             {taskInfo.task.block.module.course.title}

@@ -1,7 +1,7 @@
 ﻿using Courses.Dtos;
 using Courses.Models;
 
-namespace Courses.Services;
+namespace Courses.Services.Abstractions;
 
 public interface IUpdateTasksBlockService
 {

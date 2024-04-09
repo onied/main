@@ -4,10 +4,10 @@ import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BlockDispatcher from "../../components/blocks/blockDispatcher";
 import api from "../../config/axios";
-import NotFound from "../../components/general/responses/notFound/notFound";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../hooks";
 import { CourseHierarchyActionTypes } from "../../redux/reducers/courseHierarchyReducer";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 function Course() {
   const { courseId } = useParams();

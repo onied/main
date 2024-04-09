@@ -67,8 +67,8 @@ public class CoursesController : ControllerBase
             return NotFound();
 
         var dto = _mapper.Map<SummaryBlockDto>(summary);
-        if (await _blockCompletedInfoRepository.GetCompletedCourseBlocksAsync(userId, blockId) is null)
-            await _blockCompletedInfoRepository.AddCompletedCourseBlocksAsync(userId, blockId);
+        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
+            await _blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
         dto.IsCompleted = true;
         return dto;
     }
@@ -82,8 +82,8 @@ public class CoursesController : ControllerBase
             return NotFound();
 
         var dto = _mapper.Map<VideoBlockDto>(block);
-        if (await _blockCompletedInfoRepository.GetCompletedCourseBlocksAsync(userId, blockId) is null)
-            await _blockCompletedInfoRepository.AddCompletedCourseBlocksAsync(userId, blockId);
+        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
+            await _blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
         dto.IsCompleted = true;
         return dto;
     }
@@ -98,6 +98,7 @@ public class CoursesController : ControllerBase
         return _mapper.Map<EditTasksBlockDto>(block);
     }
 
+    [HttpGet]
     [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId)
     {
@@ -106,9 +107,8 @@ public class CoursesController : ControllerBase
             return NotFound();
 
         var dto = _mapper.Map<TasksBlockDto>(block);
-        if (await _blockCompletedInfoRepository.GetCompletedCourseBlocksAsync(userId, blockId) is null)
-            await _blockCompletedInfoRepository.AddCompletedCourseBlocksAsync(userId, blockId);
-        dto.IsCompleted = true;
+        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is not null)
+            dto.IsCompleted = true;
         return dto;
     }
 }
