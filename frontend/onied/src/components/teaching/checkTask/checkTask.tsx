@@ -28,7 +28,6 @@ type BlockInfo = {
 
 type TaskInfo = {
   block: BlockInfo;
-  index: number;
   title: string;
   maxPoints: number;
 };
@@ -141,7 +140,7 @@ function CheckTaskComponent() {
             </div>
             <div className={classes.task}>
               <label htmlFor="taskTitle" className={classes.taskLabel}>
-                Задание {taskInfo.task.index + 1}:
+                Задание:
               </label>
               <p className={classes.taskTitle} id="taskTitle">
                 {taskInfo.task.title}
