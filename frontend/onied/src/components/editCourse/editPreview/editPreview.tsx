@@ -111,7 +111,7 @@ function EditPreviewComponent() {
       )
       .then((_) => setCanAccess(true))
       .catch((error) => {
-        if (error.response.status == 401) setCanAccess(false);
+        if (error.response.status == 403) setCanAccess(false);
       });
   };
 

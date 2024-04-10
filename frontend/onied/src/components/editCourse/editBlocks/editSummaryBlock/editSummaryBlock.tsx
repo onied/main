@@ -104,15 +104,22 @@ function EditSummaryBlockComponent({
       return;
     }
     api
-      .get("courses/" + courseId + "/summary/" + blockId)
-      .then((response) => {
-        console.log(response.data);
-        setCurrentBlock(response.data);
+      .get("courses/" + courseId + "/edit/check-edit-course")
+      .then((_) => {
+        api
+          .get("courses/" + courseId + "/summary/" + blockId)
+          .then((response) => {
+            console.log(response.data);
+            setCurrentBlock(response.data);
+          })
+          .catch((error) => {
+            if ("response" in error && error.response.status == 404) {
+              setCurrentBlock(null);
+            }
+          });
       })
       .catch((error) => {
-        if ("response" in error && error.response.status == 404) {
-          setCurrentBlock(null);
-        }
+        if (error.response?.status === 403) setIsForbid(true);
       });
   }, []);
 

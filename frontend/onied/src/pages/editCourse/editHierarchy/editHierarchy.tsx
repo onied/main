@@ -474,24 +474,33 @@ function EditCourseHierarchy() {
       return;
     }
     api
-      .get("courses/" + id + "/hierarchy/")
-      .then((response) => {
-        console.log(response.data);
-        if ("modules" in response.data) {
-          response.data.modules.sort((a, b) => (a.index > b.index ? 1 : -1));
-          response.data.modules.forEach((module) => {
-            if ("blocks" in module)
-              module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
+      .get("courses/" + courseId + "/edit/check-edit-course")
+      .then((_) => {
+        api
+          .get("courses/" + id + "/hierarchy/")
+          .then((response) => {
+            console.log(response.data);
+            if ("modules" in response.data) {
+              response.data.modules.sort((a, b) =>
+                a.index > b.index ? 1 : -1
+              );
+              response.data.modules.forEach((module) => {
+                if ("blocks" in module)
+                  module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
+              });
+            }
+            setHierarchy(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+
+            if ("response" in error && error.response.status == 404) {
+              setHierarchy(null);
+            }
           });
-        }
-        setHierarchy(response.data);
       })
       .catch((error) => {
-        console.log(error);
-
-        if ("response" in error && error.response.status == 404) {
-          setHierarchy(null);
-        }
+        if (error.response?.status === 403) setIsForbid(true);
       });
   }, [id]);
 

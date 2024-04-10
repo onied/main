@@ -114,6 +114,8 @@ public class EditCoursesController(
         return TypedResults.Ok();
     }
 
+
+
     [HttpPost]
     [Route("add-block/{moduleId:int}")]
     public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddBlock(
