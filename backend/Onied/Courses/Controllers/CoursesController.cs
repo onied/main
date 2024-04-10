@@ -57,8 +57,7 @@ public class CoursesController : ControllerBase
         var completed =
             await _blockCompletedInfoRepository
                 .GetAllCompletedCourseBlocksByUser(userId, id);
-        var blocksLink = dto.Modules.Select(m => m.Blocks)
-            .Aggregate((prev, next) => prev.Concat(next).ToList());
+        var blocksLink = dto.Modules.SelectMany(m => m.Blocks).ToList();
         foreach (var cm in completed)
             blocksLink.Single(b => b.Id == cm.BlockId).Completed = true;
 
