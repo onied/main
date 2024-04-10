@@ -10,6 +10,8 @@ namespace Courses.Services;
 public class ManualReviewService(
     IUserRepository userRepository,
     IManualReviewTaskUserAnswerRepository manualReviewTaskUserAnswerRepository,
+    ICheckTaskManagementService checkTaskManagementService,
+    IUserTaskPointsRepository userTaskPointsRepository,
     IMapper mapper) : IManualReviewService
 {
     private async Task<Results<Ok<ManualReviewTaskUserAnswer>, NotFound, UnauthorizedHttpResult,
@@ -46,9 +48,14 @@ public class ManualReviewService(
             return (dynamic)result.Result;
         var answer = ok.Value!;
         var problem = await manualReviewTaskUserAnswerRepository.ReviewAnswer(reviewTaskDto, answer);
-        if (problem == null)
-            return TypedResults.Ok();
-        return problem;
+        if (problem != null)
+            return problem;
+        var pointsInfo = (await userTaskPointsRepository
+                .GetUserTaskPointsByUserAndBlock(userId, answer.Task.TasksBlock.Module.CourseId,
+                    answer.Task.TasksBlockId))
+            .ToList();
+        await checkTaskManagementService.ManageTaskBlockCompleted(pointsInfo, answer.UserId, answer.Task.TasksBlockId);
+        return TypedResults.Ok();
     }
 
     public async Task<Results<Ok<List<ManualReviewTaskUserAnswerDto>>, UnauthorizedHttpResult>> GetUncheckedForTeacher(Guid teacherId)
