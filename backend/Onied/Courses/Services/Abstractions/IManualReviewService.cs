@@ -2,7 +2,7 @@ using Courses.Dtos.ManualReviewDtos.Request;
 using Courses.Dtos.ManualReviewDtos.Response;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Courses.Services;
+namespace Courses.Services.Abstractions;
 
 public interface IManualReviewService
 {

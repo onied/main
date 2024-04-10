@@ -95,13 +95,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
 
         modelBuilder.Entity<ManualReviewTaskUserAnswer>()
-            .HasOne<User>(tp => tp.User)
-            .WithMany()
-            .HasForeignKey(tp => tp.UserId);
-        modelBuilder.Entity<ManualReviewTaskUserAnswer>()
-            .HasOne<Task>(tp => tp.Task)
-            .WithMany()
-            .HasForeignKey(tp => tp.TaskId);
+            .HasIndex(answer => answer.ManualReviewTaskUserAnswerId)
+            .IsUnique();
 
         var authorId = Guid.Parse("e768e60f-fa76-46d9-a936-4dd5ecbbf326");
         modelBuilder.Entity<User>().HasData(new User

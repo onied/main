@@ -53,7 +53,7 @@ builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementServi
 builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
-builder.Services.AddScoped<ITaskCheckService, TaskCheckService>();
+builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
 
 var app = builder.Build();
 

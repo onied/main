@@ -13,7 +13,7 @@ namespace Courses.Controllers;
 [Route("api/v1/[controller]/{userId:guid}")]
 public class TeachingController(
     IUserRepository userRepository,
-    ITaskCheckService taskCheckService,
+    IManualReviewService manualReviewService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
@@ -37,21 +37,21 @@ public class TeachingController(
     }
 
     [HttpGet]
-    [Route("check/{taskCheckId:guid}")]
+    [Route("check/{userAnswerId:guid}")]
     public async Task<Results<Ok<ManualReviewTaskUserAnswerDto>, NotFound, UnauthorizedHttpResult, ForbidHttpResult>>
         GetTaskToCheck(
         Guid userId,
-        Guid taskCheckId)
+        Guid userAnswerId)
     {
-        return await taskCheckService.GetTaskCheck(userId, taskCheckId);
+        return await manualReviewService.GetManualReviewTaskUserAnswer(userId, userAnswerId);
     }
 
     [HttpPut]
-    [Route("check/{taskCheckId:guid}")]
+    [Route("check/{userAnswerId:guid}")]
     public async Task<Results<Ok, NotFound, UnauthorizedHttpResult, ForbidHttpResult, ValidationProblem>> CheckTask(
         Guid userId,
-        Guid taskCheckId, [FromBody] ReviewTaskDto reviewTaskDto)
+        Guid userAnswerId, [FromBody] ReviewTaskDto reviewTaskDto)
     {
-        return await taskCheckService.CheckTask(userId, taskCheckId, reviewTaskDto);
+        return await manualReviewService.ReviewUserAnswer(userId, userAnswerId, reviewTaskDto);
     }
 }

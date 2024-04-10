@@ -3,6 +3,7 @@ using System;
 using Courses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courses.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240410082958_InheritedManualReviewAnswerFromUserTaskPoints")]
+    partial class InheritedManualReviewAnswerFromUserTaskPoints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -721,13 +724,9 @@ namespace Courses.Migrations
                         .HasColumnType("character varying(15000)")
                         .HasColumnName("content");
 
-                    b.Property<Guid>("ManualReviewTaskUserAnswerId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("manual_review_task_user_answer_id");
-
-                    b.HasIndex("ManualReviewTaskUserAnswerId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_user_task_points_manual_review_task_user_answer_id");
+                        .HasColumnName("id");
 
                     b.ToTable("user_task_points", (string)null);
 
