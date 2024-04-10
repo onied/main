@@ -34,7 +34,7 @@ type TaskInfo = {
 
 type TaskCheckInfo = {
   task: TaskInfo;
-  contents: string;
+  content: string;
   checked: boolean;
   points: number;
 };
@@ -165,7 +165,7 @@ function CheckTaskComponent() {
       </div>
       <div className={classes.contents}>
         <div className={classes.contentsText}>
-          <Markdown>{taskInfo.contents}</Markdown>
+          <Markdown>{taskInfo.content}</Markdown>
         </div>
       </div>
       <div className={classes.pointsContainerContainer}>
