@@ -23,11 +23,13 @@ public class CheckTasksService : ICheckTasksService
         {
             TaskType.SingleAnswer or TaskType.MultipleAnswers => CheckTask((VariantsTask)task, input),
             TaskType.InputAnswer => CheckTask((InputTask)task, input),
-            TaskType.ManualReview => new UserTaskPoints()
+            TaskType.ManualReview => new ManualReviewTaskUserAnswer
             {
                 TaskId = input.TaskId,
                 Points = 0,
                 Checked = false,
+                Content = input.Text!,
+                ManualReviewTaskUserAnswerId = Guid.NewGuid()
             },
             _ => throw new ArgumentOutOfRangeException()
         };
