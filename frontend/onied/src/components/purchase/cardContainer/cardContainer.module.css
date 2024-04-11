@@ -1,0 +1,21 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 20px;
+  gap: 10px;
+  width: 366px;
+  height: 237px;
+  background: #f6f6f6;
+  /* Border */
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+}
+
+.monthAndYear {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
