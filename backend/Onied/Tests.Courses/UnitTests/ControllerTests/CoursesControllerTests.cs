@@ -18,9 +18,11 @@ public class CoursesControllerTests
     private readonly Mock<ILogger<CoursesController>> _logger = new();
     private readonly IMapper _mapper =
         new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
+    private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
+    private readonly Mock<IUserRepository> _userRepository = new();
     private readonly CoursesController _controller;
     private readonly Fixture _fixture = new();
 
@@ -31,6 +33,8 @@ public class CoursesControllerTests
             _mapper,
             _courseRepository.Object,
             _blockRepository.Object,
+            _categoryRepository.Object,
+            _userRepository.Object,
             _blockCompletedInfoRepository.Object);
     }
 

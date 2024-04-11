@@ -58,7 +58,10 @@ function EditPreviewComponent() {
     });
     setIsNewPreviewInfoSaved(false);
     api
-      .put("courses/" + courseId, mapPreviewToEditPreview(previewInfo!))
+      .put(
+        "courses/" + courseId + "/edit",
+        mapPreviewToEditPreview(previewInfo!)
+      )
       .then((response) => {
         setIsNewPreviewInfoSaved(true);
         setPreview(handleNewPreview(response));
@@ -102,10 +105,13 @@ function EditPreviewComponent() {
 
   const requestForAccess = (validPreview: PreviewDto) => {
     api
-      .put("courses/" + courseId, mapPreviewToEditPreview(validPreview))
+      .put(
+        "courses/" + courseId + "/edit",
+        mapPreviewToEditPreview(validPreview)
+      )
       .then((_) => setCanAccess(true))
       .catch((error) => {
-        if (error.response.status == 401) setCanAccess(false);
+        if (error.response.status == 403) setCanAccess(false);
       });
   };
 
@@ -157,16 +163,16 @@ function EditPreviewComponent() {
       });
   }, []);
 
+  if (canAccess !== undefined && !canAccess) return noAccess;
+
+  if (found !== undefined && !found) return notFound;
+
   if (
     previewInfo == undefined ||
     categories == undefined ||
     canAccess == undefined
   )
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;
-
-  if (!canAccess) return noAccess;
-
-  if (!found) return notFound;
 
   return (
     <>

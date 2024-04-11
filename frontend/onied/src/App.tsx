@@ -23,6 +23,7 @@ import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy"
 import EditBlock from "./pages/editCourse/EditBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
 import CheckTask from "./pages/checkTasks/checkTask/checkTask";
+import CreateCourse from "./pages/createCourse/createCourse";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -43,6 +44,7 @@ function App() {
           <Header></Header>
           <main>
             <Routes>
+              <Route path="/course/create" element={<CreateCourse />}></Route>
               <Route
                 path="/course/:courseId/learn/*"
                 element={<Course />}
