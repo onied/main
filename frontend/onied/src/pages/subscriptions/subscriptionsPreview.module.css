@@ -4,10 +4,13 @@
     align-items: center;
 }
 
+.contentWrapper{
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 .subscriptionCardsWrapper{
     display: flex;
-    width: 80%;
     flex-direction: row;
-    padding: 2rem;
     justify-content: space-between;
 }

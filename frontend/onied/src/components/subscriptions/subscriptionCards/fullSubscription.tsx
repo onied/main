@@ -1,7 +1,9 @@
-import { SubscriptionInfo } from "../../pages/subscriptions/subscriptionsPreview";
-import classes from "./subscriptions.module.css";
+import { SubscriptionInfo } from "../../../pages/subscriptions/subscriptionsPreview";
+import classes from "./subscriptionCards.module.css";
 import SubscriptionHeader from "./subscriptionHeader";
 import SubscriptionFeatures from "./subscriptionFeatures";
+import { Link } from "react-router-dom";
+import Button from "../../general/button/button";
 
 function FullSubscription(props: { subscriptionInfo: SubscriptionInfo }) {
   return (
@@ -12,6 +14,9 @@ function FullSubscription(props: { subscriptionInfo: SubscriptionInfo }) {
         durationPolicy={props.subscriptionInfo.durationPolicy}
       />
       <SubscriptionFeatures features={props.subscriptionInfo.features} />
+      <Link to="/buySubscription" className={classes.buySubscriptionButton}>
+        <Button>оформить</Button>
+      </Link>
     </div>
   );
 }

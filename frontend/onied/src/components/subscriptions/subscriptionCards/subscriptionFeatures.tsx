@@ -1,4 +1,4 @@
-import classes from "./subscriptions.module.css";
+import classes from "./subscriptionCards.module.css";
 
 function SubscriptionFeatures(props: { features: Array<string> }) {
   return (
