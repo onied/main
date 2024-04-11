@@ -23,6 +23,7 @@ import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy"
 import EditBlock from "./pages/editCourse/EditBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
 import CheckTask from "./pages/checkTasks/checkTask/checkTask";
+import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -58,6 +59,10 @@ function App() {
               <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
               <Route path="/catalog" element={<Catalog />}></Route>
+              <Route
+                path="/subscriptions"
+                element={<SubscriptionsPreview />}
+              ></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route path="/login/2fa" element={<TwoFactor />}></Route>

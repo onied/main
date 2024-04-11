@@ -1,0 +1,39 @@
+.subscriptionCardHeader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.subscriptionCardHeader h1{
+    margin: 0 0 0.5rem 0;
+}
+
+.defaultSubscriptionCard{
+    padding: 1.5rem 3rem;
+    border-radius: 1.25rem;
+    border: 3px solid #DBDBDB;
+}
+
+.fullSubscriptionCard{
+    padding: 1.5rem 3rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(white, white) padding-box,
+    linear-gradient(180deg, #FFCC4D, #9715D3) border-box;
+    border: 4px solid transparent;
+}
+
+.subscriptionFeaturesList ul{
+    padding-left: 0;
+}
+
+.subscriptionFeaturesList li{
+    display: flex;
+    align-items: start;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.subscriptionFeaturesList li::before{
+    content: url("/src/assets/checkmark.svg");
+    margin-right: .5rem;
+}
