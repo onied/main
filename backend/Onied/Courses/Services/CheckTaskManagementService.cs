@@ -2,6 +2,7 @@ using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using OneOf;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
@@ -13,7 +14,7 @@ public class CheckTaskManagementService(
     ICheckTasksService checkTasksService)
     : ICheckTaskManagementService
 {
-    public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
+    public async Task<OneOf<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
         Guid userId, int courseId, int blockId,
         bool includeVariants = false,
         bool includeAnswers = false)
@@ -29,7 +30,7 @@ public class CheckTaskManagementService(
         return TypedResults.Ok(block);
     }
 
-    public Results<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
+    public OneOf<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
         List<UserInputDto> inputsDto,
         TasksBlock block,
         Guid userId)

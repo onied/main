@@ -23,8 +23,9 @@ public class CheckTasksController(
     {
         var response = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true);
-        if (response.Result is not Ok<TasksBlock> ok)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out var ok, out var remainder))
+            return remainder.Match<Results<Ok<List<UserTaskPointsDto>>, NotFound, ForbidHttpResult>>(
+                notFound => notFound, forbid => forbid);
         var block = ok.Value!;
 
         var storedPoints = (await userTaskPointsRepository
@@ -59,15 +60,19 @@ public class CheckTasksController(
     {
         var responseGetTaskBlock = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true, true);
-        if (responseGetTaskBlock.Result is not Ok<TasksBlock> okGetTaskBlock)
-            return (dynamic)responseGetTaskBlock.Result;
+        if (!responseGetTaskBlock.TryPickT0(out var okGetTaskBlock, out var remainderGetTaskBlock))
+            return remainderGetTaskBlock
+                .Match<Results<Ok<List<UserTaskPointsDto>>, NotFound<string>, ForbidHttpResult, BadRequest<string>>>(
+                    _ => TypedResults.NotFound("Task block not found."), forbid => forbid);
 
         var block = okGetTaskBlock.Value!;
 
         var responseGetTaskPoints = checkTaskManagementService
             .GetUserTaskPoints(inputsDto, block, userId);
-        if (responseGetTaskPoints.Result is not Ok<List<UserTaskPoints>> okGetTaskPoints)
-            return (dynamic)responseGetTaskPoints.Result;
+        if (!responseGetTaskPoints.TryPickT0(out var okGetTaskPoints, out var remainderGetTaskPoints))
+            return remainderGetTaskPoints
+                .Match<Results<Ok<List<UserTaskPointsDto>>, NotFound<string>, ForbidHttpResult, BadRequest<string>>>(
+                    notFound => notFound, badRequest => badRequest);
 
         var pointsInfo = okGetTaskPoints.Value!;
 

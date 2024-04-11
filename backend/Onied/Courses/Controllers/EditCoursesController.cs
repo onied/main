@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +20,14 @@ public class EditCoursesController(
     IUpdateTasksBlockService updateTasksBlockService)
 {
     [HttpPut]
-    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, UnauthorizedHttpResult>> EditCourse(int id,
+    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditCourse(int id,
         [FromQuery] string? userId,
         [FromBody] EditCourseDto editCourseDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course> ok)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out var ok, out var remainder))
+            return remainder.Match<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>>(
+                notFound => notFound, forbid => forbid);
 
         var course = ok.Value!;
         var category = await categoryRepository.GetCategoryById(editCourseDto.CategoryId);
@@ -51,8 +51,8 @@ public class EditCoursesController(
         [FromBody] CourseDto courseDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course> ok)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out var ok, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         var course = ok.Value!;
         mapper.Map(courseDto, course);
@@ -68,8 +68,9 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok<int>, NotFound, ForbidHttpResult>>(notFound => notFound,
+                forbid => forbid);
 
         var addedModuleId = await moduleRepository.AddModuleReturnIdAsync(new Module
         {
@@ -88,8 +89,8 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         if (!await moduleRepository.DeleteModuleAsync(moduleId))
             return TypedResults.NotFound();
@@ -106,8 +107,8 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         if (!await moduleRepository.RenameModuleAsync(moduleId, title))
             return TypedResults.NotFound();
@@ -124,8 +125,9 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok<int>, NotFound, ForbidHttpResult>>(notFound => notFound,
+                forbid => forbid);
 
         var module = await moduleRepository.GetModuleAsync(moduleId);
         if (module == null)
@@ -149,8 +151,8 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         if (!await blockRepository.DeleteBlockAsync(blockId))
             return TypedResults.NotFound();
@@ -167,8 +169,8 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         if (!await blockRepository.RenameBlockAsync(blockId, title))
             return TypedResults.NotFound();
@@ -185,8 +187,8 @@ public class EditCoursesController(
         [FromBody] VideoBlockDto videoBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         var block = await blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
@@ -206,8 +208,8 @@ public class EditCoursesController(
         [FromBody] SummaryBlockDto summaryBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok, NotFound, ForbidHttpResult>>(notFound => notFound, forbid => forbid);
 
         var block = await blockRepository.GetSummaryBlock(blockId);
         if (block == null || block.Module.CourseId != id)
@@ -227,8 +229,10 @@ public class EditCoursesController(
         [FromBody] EditTasksBlockDto tasksBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
+        if (!response.TryPickT0(out _, out var remainder))
+            return remainder.Match<Results<Ok<EditTasksBlockDto>, NotFound, ForbidHttpResult>>(
+                notFound => notFound,
+                forbid => forbid);
 
         var block = await blockRepository.GetTasksBlock(blockId);
         if (block == null || block.Module.CourseId != id)
@@ -248,9 +252,9 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        return TypedResults.Ok();
+        return response.Match<Results<Ok, NotFound, ForbidHttpResult>>(
+            _ => TypedResults.Ok(),
+            notFound => notFound,
+            forbid => forbid);
     }
 }
