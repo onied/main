@@ -107,6 +107,7 @@ function CardContainer({
       <PaymentMethodsLogo className={classes.paymentMethods} />
 
       <InputForm
+        className={classes.customNumberInput}
         style={{ width: "100%" }}
         type="number"
         placeholder="Номер карты"
@@ -127,6 +128,7 @@ function CardContainer({
         <div className={classes.monthAndYear}>
           <InputForm
             type="number"
+            className={classes.customNumberInput}
             placeholder="мм"
             value={month}
             onInput={(event: any) => {
@@ -139,6 +141,7 @@ function CardContainer({
           <span>/</span>
           <InputForm
             type="number"
+            className={classes.customNumberInput}
             placeholder="гг"
             value={year}
             onInput={(event: any) => {
@@ -153,6 +156,7 @@ function CardContainer({
         <div className={classes.securityCode}>
           <InputForm
             type="number"
+            className={classes.customNumberInput}
             placeholder="CVC/CVV/CVP"
             value={securityCode}
             onInput={(event: any) => {

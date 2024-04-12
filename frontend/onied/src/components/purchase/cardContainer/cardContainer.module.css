@@ -1,17 +1,14 @@
-* {
-  box-sizing: border-box;
-}
-
-input[type="number"] {
+.customNumberInput {
   -moz-appearance: textfield;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+.customNumberInput::-webkit-outer-spin-button,
+.customNumberInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
 .cardContainer {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -24,6 +21,10 @@ input::-webkit-inner-spin-button {
   /* Border */
   border: 1px solid #dbdbdb;
   border-radius: 0.5rem;
+}
+
+.cardContainer * {
+  box-sizing: border-box;
 }
 
 .cardFooter {
