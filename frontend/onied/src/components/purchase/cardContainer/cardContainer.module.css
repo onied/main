@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .cardContainer {
   display: flex;
   flex-direction: column;
@@ -5,12 +9,22 @@
   align-items: flex-end;
   padding: 20px;
   gap: 10px;
-  width: 366px;
-  height: 237px;
+  width: 450px;
+  height: fit-content;
   background: #f6f6f6;
   /* Border */
   border: 1px solid #dbdbdb;
-  border-radius: 5px;
+  border-radius: 0.5rem;
+}
+
+.cardFooter {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: nowrap;
 }
 
 .monthAndYear {
@@ -18,4 +32,37 @@
   flex-direction: row;
   gap: 5px;
   align-items: center;
+}
+
+.monthAndYear input {
+  width: 3rem;
+  text-align: center;
+}
+
+.monthAndYear input::placeholder {
+  text-align: center;
+}
+
+.securityCode {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: end;
+  width: min-content;
+}
+
+.securityCode input {
+  width: 8rem;
+  text-align: center;
+}
+
+.securityCode input::placeholder {
+  text-align: center;
+}
+
+.securityCode span {
+  width: fit-content;
+  height: max-content;
+  text-align: end;
+  font-weight: lighter;
 }

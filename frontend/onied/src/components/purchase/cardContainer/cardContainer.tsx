@@ -5,11 +5,21 @@ import classes from "./cardContainer.module.css";
 function CardContainer() {
   return (
     <div className={classes.cardContainer}>
-      <PaymentMethodsLogo />
-      <div className={classes.monthAndYear}>
-        <InputForm placeholder="мм" style={{ width: "1.25rem" }} />
-        <span>/</span>
-        <InputForm placeholder="гг" style={{ width: "1.25rem" }} />
+      <PaymentMethodsLogo className={classes.paymentMethods} />
+      <InputForm placeholder="Номер карты" style={{ width: "100%" }} />
+      <InputForm placeholder="Держатель карты" style={{ width: "100%" }} />
+      <div className={classes.cardFooter}>
+        <div className={classes.monthAndYear}>
+          <InputForm placeholder="мм" />
+          <span>/</span>
+          <InputForm placeholder="гг" />
+        </div>
+        <div className={classes.securityCode}>
+          <InputForm placeholder="CVC/CVV/CVP" />
+          <span style={{ textWrap: "wrap" }}>
+            три цифры с оборотной стороны
+          </span>
+        </div>
       </div>
     </div>
   );
