@@ -12,7 +12,7 @@ function PurchasePage() {
   return (
     <>
       <Routes>
-        <Route path="/*" element={NotFound("Страница не найдена")} />
+        <Route path="/*" element={<NotFound>Страница не найдена</NotFound>} />
         <Route path="/course/:courseId" element={<CoursePurchase />} />
         <Route
           path="/subscription/:subscriptionId"
