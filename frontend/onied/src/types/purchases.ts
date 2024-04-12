@@ -40,3 +40,8 @@ export type CardInfo = {
   year: number;
   securityCode: number;
 };
+
+export type CoursePurchaseInfo = {
+  id: number;
+  title: string;
+};

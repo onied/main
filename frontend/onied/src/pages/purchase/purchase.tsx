@@ -9,8 +9,8 @@ function PurchasePage() {
   return (
     <>
       <Routes>
-        <Route path="/*" element={<Navigate to="/purchases/courses" />} />
-        <Route path="/courses" element={<CoursePurchase />} />
+        <Route path="/*" element={<Navigate to="/purchases/course" />} />
+        <Route path="/course/:courseId" element={<CoursePurchase />} />
         <Route path="/subscription" element={<></>} />
         <Route path="/certificate" element={<></>} />
       </Routes>
