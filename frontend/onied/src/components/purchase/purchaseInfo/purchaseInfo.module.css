@@ -1,8 +1,6 @@
-* {
-  box-sizing: border-box;
-}
-
 .purchaseInfoContainer {
+  box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -15,6 +13,10 @@
   border-width: 1px 0px;
   border-style: solid;
   border-color: #d9d9d9;
+}
+
+.purchaseInfoContainer * {
+  box-sizing: border-box;
 }
 
 .title {
