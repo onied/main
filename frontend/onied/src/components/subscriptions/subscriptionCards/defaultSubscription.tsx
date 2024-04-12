@@ -14,7 +14,10 @@ function DefaultSubscription(props: { subscriptionInfo: SubscriptionInfo }) {
         durationPolicy={props.subscriptionInfo.durationPolicy}
       />
       <SubscriptionFeatures features={props.subscriptionInfo.features} />
-      <Link to="/buySubscription" className={classes.buySubscriptionButton}>
+      <Link
+        to={`/purchases/subscription/${props.subscriptionInfo.subscriptionId}`}
+        className={classes.buySubscriptionButton}
+      >
         <Button>оформить</Button>
       </Link>
     </div>

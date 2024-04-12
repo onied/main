@@ -3,13 +3,13 @@ import classes from "./subscriptionCards.module.css";
 function SubscriptionFeatures(props: { features: Array<string> }) {
   return (
     <div className={classes.subscriptionFeaturesList}>
-      {props.features.map((feature) => (
-        <ul>
-          <li>
+      <ul>
+        {props.features.map((feature, index) => (
+          <li key={index}>
             <span>{feature}</span>
           </li>
-        </ul>
-      ))}
+        ))}
+      </ul>
     </div>
   );
 }

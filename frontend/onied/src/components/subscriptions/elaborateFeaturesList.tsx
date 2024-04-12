@@ -9,11 +9,21 @@ function ElaborateFeaturesList(props: {
   return (
     <div className={classes.outerGrid}>
       <div className={classes.innerGrid}>
-        <div className={classes.gridItem}>Особенности</div>
-        <div className={classes.gridItem}>Бесплатный</div>
-        <div className={classes.gridItem}>Базовый</div>
-        {props.featureDescriptions.map((featureInfo) => (
-          <>
+        <div
+          className={`${classes.gridItem} ${classes.featureDescriptionsTitle}`}
+        >
+          Особенности
+        </div>
+        <div className={`${classes.gridItem} ${classes.freeSubscriptionTitle}`}>
+          Бесплатный
+        </div>
+        <div
+          className={`${classes.gridItem} ${classes.defaultSubscriptionTitle}`}
+        >
+          Базовый
+        </div>
+        {props.featureDescriptions.map((featureInfo, index) => (
+          <div key={index} style={{ display: "contents" }}>
             <div className={classes.gridItem}>
               {featureInfo.featureDescription}
             </div>
@@ -31,13 +41,17 @@ function ElaborateFeaturesList(props: {
                 featureInfo.default
               )}
             </div>
-          </>
+          </div>
         ))}
       </div>
       <div className={classes.lastColumnWrapper}>
-        <div className={classes.gridItemLastColumn}>Полный</div>
-        {props.featureDescriptions.map((featureInfo) => (
-          <div className={classes.gridItemLastColumn}>
+        <div
+          className={`${classes.gridItemLastColumn} ${classes.fullSubscriptionTitle}`}
+        >
+          Полный
+        </div>
+        {props.featureDescriptions.map((featureInfo, index) => (
+          <div className={classes.gridItemLastColumn} key={index}>
             {typeof featureInfo.full === "boolean" ? (
               <img src={featureInfo.full ? Checkmark : Cross} />
             ) : (

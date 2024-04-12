@@ -18,11 +18,13 @@ function SubscriptionsPreview() {
   useEffect(() => {
     setTimeout(() => {
       setDefaultSubscriptionInfo({
+        subscriptionId: 1,
         price: 2000,
         durationPolicy: "на одного пользователя в месяц",
         features: ["3 активных платных курса"],
       });
       setFullSubscriptionInfo({
+        subscriptionId: 2,
         price: 10000,
         durationPolicy: "на одного пользователя в месяц",
         features: [
@@ -112,6 +114,7 @@ function SubscriptionsPreview() {
 export default SubscriptionsPreview;
 
 export type SubscriptionInfo = {
+  subscriptionId: number;
   price: number;
   durationPolicy: string;
   features: Array<string>;

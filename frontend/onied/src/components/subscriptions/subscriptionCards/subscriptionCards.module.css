@@ -46,6 +46,7 @@
     align-items: start;
     font-size: 1.25rem;
     font-weight: 600;
+    padding-bottom: .5rem;
 }
 
 .subscriptionFeaturesList li::before{
