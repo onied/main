@@ -18,9 +18,10 @@ function CertificatePurchase() {
   const navigate = useNavigate();
 
   const { courseId } = useParams();
-  const [course, setCourse] = useState<PurchaseInfoData | null | undefined>(
-    undefined
-  );
+  const [certificate, setCertificate] = useState<
+    PurchaseInfoData | null | undefined
+  >(undefined);
+
   const [card, setCard] = useState<CardInfo | null>();
   const [error, setError] = useState<string | null>();
 
@@ -28,22 +29,25 @@ function CertificatePurchase() {
     api
       .get("/courses/" + courseId)
       .then((response: any) => {
-        setCourse(response.data as PurchaseInfoData);
+        const purchaseInfo = response.data as PurchaseInfoData;
+        purchaseInfo.price = -1; // должно быть удалено к моменту внедрения сертификатов
+        setCertificate(purchaseInfo);
       })
       .catch((error) => {
-        if (error.response.status == 404) setCourse(null);
+        if (error.response.status == 404) setCertificate(null);
       });
   }, []);
 
-  if (course === undefined) return <BeatLoader color="var(--accent-color)" />;
-  if (course === null) return <NotFound>Курс не найден</NotFound>;
+  if (certificate === undefined)
+    return <BeatLoader color="var(--accent-color)" />;
+  if (certificate === null) return <NotFound>Курс не найден</NotFound>;
 
   return (
     <div className={classes.certificatePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
-        title={course.title}
-        price={course.price}
+        title={certificate.title}
+        price={certificate.price}
         purchaseType={PurchaseType.Certificate}
       />
       {error != null && <div className={classes.error}>{error}</div>}
