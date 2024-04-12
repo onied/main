@@ -1,0 +1,9 @@
+.logoContaier {
+  width: fit-content;
+  height: fit-content;
+}
+.logoContaier img {
+  object-fit: cover;
+  max-width: 100%;
+  height: fit-content;
+}
