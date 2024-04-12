@@ -41,7 +41,7 @@ export type CardInfo = {
   securityCode: number;
 };
 
-export type CoursePurchaseInfo = {
+export type PurchaseInfoData = {
   id: number;
   title: string;
   price: number;

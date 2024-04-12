@@ -3,7 +3,7 @@ import Button from "../../general/button/button";
 import CardContainer from "../cardContainer";
 import PurchaseInfo from "../purchaseInfo/purchaseInfo";
 
-import classes from "./coursePurchase.module.css";
+import classes from "./certificatePurchase.module.css";
 import {
   CardInfo,
   PurchaseInfoData,
@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
 
-function CoursePurchase() {
+function CertificatePurchase() {
   const NotFound = <h2>Курс не найден</h2>;
 
   const navigate = useNavigate();
@@ -40,12 +40,12 @@ function CoursePurchase() {
   if (course === null) return NotFound;
 
   return (
-    <div className={classes.coursePurchaseContainer}>
+    <div className={classes.certificatePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
         title={course.title}
         price={course.price}
-        purchaseType={PurchaseType.Course}
+        purchaseType={PurchaseType.Certificate}
       />
       {error != null && <div className={classes.error}>{error}</div>}
       <form
@@ -81,4 +81,4 @@ function CoursePurchase() {
   );
 }
 
-export default CoursePurchase;
+export default CertificatePurchase;

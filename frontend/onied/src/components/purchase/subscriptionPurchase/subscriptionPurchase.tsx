@@ -3,7 +3,7 @@ import Button from "../../general/button/button";
 import CardContainer from "../cardContainer";
 import PurchaseInfo from "../purchaseInfo/purchaseInfo";
 
-import classes from "./coursePurchase.module.css";
+import classes from "./subscriptionPurchase.module.css";
 import {
   CardInfo,
   PurchaseInfoData,
@@ -13,39 +13,45 @@ import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
 
-function CoursePurchase() {
+function SubscriptionPurchase() {
   const NotFound = <h2>Курс не найден</h2>;
 
   const navigate = useNavigate();
 
-  const { courseId } = useParams();
-  const [course, setCourse] = useState<PurchaseInfoData | null | undefined>(
-    undefined
-  );
+  const { subscriptionId } = useParams();
+  const [subscription, setSubscription] = useState<
+    PurchaseInfoData | null | undefined
+  >(undefined);
   const [card, setCard] = useState<CardInfo | null>();
   const [error, setError] = useState<string | null>();
 
   useEffect(() => {
-    api
-      .get("/courses/" + courseId)
-      .then((response: any) => {
-        setCourse(response.data as PurchaseInfoData);
-      })
-      .catch((error) => {
-        if (error.response.status == 404) setCourse(null);
-      });
+    // api
+    //   .get("/subscriptions/" + courseId)
+    //   .then((response: any) => {
+    //     setCourse(response.data as CoursePurchaseInfo);
+    //   })
+    //   .catch((error) => {
+    //     if (error.response.status == 404) setCourse(null);
+    //   });
+    const stub: PurchaseInfoData = {
+      id: 1,
+      title: "для серьезных людей",
+      price: 100_500,
+    };
+    setSubscription(stub);
   }, []);
 
-  if (course === undefined) return <BeatLoader />;
-  if (course === null) return NotFound;
+  if (subscription === undefined) return <BeatLoader />;
+  if (subscription === null) return NotFound;
 
   return (
-    <div className={classes.coursePurchaseContainer}>
+    <div className={classes.subscriptionPurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
-        title={course.title}
-        price={course.price}
-        purchaseType={PurchaseType.Course}
+        title={subscription.title}
+        price={subscription.price}
+        purchaseType={PurchaseType.Subscription}
       />
       {error != null && <div className={classes.error}>{error}</div>}
       <form
@@ -81,4 +87,4 @@ function CoursePurchase() {
   );
 }
 
-export default CoursePurchase;
+export default SubscriptionPurchase;

@@ -4,7 +4,11 @@ import PaymentMethodsLogo from "../paymentMethods";
 import classes from "./cardContainer.module.css";
 import { CardInfo } from "../../../types/purchase";
 
-function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
+function CardContainer({
+  onChange,
+}: {
+  onChange: (card: CardInfo | null) => void;
+}) {
   const [cardNumber, setCardNumber] = useState<string>();
   const [cardHolder, setCardHolder] = useState<string>();
 
@@ -22,10 +26,10 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
     setter(value.match(validationRegex) ? value : _default);
   };
 
-  const customSetCardNumer = (event: any) => {
+  const customSetCardNumber = (event: any) => {
     const value = event.target.value;
-    const validation = /^\d{13,19}$/;
-    customSet(value, setCardNumber, validation);
+    const validation = /^\d{0,19}$/;
+    customSet(value, setCardNumber, validation, cardNumber);
   };
 
   const customSetCardHolder = (event: any) => {
@@ -36,14 +40,15 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
 
   const customSetMonth = (event: any) => {
     const value = event.target.value;
-    const validation = /^\d{2}$/;
+    const validation = /^\d{1,2}$/;
     customSet(
       value,
       (value: string) => {
         const avaliableMonth = Math.max(0, Math.min(12, Number(value)));
         setMonth(avaliableMonth);
       },
-      validation
+      validation,
+      month
     );
   };
 
@@ -56,7 +61,8 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
         const avaliableYear = Math.max(0, Math.min(99, Number(value)));
         setYear(avaliableYear);
       },
-      validation
+      validation,
+      year
     );
   };
 
@@ -66,7 +72,8 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
     customSet(
       value,
       (value: string) => setSecurityCode(Number(value)),
-      validation
+      validation,
+      securityCode
     );
   };
 
@@ -79,20 +86,19 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
       securityCode: securityCode,
     });
 
-    if (
+    const card: CardInfo | null =
       [cardNumber, cardHolder, month, year, securityCode].some(
         (value: any) => value == null
-      )
-    )
-      return;
-
-    const card: CardInfo = {
-      number: cardNumber!,
-      holder: cardHolder!,
-      month: month!,
-      year: year!,
-      securityCode: securityCode!,
-    };
+      ) ||
+      (cardNumber != null && (cardNumber.length > 19 || cardNumber.length < 13))
+        ? null
+        : {
+            number: cardNumber!,
+            holder: cardHolder!,
+            month: month!,
+            year: year!,
+            securityCode: securityCode!,
+          };
     onChange(card);
   }, [cardNumber, cardHolder, month, year, securityCode]);
 
@@ -105,7 +111,8 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
         type="number"
         placeholder="Номер карты"
         value={cardNumber}
-        onChange={customSetCardNumer}
+        onChange={customSetCardNumber}
+        required
       />
 
       <InputForm
@@ -113,6 +120,7 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
         placeholder="Держатель карты"
         value={cardHolder}
         onChange={customSetCardHolder}
+        required
       />
 
       <div className={classes.cardFooter}>
@@ -126,6 +134,7 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
                 event.target.value = event.target.value.slice(1);
             }}
             onChange={customSetMonth}
+            required
           />
           <span>/</span>
           <InputForm
@@ -137,6 +146,7 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
                 event.target.value = event.target.value.slice(1);
             }}
             onChange={customSetYear}
+            required
           />
         </div>
 
@@ -150,6 +160,7 @@ function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
                 event.target.value = event.target.value.slice(1);
             }}
             onChange={customSetSecurityCode}
+            required
           />
           <span style={{ textWrap: "wrap" }}>
             три цифры с оборотной стороны
