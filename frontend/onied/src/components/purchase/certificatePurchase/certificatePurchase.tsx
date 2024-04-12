@@ -34,7 +34,7 @@ function CertificatePurchase() {
       });
   }, []);
 
-  if (course === undefined) return <BeatLoader />;
+  if (course === undefined) return <BeatLoader color="var(--accent-color)" />;
   if (course === null) return NotFound("Курс не найден");
 
   return (

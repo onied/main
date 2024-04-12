@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
+import NotFound from "../../general/responses/notFound/notFound";
 
 function SubscriptionPurchase() {
   const navigate = useNavigate();
@@ -40,7 +41,8 @@ function SubscriptionPurchase() {
     setSubscription(stub);
   }, []);
 
-  if (subscription === undefined) return <BeatLoader />;
+  if (subscription === undefined)
+    return <BeatLoader color="var(--accent-color)" />;
   if (subscription === null) return NotFound("Курс не найден");
 
   return (
