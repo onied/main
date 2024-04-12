@@ -14,8 +14,6 @@ import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
 
 function SubscriptionPurchase() {
-  const NotFound = <h2>Курс не найден</h2>;
-
   const navigate = useNavigate();
 
   const { subscriptionId } = useParams();
@@ -43,7 +41,7 @@ function SubscriptionPurchase() {
   }, []);
 
   if (subscription === undefined) return <BeatLoader />;
-  if (subscription === null) return NotFound;
+  if (subscription === null) return NotFound("Курс не найден");
 
   return (
     <div className={classes.subscriptionPurchaseContainer}>

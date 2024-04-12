@@ -14,8 +14,6 @@ import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
 
 function CertificatePurchase() {
-  const NotFound = <h2>Курс не найден</h2>;
-
   const navigate = useNavigate();
 
   const { courseId } = useParams();
@@ -37,7 +35,7 @@ function CertificatePurchase() {
   }, []);
 
   if (course === undefined) return <BeatLoader />;
-  if (course === null) return NotFound;
+  if (course === null) return NotFound("Курс не найден");
 
   return (
     <div className={classes.certificatePurchaseContainer}>

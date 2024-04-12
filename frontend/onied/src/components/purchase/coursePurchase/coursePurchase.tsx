@@ -12,10 +12,9 @@ import {
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
+import NotFound from "../../general/responses/notFound/notFound";
 
 function CoursePurchase() {
-  const NotFound = <h2>Курс не найден</h2>;
-
   const navigate = useNavigate();
 
   const { courseId } = useParams();
@@ -37,7 +36,7 @@ function CoursePurchase() {
   }, []);
 
   if (course === undefined) return <BeatLoader />;
-  if (course === null) return NotFound;
+  if (course === null) return NotFound("Курс не найден");
 
   return (
     <div className={classes.coursePurchaseContainer}>
