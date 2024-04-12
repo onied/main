@@ -4,7 +4,7 @@ import PaymentMethodsLogo from "../paymentMethods";
 import classes from "./cardContainer.module.css";
 import { CardInfo } from "../../../types/purchases";
 
-function CardContainer() {
+function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
   const [cardNumber, setCardNumber] = useState<string>();
   const [cardHolder, setCardHolder] = useState<string>();
 
@@ -16,9 +16,10 @@ function CardContainer() {
   const customSet = (
     value: string,
     setter: (value: any) => void,
-    validationRegex: RegExp
+    validationRegex: RegExp,
+    _default: any | null = null
   ) => {
-    setter(value.match(validationRegex) ? value : null);
+    setter(value.match(validationRegex) ? value : _default);
   };
 
   const customSetCardNumer = (event: any) => {
@@ -29,8 +30,8 @@ function CardContainer() {
 
   const customSetCardHolder = (event: any) => {
     const value = event.target.value.toUpperCase();
-    const validation = /^[A-Z\s]+$/;
-    customSet(value, setCardHolder, validation);
+    const validation = /^[A-Z\s\-]+$/;
+    customSet(value, setCardHolder, validation, cardHolder);
   };
 
   const customSetMonth = (event: any) => {
@@ -92,8 +93,8 @@ function CardContainer() {
       year: year!,
       securityCode: securityCode!,
     };
-    console.log("!");
-  });
+    onChange(card);
+  }, [cardNumber, cardHolder, month, year, securityCode]);
 
   return (
     <div className={classes.cardContainer}>
