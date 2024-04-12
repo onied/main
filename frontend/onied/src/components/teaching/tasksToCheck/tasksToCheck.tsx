@@ -2,7 +2,6 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Arrow from "../../../assets/arrow.svg";
-import "./muiAccordionOverride.css";
 import classes from "./taskChecking.module.css";
 import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
@@ -131,20 +130,19 @@ function TasksToCheck() {
                 <span>{courseWithTask.tasksToCheck.length}</span>
               </div>
             </AccordionSummary>
-            {courseWithTask.tasksToCheck.map((task) => (
-              <AccordionDetails
-                key={task.taskId}
-                className={classes.accordionDetails}
-              >
-                <TaskToCheckDescription {...task}></TaskToCheckDescription>
-                <Link
-                  to={task.taskId}
-                  className={classes.checkButton}
+            <div className={classes.accordionDetailsWrapper}>
+              {courseWithTask.tasksToCheck.map((task) => (
+                <AccordionDetails
+                  key={task.taskId}
+                  className={classes.accordionDetails}
                 >
-                  проверить
-                </Link>
-              </AccordionDetails>
-            ))}
+                  <TaskToCheckDescription {...task}></TaskToCheckDescription>
+                  <Link to={task.taskId} className={classes.checkButton}>
+                    проверить
+                  </Link>
+                </AccordionDetails>
+              ))}
+            </div>
           </Accordion>
         ))}
       </div>

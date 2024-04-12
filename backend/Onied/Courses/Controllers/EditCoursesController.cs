@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ public class EditCoursesController(
     IUpdateTasksBlockService updateTasksBlockService)
 {
     [HttpPut]
-    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, UnauthorizedHttpResult>> EditCourse(int id,
+    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditCourse(int id,
         [FromQuery] string? userId,
         [FromBody] EditCourseDto editCourseDto)
     {
@@ -114,6 +113,8 @@ public class EditCoursesController(
 
         return TypedResults.Ok();
     }
+
+
 
     [HttpPost]
     [Route("add-block/{moduleId:int}")]

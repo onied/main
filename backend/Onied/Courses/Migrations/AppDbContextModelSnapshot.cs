@@ -505,6 +505,12 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("course_id");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)")
+                        .HasColumnName("discriminator");
+
                     b.Property<int>("Points")
                         .HasColumnType("integer")
                         .HasColumnName("points");
@@ -512,16 +518,17 @@ namespace Courses.Migrations
                     b.HasKey("UserId", "TaskId")
                         .HasName("pk_user_task_points");
 
-                    b.HasIndex("CourseId")
-                        .HasDatabaseName("ix_user_task_points_course_id");
+                    b.HasIndex("CourseId");
 
-                    b.HasIndex("TaskId")
-                        .HasDatabaseName("ix_user_task_points_task_id");
+                    b.HasIndex("TaskId");
 
-                    b.HasIndex("UserId", "CourseId")
-                        .HasDatabaseName("ix_user_task_points_user_id_course_id");
+                    b.HasIndex("UserId", "CourseId");
 
                     b.ToTable("user_task_points", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("UserTaskPoints");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("course_moderator", b =>
@@ -702,6 +709,29 @@ namespace Courses.Migrations
                             TasksBlockId = 5,
                             Title = "2. Чипи чипи чапа чапа дуби дуби даба даба?"
                         });
+                });
+
+            modelBuilder.Entity("Courses.Models.ManualReviewTaskUserAnswer", b =>
+                {
+                    b.HasBaseType("Courses.Models.UserTaskPoints");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(15000)
+                        .HasColumnType("character varying(15000)")
+                        .HasColumnName("content");
+
+                    b.Property<Guid>("ManualReviewTaskUserAnswerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("manual_review_task_user_answer_id");
+
+                    b.HasIndex("ManualReviewTaskUserAnswerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_task_points_manual_review_task_user_answer_id");
+
+                    b.ToTable("user_task_points", (string)null);
+
+                    b.HasDiscriminator().HasValue("ManualReviewTaskUserAnswer");
                 });
 
             modelBuilder.Entity("Courses.Models.Block", b =>

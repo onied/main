@@ -23,11 +23,20 @@ function GeneralTask({ task, index, taskPoints, onChange }) {
         taskTitle={task.title}
         pointInfo={{
           checked: taskPoints != null && taskPoints.points != null,
-          points: taskPoints != null && taskPoints.points != null ? taskPoints.points : 0,
+          points:
+            taskPoints != null && taskPoints.points != null
+              ? taskPoints.points
+              : 0,
           maxPoints: task.maxPoints,
         }}
       ></TaskTitle>
-      <div className={classes.taskBody}>{bodies[task.taskType]({ task: task, onChange: handleChange })}</div>
+      <div className={classes.taskBody}>
+        {bodies[task.taskType]({
+          task: task,
+          onChange: handleChange,
+          initialValue: taskPoints?.content,
+        })}
+      </div>
     </div>
   );
 }

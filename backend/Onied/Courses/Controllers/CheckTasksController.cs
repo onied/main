@@ -28,24 +28,27 @@ public class CheckTasksController(
         var block = ok.Value!;
 
         var storedPoints = (await userTaskPointsRepository
-                .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId))
-            .Where(utp => utp.Checked).ToList();
+            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId)).ToList();
 
-        var points = block.Tasks.Select(
-            task => storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id)
-                    ?? (task.TaskType is TaskType.ManualReview
-                        ? null
-                        : new UserTaskPoints
-                        {
-                            UserId = userId,
-                            TaskId = task.Id,
-                            CourseId = courseId,
-                            Points = 0,
-                            Checked = false
-                        })
+        var points = block.Tasks.Select(task =>
+            {
+                var points = storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id);
+                if (points == null)
+                    return new UserTaskPointsDto
+                    {
+                        TaskId = task.Id,
+                        Points = null
+                    };
+                var dto = mapper.Map<UserTaskPointsDto>(points);
+                if (!points.Checked)
+                    dto.Points = null;
+                if (points is ManualReviewTaskUserAnswer manualReviewTaskUserAnswer)
+                    dto.Content = manualReviewTaskUserAnswer.Content;
+                return dto;
+            }
         ).ToList();
 
-        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(points));
+        return TypedResults.Ok(points);
     }
 
     [HttpPost]
@@ -78,10 +81,23 @@ public class CheckTasksController(
             .ManageTaskBlockCompleted(pointsInfo, userId, blockId);
 
         var pointsPrepared = block.Tasks
-            .Select(task => task.TaskType is TaskType.ManualReview
-                ? null
-                : pointsInfo.SingleOrDefault(tp => tp.TaskId == task.Id));
+            .Select(task =>
+            {
+                var points = pointsInfo.SingleOrDefault(tp => tp.TaskId == task.Id);
+                if (points == null)
+                    return new UserTaskPointsDto
+                    {
+                        TaskId = task.Id,
+                        Points = null
+                    };
+                var dto = mapper.Map<UserTaskPointsDto>(points);
+                if (!points.Checked)
+                    dto.Points = null;
+                if (points is ManualReviewTaskUserAnswer manualReviewTaskUserAnswer)
+                    dto.Content = manualReviewTaskUserAnswer.Content;
+                return dto;
+            }).ToList();
 
-        return TypedResults.Ok(mapper.Map<List<UserTaskPointsDto>>(pointsPrepared));
+        return TypedResults.Ok(pointsPrepared);
     }
 }
