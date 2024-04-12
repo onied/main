@@ -5,7 +5,7 @@ function InputForm(props) {
     <input
       type="text"
       {...props}
-      className={props.className + " " + classes.inputform}
+      className={[props.className, classes.inputform].join(" ").trim()}
     ></input>
   );
 }
