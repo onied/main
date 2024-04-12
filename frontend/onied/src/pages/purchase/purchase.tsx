@@ -3,17 +3,16 @@ import { useProfile } from "../../hooks/profile/useProfile";
 import CoursePurchase from "../../components/purchase/coursePurchase";
 import SubscriptionPurchase from "../../components/purchase/subscriptionPurchase";
 import CertificatePurchase from "../../components/purchase/certificatePurchase";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 function PurchasePage() {
-  const NotFound = <h2>Страница не найдена</h2>;
-
   const [profile, loading] = useProfile();
   if (profile == null && !loading) return <Navigate to="/login"></Navigate>;
 
   return (
     <>
       <Routes>
-        <Route path="/*" element={NotFound} />
+        <Route path="/*" element={NotFound("Страница не найдена")} />
         <Route path="/course/:courseId" element={<CoursePurchase />} />
         <Route
           path="/subscription/:subscriptionId"
