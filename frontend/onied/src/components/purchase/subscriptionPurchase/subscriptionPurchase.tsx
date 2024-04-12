@@ -43,7 +43,7 @@ function SubscriptionPurchase() {
 
   if (subscription === undefined)
     return <BeatLoader color="var(--accent-color)" />;
-  if (subscription === null) return NotFound("Курс не найден");
+  if (subscription === null) return <NotFound>Подписка не найдена</NotFound>;
 
   return (
     <div className={classes.subscriptionPurchaseContainer}>

@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { BeatLoader } from "react-spinners";
+import NotFound from "../../general/responses/notFound/notFound";
 
 function CertificatePurchase() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ function CertificatePurchase() {
   }, []);
 
   if (course === undefined) return <BeatLoader color="var(--accent-color)" />;
-  if (course === null) return NotFound("Курс не найден");
+  if (course === null) return <NotFound>Курс не найден</NotFound>;
 
   return (
     <div className={classes.certificatePurchaseContainer}>
