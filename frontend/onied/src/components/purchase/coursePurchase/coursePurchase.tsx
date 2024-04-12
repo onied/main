@@ -4,7 +4,7 @@ import CardContainer from "../cardContainer";
 import PurchaseInfo from "../purchaseInfo/purchaseInfo";
 
 import classes from "./coursePurchase.module.css";
-import { CoursePurchaseInfo } from "../../../types/purchases";
+import { CoursePurchaseInfo, PurchaseType } from "../../../types/purchase";
 import { useEffect, useState } from "react";
 import { useProfile } from "../../../hooks/profile/useProfile";
 import api from "../../../config/axios";
@@ -37,7 +37,11 @@ function CoursePurchase() {
   return (
     <div className={classes.coursePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
-      <PurchaseInfo />
+      <PurchaseInfo
+        title={course.title}
+        price={course.price}
+        purchaseType={PurchaseType.Course}
+      />
       <CardContainer onChange={(a) => {}} />
       <div className={classes.purchaseFooter}>
         <Button>оплатить</Button>

@@ -8,8 +8,8 @@
 .coursePurchaseContainer {
   margin: 40px auto;
   padding: 30px 30px;
-  width: 35%;
-  min-width: fit-content;
+  width: 40%;
+  min-width: min-content;
   height: fit-content;
 
   display: flex;

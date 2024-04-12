@@ -44,4 +44,5 @@ export type CardInfo = {
 export type CoursePurchaseInfo = {
   id: number;
   title: string;
+  price: number;
 };

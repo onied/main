@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import InputForm from "../../general/inputform/inputform";
 import PaymentMethodsLogo from "../paymentMethods";
 import classes from "./cardContainer.module.css";
-import { CardInfo } from "../../../types/purchases";
+import { CardInfo } from "../../../types/purchase";
 
 function CardContainer({ onChange }: { onChange: (card: CardInfo) => void }) {
   const [cardNumber, setCardNumber] = useState<string>();

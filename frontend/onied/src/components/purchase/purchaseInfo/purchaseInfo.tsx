@@ -1,19 +1,21 @@
-import { useState } from "react";
-import { PurchaseType } from "../../../types/purchases";
+import { PurchaseType } from "../../../types/purchase";
 
 import classes from "./purchaseInfo.module.css";
 
-function PurchaseInfo() {
+function PurchaseInfo({
+  title,
+  price,
+  purchaseType,
+}: {
+  title: string;
+  price: number;
+  purchaseType: PurchaseType;
+}) {
   const PurchaseTypeDescription = {
     [PurchaseType.Course]: "Курс",
     [PurchaseType.Certificate]: "Сертификат",
     [PurchaseType.Subscription]: "Подписка",
   };
-  const [title, setTitle] = useState<string>("Для серьезных людей");
-  const [purchaseType, setPurchaseType] = useState<PurchaseType>(
-    PurchaseType.Subscription
-  );
-  const [price, setPrice] = useState<number>(100_500);
 
   return (
     <div className={classes.purchaseInfoContainer}>
