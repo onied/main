@@ -1,0 +1,29 @@
+.pageTitle {
+  width: 100%;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  text-align: start;
+}
+
+.coursePurchaseContainer {
+  margin: 40px auto;
+  padding: 30px 30px;
+  width: 35%;
+  min-width: fit-content;
+  height: fit-content;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.purchaseFooter {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.purchaseFooter button {
+  margin-block-start: 0;
+}
