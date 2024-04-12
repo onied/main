@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import CardContainer from "../../components/purchase/cardContainer/cardContainer";
 import { useProfile } from "../../hooks/profile/useProfile";
+import PurchaseInfo from "../../components/purchase/purchaseInfo/purchaseInfo";
 
 function PurchasePage() {
   const [profile, loading] = useProfile();
@@ -10,7 +11,17 @@ function PurchasePage() {
     <>
       <Routes>
         <Route path="/*" element={<Navigate to="/purchases/courses" />} />
-        <Route path="/courses" element={<CardContainer />} />
+        <Route
+          path="/courses"
+          element={
+            <>
+              <div style={{ height: "20px" }}></div>
+              <PurchaseInfo />
+              <div style={{ height: "20px" }}></div>
+              <CardContainer />
+            </>
+          }
+        />
         <Route path="/subscription" element={<></>} />
         <Route path="/certificate" element={<></>} />
       </Routes>

@@ -43,6 +43,10 @@
   text-align: center;
 }
 
+.monthAndYear span {
+  font-weight: lighter;
+}
+
 .securityCode {
   display: flex;
   flex-direction: column;
@@ -64,5 +68,6 @@
   width: fit-content;
   height: max-content;
   text-align: end;
+  font-size: 10pt;
   font-weight: lighter;
 }
