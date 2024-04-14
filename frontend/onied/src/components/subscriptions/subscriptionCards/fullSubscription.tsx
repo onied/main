@@ -9,7 +9,7 @@ function FullSubscription(props: { subscriptionInfo: SubscriptionInfo }) {
   return (
     <div className={classes.fullSubscriptionCard}>
       <SubscriptionHeader
-        subscriptionType={"Полный"}
+        subscriptionType={props.subscriptionInfo.subscriptionType}
         price={props.subscriptionInfo.price}
         durationPolicy={props.subscriptionInfo.durationPolicy}
       />

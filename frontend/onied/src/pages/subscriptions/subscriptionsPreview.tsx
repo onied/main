@@ -19,12 +19,14 @@ function SubscriptionsPreview() {
     setTimeout(() => {
       setDefaultSubscriptionInfo({
         subscriptionId: 1,
+        subscriptionType: SubscriptionType.Default,
         price: 2000,
         durationPolicy: "на одного пользователя в месяц",
         features: ["3 активных платных курса"],
       });
       setFullSubscriptionInfo({
         subscriptionId: 2,
+        subscriptionType: SubscriptionType.Full,
         price: 10000,
         durationPolicy: "на одного пользователя в месяц",
         features: [
@@ -113,8 +115,14 @@ function SubscriptionsPreview() {
 
 export default SubscriptionsPreview;
 
+export enum SubscriptionType {
+  Default,
+  Full,
+}
+
 export type SubscriptionInfo = {
   subscriptionId: number;
+  subscriptionType: SubscriptionType;
   price: number;
   durationPolicy: string;
   features: Array<string>;

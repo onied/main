@@ -9,7 +9,7 @@ function DefaultSubscription(props: { subscriptionInfo: SubscriptionInfo }) {
   return (
     <div className={classes.defaultSubscriptionCard}>
       <SubscriptionHeader
-        subscriptionType={"Базовый"}
+        subscriptionType={props.subscriptionInfo.subscriptionType}
         price={props.subscriptionInfo.price}
         durationPolicy={props.subscriptionInfo.durationPolicy}
       />

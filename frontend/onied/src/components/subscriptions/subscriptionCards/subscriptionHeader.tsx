@@ -1,12 +1,13 @@
 import classes from "./subscriptionCards.module.css";
+import { SubscriptionType } from "../../../pages/subscriptions/subscriptionsPreview";
 
 function SubscriptionHeader(props: {
-  subscriptionType: string;
+  subscriptionType: SubscriptionType;
   price: number;
   durationPolicy: string;
 }) {
   const slantStyle =
-    props.subscriptionType.toLowerCase() == "полный"
+    props.subscriptionType == SubscriptionType.Full
       ? { fontStyle: "italic" }
       : undefined;
 
@@ -17,7 +18,11 @@ function SubscriptionHeader(props: {
   return (
     <div className={classes.subscriptionCardHeader}>
       <div className={classes.subscriptionTitle} style={slantStyle}>
-        <h1>{props.subscriptionType}</h1>
+        <h1>
+          {props.subscriptionType == SubscriptionType.Full
+            ? "Полный"
+            : "Базовый"}
+        </h1>
       </div>
       <div className={classes.subscriptionPrice}>
         <h1>{getPriceWithSpaces(props.price)} ₽</h1>
