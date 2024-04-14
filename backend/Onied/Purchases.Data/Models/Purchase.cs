@@ -8,8 +8,7 @@ public class Purchase
     public User User { get; set; } = null!;
 
     public int PurchaseDetailsId { get; set; }
-    public PurchaseDetails PurchaseDetails { get; set; } = null!;
+    public PurchaseDetails.PurchaseDetails PurchaseDetails { get; set; } = null!;
 
-    public PurchaseType PurchaseType { get; set; }
     public decimal Price { get; set; }
 }

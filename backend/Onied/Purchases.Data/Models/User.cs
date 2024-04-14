@@ -6,4 +6,6 @@ public class User
 
     public int SubscriptionId { get; set; }
     public Subscription Subscription { get; set; } = null!;
+
+    public List<Purchase> Purchases { get; set; } = null!;
 }

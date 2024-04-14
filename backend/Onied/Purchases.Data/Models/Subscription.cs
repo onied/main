@@ -8,4 +8,6 @@ public class Subscription
     public bool CertificatesEnabled { get; set; }
     public int ActiveCoursesNumber { get; set; }
     public decimal Price { get; set; }
+
+    public List<User> Users { get; set; } = null!;
 }

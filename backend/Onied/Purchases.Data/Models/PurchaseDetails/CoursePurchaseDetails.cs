@@ -1,4 +1,4 @@
-namespace Purchases.Data.Models;
+namespace Purchases.Data.Models.PurchaseDetails;
 
 public class CoursePurchaseDetails : PurchaseDetails
 {
