@@ -14,37 +14,41 @@ function ManageModerators() {
   useEffect(() => {
     setTimeout(() => {
       setLoadStatus(200);
-      //setCourseWithStudents({ courseId: 0, students: [], title: "" });
-      setCourseWithStudents({
-        courseId: 1,
-        title: "Название курса. Как я встретил вашу маму. Осуждаю",
-        students: [
-          {
-            studentId: 1,
-            firstName: "Иван",
-            lastName: "Иванов",
-            isModerator: false,
-          },
-          {
-            studentId: 2,
-            firstName: "Иван",
-            lastName: "Иванов",
-            isModerator: false,
-          },
-          {
-            studentId: 3,
-            firstName: "Иван",
-            lastName: "Иванов",
-            isModerator: true,
-          },
-          {
-            studentId: 4,
-            firstName: "Иван",
-            lastName: "Иванов",
-            isModerator: false,
-          },
-        ],
-      });
+      setCourseWithStudents({ courseId: 0, students: [], title: "" });
+      // setCourseWithStudents({
+      //   courseId: 1,
+      //   title: "Название курса. Как я встретил вашу маму. Осуждаю",
+      //   students: [
+      //     {
+      //       studentId: 1,
+      //       firstName: "Иван",
+      //       lastName: "Иванов",
+      //       avatarHref: undefined,
+      //       isModerator: false,
+      //     },
+      //     {
+      //       studentId: 2,
+      //       firstName: "Иван",
+      //       lastName: "Иванов",
+      //       avatarHref: undefined,
+      //       isModerator: false,
+      //     },
+      //     {
+      //       studentId: 3,
+      //       firstName: "Иван",
+      //       lastName: "Иванов",
+      //       avatarHref: undefined,
+      //       isModerator: true,
+      //     },
+      //     {
+      //       studentId: 4,
+      //       firstName: "Иван",
+      //       lastName: "Иванов",
+      //       avatarHref: undefined,
+      //       isModerator: false,
+      //     },
+      //   ],
+      // });
     }, 750);
   }, []);
 
