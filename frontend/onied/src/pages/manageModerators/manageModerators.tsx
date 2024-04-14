@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import ModeratorDescription from "./moderatorDescription";
 import BeatLoader from "react-spinners/BeatLoader";
-import NoAccess from "../../general/responses/noAccess/noAccess";
-import NoContent from "../../general/responses/noContent/noContent";
+import NoAccess from "../../components/general/responses/noAccess/noAccess";
+import NoContent from "../../components/general/responses/noContent/noContent";
 
 function ManageModerators() {
   const [loadStatus, setLoadStatus] = useState(0);
@@ -14,39 +14,37 @@ function ManageModerators() {
   useEffect(() => {
     setTimeout(() => {
       setLoadStatus(200);
-      setCourseWithStudents({ courseId: 0, students: [], title: "" });
-      /*setCourseWithStudents(
-        {
-          courseId: 1,
-          title: "Название курса. Как я встретил вашу маму. Осуждаю",
-          students: [
-            {
-              studentId: 1,
-              firstName: "Иван",
-              lastName: "Иванов",
-              isModerator: false
-            },
-            {
-              studentId: 2,
-              firstName: "Иван",
-              lastName: "Иванов",
-              isModerator: false
-            },
-            {
-              studentId: 3,
-              firstName: "Иван",
-              lastName: "Иванов",
-              isModerator: true
-            },
-            {
-              studentId: 4,
-              firstName: "Иван",
-              lastName: "Иванов",
-              isModerator: false
-            },
-          ]
-        }
-      );*/
+      //setCourseWithStudents({ courseId: 0, students: [], title: "" });
+      setCourseWithStudents({
+        courseId: 1,
+        title: "Название курса. Как я встретил вашу маму. Осуждаю",
+        students: [
+          {
+            studentId: 1,
+            firstName: "Иван",
+            lastName: "Иванов",
+            isModerator: false,
+          },
+          {
+            studentId: 2,
+            firstName: "Иван",
+            lastName: "Иванов",
+            isModerator: false,
+          },
+          {
+            studentId: 3,
+            firstName: "Иван",
+            lastName: "Иванов",
+            isModerator: true,
+          },
+          {
+            studentId: 4,
+            firstName: "Иван",
+            lastName: "Иванов",
+            isModerator: false,
+          },
+        ],
+      });
     }, 750);
   }, []);
 

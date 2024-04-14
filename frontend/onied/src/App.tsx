@@ -26,7 +26,7 @@ import CheckTask from "./pages/checkTasks/checkTask/checkTask";
 import CreateCourse from "./pages/createCourse/createCourse";
 import PurchasePage from "./pages/purchase/purchase";
 import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
-import ManageModerators from "./components/teaching/manageModerators/manageModerators";
+import ManageModerators from "./pages/manageModerators/manageModerators";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
