@@ -5,6 +5,7 @@ import ModeratorDescription from "./moderatorDescription";
 import BeatLoader from "react-spinners/BeatLoader";
 import NoAccess from "../../components/general/responses/noAccess/noAccess";
 import NoContent from "../../components/general/responses/noContent/noContent";
+import NotFound from "../../components/general/responses/notFound/notFound";
 
 function ManageModerators() {
   const [loadStatus, setLoadStatus] = useState(0);
@@ -64,6 +65,8 @@ function ManageModerators() {
       return <Navigate to="/login"></Navigate>;
     case 403:
       return <NoAccess>У вас нет прав для доступа к этой странице</NoAccess>;
+    case 404:
+      return <NotFound>Курс не найден</NotFound>;
   }
 
   if (loadStatus !== 200 || courseWithStudents === undefined) return <></>;
