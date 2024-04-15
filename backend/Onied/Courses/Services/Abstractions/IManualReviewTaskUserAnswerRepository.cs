@@ -1,5 +1,4 @@
 using Courses.Dtos.ManualReviewDtos.Request;
-using Courses.Dtos.ManualReviewDtos.Response;
 using Courses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 
