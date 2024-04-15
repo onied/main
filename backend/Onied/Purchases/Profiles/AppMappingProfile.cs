@@ -1,5 +1,6 @@
 using AutoMapper;
 using Purchases.Data.Models;
+using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
@@ -10,6 +11,17 @@ public class AppMappingProfile : Profile
 {
     public AppMappingProfile()
     {
+        CreateMap<PurchaseRequestDto, Purchase>()
+            .ForMember(
+                dest => dest.PurchaseDetails,
+                opt => opt.Ignore());
+
+        CreateMap<Course, CourseDto>();
+        CreateMap<CoursePurchaseDetails, PurchaseDetailsDto>();
+
+        CreateMap<PurchaseDetails, PurchaseDetailsDto>()
+            .Include<CoursePurchaseDetails, PurchaseDetailsDto>();
+
         CreateMap<Course, PreparedPurchaseResponseDto>()
             .ForMember(
                 dest => dest.PurchaseType,
@@ -18,9 +30,7 @@ public class AppMappingProfile : Profile
             .ForMember(
                 dest => dest.PurchaseType,
                 opt => opt.Ignore());
-        CreateMap<PurchaseRequestDto, Purchase>()
-            .ForMember(
-                dest => dest.PurchaseDetails,
-                opt => opt.Ignore());
+
+        CreateMap<Purchase, PurchaseInfoResponseDto>();
     }
 }
