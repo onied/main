@@ -1,56 +1,46 @@
 import classes from "./manageModerators.module.css";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import ModeratorDescription from "./moderatorDescription";
 import BeatLoader from "react-spinners/BeatLoader";
 import NoAccess from "../../components/general/responses/noAccess/noAccess";
 import NoContent from "../../components/general/responses/noContent/noContent";
 import NotFound from "../../components/general/responses/notFound/notFound";
+import api from "../../config/axios";
 
 function ManageModerators() {
+  const { courseId } = useParams();
+
   const [loadStatus, setLoadStatus] = useState(0);
   const [courseWithStudents, setCourseWithStudents] =
     useState<CourseWithStudents>();
+  const id = Number(courseId);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoadStatus(200);
-      setCourseWithStudents({ courseId: 0, students: [], title: "" });
-      // setCourseWithStudents({
-      //   courseId: 1,
-      //   title: "Название курса. Как я встретил вашу маму. Осуждаю",
-      //   students: [
-      //     {
-      //       studentId: 1,
-      //       firstName: "Иван",
-      //       lastName: "Иванов",
-      //       avatarHref: undefined,
-      //       isModerator: false,
-      //     },
-      //     {
-      //       studentId: 2,
-      //       firstName: "Иван",
-      //       lastName: "Иванов",
-      //       avatarHref: undefined,
-      //       isModerator: false,
-      //     },
-      //     {
-      //       studentId: 3,
-      //       firstName: "Иван",
-      //       lastName: "Иванов",
-      //       avatarHref: undefined,
-      //       isModerator: true,
-      //     },
-      //     {
-      //       studentId: 4,
-      //       firstName: "Иван",
-      //       lastName: "Иванов",
-      //       avatarHref: undefined,
-      //       isModerator: false,
-      //     },
-      //   ],
-      // });
-    }, 750);
+    if (isNaN(id)) setLoadStatus(404);
+
+    api
+      .get("courses/" + courseId + "/moderators")
+      .then((response) => {
+        console.log(response.data);
+        setCourseWithStudents(response.data);
+        setLoadStatus(200);
+      })
+      .catch((error) => {
+        if (error.statusCode) {
+          switch (Number(error.statusCode)) {
+            case 401:
+              setLoadStatus(401);
+              break;
+            case 403:
+              setLoadStatus(403);
+              break;
+            case 404:
+              setLoadStatus(404);
+              break;
+          }
+        }
+      });
   }, []);
 
   switch (loadStatus) {
@@ -78,23 +68,61 @@ function ManageModerators() {
       </NoContent>
     );
 
-  const appointModerator = (studentId: number) => {
+  const appointModerator = (studentId: string) => {
     const newStudents = courseWithStudents.students.map((s) => {
       if (s.studentId === studentId) {
         s.isModerator = true;
       }
       return s;
     });
+    api
+      .patch("courses/" + id + "/moderators/add", null, {
+        params: { studentId: studentId },
+      })
+      .catch((error) => {
+        if (error.statusCode) {
+          switch (Number(error.statusCode)) {
+            case 401:
+              setLoadStatus(401);
+              break;
+            case 403:
+              setLoadStatus(403);
+              break;
+            case 404:
+              setLoadStatus(404);
+              break;
+          }
+        }
+      });
     setCourseWithStudents({ ...courseWithStudents, students: newStudents });
   };
 
-  const deleteModerator = (studentId: number) => {
+  const deleteModerator = (studentId: string) => {
     const newStudents = courseWithStudents.students.map((s) => {
       if (s.studentId === studentId) {
         s.isModerator = false;
       }
       return s;
     });
+    api
+      .patch("courses/" + id + "/moderators/delete", null, {
+        params: { studentId: studentId },
+      })
+      .catch((error) => {
+        if (error.statusCode) {
+          switch (Number(error.statusCode)) {
+            case 401:
+              setLoadStatus(401);
+              break;
+            case 403:
+              setLoadStatus(403);
+              break;
+            case 404:
+              setLoadStatus(404);
+              break;
+          }
+        }
+      });
     setCourseWithStudents({ ...courseWithStudents, students: newStudents });
   };
 
@@ -133,7 +161,7 @@ type CourseWithStudents = {
 };
 
 export type Student = {
-  studentId: number;
+  studentId: string;
   firstName: string;
   lastName: string;
   avatarHref?: string;
