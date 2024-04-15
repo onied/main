@@ -1,0 +1,16 @@
+.customArrow{
+    position: absolute;
+    top: 40%;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #4A4A4A;
+}
+
+.left{
+    left: -0.5rem;
+}
+
+.right{
+    right: -0.5rem;
+}

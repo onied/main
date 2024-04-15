@@ -1,0 +1,21 @@
+.contentWrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.5rem 4rem;
+}
+
+.carouselWrapper{
+    padding: 2rem;
+    background-color: #EFEFEF75;
+    border-radius: 10px;
+}
+
+.sliderWrapper{
+}
+
+.sliderItem{
+    max-width: 15vw;
+    padding: 1rem 0;
+}
+
