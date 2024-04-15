@@ -26,6 +26,8 @@ import CheckTask from "./pages/checkTasks/checkTask/checkTask";
 import CreateCourse from "./pages/createCourse/createCourse";
 import PurchasePage from "./pages/purchase/purchase";
 import OrderCertificatePage from "./pages/certificates/orderCertificate";
+import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
+import ManageModerators from "./pages/manageModerators/manageModerators";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -61,7 +63,15 @@ function App() {
               ></Route>
               <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
+              <Route
+                path="/course/:courseId/manageModerators"
+                element={<ManageModerators />}
+              />
               <Route path="/catalog" element={<Catalog />}></Route>
+              <Route
+                path="/subscriptions"
+                element={<SubscriptionsPreview />}
+              ></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route path="/login/2fa" element={<TwoFactor />}></Route>
