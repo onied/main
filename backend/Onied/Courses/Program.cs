@@ -1,9 +1,8 @@
 using Courses;
+using Courses.Extensions;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Courses.Services.Consumers;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,23 +21,8 @@ builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>(
 builder.Services.AddCors();
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
     .AddNegotiate();
-builder.Services.AddMassTransit(x =>
-{
-    x.AddConsumer<UserCreatedConsumer>();
-    x.AddConsumer<ProfileUpdatedConsumer>();
-    x.AddConsumer<ProfilePhotoUpdatedConsumer>();
 
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host(builder.Configuration["RabbitMQ:Host"], builder.Configuration["RabbitMQ:VHost"], h =>
-        {
-            h.Username(builder.Configuration["RabbitMQ:Username"]);
-            h.Password(builder.Configuration["RabbitMQ:Password"]);
-        });
-
-        cfg.ConfigureEndpoints(context);
-    });
-});
+builder.Services.AddMassTransitConfigured();
 
 builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();

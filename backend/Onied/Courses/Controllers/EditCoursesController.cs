@@ -2,6 +2,7 @@
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,8 @@ public class EditCoursesController(
     ICourseManagementService courseManagementService,
     ICategoryRepository categoryRepository,
     IModuleRepository moduleRepository,
-    IUpdateTasksBlockService updateTasksBlockService)
+    IUpdateTasksBlockService updateTasksBlockService,
+    ICourseUpdatedProducer courseUpdatedProducer)
 {
     [HttpPut]
     public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditCourse(int id,
@@ -39,6 +41,7 @@ public class EditCoursesController(
         course.Category = category;
         course.CategoryId = category.Id;
         await courseRepository.UpdateCourseAsync(course);
+        await courseUpdatedProducer.PublishAsync(course);
         return TypedResults.Ok(mapper.Map<PreviewDto>(course));
     }
 

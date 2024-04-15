@@ -71,5 +71,6 @@ public class AppMappingProfile : Profile
         //MassTransit
         CreateMap<UserCreated, User>();
         CreateMap<CourseCreated, Course>().ReverseMap();
+        CreateMap<CourseUpdated, Course>().ReverseMap();
     }
 }

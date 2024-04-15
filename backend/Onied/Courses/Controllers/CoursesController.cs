@@ -2,6 +2,7 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseCreatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ public class CoursesController : ControllerBase
     private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
+    private readonly ICourseCreatedProducer _courseCreatedProducer;
 
     public CoursesController(
         ILogger<CoursesController> logger,
@@ -25,7 +27,8 @@ public class CoursesController : ControllerBase
         IBlockRepository blockRepository,
         ICategoryRepository categoryRepository,
         IUserRepository userRepository,
-        IBlockCompletedInfoRepository blockCompletedInfoRepository)
+        IBlockCompletedInfoRepository blockCompletedInfoRepository,
+        ICourseCreatedProducer courseCreatedProducer)
     {
         _mapper = mapper;
         _courseRepository = courseRepository;
@@ -33,6 +36,7 @@ public class CoursesController : ControllerBase
         _userRepository = userRepository;
         _blockCompletedInfoRepository = blockCompletedInfoRepository;
         _categoryRepository = categoryRepository;
+        _courseCreatedProducer = courseCreatedProducer;
     }
 
     [HttpGet]
@@ -136,6 +140,7 @@ public class CoursesController : ControllerBase
             PictureHref = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg",
             CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id
         });
+        await _courseCreatedProducer.PublishAsync(newCourse);
         return TypedResults.Ok(new CreateCourseResponseDto
         {
             Id = newCourse.Id
