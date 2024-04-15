@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Models;
-g
 
 namespace Purchases.Controllers;
 
