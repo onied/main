@@ -37,6 +37,14 @@ public class TeachingController(
     }
 
     [HttpGet]
+    [Route("tasks-to-check-list")]
+    public async Task<Results<Ok<List<CourseWithManualReviewTasksDto>>, UnauthorizedHttpResult>>
+        GetTasksToCheckList(Guid userId)
+    {
+        return await manualReviewService.GetTasksToCheckForTeacher(userId);
+    }
+
+    [HttpGet]
     [Route("check/{userAnswerId:guid}")]
     public async Task<Results<Ok<ManualReviewTaskUserAnswerDto>, NotFound, UnauthorizedHttpResult, ForbidHttpResult>>
         GetTaskToCheck(

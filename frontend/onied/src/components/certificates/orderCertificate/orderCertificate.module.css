@@ -1,0 +1,16 @@
+.map {
+  padding: 0 2rem;
+}
+
+.orderContainer {
+  width: 100%;
+}
+
+.error {
+  font-weight: 600;
+  font-size: 14px;
+  color: #ed4956;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+}

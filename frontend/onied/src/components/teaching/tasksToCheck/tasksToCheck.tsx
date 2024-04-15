@@ -10,86 +10,24 @@ import TaskToCheckDescription from "./taskToCheckDescription";
 import BeatLoader from "react-spinners/BeatLoader";
 import NoAccess from "../../general/responses/noAccess/noAccess";
 import NoContent from "../../general/responses/noContent/noContent";
+import api from "../../../config/axios";
 
 function TasksToCheck() {
   const [loadStatus, setLoadStatus] = useState(0);
-  const [coursesWithTasksList, setTaskList] = useState<
+  const [coursesWithTasksList, setCoursesWithTasksList] = useState<
     Array<CourseWithTasks> | undefined
   >();
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoadStatus(200);
-      setTaskList([]);
-      // setTaskList([
-      //   {
-      //     courseId: 1,
-      //     courseName: "Название курса.",
-      //     tasksToCheck: [
-      //       {
-      //         taskId: "1",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //       {
-      //         taskId: "2",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //       {
-      //         taskId: "3",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //       {
-      //         taskId: "4",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     courseId: 2,
-      //     courseName: "Название курса. Второй",
-      //     tasksToCheck: [
-      //       {
-      //         taskId: "5",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //       {
-      //         taskId: "6",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     courseId: 3,
-      //     courseName: "Название курса. Третий",
-      //     tasksToCheck: [
-      //       {
-      //         taskId: "7",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //       {
-      //         taskId: "8",
-      //         moduleName: "Первый модуль",
-      //         blockName: "Первый блок",
-      //         taskTitle: "Напишите эссе",
-      //       },
-      //     ],
-      //   },
-      // ]);
-    }, 750);
+    api
+      .get("teaching/tasks-to-check-list")
+      .then((response) => {
+        setCoursesWithTasksList(response.data);
+        setLoadStatus(200);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   switch (loadStatus) {
@@ -125,7 +63,7 @@ function TasksToCheck() {
               className={classes.accordionSummary}
               expandIcon={<img src={Arrow} />}
             >
-              <p>{courseWithTask.courseName}</p>
+              <p>{courseWithTask.title}</p>
               <div className={classes.uncheckedTasksCount}>
                 <span>{courseWithTask.tasksToCheck.length}</span>
               </div>
@@ -133,11 +71,11 @@ function TasksToCheck() {
             <div className={classes.accordionDetailsWrapper}>
               {courseWithTask.tasksToCheck.map((task) => (
                 <AccordionDetails
-                  key={task.taskId}
+                  key={task.index}
                   className={classes.accordionDetails}
                 >
                   <TaskToCheckDescription {...task}></TaskToCheckDescription>
-                  <Link to={task.taskId} className={classes.checkButton}>
+                  <Link to={task.index} className={classes.checkButton}>
                     проверить
                   </Link>
                 </AccordionDetails>
@@ -152,15 +90,15 @@ function TasksToCheck() {
 
 type CourseWithTasks = {
   courseId: number;
-  courseName: string;
+  title: string;
   tasksToCheck: Array<TaskToCheckInfo>;
 };
 
 export type TaskToCheckInfo = {
-  taskId: string;
-  moduleName: string;
-  blockName: string;
-  taskTitle: string;
+  index: string;
+  moduleTitle: string;
+  blockTitle: string;
+  title: string;
 };
 
 export default TasksToCheck;
