@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Purchases.Data;
+using Purchases.Extensions;
 using Purchases.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,13 +10,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
-builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
-    optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("PurchasesDatabase"),
-        b => b.MigrationsAssembly("Purchases"))
-        .UseSnakeCaseNamingConvention());
+builder.Services.AddDbContextConfigured();
 builder.Services.AddRepositories();
 
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+
+builder.Services.AddControllers();
+
+builder.Services.AddMassTransitConfigured();
 
 var app = builder.Build();
 
@@ -31,4 +32,5 @@ app.UseHttpsRedirection();
 
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
+app.MapControllers();
 app.Run();

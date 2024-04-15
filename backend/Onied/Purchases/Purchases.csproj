@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MassTransit.Data\MassTransit.Data.csproj" />
       <ProjectReference Include="..\Purchases.Data\Purchases.Data.csproj" />
     </ItemGroup>
 

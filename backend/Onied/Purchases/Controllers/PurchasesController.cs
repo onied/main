@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Purchases.Data.Abstractions;
-using Purchases.Data.Models;
+using Purchases.Dtos.Responses;
 
 namespace Purchases.Controllers;
 
@@ -16,7 +16,7 @@ public class PurchasesController(
         var user = await userRepository.GetAsync(userId, true);
         if (user is null) return TypedResults.NotFound();
 
-        var pInfo = mapper.Map<List<Purchase>>(user.Purchases);
+        var pInfo = mapper.Map<List<PurchaseInfoResponseDto>>(user.Purchases);
         return TypedResults.Ok(pInfo);
     }
 }
