@@ -25,4 +25,8 @@
       <ProjectReference Include="..\MassTransit.Data\MassTransit.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Dtos\ModeratorDtos\Request\" />
+    </ItemGroup>
+
 </Project>
