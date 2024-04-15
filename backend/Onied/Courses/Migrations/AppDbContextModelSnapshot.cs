@@ -537,15 +537,15 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("moderating_courses_id");
 
-                    b.Property<Guid>("User1Id")
+                    b.Property<Guid>("ModeratorsId")
                         .HasColumnType("uuid")
-                        .HasColumnName("user1id");
+                        .HasColumnName("moderators_id");
 
-                    b.HasKey("ModeratingCoursesId", "User1Id")
+                    b.HasKey("ModeratingCoursesId", "ModeratorsId")
                         .HasName("pk_course_moderator");
 
-                    b.HasIndex("User1Id")
-                        .HasDatabaseName("ix_course_moderator_user1id");
+                    b.HasIndex("ModeratorsId")
+                        .HasDatabaseName("ix_course_moderator_moderators_id");
 
                     b.ToTable("course_moderator", (string)null);
                 });
@@ -906,10 +906,10 @@ namespace Courses.Migrations
 
                     b.HasOne("Courses.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("User1Id")
+                        .HasForeignKey("ModeratorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_course_moderator_users_user1id");
+                        .HasConstraintName("fk_course_moderator_users_moderators_id");
                 });
 
             modelBuilder.Entity("Courses.Models.Category", b =>
