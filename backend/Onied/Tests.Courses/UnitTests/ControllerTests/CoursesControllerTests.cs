@@ -6,6 +6,7 @@ using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseCreatedProducer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -23,6 +24,7 @@ public class CoursesControllerTests
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
     private readonly Mock<IUserRepository> _userRepository = new();
+    private readonly Mock<CourseCreatedProducer> _courseCreatedProducer = new();
     private readonly CoursesController _controller;
     private readonly Fixture _fixture = new();
 
@@ -35,7 +37,8 @@ public class CoursesControllerTests
             _blockRepository.Object,
             _categoryRepository.Object,
             _userRepository.Object,
-            _blockCompletedInfoRepository.Object);
+            _blockCompletedInfoRepository.Object,
+            _courseCreatedProducer.Object);
     }
 
     [Fact]
