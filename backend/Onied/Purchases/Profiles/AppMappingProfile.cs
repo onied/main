@@ -1,4 +1,5 @@
 using AutoMapper;
+using MassTransit.Data.Messages;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos;
@@ -36,5 +37,9 @@ public class AppMappingProfile : Profile
                 opt => opt.Ignore());
 
         CreateMap<Purchase, PurchaseInfoResponseDto>();
+
+        CreateMap<UserCreated, User>();
+        CreateMap<CourseUpdated, Course>();
+        CreateMap<CourseCreated, Course>();
     }
 }

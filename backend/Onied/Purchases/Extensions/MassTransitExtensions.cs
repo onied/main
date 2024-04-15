@@ -13,9 +13,12 @@ public static class MassTransitExtensions
                 serviceCollection.BuildServiceProvider()
                     .GetService<IConfiguration>()!;
 
-            x.AddConsumer<CourseCreatedConsumer>();
-            x.AddConsumer<CourseUpdatedConsumer>();
-            x.AddConsumer<UserCreatedConsumer>();
+            x.AddConsumer<CourseCreatedConsumer>()
+                .Endpoint(e => e.Name = "course-created-purchases");
+            x.AddConsumer<CourseUpdatedConsumer>()
+                .Endpoint(e => e.Name = "course-updated-purchases");
+            x.AddConsumer<UserCreatedConsumer>()
+                .Endpoint(e => e.Name = "user-created-purchases");
 
             x.UsingRabbitMq((context, cfg) =>
             {
