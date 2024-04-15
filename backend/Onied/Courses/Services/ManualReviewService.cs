@@ -75,4 +75,13 @@ public class ManualReviewService(
         var result = await manualReviewTaskUserAnswerRepository.GetCheckedTasksToReview(user);
         return TypedResults.Ok(mapper.Map<List<ManualReviewTaskUserAnswerDto>>(result));
     }
+
+    public async Task<Results<Ok<List<CourseWithManualReviewTasksDto>>, UnauthorizedHttpResult>> GetTasksToCheckForTeacher(Guid teacherId)
+    {
+        var user = await userRepository.GetUserWithModeratingAndTeachingCoursesAsync(teacherId);
+        if (user == null)
+            return TypedResults.Unauthorized();
+        var result = await manualReviewTaskUserAnswerRepository.GetUncheckedTasksToReview(user);
+        return TypedResults.Ok(mapper.Map<List<CourseWithManualReviewTasksDto>>(result));
+    }
 }

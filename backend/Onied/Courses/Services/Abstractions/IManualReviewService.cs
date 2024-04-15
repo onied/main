@@ -19,4 +19,7 @@ public interface IManualReviewService
 
     public Task<Results<Ok<List<ManualReviewTaskUserAnswerDto>>, UnauthorizedHttpResult>> GetCheckedForTeacher(
         Guid teacherId);
+
+    public Task<Results<Ok<List<CourseWithManualReviewTasksDto>>, UnauthorizedHttpResult>> GetTasksToCheckForTeacher(
+        Guid teacherId);
 }
