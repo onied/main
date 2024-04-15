@@ -16,7 +16,7 @@ public class PurchasesController(
         var user = await userRepository.GetAsync(userId, true);
         if (user is null) return TypedResults.NotFound();
 
-        var pinfo = mapper.Map<List<Purchase>>(user.Purchases);
-        return TypedResults.Ok(pinfo);
+        var pInfo = mapper.Map<List<Purchase>>(user.Purchases);
+        return TypedResults.Ok(pInfo);
     }
 }
