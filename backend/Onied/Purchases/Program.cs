@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Purchases.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
+builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
+    optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("PurchasesDatabase"),
+        b => b.MigrationsAssembly("Purchases"))
+        .UseSnakeCaseNamingConvention());
 builder.Services.AddRepositories();
 
 var app = builder.Build();
