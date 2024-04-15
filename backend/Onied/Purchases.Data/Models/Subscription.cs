@@ -5,6 +5,7 @@ namespace Purchases.Data.Models;
 public class Subscription
 {
     public int Id { get; set; }
+    public string Title { get; set; }
     public bool CoursesHighlightingEnabled { get; set; }
     public bool AdsEnabled { get; set; }
     public bool CertificatesEnabled { get; set; }

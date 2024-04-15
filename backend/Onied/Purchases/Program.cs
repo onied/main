@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Purchases.Data;
+using Purchases.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
         b => b.MigrationsAssembly("Purchases"))
         .UseSnakeCaseNamingConvention());
 builder.Services.AddRepositories();
+
+builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 
 var app = builder.Build();
 
