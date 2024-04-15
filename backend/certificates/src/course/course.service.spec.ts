@@ -45,7 +45,7 @@ describe("CourseService", () => {
       author: author,
       hasCertificates: true,
     };
-    jest.spyOn(repo, "findOneBy").mockResolvedValueOnce(course);
+    jest.spyOn(repo, "findOne").mockResolvedValueOnce(course);
 
     // Act
 

@@ -11,6 +11,11 @@ export class CourseService {
   ) {}
 
   findOne(id: number): Promise<Course | null> {
-    return this.courseRepository.findOneBy({ id });
+    return this.courseRepository.findOne({
+      where: { id: id },
+      relations: {
+        author: true,
+      },
+    });
   }
 }
