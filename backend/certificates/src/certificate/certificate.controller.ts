@@ -13,7 +13,7 @@ export class CertificateController {
   constructor(private certificateService: CertificateService) {}
   @Get()
   async getCertificatePreview(
-    @Query() userId: string,
+    @Query("userId") userId: string,
     @Param("courseId") courseId: string
   ): Promise<CertificatePreview> {
     const nCourseId = Number(courseId);
