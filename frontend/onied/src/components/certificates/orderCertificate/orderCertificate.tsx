@@ -5,16 +5,20 @@ import Map from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Config from "../../../config/config";
-import { SearchBox } from "@mapbox/search-js-react";
+import {
+  AddressAutofill,
+  SearchBox,
+  useConfirmAddress,
+} from "@mapbox/search-js-react";
 import mapboxgl from "mapbox-gl";
 import PrintCertificate from "../printCertificate/printCertificate";
 import NotFound from "../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../general/responses/forbid/forbid";
 import { useProfile } from "../../../hooks/profile/useProfile";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/axios";
-import { AxiosResponse } from "axios";
+import axios from "axios";
 
 export type CertificateCourseAuthor = {
   firstName: string;
@@ -32,6 +36,8 @@ export type Certificate = {
 };
 
 function OrderCertificate() {
+  const navigate = useNavigate();
+  const confirmAddress = useConfirmAddress();
   const { courseId } = useParams();
   const [profile, loading] = useProfile();
   const [certificateInfo, setCertificateInfo] = useState<
@@ -39,8 +45,36 @@ function OrderCertificate() {
   >();
   const [address, setAddress] = useState<string>("");
   const [loadStatus, setLoadStatus] = useState<number>(0);
+  const [error, setError] = useState<string>("");
   const mapRef = useRef<MapRef>(null);
   const id = Number(courseId);
+
+  const validateAndOrder = () => {
+    setError("");
+    if (address === "") {
+      setError("Укажите адрес.");
+      return;
+    }
+    axios
+      .get("https://api.mapbox.com/search/geocode/v6/forward", {
+        params: {
+          q: address,
+          country: "ru",
+          access_token: Config.MapboxApiKey,
+        },
+      })
+      .then((response) => {
+        if (response.data.type === "FeatureCollection") {
+          const features = response.data.features.filter(
+            (feature: any) => feature.properties.feature_type === "address"
+          );
+          if (features.length === 0) setError("Адрес не найден.");
+          const main = features[0];
+          setAddress(main.properties.full_address);
+          navigate("/purchases/certificate/" + courseId);
+        }
+      });
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -120,12 +154,13 @@ function OrderCertificate() {
               options={{
                 country: "RU",
                 language: "ru",
-                types: "address",
+                types: "address, city",
               }}
               marker={true}
               mapboxgl={mapboxgl}
             />
           </Map>
+          {error ? <div className={classes.error}>{error}</div> : <></>}
         </div>
       </div>
       <div className={classes.footer}>
@@ -136,12 +171,7 @@ function OrderCertificate() {
             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
           ₽
         </h3>
-        <Link
-          to={"/purchases/certificate/" + courseId}
-          style={{ textDecoration: "none" }}
-        >
-          <Button>заказать</Button>
-        </Link>
+        <Button onClick={validateAndOrder}>заказать</Button>
       </div>
     </>
   );
