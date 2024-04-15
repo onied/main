@@ -14,7 +14,7 @@ export class CertificateController {
   @Get()
   async getCertificatePreview(
     @Query() userId: string,
-    @Param() courseId: string
+    @Param("courseId") courseId: string
   ): Promise<CertificatePreview> {
     const nCourseId = Number(courseId);
     if (isNaN(nCourseId)) throw new NotFoundException();
@@ -22,8 +22,6 @@ export class CertificateController {
       userId,
       nCourseId
     );
-    const cr = result as CertificatePreview;
-    if (cr === undefined) throw result;
-    return cr;
+    return result;
   }
 }

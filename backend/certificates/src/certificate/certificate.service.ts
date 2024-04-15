@@ -17,12 +17,12 @@ export class CertificateService {
   async getCertificatePreview(
     userId: string,
     courseId: number
-  ): Promise<CertificatePreview | UnauthorizedException | NotFoundException> {
+  ): Promise<CertificatePreview> {
     const user = await this.userService.findOne(userId);
-    if (user === null) return new UnauthorizedException();
+    if (user === null) throw new UnauthorizedException();
     const course = await this.courseService.findOne(courseId);
     if (course === null || !course.hasCertificates)
-      return new NotFoundException();
+      throw new NotFoundException();
     return {
       price: 1000,
       course: {
