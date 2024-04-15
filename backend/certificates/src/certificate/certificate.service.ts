@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { CertificatePreview } from "../common/types/certificatePreview";
+import { CertificatePreview } from "./dto/response/certificatePreview";
 import { CourseService } from "../course/course.service";
 import { UserService } from "../user/user.service";
 

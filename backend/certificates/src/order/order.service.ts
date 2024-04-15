@@ -13,7 +13,12 @@ export class OrderService {
   ) {}
 
   findOne(id: string): Promise<Order | null> {
-    return this.orderRepository.findOneBy({ id });
+    return this.orderRepository.findOne({
+      where: { id: id },
+      relations: {
+        user: true,
+      },
+    });
   }
 
   async create(user: User, course: Course, address: string): Promise<string> {

@@ -5,7 +5,7 @@ import {
   Param,
   Query,
 } from "@nestjs/common";
-import { CertificatePreview } from "../common/types/certificatePreview";
+import { CertificatePreview } from "./dto/response/certificatePreview";
 import { CertificateService } from "./certificate.service";
 
 @Controller("api/v1/certificate/:courseId")

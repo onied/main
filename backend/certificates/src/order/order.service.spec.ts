@@ -64,7 +64,7 @@ describe("OrderService", () => {
       dateUpdated: new Date(),
       status: Status.CREATED,
     };
-    jest.spyOn(repo, "findOneBy").mockResolvedValueOnce(order);
+    jest.spyOn(repo, "findOne").mockResolvedValueOnce(order);
 
     // Act
 
