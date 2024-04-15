@@ -1,0 +1,16 @@
+.pageWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contentWrapper{
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.subscriptionCardsWrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

@@ -28,14 +28,13 @@ type BlockInfo = {
 
 type TaskInfo = {
   block: BlockInfo;
-  index: number;
   title: string;
   maxPoints: number;
 };
 
 type TaskCheckInfo = {
   task: TaskInfo;
-  contents: string;
+  content: string;
   checked: boolean;
   points: number;
 };
@@ -81,61 +80,27 @@ function CheckTaskComponent() {
         navigate(-1); // go back to task check list
       })
       .catch((error) => {
-        //// ---Commented out for testing purposes---
-        // if (!error.response) return;
-        // if (error.response.status !== 400)
-        //   return setLoadStatus(error.response.status);
-        // if (error.response.data.errors.Points)
-        //// ---Commented out for testing purposes---
-        setErrors({ points: "Значение некорректно." });
+        if (!error.response) return;
+        if (error.response.status !== 400)
+          return setLoadStatus(error.response.status);
+        if (error.response.data.errors.Points)
+          setErrors({ points: "Значение некорректно." });
       });
   };
 
-  //// ---Commented out for testing purposes---
-  // useEffect(() => {
-  //   setLoadStatus(0);
-  //   setTaskInfo(undefined);
-  //   api
-  //     .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
-  //     .then((response) => {
-  //       setTaskInfo(response.data);
-  //       setLoadStatus(200);
-  //     })
-  //     .catch((error) => {
-  //       setLoadStatus(error.response?.status);
-  //     });
-  // }, [taskCheckId]);
-  //// ---Commented out for testing purposes---
-
-  //// ---Written for testing purposes---
   useEffect(() => {
-    setTimeout(() => {
-      setLoadStatus(200);
-      setTaskInfo({
-        task: {
-          block: {
-            module: {
-              course: {
-                title: "Название курса. Как я встретил вашу маму. Осуждаю.",
-              },
-              index: 1,
-              title: "Первый модуль",
-            },
-            index: 2,
-            title: "Второй блок",
-          },
-          index: 4,
-          title: "Напишите эссе на тему: “Как я провел лето”",
-          maxPoints: 5,
-        },
-        contents:
-          "Здравствуйте учитель я нихрена не сделал поставьте 5/5 пжпж asdfadsf",
-        checked: false,
-        points: 0,
+    setLoadStatus(0);
+    setTaskInfo(undefined);
+    api
+      .get("/teaching/check/" + encodeURIComponent(taskCheckId!))
+      .then((response) => {
+        setTaskInfo(response.data);
+        setLoadStatus(200);
+      })
+      .catch((error) => {
+        setLoadStatus(error.response?.status);
       });
-    }, 500);
-  }, []);
-  //// ---Written for testing purposes---
+  }, [taskCheckId]);
 
   if (loadStatus === 0)
     return <BeatLoader color="var(--accent-color)"></BeatLoader>;
@@ -147,7 +112,9 @@ function CheckTaskComponent() {
   return (
     <div className={classes.container}>
       <div className={classes.pageHeader}>
-        <ButtonGoBack onClick={() => navigate(-1)}>⟵ вернуться без сохранения</ButtonGoBack>
+        <ButtonGoBack onClick={() => navigate(-1)}>
+          ⟵ вернуться без сохранения
+        </ButtonGoBack>
         <div className={classes.header}>
           <h1 className={classes.courseTitle}>
             {taskInfo.task.block.module.course.title}
@@ -156,7 +123,7 @@ function CheckTaskComponent() {
             <div className={classes.moduleBlockContainer}>
               <div className={classes.module}>
                 <label htmlFor="moduleTitle" className={classes.label}>
-                  Модуль {taskInfo.task.block.module.index}:
+                  Модуль {taskInfo.task.block.module.index + 1}:
                 </label>
                 <p id="moduleTitle" className={classes.moduleTitle}>
                   {taskInfo.task.block.module.title}
@@ -164,7 +131,7 @@ function CheckTaskComponent() {
               </div>
               <div className={classes.block}>
                 <label htmlFor="blockTitle" className={classes.label}>
-                  Блок {taskInfo.task.block.index}:
+                  Блок {taskInfo.task.block.index + 1}:
                 </label>
                 <p id="blockTitle" className={classes.blockTitle}>
                   {taskInfo.task.block.title}
@@ -173,7 +140,7 @@ function CheckTaskComponent() {
             </div>
             <div className={classes.task}>
               <label htmlFor="taskTitle" className={classes.taskLabel}>
-                Задание {taskInfo.task.index}:
+                Задание:
               </label>
               <p className={classes.taskTitle} id="taskTitle">
                 {taskInfo.task.title}
@@ -198,7 +165,7 @@ function CheckTaskComponent() {
       </div>
       <div className={classes.contents}>
         <div className={classes.contentsText}>
-          <Markdown>{taskInfo.contents}</Markdown>
+          <Markdown>{taskInfo.content}</Markdown>
         </div>
       </div>
       <div className={classes.pointsContainerContainer}>

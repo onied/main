@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  margin: 0 30px;
+  flex-direction: column;
+}
+
+.title {
+  margin-bottom: 0;
+}
+
+.titleCourse {
+  font-size: 24pt;
+  font-weight: 700;
+}
+
+.card {
+  background-color: #dbdbdb60;
+  padding: 22.5px 30px;
+  margin: 0 0 15px 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 1.25;
+}
+
+.appoint {
+  font-size: 24pt;
+  padding: 10px 15px;
+  background-color: white;
+  border: 2px solid #dbdbdb;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #686868;
+}
+
+.delete {
+  color: #ed4956;
+  font-size: 24pt;
+  padding: 10px 15px;
+  background-color: white;
+  border: 2px solid #ed4956;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.profileAvatar {
+  border-radius: 0.5rem;
+}
+
+.studentWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.studentName {
+  margin: auto 20px;
+  font-size: 24pt;
+  font-weight: 700;
+}

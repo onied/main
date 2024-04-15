@@ -23,6 +23,10 @@ import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy"
 import EditBlock from "./pages/editCourse/EditBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
 import CheckTask from "./pages/checkTasks/checkTask/checkTask";
+import CreateCourse from "./pages/createCourse/createCourse";
+import PurchasePage from "./pages/purchase/purchase";
+import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
+import ManageModerators from "./pages/manageModerators/manageModerators";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -43,6 +47,7 @@ function App() {
           <Header></Header>
           <main>
             <Routes>
+              <Route path="/course/create" element={<CreateCourse />}></Route>
               <Route
                 path="/course/:courseId/learn/*"
                 element={<Course />}
@@ -57,7 +62,15 @@ function App() {
               ></Route>
               <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
+              <Route
+                path="/course/:courseId/manageModerators"
+                element={<ManageModerators />}
+              />
               <Route path="/catalog" element={<Catalog />}></Route>
+              <Route
+                path="/subscriptions"
+                element={<SubscriptionsPreview />}
+              ></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route path="/login/2fa" element={<TwoFactor />}></Route>
@@ -74,6 +87,7 @@ function App() {
                 element={<CheckTask />}
               ></Route>
               <Route path="/teaching/*" element={<TeachingPage />}></Route>
+              <Route path="/purchases/*" element={<PurchasePage />}></Route>
             </Routes>
           </main>
         </LoadingContext.Provider>

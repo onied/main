@@ -1,7 +1,8 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Services;
+using Courses.Models;
 using Courses.Services.Abstractions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -12,20 +13,26 @@ public class CoursesController : ControllerBase
 {
     private readonly IBlockRepository _blockRepository;
     private readonly ICourseRepository _courseRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
     public CoursesController(
         ILogger<CoursesController> logger,
         IMapper mapper,
         ICourseRepository courseRepository,
         IBlockRepository blockRepository,
+        ICategoryRepository categoryRepository,
+        IUserRepository userRepository,
         IBlockCompletedInfoRepository blockCompletedInfoRepository)
     {
         _mapper = mapper;
         _courseRepository = courseRepository;
         _blockRepository = blockRepository;
+        _userRepository = userRepository;
         _blockCompletedInfoRepository = blockCompletedInfoRepository;
+        _categoryRepository = categoryRepository;
     }
 
     [HttpGet]
@@ -50,8 +57,7 @@ public class CoursesController : ControllerBase
         var completed =
             await _blockCompletedInfoRepository
                 .GetAllCompletedCourseBlocksByUser(userId, id);
-        var blocksLink = dto.Modules.Select(m => m.Blocks)
-            .Aggregate((prev, next) => prev.Concat(next).ToList());
+        var blocksLink = dto.Modules.SelectMany(m => m.Blocks).ToList();
         foreach (var cm in completed)
             blocksLink.Single(b => b.Id == cm.BlockId).Completed = true;
 
@@ -110,5 +116,29 @@ public class CoursesController : ControllerBase
         if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is not null)
             dto.IsCompleted = true;
         return dto;
+    }
+
+    [HttpPost]
+    [Route("/api/v1/[controller]/create")]
+    public async Task<Results<Ok<CreateCourseResponseDto>, UnauthorizedHttpResult>> CreateCourse(
+        [FromQuery] string? userId)
+    {
+        if (userId == null || !Guid.TryParse(userId, out var authorId))
+            return TypedResults.Unauthorized();
+        var user = await _userRepository.GetUserAsync(authorId);
+        if (user == null)
+            return TypedResults.Unauthorized();
+        var newCourse = await _courseRepository.AddCourseAsync(new Course
+        {
+            AuthorId = user.Id,
+            Title = "Без названия",
+            Description = "Без описания",
+            PictureHref = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg",
+            CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id
+        });
+        return TypedResults.Ok(new CreateCourseResponseDto
+        {
+            Id = newCourse.Id
+        });
     }
 }
