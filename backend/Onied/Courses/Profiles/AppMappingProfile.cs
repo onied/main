@@ -2,6 +2,7 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Dtos.ManualReviewDtos.Response;
 using Courses.Models;
+using Courses.Profiles.Converters;
 using Courses.Profiles.Resolvers;
 using MassTransit.Data.Messages;
 using BlockDto = Courses.Dtos.BlockDto;
@@ -66,7 +67,21 @@ public class AppMappingProfile : Profile
         CreateMap<Task, Dtos.ManualReviewDtos.Response.TaskDto>()
             .ForMember(dest => dest.Block, opt => opt.MapFrom(src => src.TasksBlock));
         CreateMap<ManualReviewTaskUserAnswer, ManualReviewTaskUserAnswerDto>();
-
+        CreateMap<ManualReviewTaskUserAnswer, ManualReviewTaskInfoDto>()
+            .ForMember(dest => dest.Index,
+                opt => opt.MapFrom(src => src.ManualReviewTaskUserAnswerId))
+            .ForMember(dest => dest.Title,
+                opt => opt.MapFrom(src => src.Task.Title))
+            .ForMember(dest => dest.BlockTitle,
+                opt => opt.MapFrom(src => src.Task.TasksBlock.Title))
+            .ForMember(dest => dest.ModuleTitle,
+                opt => opt.MapFrom(src => src.Task.TasksBlock.Module.Title));
+        CreateMap<ManualReviewTaskUserAnswer, CourseWithManualReviewTasksDto>()
+            .ForMember(dest => dest.Title,
+                opt => opt.MapFrom(src => src.Task.TasksBlock.Module.Course.Title));
+        CreateMap<List<ManualReviewTaskUserAnswer>, List<CourseWithManualReviewTasksDto>>()
+            .ConvertUsing<UserAnswerToTasksListConverter>();
+        
 
         //MassTransit
         CreateMap<UserCreated, User>();
