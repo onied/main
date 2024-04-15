@@ -3,7 +3,7 @@ import { CourseService } from "./course.service";
 import { Course } from "./course.entity";
 import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { User } from "src/user/user.entity";
+import { User } from "../user/user.entity";
 
 describe("CourseService", () => {
   let service: CourseService;

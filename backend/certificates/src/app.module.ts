@@ -17,6 +17,7 @@ import { CertificateModule } from "./certificate/certificate.module";
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
+      synchronize: true,
     }),
     UserModule,
     OrderModule,
