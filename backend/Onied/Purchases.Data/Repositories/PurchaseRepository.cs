@@ -16,7 +16,9 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
 
     public async Task AddAsync(Purchase purchase, PurchaseDetails purchaseDetails)
     {
-        await dbContext.Purchases.AddAsync(purchase);
+        var purchaseSaved = await dbContext.Purchases.AddAsync(purchase);
+        await dbContext.SaveChangesAsync();
+        purchaseDetails.Id = purchaseSaved.Entity.Id;
         await dbContext.PurchaseDetails.AddAsync(purchaseDetails);
         await dbContext.SaveChangesAsync();
     }

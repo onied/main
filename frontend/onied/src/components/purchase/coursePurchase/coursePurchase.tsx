@@ -6,6 +6,7 @@ import PurchaseInfo from "../purchaseInfo/purchaseInfo";
 import classes from "./coursePurchase.module.css";
 import {
   CardInfo,
+  Purchase,
   PurchaseInfoData,
   PurchaseType,
 } from "../../../types/purchase";
@@ -18,32 +19,38 @@ function CoursePurchase() {
   const navigate = useNavigate();
 
   const { courseId } = useParams();
-  const [course, setCourse] = useState<PurchaseInfoData | null | undefined>(
-    undefined
+  const [loading, setLoading] = useState<boolean>();
+  const [purchaseInfo, setPurchaseInfo] = useState<PurchaseInfoData | null>(
+    null
   );
   const [card, setCard] = useState<CardInfo | null>();
   const [error, setError] = useState<string | null>();
 
   useEffect(() => {
+    setLoading(true);
     api
       .get("/purchases/new/course/" + courseId)
       .then((response: any) => {
-        setCourse(response.data as PurchaseInfoData);
+        setPurchaseInfo(response.data as PurchaseInfoData);
+        setLoading(false);
       })
       .catch((error) => {
-        if (error.response.status == 404) setCourse(null);
+        if (error.response.status == 404) setPurchaseInfo(null);
+        setLoading(false);
       });
   }, []);
 
-  if (course === undefined) return <BeatLoader color="var(--accent-color)" />;
-  if (course === null) return <NotFound>Курс не найден</NotFound>;
+  if (loading) return <BeatLoader color="var(--accent-color)" />;
+  if (error == null && purchaseInfo === null)
+    return <NotFound>Курс не найден</NotFound>;
+  if (error != null) return <h2>{error}</h2>;
 
   return (
     <div className={classes.coursePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
-        title={course.title}
-        price={course.price}
+        title={purchaseInfo.title}
+        price={purchaseInfo.price}
         purchaseType={PurchaseType.Course}
       />
       {error != null && <div className={classes.error}>{error}</div>}
@@ -56,7 +63,25 @@ function CoursePurchase() {
         }}
         onSubmit={(event) => {
           event.preventDefault();
-          // логика
+          const purchase = {
+            purchaseType: PurchaseType.Course,
+            price: purchaseInfo!.price,
+            cardInfo: card!,
+            courseId: courseId,
+          };
+          setLoading(true);
+          api
+            .post("/purchases/new/course/" + courseId, purchase)
+            .then(() => navigate(-1))
+            .catch((error) => {
+              if (error.response.status == 400)
+                setError("Возникла ошибка при валидации");
+              else if (error.response.status == 403)
+                setError("Вы не можете купить данный курс");
+              else if (error.response.status >= 500)
+                setError("Возникла ошибка на сервере");
+              setLoading(false);
+            });
         }}
       >
         <CardContainer onChange={setCard} />

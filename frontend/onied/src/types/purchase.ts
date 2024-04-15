@@ -1,4 +1,5 @@
 export enum PurchaseType {
+  Any,
   Course,
   Certificate,
   Subscription,
