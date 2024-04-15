@@ -11,50 +11,74 @@ import PrintCertificate from "../printCertificate/printCertificate";
 import NotFound from "../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../general/responses/forbid/forbid";
+import { useProfile } from "../../../hooks/profile/useProfile";
+import { Link, Navigate, useParams } from "react-router-dom";
+import api from "../../../config/axios";
+import { AxiosResponse } from "axios";
 
-type CertificateCourseAuthor = {
+export type CertificateCourseAuthor = {
   firstName: string;
   lastName: string;
 };
 
-type CertificateCourse = {
+export type CertificateCourse = {
   title: string;
   author: CertificateCourseAuthor;
 };
 
-type Certificate = {
+export type Certificate = {
   price: number;
   course: CertificateCourse;
 };
 
 function OrderCertificate() {
+  const { courseId } = useParams();
+  const [profile, loading] = useProfile();
   const [certificateInfo, setCertificateInfo] = useState<
     Certificate | undefined
   >();
   const [address, setAddress] = useState<string>("");
   const [loadStatus, setLoadStatus] = useState<number>(0);
   const mapRef = useRef<MapRef>(null);
+  const id = Number(courseId);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoadStatus(200);
-      setCertificateInfo({
-        price: 1000,
-        course: {
-          title: "Создание голограм на ноутбуке",
-          author: {
-            firstName: "Василий",
-            lastName: "Теркин",
+    if (loading) return;
+    if (isNaN(id)) {
+      setLoadStatus(-1);
+      return;
+    }
+    const decomposeAuthor = (s: string) => {
+      const splitted = s.split(" ");
+      return {
+        firstName: splitted[0],
+        lastName: splitted[1],
+      };
+    };
+    api
+      .get("/courses/" + id)
+      .then((response) => {
+        setCertificateInfo({
+          price: 1000,
+          course: {
+            title: response.data.title,
+            author: decomposeAuthor(response.data.courseAuthor.name),
           },
-        },
+        });
+        setLoadStatus(200);
+      })
+      .catch((e) => {
+        console.log(e);
+        if (e.response != null) setLoadStatus(e.response.status);
+        else setLoadStatus(-1);
       });
-    }, 500);
-  });
+  }, [loading, id]);
 
-  if (loadStatus == 0)
+  if (loadStatus == 0 || loading)
     return (
       <BeatLoader style={{ margin: "3rem" }} color="var(--accent-color)" />
     );
+  if (profile === null) return <Navigate to="/login"></Navigate>;
   if (loadStatus != 200) return <Forbid>Произошла ошибка.</Forbid>;
   if (certificateInfo === undefined) return <NotFound>Курс не найден</NotFound>;
 
@@ -64,7 +88,10 @@ function OrderCertificate() {
         <h1 className={classes.headerTitle}>Заказ сертификата</h1>
       </div>
       <div className={classes.printCertificateWrapper}>
-        <PrintCertificate></PrintCertificate>
+        <PrintCertificate
+          course={certificateInfo.course}
+          profile={profile}
+        ></PrintCertificate>
       </div>
       <div className={classes.orderContainer}>
         <h3 className={classes.h3}>Заказать на адрес:</h3>
@@ -109,7 +136,12 @@ function OrderCertificate() {
             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
           ₽
         </h3>
-        <Button>заказать</Button>
+        <Link
+          to={"/purchases/certificate/" + courseId}
+          style={{ textDecoration: "none" }}
+        >
+          <Button>заказать</Button>
+        </Link>
       </div>
     </>
   );
