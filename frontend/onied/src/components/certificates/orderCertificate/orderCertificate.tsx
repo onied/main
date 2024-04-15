@@ -14,7 +14,6 @@ import Forbid from "../../general/responses/forbid/forbid";
 import { useProfile } from "../../../hooks/profile/useProfile";
 import { Link, Navigate, useParams } from "react-router-dom";
 import api from "../../../config/axios";
-import { AxiosResponse } from "axios";
 
 export type CertificateCourseAuthor = {
   firstName: string;
@@ -48,23 +47,10 @@ function OrderCertificate() {
       setLoadStatus(-1);
       return;
     }
-    const decomposeAuthor = (s: string) => {
-      const splitted = s.split(" ");
-      return {
-        firstName: splitted[0],
-        lastName: splitted[1],
-      };
-    };
     api
-      .get("/courses/" + id)
+      .get("/certificate/" + id)
       .then((response) => {
-        setCertificateInfo({
-          price: 1000,
-          course: {
-            title: response.data.title,
-            author: decomposeAuthor(response.data.courseAuthor.name),
-          },
-        });
+        setCertificateInfo(response.data);
         setLoadStatus(200);
       })
       .catch((e) => {
