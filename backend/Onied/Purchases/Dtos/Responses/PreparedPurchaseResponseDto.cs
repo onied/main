@@ -1,6 +1,6 @@
 using Purchases.Data.Models;
 
-namespace Purchases.Dtos;
+namespace Purchases.Dtos.Responses;
 
 public record PreparedPurchaseResponseDto(
     string Title,

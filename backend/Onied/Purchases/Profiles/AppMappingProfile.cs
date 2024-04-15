@@ -1,6 +1,8 @@
 using AutoMapper;
 using Purchases.Data.Models;
 using Purchases.Dtos;
+using Purchases.Dtos.Requests;
+using Purchases.Dtos.Responses;
 
 namespace Purchases.Profiles;
 
