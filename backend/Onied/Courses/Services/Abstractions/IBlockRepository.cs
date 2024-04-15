@@ -1,13 +1,13 @@
-using Courses.Dtos;
 using Courses.Models;
 using Task = System.Threading.Tasks.Task;
 
-namespace Courses.Services;
+namespace Courses.Services.Abstractions;
 
 public interface IBlockRepository
 {
     public Task<SummaryBlock?> GetSummaryBlock(int id);
     public Task<VideoBlock?> GetVideoBlock(int id);
+
     public Task<TasksBlock?> GetTasksBlock(
         int id,
         bool includeVariants = false,

@@ -2,6 +2,7 @@
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,17 +20,16 @@ public class EditCoursesController(
     IModuleRepository moduleRepository,
     IUpdateTasksBlockService updateTasksBlockService)
 {
-
     [HttpPut]
     public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, UnauthorizedHttpResult>> EditCourse(int id,
         [FromQuery] string? userId,
         [FromBody] EditCourseDto editCourseDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course> ok)
             return (dynamic)response.Result;
 
-        var course = ((Ok<Course>)response.Result).Value!;
+        var course = ok.Value!;
         var category = await categoryRepository.GetCategoryById(editCourseDto.CategoryId);
         if (category == null)
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
@@ -51,10 +51,10 @@ public class EditCoursesController(
         [FromBody] CourseDto courseDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course> ok)
             return (dynamic)response.Result;
 
-        var course = ((Ok<Course>)response.Result).Value!;
+        var course = ok.Value!;
         mapper.Map(courseDto, course);
         await courseRepository.UpdateCourseAsync(course);
 
@@ -68,7 +68,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var addedModuleId = await moduleRepository.AddModuleReturnIdAsync(new Module
@@ -88,7 +88,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await moduleRepository.DeleteModuleAsync(moduleId))
@@ -106,7 +106,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await moduleRepository.RenameModuleAsync(moduleId, title))
@@ -124,7 +124,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var module = await moduleRepository.GetModuleAsync(moduleId);
@@ -149,7 +149,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await blockRepository.DeleteBlockAsync(blockId))
@@ -167,7 +167,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await blockRepository.RenameBlockAsync(blockId, title))
@@ -185,7 +185,7 @@ public class EditCoursesController(
         [FromBody] VideoBlockDto videoBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var block = await blockRepository.GetVideoBlock(blockId);
@@ -206,7 +206,7 @@ public class EditCoursesController(
         [FromBody] SummaryBlockDto summaryBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var block = await blockRepository.GetSummaryBlock(blockId);
@@ -227,7 +227,7 @@ public class EditCoursesController(
         [FromBody] EditTasksBlockDto tasksBlockDto)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var block = await blockRepository.GetTasksBlock(blockId);
@@ -248,7 +248,7 @@ public class EditCoursesController(
         [FromQuery] string? userId)
     {
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         return TypedResults.Ok();
