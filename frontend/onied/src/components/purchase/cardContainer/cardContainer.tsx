@@ -15,7 +15,7 @@ function CardContainer({
   const [month, setMonth] = useState<number>();
   const [year, setYear] = useState<number>();
 
-  const [securityCode, setSecurityCode] = useState<number>();
+  const [securityCode, setSecurityCode] = useState<string>();
 
   const customSet = (
     value: string,
@@ -71,7 +71,7 @@ function CardContainer({
     const validation = /^\d{1,3}$/;
     customSet(
       value,
-      (value: string) => setSecurityCode(Number(value)),
+      (value: string) => setSecurityCode(value),
       validation,
       securityCode
     );

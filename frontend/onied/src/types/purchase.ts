@@ -38,7 +38,7 @@ export type CardInfo = {
   holder: string;
   month: number;
   year: number;
-  securityCode: number;
+  securityCode: string;
 };
 
 export type PurchaseInfoData = {
