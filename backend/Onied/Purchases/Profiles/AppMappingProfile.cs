@@ -16,5 +16,9 @@ public class AppMappingProfile : Profile
             .ForMember(
                 dest => dest.PurchaseType,
                 opt => opt.Ignore());
+        CreateMap<PurchaseRequestDto, Purchase>()
+            .ForMember(
+                dest => dest.PurchaseDetails,
+                opt => opt.Ignore());
     }
 }
