@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Purchases.Data.Abstractions;
+using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos.Requests;
@@ -15,7 +16,7 @@ public class PurchasesMakingController(
     ICourseRepository courseRepository,
     IPurchaseRepository purchaseRepository) : ControllerBase
 {
-    [HttpGet("course")]
+    [HttpGet("course/{courseId:int}")]
     public async Task<IResult> GetCoursePreparedPurchase(int courseId)
     {
         var course = await courseRepository.GetAsync(courseId);
@@ -28,8 +29,8 @@ public class PurchasesMakingController(
         return TypedResults.Ok(coursePurchaseInfo);
     }
 
-    [HttpPost("course")]
-    public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, Guid userId)
+    [HttpPost("course/{courseId:int}")]
+    public async Task<IResult> MakeCoursePurchase(int courseId, [FromBody] PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };
         if (dto.PurchaseType is not PurchaseType.Course

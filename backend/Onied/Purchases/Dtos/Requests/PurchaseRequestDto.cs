@@ -1,3 +1,4 @@
+using Purchases.Data.Enums;
 using Purchases.Data.Models;
 
 namespace Purchases.Dtos.Requests;

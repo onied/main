@@ -1,4 +1,4 @@
-namespace Purchases.Data.Models;
+namespace Purchases.Data.Enums;
 
 public enum PurchaseType
 {

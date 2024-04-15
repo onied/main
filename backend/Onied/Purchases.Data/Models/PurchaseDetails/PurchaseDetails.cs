@@ -1,3 +1,5 @@
+using Purchases.Data.Enums;
+
 namespace Purchases.Data.Models.PurchaseDetails;
 
 public class PurchaseDetails

@@ -53,7 +53,7 @@ public class AppMappingProfile : Profile
             .ForMember(dest => dest.Modules, opt => opt.MapFrom(
                 (courseDto, course, i, context) =>
                     context.Mapper.Map<List<Module>>(courseDto.Modules)
-                ));
+            ));
         CreateMap<ModuleDto, Module>()
             .ForMember(dest => dest.Blocks, opt => opt.MapFrom(
                 (moduleDto, module, i, context) =>
@@ -70,7 +70,15 @@ public class AppMappingProfile : Profile
 
         //MassTransit
         CreateMap<UserCreated, User>();
-        CreateMap<CourseCreated, Course>().ReverseMap();
-        CreateMap<CourseUpdated, Course>().ReverseMap();
+        CreateMap<CourseCreated, Course>()
+            .ForMember(
+                dest => dest.PriceRubles,
+                opt => opt.MapFrom(src => src.Price))
+            .ReverseMap();
+        CreateMap<CourseUpdated, Course>()
+            .ForMember(
+                dest => dest.PriceRubles,
+                opt => opt.MapFrom(src => src.Price))
+            .ReverseMap();
     }
 }

@@ -2,6 +2,7 @@ using AutoMapper;
 using MassTransit;
 using MassTransit.Data.Messages;
 using Purchases.Data.Abstractions;
+using Purchases.Data.Enums;
 using Purchases.Data.Models;
 
 namespace Purchases.Consumers;
@@ -14,6 +15,7 @@ public class UserCreatedConsumer(
     public async Task Consume(ConsumeContext<UserCreated> context)
     {
         var user = mapper.Map<User>(context.Message);
+        user.SubscriptionId = (int)SubscriptionType.Free;
         logger.LogInformation("Trying to create User profile(id={userId}) photo in database", user.Id);
         await userRepository.AddAsync(user);
         logger.LogInformation("Created User profile(id={userId}) in database", user.Id);

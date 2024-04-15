@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 
@@ -65,5 +66,52 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasOne<Subscription>(u => u.Subscription)
             .WithMany(s => s.Users)
             .HasForeignKey(u => u.SubscriptionId);
+
+        var freeSubscription = new Subscription()
+        {
+            Id = 1,
+            Title = "Микрочелик",
+            Price = 0,
+            ActiveCoursesNumber = 0,
+            CoursesHighlightingEnabled = false,
+            CertificatesEnabled = false,
+            AdsEnabled = false,
+        };
+        modelBuilder.Entity<Subscription>().HasData(freeSubscription);
+        modelBuilder.Entity<Subscription>().HasData(new Subscription()
+        {
+            Id = 2,
+            Title = "Я карлик",
+            Price = 2_000,
+            ActiveCoursesNumber = 3,
+            CoursesHighlightingEnabled = false,
+            CertificatesEnabled = false,
+            AdsEnabled = false,
+        });
+        modelBuilder.Entity<Subscription>().HasData(new Subscription()
+        {
+            Id = 3,
+            Title = "Король инфоцыган",
+            Price = 10_000,
+            ActiveCoursesNumber = -1,
+            CoursesHighlightingEnabled = true,
+            CertificatesEnabled = true,
+            AdsEnabled = true,
+        });
+
+        var firstCourseAuthorId = Guid.Parse("e768e60f-fa76-46d9-a936-4dd5ecbbf326");
+        modelBuilder.Entity<User>().HasData(new User
+        {
+            Id = firstCourseAuthorId,
+            SubscriptionId = freeSubscription.Id,
+        });
+
+        modelBuilder.Entity<Course>().HasData(new Course
+        {
+            Id = 1,
+            AuthorId = firstCourseAuthorId,
+            Title = "Название курса. Как я встретил вашу маму. Осуждаю.",
+            HasCertificates = true
+        });
     }
 }
