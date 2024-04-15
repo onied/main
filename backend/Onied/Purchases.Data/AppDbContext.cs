@@ -26,22 +26,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Purchase>()
             .HasOne<PurchaseDetails>(p => p.PurchaseDetails)
             .WithOne()
-            .HasForeignKey<Purchase>(p => p.PurchaseDetails)
             .HasForeignKey<PurchaseDetails>(pd => pd.Id);
 
         modelBuilder.Entity<PurchaseDetails>()
             .HasDiscriminator(pd => pd.PurchaseType)
+            .HasValue<PurchaseDetails>(PurchaseType.Any)
             .HasValue<CoursePurchaseDetails>(PurchaseType.Course)
             .HasValue<CertificatePurchaseDetails>(PurchaseType.Certificate)
             .HasValue<SubscriptionPurchaseDetails>(PurchaseType.Subscription);
+
+        modelBuilder.Entity<CoursePurchaseDetails>()
+            .Property(pd => pd.CourseId)
+            .HasColumnName("CourseId");
         modelBuilder.Entity<CoursePurchaseDetails>()
             .HasOne<Course>(pd => pd.Course)
             .WithMany()
             .HasForeignKey(pd => pd.CourseId);
+
+        modelBuilder.Entity<CertificatePurchaseDetails>()
+            .Property(pd => pd.CourseId)
+            .HasColumnName("CourseId");
         modelBuilder.Entity<CertificatePurchaseDetails>()
             .HasOne<Course>(pd => pd.Course)
             .WithMany()
             .HasForeignKey(pd => pd.CourseId);
+
         modelBuilder.Entity<SubscriptionPurchaseDetails>()
             .HasOne<Subscription>(pd => pd.Subscription)
             .WithMany()
@@ -53,7 +62,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(c => c.AuthorId);
 
         modelBuilder.Entity<User>()
-            .HasOne<Subscription>()
+            .HasOne<Subscription>(u => u.Subscription)
             .WithMany(s => s.Users)
             .HasForeignKey(u => u.SubscriptionId);
     }
