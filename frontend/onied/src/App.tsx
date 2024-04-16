@@ -25,6 +25,7 @@ import EditPreview from "./pages/editCourse/editPreview/editPreview";
 import CheckTask from "./pages/checkTasks/checkTask/checkTask";
 import CreateCourse from "./pages/createCourse/createCourse";
 import PurchasePage from "./pages/purchase/purchase";
+import OrderCertificatePage from "./pages/certificates/orderCertificate";
 import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
 import ManageModerators from "./pages/manageModerators/manageModerators";
 import Landing from "./pages/landing/landing";
@@ -90,6 +91,10 @@ function App() {
               ></Route>
               <Route path="/teaching/*" element={<TeachingPage />}></Route>
               <Route path="/purchases/*" element={<PurchasePage />}></Route>
+              <Route
+                path="/certificates/:courseId"
+                element={<OrderCertificatePage />}
+              ></Route>
             </Routes>
           </main>
         </LoadingContext.Provider>

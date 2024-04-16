@@ -47,6 +47,26 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
 
+    public async Task<Course?> GetCourseWithUsersAsync(int id)
+        => await dbContext.Courses
+            .Include(c => c.Users)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Course?> GetCourseWithModeratorsAsync(int id)
+        => await dbContext.Courses
+            .Include(c => c.Moderators)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Course?> GetCourseWithUsersAndModeratorsAsync(int id)
+        => await dbContext.Courses
+            .Include(c => c.Moderators)
+            .Include(c => c.Users)
+            .Include(c => c.Author)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
     public async Task<Course> AddCourseAsync(Course course)
     {
         var newCourse = await dbContext.Courses.AddAsync(course);
@@ -54,9 +74,41 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
         return newCourse.Entity;
     }
 
+    public async Task AddModeratorAsync(int courseId, Guid studentId)
+    {
+        var course = await dbContext.Courses
+            .Include(c => c.Moderators)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+        if (course is not null)
+        {
+            var moderator = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == studentId);
+            if (moderator is not null)
+            {
+                course.Moderators.Add(moderator);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+    }
+
     public async Task UpdateCourseAsync(Course course)
     {
         dbContext.Courses.Update(course);
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteModeratorAsync(int courseId, Guid studentId)
+    {
+        var course = await dbContext.Courses
+            .Include(c => c.Moderators)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+        if (course is not null)
+        {
+            var moderator = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == studentId);
+            if (moderator is not null)
+            {
+                course.Moderators.Remove(moderator);
+                await dbContext.SaveChangesAsync();
+            }
+        }
     }
 }
