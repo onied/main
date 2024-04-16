@@ -1,12 +1,16 @@
 import {
   Controller,
   Get,
+  Post,
   NotFoundException,
   Param,
   Query,
+  Body,
 } from "@nestjs/common";
 import { CertificatePreview } from "./dto/response/certificatePreview";
 import { CertificateService } from "./certificate.service";
+import { OrderRequest } from "./dto/request/orderRequest";
+import { OrderIdResponse } from "./dto/response/orderIdResponse";
 
 @Controller("api/v1/certificate/:courseId")
 export class CertificateController {
@@ -23,5 +27,13 @@ export class CertificateController {
       nCourseId
     );
     return result;
+  }
+
+  @Post()
+  createOrder(
+    @Query("userId") userId: string,
+    @Body() orderRequest: OrderRequest
+  ): Promise<OrderIdResponse> {
+    return this.certificateService.createOrder(userId, orderRequest);
   }
 }
