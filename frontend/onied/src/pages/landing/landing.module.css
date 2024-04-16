@@ -6,16 +6,16 @@
 }
 
 .carouselWrapper{
-    padding: 2rem;
+    padding: 2rem 2rem 3rem 2rem;
     background-color: #EFEFEF75;
     border-radius: 10px;
 }
 
 .sliderWrapper{
+    position: relative;
 }
 
 .sliderItem{
-    max-width: 15vw;
     padding: 1rem 0;
 }
 

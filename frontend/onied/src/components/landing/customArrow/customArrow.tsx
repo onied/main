@@ -5,7 +5,9 @@ function CustomArrow(props: { onClick: () => void; next: boolean }) {
     <div
       className={`${classes.customArrow} ${props.next ? classes.right : classes.left}`}
       onClick={() => props.onClick()}
-    ></div>
+    >
+      <span className={classes.arrow}></span>
+    </div>
   );
 }
 

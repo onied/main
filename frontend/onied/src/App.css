@@ -1,8 +1,7 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
-& .slick-list { margin: 0 -7px; & .slick-slide > div { padding: 0 10px; } }
-
+& .slick-list { margin: 0 2rem; & .slick-slide > div { padding: 0 1rem; } }
 
 #root {
   --header-height: 5rem;

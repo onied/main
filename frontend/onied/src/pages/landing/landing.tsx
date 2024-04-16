@@ -6,8 +6,7 @@ import StartLearning from "../../assets/startLearning.svg";
 import StartTeaching from "../../assets/startTeaching.svg";
 import Reviews from "../../components/landing/platformReviews/reviews";
 import Slider from "react-slick";
-import { Carousel } from "nuka-carousel";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import {
   tempPopularCourses,
@@ -25,7 +24,8 @@ function Landing() {
     Array<CourseCard> | undefined
   >();
 
-  const slider = useRef<Slider>(null);
+  const mostPopularCoursesSlider = useRef<Slider>(null);
+  const recommendedCoursesSlider = useRef<Slider>(null);
 
   const callToStartLearningData: CallToActionData = {
     imageSrc: StartLearning,
@@ -50,13 +50,33 @@ function Landing() {
     speed: 400,
     slidesToShow: 5,
     slidesToScroll: 5,
+    responsive: [
+      {
+        breakpoint: 1536,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+    ],
   };
 
-  const sliderNext = () => {
+  const sliderNext = (slider: RefObject<Slider>) => {
     slider?.current?.slickNext();
   };
 
-  const sliderPrev = () => {
+  const sliderPrev = (slider: RefObject<Slider>) => {
     slider?.current?.slickPrev();
   };
   useEffect(() => {
@@ -77,41 +97,49 @@ function Landing() {
           ></BeatLoader>
         ) : (
           <div className={classes.sliderWrapper}>
-            <CustomArrow onClick={sliderPrev} next={false} />
-            <Slider ref={slider} {...sliderSettings}>
+            <CustomArrow
+              onClick={() => sliderPrev(mostPopularCoursesSlider)}
+              next={false}
+            />
+            <Slider ref={mostPopularCoursesSlider} {...sliderSettings}>
               {mostPopularCourses.map((courseCard: CourseCard) => (
-                <div className={classes.sliderItem}>
-                  <GeneralCourseCard
-                    key={courseCard.id}
-                    card={courseCard}
-                    owned={false}
-                  />
+                <div className={classes.sliderItem} key={courseCard.id}>
+                  <GeneralCourseCard card={courseCard} owned={false} />
                 </div>
               ))}
             </Slider>
-            <CustomArrow onClick={sliderNext} next={true} />
+            <CustomArrow
+              onClick={() => sliderNext(mostPopularCoursesSlider)}
+              next={true}
+            />
           </div>
         )}
       </div>
       <h2>Рекомендуемые курсы</h2>
-      <div>
+      <div className={classes.carouselWrapper}>
         {recommendedCourses === undefined ? (
           <BeatLoader
             cssOverride={{ margin: "30px 30px" }}
             color="var(--accent-color)"
           ></BeatLoader>
         ) : (
-          <Slider {...sliderSettings}>
-            {recommendedCourses.map((courseCard: CourseCard) => (
-              <div className={classes.sliderItem}>
-                <GeneralCourseCard
-                  key={courseCard.id}
-                  card={courseCard}
-                  owned={false}
-                />
-              </div>
-            ))}
-          </Slider>
+          <div className={classes.sliderWrapper}>
+            <CustomArrow
+              onClick={() => sliderPrev(recommendedCoursesSlider)}
+              next={false}
+            />
+            <Slider ref={recommendedCoursesSlider} {...sliderSettings}>
+              {recommendedCourses.map((courseCard: CourseCard) => (
+                <div className={classes.sliderItem} key={courseCard.id}>
+                  <GeneralCourseCard card={courseCard} owned={false} />
+                </div>
+              ))}
+            </Slider>
+            <CustomArrow
+              onClick={() => sliderNext(recommendedCoursesSlider)}
+              next={true}
+            />
+          </div>
         )}
       </div>
       <CallToActionTemplate
