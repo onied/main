@@ -1,5 +1,4 @@
 using AutoMapper;
-using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Mvc;
 using Purchases.Abstractions;
 using Purchases.Data.Abstractions;
@@ -25,13 +24,13 @@ public class PurchasesMakingController(
     public async Task<IResult> GetCoursePreparedPurchase(int courseId)
     {
         var course = await courseRepository.GetAsync(courseId);
-        if (course is null) return TypedResults.NotFound();
+        if (course is null) return Results.NotFound();
 
         var coursePurchaseInfo = mapper.Map<PreparedPurchaseResponseDto>(course) with
         {
             PurchaseType = PurchaseType.Course
         };
-        return TypedResults.Ok(coursePurchaseInfo);
+        return Results.Ok(coursePurchaseInfo);
     }
 
     [HttpPost("course/{courseId:int}")]
@@ -39,21 +38,21 @@ public class PurchasesMakingController(
     {
         dto = dto with { UserId = userId };
         if (dto.PurchaseType is not PurchaseType.Course
-            || dto.CourseId is null) return TypedResults.BadRequest();
+            || dto.CourseId is null) return Results.BadRequest();
 
         var user = await userRepository.GetAsync(dto.UserId!.Value, true);
         var course = await courseRepository.GetAsync(dto.CourseId!.Value);
-        if (user is null || course is null) return TypedResults.NotFound(); // validation service
+        if (user is null || course is null) return Results.NotFound(); // validation service
 
         var maybeAlreadyBought = user.Purchases
             .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Course
                                   && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == courseId);
         if (maybeAlreadyBought is not null)
-            return TypedResults.Forbid();
+            return Results.Forbid();
 
         var purchase = mapper.Map<Purchase>(dto);
 
-        if (purchase.Price != course.Price) return TypedResults.BadRequest(); // price check service
+        if (purchase.Price != course.Price) return Results.BadRequest(); // price check service
         var purchaseDetails = new CoursePurchaseDetails()
         {
             PurchaseType = PurchaseType.Course,
@@ -64,6 +63,6 @@ public class PurchasesMakingController(
         purchase.Token = tokenService.GetToken(purchase);
         await purchaseRepository.UpdateAsync(purchase);
         await purchaseCreatedProducer.PublishAsync(purchase);
-        return TypedResults.Ok();
+        return Results.Ok();
     }
 }

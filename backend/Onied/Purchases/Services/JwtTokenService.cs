@@ -13,4 +13,12 @@ public class JwtTokenService(string secretKey) : IJwtTokenService
                     .WithSecret(secretKey),
                 (b, pair) => b.AddClaim(pair.Key, pair.Value))
             .Encode();
+
+    public string DecodeToken(Dictionary<string, object?> claims, string token)
+        => claims.Aggregate(
+                JwtBuilder.Create()
+                    .WithAlgorithm(new HMACSHA256Algorithm())
+                    .WithSecret(secretKey),
+                (b, pair) => b.AddClaim(pair.Key, pair.Value))
+            .Decode(token);
 }

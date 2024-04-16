@@ -1,7 +1,6 @@
-using JWT;
-using JWT.Algorithms;
-using JWT.Serializers;
+using System.Text.Json;
 using Purchases.Abstractions;
+using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos;
@@ -32,13 +31,17 @@ public class PurchaseTokenService(IJwtTokenService jwtTokenService) : IPurchaseT
 
     public PurchaseTokenInfo ConvertToPurchaseTokenInfo(string token)
     {
-        IJsonSerializer serializer = new JsonNetSerializer();
-        IDateTimeProvider provider = new UtcDateTimeProvider();
-        IJwtValidator validator = new JwtValidator(serializer, provider);
-        IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-        IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
-        IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
+        var claims = new Dictionary<string, object?>()
+        {
+            { "Id", 0 },
+            { "PurchaseType", PurchaseType.Any },
+            { "UserId", Guid.Empty },
+            { "CourseId", 0 },
+            { "SubscriptionId", 0 },
+            { "Expires", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() }
+        };
 
-        return decoder.DecodeToObject<PurchaseTokenInfo>(token);
+        var json = jwtTokenService.DecodeToken(claims, token);
+        return JsonSerializer.Deserialize<PurchaseTokenInfo>(json)!;
     }
 }

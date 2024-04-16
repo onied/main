@@ -19,6 +19,7 @@ public class CoursesController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
     private readonly ICourseCreatedProducer _courseCreatedProducer;
+    private readonly ICourseManagementService _courseManagementService;
 
     public CoursesController(
         ILogger<CoursesController> logger,
@@ -28,7 +29,8 @@ public class CoursesController : ControllerBase
         ICategoryRepository categoryRepository,
         IUserRepository userRepository,
         IBlockCompletedInfoRepository blockCompletedInfoRepository,
-        ICourseCreatedProducer courseCreatedProducer)
+        ICourseCreatedProducer courseCreatedProducer,
+        ICourseManagementService courseManagementService)
     {
         _mapper = mapper;
         _courseRepository = courseRepository;
@@ -37,6 +39,7 @@ public class CoursesController : ControllerBase
         _blockCompletedInfoRepository = blockCompletedInfoRepository;
         _categoryRepository = categoryRepository;
         _courseCreatedProducer = courseCreatedProducer;
+        _courseManagementService = courseManagementService;
     }
 
     [HttpGet]
@@ -53,8 +56,9 @@ public class CoursesController : ControllerBase
     public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id, [FromQuery] Guid userId)
     {
         var course = await _courseRepository.GetCourseWithBlocksAsync(id);
-        if (course == null)
-            return NotFound();
+        if (course == null) return NotFound();
+
+        if (!await _courseManagementService.AllowVisitCourse(userId, id)) return Forbid();
 
         var dto = _mapper.Map<CourseDto>(course);
 
@@ -72,6 +76,8 @@ public class CoursesController : ControllerBase
     [Route("summary/{blockId:int}")]
     public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId)
     {
+        if (!await _courseManagementService.AllowVisitCourse(userId, id)) return Forbid();
+
         var summary = await _blockRepository.GetSummaryBlock(blockId);
         if (summary == null || summary.Module.CourseId != id)
             return NotFound();
@@ -87,6 +93,8 @@ public class CoursesController : ControllerBase
     [Route("video/{blockId:int}")]
     public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId)
     {
+        if (!await _courseManagementService.AllowVisitCourse(userId, id)) return Forbid();
+
         var block = await _blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
@@ -100,8 +108,10 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Route("tasks/{blockId:int}/for-edit")]
-    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId)
+    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId, [FromBody] Guid userId)
     {
+        if (!await _courseManagementService.AllowVisitCourse(userId, id)) return Forbid();
+
         var block = await _blockRepository.GetTasksBlock(blockId, true, true);
         if (block == null || block.Module.CourseId != id)
             return NotFound();
@@ -112,6 +122,8 @@ public class CoursesController : ControllerBase
     [Route("tasks/{blockId:int}")]
     public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId)
     {
+        if (!await _courseManagementService.AllowVisitCourse(userId, id)) return Forbid();
+
         var block = await _blockRepository.GetTasksBlock(blockId, true);
         if (block == null || block.Module.CourseId != id)
             return NotFound();

@@ -18,21 +18,21 @@ public class PurchasesController(
     public async Task<IResult> GetPurchasesByUser(Guid userId)
     {
         var user = await userRepository.GetAsync(userId, true);
-        if (user is null) return TypedResults.NotFound();
+        if (user is null) return Results.NotFound();
 
         var pInfo = mapper.Map<List<PurchaseInfoResponseDto>>(user.Purchases);
-        return TypedResults.Ok(pInfo);
+        return Results.Ok(pInfo);
     }
 
-    [HttpPost]
+    [HttpPost("verify")]
     public async Task<IResult> Verify([FromBody] VerifyTokenRequestDto dto)
     {
         var purchaseTokenInfo = tokenService.ConvertToPurchaseTokenInfo(dto.Token);
 
         var user = await userRepository.GetAsync(purchaseTokenInfo.UserId, true);
         var purchase = await purchaseRepository.GetAsync(purchaseTokenInfo.Id);
-        if (user is null || purchase is null) return TypedResults.BadRequest();
+        if (user is null || purchase is null) return Results.BadRequest();
 
-        return purchase.Token!.Equals(dto.Token) ? TypedResults.Ok() : TypedResults.Forbid();
+        return purchase.Token!.Equals(dto.Token) ? Results.Ok() : Results.Forbid();
     }
 }
