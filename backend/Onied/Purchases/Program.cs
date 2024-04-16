@@ -28,6 +28,7 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>(
     x => ActivatorUtilities.CreateInstance<JwtTokenService>(x, x.GetService<IConfiguration>()!["JwtSecretKey"]!));
 builder.Services.AddScoped<IPurchaseTokenService, PurchaseTokenService>();
+builder.Services.AddScoped<IPurchaseManagementService, PurchaseManagementService>();
 
 var app = builder.Build();
 

@@ -14,7 +14,7 @@ namespace Purchases.Controllers;
 [Route("api/v1/purchases/new")]
 public class PurchasesMakingController(
     IMapper mapper,
-    IUserRepository userRepository,
+    IPurchaseManagementService purchaseManagementService,
     ICourseRepository courseRepository,
     IPurchaseRepository purchaseRepository,
     IPurchaseTokenService tokenService,
@@ -37,22 +37,11 @@ public class PurchasesMakingController(
     public async Task<IResult> MakeCoursePurchase(int courseId, [FromBody] PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };
-        if (dto.PurchaseType is not PurchaseType.Course
-            || dto.CourseId is null) return Results.BadRequest();
-
-        var user = await userRepository.GetAsync(dto.UserId!.Value, true);
-        var course = await courseRepository.GetAsync(dto.CourseId!.Value);
-        if (user is null || course is null) return Results.NotFound(); // validation service
-
-        var maybeAlreadyBought = user.Purchases
-            .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Course
-                                  && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == courseId);
-        if (maybeAlreadyBought is not null)
-            return Results.Forbid();
+        var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Course);
+        if (maybeError is not null) return maybeError;
 
         var purchase = mapper.Map<Purchase>(dto);
 
-        if (purchase.Price != course.Price) return Results.BadRequest(); // price check service
         var purchaseDetails = new CoursePurchaseDetails()
         {
             PurchaseType = PurchaseType.Course,
