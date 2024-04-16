@@ -3,8 +3,9 @@ using MassTransit.Data.Enums;
 using MassTransit.Data.Messages;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
+using Purchases.Services.Abstractions;
 
-namespace Purchases.Producers.PurchaseCreatedProducer;
+namespace Purchases.Services.Producers;
 
 public class PurchaseCreatedProducer(
     ILogger<PurchaseCreatedProducer> logger,

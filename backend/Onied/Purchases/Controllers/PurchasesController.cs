@@ -1,9 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Purchases.Abstractions;
 using Purchases.Data.Abstractions;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
+using Purchases.Services.Abstractions;
 
 namespace Purchases.Controllers;
 

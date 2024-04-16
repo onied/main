@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
-using Purchases.Abstractions;
 using Purchases.Data;
 using Purchases.Extensions;
 using Purchases.Profiles;
 using Purchases.Services;
+using Purchases.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-namespace Purchases.Abstractions;
+namespace Purchases.Services.Abstractions;
 
 public interface IJwtTokenService
 {

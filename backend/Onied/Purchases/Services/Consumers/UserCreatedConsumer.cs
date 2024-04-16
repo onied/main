@@ -5,7 +5,7 @@ using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models;
 
-namespace Purchases.Consumers;
+namespace Purchases.Services.Consumers;
 
 public class UserCreatedConsumer(
     ILogger<UserCreatedConsumer> logger,

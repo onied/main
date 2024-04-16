@@ -1,13 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Purchases.Abstractions;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
-using Purchases.Producers.PurchaseCreatedProducer;
+using Purchases.Services.Abstractions;
 
 namespace Purchases.Controllers;
 

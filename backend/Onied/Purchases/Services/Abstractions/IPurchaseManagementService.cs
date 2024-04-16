@@ -1,7 +1,7 @@
 using Purchases.Data.Enums;
 using Purchases.Dtos.Requests;
 
-namespace Purchases.Abstractions;
+namespace Purchases.Services.Abstractions;
 
 public interface IPurchaseManagementService
 {
