@@ -13,8 +13,8 @@ public class CourseCreatedProducer(
 {
     public async Task PublishAsync(Course course)
     {
-        var userCreated = mapper.Map<CourseCreated>(course);
-        await publishEndpoint.Publish(userCreated);
-        logger.LogInformation("Published course(id={courseId})", course.Id);
+        var courseCreated = mapper.Map<CourseCreated>(course);
+        await publishEndpoint.Publish(courseCreated);
+        logger.LogInformation("Published created course(id={courseId})", course.Id);
     }
 }
