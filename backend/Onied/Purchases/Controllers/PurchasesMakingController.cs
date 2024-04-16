@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Purchases.Abstractions;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
-using Purchases.Services;
 
 namespace Purchases.Controllers;
 
@@ -16,7 +16,7 @@ public class PurchasesMakingController(
     IUserRepository userRepository,
     ICourseRepository courseRepository,
     IPurchaseRepository purchaseRepository,
-    PurchaseTokenService tokenService) : ControllerBase
+    IPurchaseTokenService tokenService) : ControllerBase
 {
     [HttpGet("course/{courseId:int}")]
     public async Task<IResult> GetCoursePreparedPurchase(int courseId)
@@ -52,7 +52,7 @@ public class PurchasesMakingController(
         };
         purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
         var token = tokenService.GetToken(purchase);
-
+        Console.WriteLine($"token: {token}");
         return TypedResults.Ok();
     }
 }

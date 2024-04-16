@@ -22,7 +22,8 @@ builder.Services.AddControllers();
 builder.Services.AddMassTransitConfigured();
 
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>(
-    x => ActivatorUtilities.CreateInstance<JwtTokenService>(x, builder.Configuration["JwtSecretKey"]!));
+    x => ActivatorUtilities.CreateInstance<JwtTokenService>(x, x.GetService<IConfiguration>()!["JwtSecretKey"]!));
+builder.Services.AddScoped<IPurchaseTokenService, PurchaseTokenService>();
 
 var app = builder.Build();
 
