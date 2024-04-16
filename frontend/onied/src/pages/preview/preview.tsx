@@ -84,7 +84,7 @@ function Preview(): ReactNode {
       <div className={classes.previewRightBlock}>
         <PreviewPicture href={dto.pictureHref} isArchived={dto.isArchived} />
         <h2 className={classes.price}>{dto.price}</h2>
-        <Link to="learn">
+        <Link to={"/purchases/course/" + courseId}>
           <Button
             style={{ width: "100%", fontSize: "20pt", textDecorations: "none" }}
           >
