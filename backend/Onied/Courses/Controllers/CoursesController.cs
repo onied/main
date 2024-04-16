@@ -108,7 +108,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Route("tasks/{blockId:int}/for-edit")]
-    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId, [FromBody] Guid userId)
+    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId, [FromQuery] Guid userId)
     {
         if (!await _courseManagementService.AllowVisitCourse(userId, id)) return Forbid();
 
