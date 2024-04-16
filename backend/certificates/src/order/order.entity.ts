@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
@@ -19,7 +19,7 @@ export enum Status {
 
 @Entity()
 export class Order {
-  @PrimaryColumn("uuid")
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @ManyToOne(() => Course)

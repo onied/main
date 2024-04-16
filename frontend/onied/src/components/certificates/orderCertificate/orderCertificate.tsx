@@ -37,7 +37,6 @@ export type Certificate = {
 
 function OrderCertificate() {
   const navigate = useNavigate();
-  const confirmAddress = useConfirmAddress();
   const { courseId } = useParams();
   const [profile, loading] = useProfile();
   const [certificateInfo, setCertificateInfo] = useState<

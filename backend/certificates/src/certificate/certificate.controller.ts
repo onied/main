@@ -20,6 +20,7 @@ export class CertificateController {
     @Query("userId") userId: string,
     @Param("courseId") courseId: string
   ): Promise<CertificatePreview> {
+    console.log("here");
     const nCourseId = Number(courseId);
     if (isNaN(nCourseId)) throw new NotFoundException();
     const result = await this.certificateService.getCertificatePreview(
@@ -29,11 +30,14 @@ export class CertificateController {
     return result;
   }
 
-  @Post()
+  @Post("order")
   createOrder(
     @Query("userId") userId: string,
+    @Param("courseId") courseId: string,
     @Body() orderRequest: OrderRequest
   ): Promise<OrderIdResponse> {
-    return this.certificateService.createOrder(userId, orderRequest);
+    const nCourseId = Number(courseId);
+    if (isNaN(nCourseId)) throw new NotFoundException();
+    return this.certificateService.createOrder(userId, nCourseId, orderRequest);
   }
 }
