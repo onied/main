@@ -41,9 +41,15 @@ public class PurchasesMakingController(
         if (dto.PurchaseType is not PurchaseType.Course
             || dto.CourseId is null) return TypedResults.BadRequest();
 
-        var user = await userRepository.GetAsync(dto.UserId!.Value);
+        var user = await userRepository.GetAsync(dto.UserId!.Value, true);
         var course = await courseRepository.GetAsync(dto.CourseId!.Value);
         if (user is null || course is null) return TypedResults.NotFound(); // validation service
+
+        var maybeAlreadyBought = user.Purchases
+            .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Course
+                                  && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == courseId);
+        if (maybeAlreadyBought is not null)
+            return TypedResults.Forbid();
 
         var purchase = mapper.Map<Purchase>(dto);
 
@@ -53,10 +59,10 @@ public class PurchasesMakingController(
             PurchaseType = PurchaseType.Course,
             CourseId = dto.CourseId!.Value,
         };
+
         purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
         purchase.Token = tokenService.GetToken(purchase);
         await purchaseRepository.UpdateAsync(purchase);
-
         await purchaseCreatedProducer.PublishAsync(purchase);
         return TypedResults.Ok();
     }
