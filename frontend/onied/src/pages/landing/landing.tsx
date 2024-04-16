@@ -1,3 +1,5 @@
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import classes from "./landing.module.css";
 import CallToActionTemplate, {
   CallToActionData,
