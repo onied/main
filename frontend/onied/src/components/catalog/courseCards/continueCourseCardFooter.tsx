@@ -7,7 +7,10 @@ function ContinueCourseCardFooter({ courseId }: { courseId: string }) {
     <div
       className={[classes.courseCardFooter, classes.continueCourse].join(" ")}
     >
-      <Link to={"/course/" + courseId} className={classes.continueCourse}>
+      <Link
+        to={"/course/" + courseId + "/learn"}
+        className={classes.continueCourse}
+      >
         <Button style={{ fontSize: "15px", width: "80%" }}>продолжить</Button>
       </Link>
     </div>

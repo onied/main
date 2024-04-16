@@ -43,7 +43,6 @@ function CoursePurchase() {
   if (loading) return <BeatLoader color="var(--accent-color)" />;
   if (error == null && purchaseInfo === null)
     return <NotFound>Курс не найден</NotFound>;
-  if (error != null) return <h2>{error}</h2>;
 
   return (
     <div className={classes.coursePurchaseContainer}>
