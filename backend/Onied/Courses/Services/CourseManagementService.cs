@@ -7,7 +7,6 @@ using Courses.Dtos.ModeratorDtos.Response;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Services;
 
