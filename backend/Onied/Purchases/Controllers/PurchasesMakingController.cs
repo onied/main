@@ -1,4 +1,5 @@
 using AutoMapper;
+using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Mvc;
 using Purchases.Abstractions;
 using Purchases.Data.Abstractions;
@@ -7,6 +8,7 @@ using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
+using Purchases.Producers.PurchaseCreatedProducer;
 
 namespace Purchases.Controllers;
 
@@ -16,7 +18,8 @@ public class PurchasesMakingController(
     IUserRepository userRepository,
     ICourseRepository courseRepository,
     IPurchaseRepository purchaseRepository,
-    IPurchaseTokenService tokenService) : ControllerBase
+    IPurchaseTokenService tokenService,
+    IPurchaseCreatedProducer purchaseCreatedProducer) : ControllerBase
 {
     [HttpGet("course/{courseId:int}")]
     public async Task<IResult> GetCoursePreparedPurchase(int courseId)
@@ -51,8 +54,10 @@ public class PurchasesMakingController(
             CourseId = dto.CourseId!.Value,
         };
         purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
-        var token = tokenService.GetToken(purchase);
-        Console.WriteLine($"token: {token}");
+        purchase.Token = tokenService.GetToken(purchase);
+        await purchaseRepository.UpdateAsync(purchase);
+
+        await purchaseCreatedProducer.PublishAsync(purchase);
         return TypedResults.Ok();
     }
 }

@@ -1,5 +1,7 @@
 using MassTransit;
+using Purchases.Abstractions;
 using Purchases.Consumers;
+using Purchases.Producers.PurchaseCreatedProducer;
 
 namespace Purchases.Extensions;
 
@@ -7,6 +9,8 @@ public static class MassTransitExtensions
 {
     public static IServiceCollection AddMassTransitConfigured(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<IPurchaseCreatedProducer, PurchaseCreatedProducer>();
+
         serviceCollection.AddMassTransit(x =>
         {
             var configuration =

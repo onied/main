@@ -21,6 +21,8 @@ public static class MassTransitExtensions
                 .Endpoint(e => e.Name = "profile-updated-courses");
             x.AddConsumer<ProfilePhotoUpdatedConsumer>()
                 .Endpoint(e => e.Name = "profile-photo-updated-courses");
+            x.AddConsumer<PurchaseCreatedConsumer>()
+                .Endpoint(e => e.Name = "purchase-created-courses");
 
             x.UsingRabbitMq((context, cfg) =>
             {

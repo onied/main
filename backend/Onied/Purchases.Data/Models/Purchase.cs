@@ -10,4 +10,6 @@ public class Purchase
     public PurchaseDetails.PurchaseDetails PurchaseDetails { get; set; } = null!;
 
     public decimal Price { get; set; }
+
+    public string? Token { get; set; }
 }
