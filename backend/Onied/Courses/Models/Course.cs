@@ -39,4 +39,8 @@ public class Course
     public bool IsProgramVisible { get; set; }
 
     public ICollection<Module> Modules { get; } = new List<Module>();
+
+    public ICollection<User> Users { get; } = new List<User>();
+
+    public ICollection<User> Moderators { get; } = new List<User>();
 }

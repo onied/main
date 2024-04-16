@@ -36,7 +36,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<User>()
             .HasMany<Course>(u => u.Courses)
-            .WithMany()
+            .WithMany(c => c.Users)
             .UsingEntity<UserCourseInfo>(
                 j => j
                     .HasOne<Course>(uci => uci.Course)
@@ -67,7 +67,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<User>()
             .HasMany<Course>(u => u.ModeratingCourses)
-            .WithMany()
+            .WithMany(c => c.Moderators)
             .UsingEntity("course_moderator");
 
         modelBuilder.Entity<User>()

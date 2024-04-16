@@ -1,6 +1,7 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Dtos.ManualReviewDtos.Response;
+using Courses.Dtos.ModeratorDtos.Response;
 using Courses.Models;
 using Courses.Profiles.Converters;
 using Courses.Profiles.Resolvers;
@@ -81,7 +82,17 @@ public class AppMappingProfile : Profile
                 opt => opt.MapFrom(src => src.Task.TasksBlock.Module.Course.Title));
         CreateMap<List<ManualReviewTaskUserAnswer>, List<CourseWithManualReviewTasksDto>>()
             .ConvertUsing<UserAnswerToTasksListConverter>();
-        
+
+        CreateMap<Course, CourseStudentsDto>()
+            .ForMember(dest => dest.Students,
+                opt => opt.MapFrom(src => src.Users))
+            .ForMember(dest => dest.CourseId,
+                opt => opt.MapFrom(src => src.Id));
+
+        CreateMap<User, StudentDto>()
+            .ForMember(dest => dest.StudentId,
+                opt => opt.MapFrom(src => src.Id));
+
 
         //MassTransit
         CreateMap<UserCreated, User>();
