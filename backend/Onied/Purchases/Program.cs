@@ -1,6 +1,8 @@
+using Purchases.Abstractions;
 using Purchases.Data;
 using Purchases.Extensions;
 using Purchases.Profiles;
+using Purchases.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,9 @@ builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>(
 builder.Services.AddControllers();
 
 builder.Services.AddMassTransitConfigured();
+
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>(
+    x => ActivatorUtilities.CreateInstance<JwtTokenService>(x, builder.Configuration["JwtSecretKey"]!));
 
 var app = builder.Build();
 

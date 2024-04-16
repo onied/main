@@ -6,6 +6,7 @@ using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
+using Purchases.Services;
 
 namespace Purchases.Controllers;
 
@@ -14,7 +15,8 @@ public class PurchasesMakingController(
     IMapper mapper,
     IUserRepository userRepository,
     ICourseRepository courseRepository,
-    IPurchaseRepository purchaseRepository) : ControllerBase
+    IPurchaseRepository purchaseRepository,
+    PurchaseTokenService tokenService) : ControllerBase
 {
     [HttpGet("course/{courseId:int}")]
     public async Task<IResult> GetCoursePreparedPurchase(int courseId)
@@ -48,7 +50,9 @@ public class PurchasesMakingController(
             PurchaseType = PurchaseType.Course,
             CourseId = dto.CourseId!.Value,
         };
-        await purchaseRepository.AddAsync(purchase, purchaseDetails);
+        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+        var token = tokenService.GetToken(purchase);
+
         return TypedResults.Ok();
     }
 }

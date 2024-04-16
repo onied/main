@@ -14,19 +14,21 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
             .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-    public async Task AddAsync(Purchase purchase, PurchaseDetails purchaseDetails)
+    public async Task<Purchase> AddAsync(Purchase purchase, PurchaseDetails purchaseDetails)
     {
         var purchaseSaved = await dbContext.Purchases.AddAsync(purchase);
         await dbContext.SaveChangesAsync();
         purchaseDetails.Id = purchaseSaved.Entity.Id;
         await dbContext.PurchaseDetails.AddAsync(purchaseDetails);
         await dbContext.SaveChangesAsync();
+        return purchaseSaved.Entity;
     }
 
-    public async Task UpdateAsync(Purchase purchase)
+    public async Task<Purchase> UpdateAsync(Purchase purchase)
     {
-        dbContext.Purchases.Update(purchase);
+        var purchaseSaved = dbContext.Purchases.Update(purchase);
         await dbContext.SaveChangesAsync();
+        return purchaseSaved.Entity;
     }
 
     public async Task RemoveAsync(Purchase purchase)
