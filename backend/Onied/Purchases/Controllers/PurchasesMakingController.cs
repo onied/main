@@ -68,25 +68,11 @@ public class PurchasesMakingController(
     public async Task<IResult> MakeCertificatePurchase(int courseId, [FromBody] PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };
-        if (dto.PurchaseType is not PurchaseType.Certificate
-            || dto.CourseId is null) return Results.BadRequest();
-
-        var user = await userRepository.GetAsync(dto.UserId!.Value, true);
-        var course = await courseRepository.GetAsync(dto.CourseId!.Value);
-        if (user is null || course is null) return Results.NotFound(); // validation service
-
-        if (!course.HasCertificates) return Results.Forbid();
-
-        var maybeAlreadyBought = user.Purchases
-            .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Certificate
-                                  && (p.PurchaseDetails as CertificatePurchaseDetails)!.CourseId == courseId);
-        if (maybeAlreadyBought is not null)
-            return Results.Forbid();
+        var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Certificate);
+        if (maybeError is not null) return maybeError;
 
         var purchase = mapper.Map<Purchase>(dto);
 
-        const decimal defaultCertificatePrice = 1000;
-        if (purchase.Price != defaultCertificatePrice) return Results.BadRequest(); // price check service
         var purchaseDetails = new CoursePurchaseDetails()
         {
             PurchaseType = PurchaseType.Certificate,
