@@ -67,6 +67,26 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
 
+    public async Task<List<Course>> GetMostPopularCourses(int amount)
+        => await dbContext.Courses
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .Include(course => course.Users)
+            .AsNoTracking()
+            .OrderByDescending(course => course.Users.Count)
+            .Take(amount)
+            .ToListAsync();
+
+    public async Task<List<Course>> GetRecommendedCourses(int amount)
+        => await dbContext.Courses
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .AsNoTracking() 
+            .OrderByDescending(course => course.Id) // TODO: Filter out courses whose authors have a full subscription
+            .Take(50)
+            .ToListAsync();
+    
+
     public async Task<Course> AddCourseAsync(Course course)
     {
         var newCourse = await dbContext.Courses.AddAsync(course);

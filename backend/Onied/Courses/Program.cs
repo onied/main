@@ -55,6 +55,7 @@ builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepo
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
 builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
+builder.Services.AddScoped<ILandingPageContentService, LandingPageContentService>();
 builder.Services.AddTransient<UserAnswerToTasksListConverter>();
 
 var app = builder.Build();
