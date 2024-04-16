@@ -18,36 +18,38 @@ function CertificatePurchase() {
   const navigate = useNavigate();
 
   const { courseId } = useParams();
-  const [certificate, setCertificate] = useState<
-    PurchaseInfoData | null | undefined
-  >(undefined);
-
+  const [loading, setLoading] = useState<boolean>();
+  const [purchaseInfo, setPurchaseInfo] = useState<PurchaseInfoData | null>(
+    null
+  );
   const [card, setCard] = useState<CardInfo | null>();
   const [error, setError] = useState<string | null>();
 
   useEffect(() => {
+    setLoading(true);
     api
-      .get("/courses/" + courseId)
+      .get("/purchases/new/certificate/" + courseId)
       .then((response: any) => {
-        const purchaseInfo = response.data as PurchaseInfoData;
-        purchaseInfo.price = -1; // должно быть удалено к моменту внедрения сертификатов
-        setCertificate(purchaseInfo);
+        const purchaseInfo = response.data as PurchaseInfoData; // должно быть удалено к моменту внедрения сертификатов
+        setPurchaseInfo(purchaseInfo);
+        setLoading(false);
       })
       .catch((error) => {
-        if (error.response.status == 404) setCertificate(null);
+        if (error.response.status == 404) setPurchaseInfo(null);
+        setLoading(false);
       });
   }, []);
 
-  if (certificate === undefined)
-    return <BeatLoader color="var(--accent-color)" />;
-  if (certificate === null) return <NotFound>Курс не найден</NotFound>;
+  if (loading) return <BeatLoader color="var(--accent-color)" />;
+  if (error == null && purchaseInfo === null)
+    return <NotFound>Курс не найден</NotFound>;
 
   return (
     <div className={classes.certificatePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
-        title={certificate.title}
-        price={certificate.price}
+        title={purchaseInfo.title}
+        price={purchaseInfo.price}
         purchaseType={PurchaseType.Certificate}
       />
       {error != null && <div className={classes.error}>{error}</div>}
@@ -60,7 +62,25 @@ function CertificatePurchase() {
         }}
         onSubmit={(event) => {
           event.preventDefault();
-          // логика
+          const purchase = {
+            purchaseType: PurchaseType.Certificate,
+            price: purchaseInfo!.price,
+            cardInfo: card!,
+            courseId: courseId,
+          };
+          setLoading(true);
+          api
+            .post("/purchases/new/certificate/" + courseId, purchase)
+            .then(() => navigate(-1))
+            .catch((error) => {
+              if (error.response.status == 400)
+                setError("Возникла ошибка при валидации");
+              else if (error.response.status == 403)
+                setError("Вы не можете купить данный курс");
+              else if (error.response.status >= 500)
+                setError("Возникла ошибка на сервере");
+              setLoading(false);
+            });
         }}
       >
         <CardContainer onChange={setCard} />
