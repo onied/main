@@ -1,16 +1,21 @@
-﻿using System.Net;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using Courses.Dtos;
+using AutoMapper;
+using Courses.Dtos.ModeratorDtos.Response;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+
 namespace Courses.Services;
 
 public class CourseManagementService(
     ICourseRepository courseRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
-    IHttpClientFactory httpClientFactory) : ICourseManagementService
+    IHttpClientFactory httpClientFactory,
+    IMapper mapper) : ICourseManagementService
 {
     public HttpClient PurchasesServerApiClient
         => httpClientFactory.CreateClient("PurchasesServer");
@@ -37,5 +42,47 @@ public class CourseManagementService(
                 new StringContent(requestString, Encoding.UTF8, "application/json"));
 
         return response.StatusCode is HttpStatusCode.OK;
+    }
+
+    public async Task<Results<Ok<CourseStudentsDto>, NotFound, ForbidHttpResult>> GetStudents(int courseId, Guid authorId)
+    {
+        var course = await courseRepository.GetCourseWithUsersAndModeratorsAsync(courseId);
+        if (course == null)
+            return TypedResults.NotFound();
+        if (course.Author?.Id != authorId)
+            return TypedResults.Forbid();
+
+        var courseDto = mapper.Map<CourseStudentsDto>(course);
+        courseDto.Students.ForEach(s => s.IsModerator = course.Moderators.Any(x => x.Id == s.StudentId));
+
+        return TypedResults.Ok(courseDto);
+    }
+
+    public async Task<Results<Ok, NotFound<string>, ForbidHttpResult>> DeleteModerator(int courseId, Guid studentId, Guid authorId)
+    {
+        var course = await courseRepository.GetCourseWithUsersAndModeratorsAsync(courseId);
+        if (course == null)
+            return TypedResults.NotFound<string>("Курс не найден");
+        if (course.Author?.Id != authorId)
+            return TypedResults.Forbid();
+        if (course.Moderators.All(m => m.Id != studentId))
+            return TypedResults.NotFound<string>("Удаляемый модератор не найден");
+
+        await courseRepository.DeleteModeratorAsync(courseId, studentId);
+        return TypedResults.Ok();
+    }
+
+    public async Task<Results<Ok, NotFound<string>, ForbidHttpResult>> AddModerator(int courseId, Guid studentId, Guid authorId)
+    {
+        var course = await courseRepository.GetCourseWithUsersAndModeratorsAsync(courseId);
+        if (course == null)
+            return TypedResults.NotFound<string>("Курс не найден");
+        if (course.Author?.Id != authorId)
+            return TypedResults.Forbid();
+        if (course.Users.All(m => m.Id != studentId))
+            return TypedResults.NotFound<string>("Добавляемый в модераторы ученик не найден");
+
+        await courseRepository.AddModeratorAsync(courseId, studentId);
+        return TypedResults.Ok();
     }
 }
