@@ -1,6 +1,6 @@
 using Purchases.Data.Models;
 
-namespace Purchases.Producers.PurchaseCreatedProducer;
+namespace Purchases.Services.Abstractions;
 
 public interface IPurchaseCreatedProducer
 {

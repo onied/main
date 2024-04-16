@@ -1,14 +1,13 @@
 using AutoMapper;
 using MassTransit;
 using MassTransit.Data.Messages;
-using Purchases.Abstractions;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
-using Purchases.Producers.PurchaseCreatedProducer;
+using Purchases.Services.Abstractions;
 
-namespace Purchases.Consumers;
+namespace Purchases.Services.Consumers;
 
 public class CourseCreatedConsumer(
     ILogger<CourseCreatedConsumer> logger,

@@ -1,7 +1,7 @@
 using MassTransit;
-using Purchases.Abstractions;
-using Purchases.Consumers;
-using Purchases.Producers.PurchaseCreatedProducer;
+using Purchases.Services.Abstractions;
+using Purchases.Services.Consumers;
+using Purchases.Services.Producers;
 
 namespace Purchases.Extensions;
 

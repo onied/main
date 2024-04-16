@@ -4,7 +4,7 @@ using MassTransit.Data.Messages;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Models;
 
-namespace Purchases.Consumers;
+namespace Purchases.Services.Consumers;
 
 public class CourseUpdatedConsumer(
     ILogger<CourseUpdatedConsumer> logger,

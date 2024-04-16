@@ -1,7 +1,7 @@
 using Purchases.Data.Models;
 using Purchases.Dtos;
 
-namespace Purchases.Abstractions;
+namespace Purchases.Services.Abstractions;
 
 public interface IPurchaseTokenService
 {

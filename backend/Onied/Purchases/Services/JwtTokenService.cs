@@ -1,6 +1,6 @@
 using JWT.Algorithms;
 using JWT.Builder;
-using Purchases.Abstractions;
+using Purchases.Services.Abstractions;
 
 namespace Purchases.Services;
 
