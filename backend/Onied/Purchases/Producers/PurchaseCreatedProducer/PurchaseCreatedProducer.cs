@@ -19,7 +19,7 @@ public class PurchaseCreatedProducer(
                 ? pd1.CourseId
                 : (purchase.PurchaseDetails as CertificatePurchaseDetails)?.CourseId,
             (purchase.PurchaseDetails as SubscriptionPurchaseDetails)?.SubscriptionId,
-            purchase.Token);
+            purchase.Token!);
         await publishEndpoint.Publish(purchaseCreated);
         logger.LogInformation("Published PurchaseCreated(purchaseId={purchaseId})", purchase.Id);
     }
