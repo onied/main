@@ -66,6 +66,16 @@ public class PurchasesMakingController(
         return Results.Ok();
     }
 
+    [HttpGet("certificate/{courseId:int}")]
+    public async Task<IResult> GetCertificatePreparedPurchase(int courseId)
+    {
+        var course = await courseRepository.GetAsync(courseId);
+        if (course is null) return Results.NotFound();
+
+        var coursePurchaseInfo = new PreparedPurchaseResponseDto(course.Title, 1000, PurchaseType.Certificate);
+        return Results.Ok(coursePurchaseInfo);
+    }
+
     [HttpPost("certificate/{courseId:int}")]
     public async Task<IResult> MakeCertificatePurchase(int courseId, [FromBody] PurchaseRequestDto dto, Guid userId)
     {
