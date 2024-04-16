@@ -8,8 +8,6 @@ public class UserCourseInfoRepository(AppDbContext dbContext) : IUserCourseInfoR
 {
     public async Task<UserCourseInfo?> GetUserCourseInfoAsync(Guid userId, int courseId)
         => await dbContext.UserCourseInfos
-            .Include(uci => uci.UserTaskPointsStorage)
-            .ThenInclude(uci => uci.Task)
             .AsNoTracking()
             .SingleOrDefaultAsync(uci => uci.UserId == userId && uci.CourseId == courseId);
 
