@@ -13,7 +13,7 @@ public class PurchaseCreatedConsumer(
 {
     public async Task Consume(ConsumeContext<PurchaseCreated> context)
     {
-        logger.LogInformation("Elevating new PurchaseCreated");
+        logger.LogInformation("Processing new PurchaseCreated");
         if (context.Message.PurchaseType is PurchaseType.Course)
         {
             await ConsumeCoursePurchase(context);
