@@ -29,7 +29,7 @@ function CoursePurchase() {
   useEffect(() => {
     setLoading(true);
     api
-      .get("/purchases/new/course")
+      .get("/purchases/new/course?courseId=" + courseId)
       .then((response: any) => {
         setPurchaseInfo(response.data as PurchaseInfoData);
       })
@@ -71,7 +71,7 @@ function CoursePurchase() {
           };
           setLoading(true);
           api
-            .post("/purchases/new/course" + courseId, purchase)
+            .post("/purchases/new/course", purchase)
             .then(() => navigate(-1))
             .catch((error) => {
               if (error.response.status == 400)
