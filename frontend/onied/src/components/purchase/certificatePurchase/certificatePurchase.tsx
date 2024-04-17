@@ -28,7 +28,7 @@ function CertificatePurchase() {
   useEffect(() => {
     setLoading(true);
     api
-      .get("/purchases/new/certificate/" + courseId)
+      .get("/purchases/new/certificate?courseId=" + courseId)
       .then((response: any) => {
         const purchaseInfo = response.data as PurchaseInfoData; // должно быть удалено к моменту внедрения сертификатов
         setPurchaseInfo(purchaseInfo);
@@ -70,7 +70,7 @@ function CertificatePurchase() {
           };
           setLoading(true);
           api
-            .post("/purchases/new/certificate/" + courseId, purchase)
+            .post("/purchases/new/certificate", purchase)
             .then(() => navigate(-1))
             .catch((error) => {
               if (error.response.status == 400)
