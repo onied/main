@@ -16,11 +16,15 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
 
     public async Task<Purchase> AddAsync(Purchase purchase, PurchaseDetails purchaseDetails)
     {
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
+
         var purchaseSaved = await dbContext.Purchases.AddAsync(purchase);
         await dbContext.SaveChangesAsync();
         purchaseDetails.Id = purchaseSaved.Entity.Id;
         await dbContext.PurchaseDetails.AddAsync(purchaseDetails);
         await dbContext.SaveChangesAsync();
+
+        await transaction.CommitAsync();
         return purchaseSaved.Entity;
     }
 
