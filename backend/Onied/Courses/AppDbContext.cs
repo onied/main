@@ -49,9 +49,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 j =>
                 {
                     j.HasKey(uci => new { uci.UserId, uci.CourseId });
-                    j.HasMany<UserTaskPoints>(uci => uci.UserTaskPointsStorage)
-                        .WithOne(tp => tp.UserCourseInfo)
-                        .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
                 });
 
         modelBuilder.Entity<BlockCompletedInfo>()
@@ -91,7 +88,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .WithMany()
             .HasForeignKey(tp => tp.CourseId);
         modelBuilder.Entity<UserTaskPoints>().HasOne<UserCourseInfo>(tp => tp.UserCourseInfo)
-            .WithMany(uci => uci.UserTaskPointsStorage)
+            .WithMany()
             .HasForeignKey(tp => new { tp.UserId, tp.CourseId });
 
         modelBuilder.Entity<ManualReviewTaskUserAnswer>()

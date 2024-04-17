@@ -2,7 +2,7 @@ import GeneralCourseCard from "./courseCards/generalCourseCard.jsx";
 import classes from "./courseCardsContainer.module.css";
 import { BeatLoader } from "react-spinners";
 
-function CourseCardsContainer({ coursesList, owned = false }) {
+function CourseCardsContainer({ coursesList }) {
   if (coursesList == undefined)
     return (
       <BeatLoader
@@ -13,7 +13,7 @@ function CourseCardsContainer({ coursesList, owned = false }) {
   return (
     <div className={classes.courseCardsContainer}>
       {coursesList.map((courseInfo, index) => (
-        <GeneralCourseCard card={courseInfo} owned={owned} key={index} />
+        <GeneralCourseCard card={courseInfo} key={index} />
       ))}
     </div>
   );

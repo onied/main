@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases", "Purchases\Purc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{BAA9985E-2077-4202-B689-A2466509E1B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases.Data", "Purchases.Data\Purchases.Data.csproj", "{1FDB5C14-2474-465B-9614-BA4000AA79D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{BAA9985E-2077-4202-B689-A2466509E1B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAA9985E-2077-4202-B689-A2466509E1B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAA9985E-2077-4202-B689-A2466509E1B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FDB5C14-2474-465B-9614-BA4000AA79D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FDB5C14-2474-465B-9614-BA4000AA79D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FDB5C14-2474-465B-9614-BA4000AA79D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FDB5C14-2474-465B-9614-BA4000AA79D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
