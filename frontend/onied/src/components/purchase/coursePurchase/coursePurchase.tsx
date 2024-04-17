@@ -29,7 +29,7 @@ function CoursePurchase() {
   useEffect(() => {
     setLoading(true);
     api
-      .get("/purchases/new/course?courseId=" + courseId)
+      .get("/purchases/new/course")
       .then((response: any) => {
         setPurchaseInfo(response.data as PurchaseInfoData);
       })
