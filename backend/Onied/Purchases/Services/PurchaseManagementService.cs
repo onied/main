@@ -46,6 +46,7 @@ public class PurchaseManagementService(
         var user = await userRepository.GetAsync(dto.UserId!.Value, true);
         var course = await courseRepository.GetAsync(dto.CourseId!.Value);
         if (user is null || course is null) return Results.NotFound(); // validation service
+        if (!course.HasCertificates) return Results.Forbid();
 
         var maybeAlreadyBought = user.Purchases
             .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Certificate
