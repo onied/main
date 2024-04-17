@@ -83,14 +83,31 @@ function Preview(): ReactNode {
       </div>
       <div className={classes.previewRightBlock}>
         <PreviewPicture href={dto.pictureHref} isArchived={dto.isArchived} />
-        <h2 className={classes.price}>{dto.price}</h2>
-        <Link to={"/purchases/course/" + courseId}>
-          <Button
-            style={{ width: "100%", fontSize: "20pt", textDecorations: "none" }}
-          >
-            купить
-          </Button>
-        </Link>
+        {dto.price > 0 && <h2 className={classes.price}>{dto.price}</h2>}
+        {dto.isOwned ? (
+          <Link to={"/purchases/course/" + courseId}>
+            <Button
+              className={[classes.previewButton, classes.continueCourse].join(
+                " "
+              )}
+            >
+              продолжить
+            </Button>
+          </Link>
+        ) : dto.price > 0 ? (
+          <Link to={"/purchases/course/" + courseId}>
+            <Button className={classes.previewButton}>купить</Button>
+          </Link>
+        ) : (
+          <Link to={"/purchases/course/" + courseId}>
+            <Button
+              className={[classes.previewButton, classes.freeCourse].join(" ")}
+            >
+              начать
+            </Button>
+          </Link>
+        )}
+
         <AuthorBlock
           authorName={dto.courseAuthor.name}
           authorAvatarHref={dto.courseAuthor.avatarHref}

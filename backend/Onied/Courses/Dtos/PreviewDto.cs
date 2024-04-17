@@ -13,4 +13,6 @@ public class PreviewDto
     public bool IsArchived { get; set; }
     public bool HasCertificates { get; set; }
     public List<string>? CourseProgram { get; set; }
+
+    public bool IsOwned { get; set; }
 }

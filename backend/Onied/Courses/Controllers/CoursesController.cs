@@ -18,6 +18,7 @@ public class CoursesController : ControllerBase
     private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
+    private readonly IUserCourseInfoRepository _userCourseInfoRepository;
     private readonly ICourseCreatedProducer _courseCreatedProducer;
     private readonly ICourseManagementService _courseManagementService;
 
@@ -28,6 +29,7 @@ public class CoursesController : ControllerBase
         IBlockRepository blockRepository,
         ICategoryRepository categoryRepository,
         IUserRepository userRepository,
+        IUserCourseInfoRepository userCourseInfoRepository,
         IBlockCompletedInfoRepository blockCompletedInfoRepository,
         ICourseCreatedProducer courseCreatedProducer,
         ICourseManagementService courseManagementService)
@@ -40,15 +42,23 @@ public class CoursesController : ControllerBase
         _categoryRepository = categoryRepository;
         _courseCreatedProducer = courseCreatedProducer;
         _courseManagementService = courseManagementService;
+        _userCourseInfoRepository = userCourseInfoRepository;
     }
 
     [HttpGet]
-    public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id)
+    public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id, [FromQuery] Guid? userId)
     {
         var course = await _courseRepository.GetCourseAsync(id);
         if (course == null)
             return NotFound();
-        return _mapper.Map<PreviewDto>(course);
+
+        var userCourseInfo = userId is null
+            ? null
+            : await _userCourseInfoRepository.GetUserCourseInfoAsync(userId.Value, id);
+
+        var preview = _mapper.Map<PreviewDto>(course);
+        preview.IsOwned = userCourseInfo is not null;
+        return preview;
     }
 
     [HttpGet]
