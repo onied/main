@@ -18,8 +18,8 @@ public class CheckTasksControllerTests
 {
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ICheckTasksService> _checkTasksService = new();
-    private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
     private readonly Mock<IUserTaskPointsRepository> _userTaskPointsRepository = new();
+    private readonly Mock<ICourseManagementService> _courseManagementService = new();
     private readonly Mock<CheckTaskManagementService> _checkTaskManagementService = new();
     private readonly CheckTasksController _controller;
     private readonly Fixture _fixture = new();
@@ -34,6 +34,7 @@ public class CheckTasksControllerTests
             _logger.Object,
             _mapper,
             _userTaskPointsRepository.Object,
+            _courseManagementService.Object,
             _checkTaskManagementService.Object);
     }
 

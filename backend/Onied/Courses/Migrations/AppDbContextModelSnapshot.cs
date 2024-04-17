@@ -478,6 +478,10 @@ namespace Courses.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("course_id");
 
+                    b.Property<string>("Token")
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
                     b.HasKey("UserId", "CourseId")
                         .HasName("pk_course_user");
 
@@ -880,7 +884,7 @@ namespace Courses.Migrations
                         .HasConstraintName("fk_user_task_points_users_user_id");
 
                     b.HasOne("Courses.Models.UserCourseInfo", "UserCourseInfo")
-                        .WithMany("UserTaskPointsStorage")
+                        .WithMany()
                         .HasForeignKey("UserId", "CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -930,11 +934,6 @@ namespace Courses.Migrations
             modelBuilder.Entity("Courses.Models.User", b =>
                 {
                     b.Navigation("TeachingCourses");
-                });
-
-            modelBuilder.Entity("Courses.Models.UserCourseInfo", b =>
-                {
-                    b.Navigation("UserTaskPointsStorage");
                 });
 
             modelBuilder.Entity("Courses.Models.TasksBlock", b =>

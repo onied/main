@@ -1,16 +1,26 @@
-﻿using AutoMapper;
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using Courses.Dtos;
+using AutoMapper;
 using Courses.Dtos.ModeratorDtos.Response;
+using Courses.Enums;
+using Courses.Extensions;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Services;
 
 public class CourseManagementService(
     ICourseRepository courseRepository,
+    IUserCourseInfoRepository userCourseInfoRepository,
+    IHttpClientFactory httpClientFactory,
     IMapper mapper) : ICourseManagementService
 {
+    public HttpClient PurchasesServerApiClient
+        => httpClientFactory.CreateClient(ServerApiConfig.PurchasesServer.GetStringValue()!);
+
     public async Task<Results<Ok<Course>, NotFound, ForbidHttpResult>> CheckCourseAuthorAsync(int courseId, string? userId)
     {
         var course = await courseRepository.GetCourseAsync(courseId);
@@ -19,6 +29,21 @@ public class CourseManagementService(
         if (userId == null || course.Author?.Id.ToString() != userId)
             return TypedResults.Forbid();
         return TypedResults.Ok(course);
+    }
+
+    public async Task<bool> AllowVisitCourse(Guid userId, int courseId)
+    {
+        var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
+        if (userCourseInfo is null) return false;
+        if (userCourseInfo.Course.PriceRubles == 0) return true;
+
+        var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token!));
+        var response =
+            await PurchasesServerApiClient.PostAsync(
+                string.Empty,
+                new StringContent(requestString, Encoding.UTF8, "application/json"));
+
+        return response.StatusCode is HttpStatusCode.OK;
     }
 
     public async Task<Results<Ok<CourseStudentsDto>, NotFound, ForbidHttpResult>> GetStudents(int courseId, Guid authorId)
