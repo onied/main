@@ -56,10 +56,10 @@ function Course() {
       });
   }, []);
 
+  if (!canVisit) return <Forbid>У вас нет доступа к этому курсу</Forbid>;
+
   if (isNaN(id) || (hierarchyState.hierarchy != null && !courseFound))
     return <NotFound>Курс не найден</NotFound>;
-
-  if (!canVisit) return <Forbid>У вас нет доступа к этому курсу</Forbid>;
 
   return (
     <>
