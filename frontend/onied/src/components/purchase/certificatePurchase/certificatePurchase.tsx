@@ -30,7 +30,7 @@ function CertificatePurchase() {
     api
       .get("/purchases/new/certificate?courseId=" + courseId)
       .then((response: any) => {
-        const purchaseInfo = response.data as PurchaseInfoData; // должно быть удалено к моменту внедрения сертификатов
+        const purchaseInfo = response.data as PurchaseInfoData;
         setPurchaseInfo(purchaseInfo);
         setLoading(false);
       })
@@ -76,7 +76,7 @@ function CertificatePurchase() {
               if (error.response.status == 400)
                 setError("Возникла ошибка при валидации");
               else if (error.response.status == 403)
-                setError("Вы не можете купить данный курс");
+                setError("Вы не можете купить данный сертификат");
               else if (error.response.status >= 500)
                 setError("Возникла ошибка на сервере");
               setLoading(false);
