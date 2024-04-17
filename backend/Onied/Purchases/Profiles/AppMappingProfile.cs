@@ -23,9 +23,12 @@ public class AppMappingProfile : Profile
         CreateMap<Subscription, SubscriptionDto>();
         CreateMap<SubscriptionPurchaseDetails, PurchaseDetailsDto>();
 
+        CreateMap<CertificatePurchaseDetails, PurchaseDetailsDto>();
+
         CreateMap<PurchaseDetails, PurchaseDetailsDto>()
             .Include<CoursePurchaseDetails, PurchaseDetailsDto>()
-            .Include<SubscriptionPurchaseDetails, PurchaseDetailsDto>();
+            .Include<SubscriptionPurchaseDetails, PurchaseDetailsDto>()
+            .Include<CertificatePurchaseDetails, PurchaseDetailsDto>();
 
         CreateMap<Course, PreparedPurchaseResponseDto>()
             .ForMember(

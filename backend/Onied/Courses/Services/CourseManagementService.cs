@@ -4,6 +4,8 @@ using System.Text.Json;
 using Courses.Dtos;
 using AutoMapper;
 using Courses.Dtos.ModeratorDtos.Response;
+using Courses.Enums;
+using Courses.Extensions;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -17,7 +19,7 @@ public class CourseManagementService(
     IMapper mapper) : ICourseManagementService
 {
     public HttpClient PurchasesServerApiClient
-        => httpClientFactory.CreateClient("PurchasesServer");
+        => httpClientFactory.CreateClient(ServerApiConfig.PurchasesServer.GetStringValue()!);
 
     public async Task<Results<Ok<Course>, NotFound, ForbidHttpResult>> CheckCourseAuthorAsync(int courseId, string? userId)
     {
@@ -31,13 +33,14 @@ public class CourseManagementService(
 
     public async Task<bool> AllowVisitCourse(Guid userId, int courseId)
     {
-        var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId);
+        var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
         if (userCourseInfo is null) return false;
+        if (userCourseInfo.Course.PriceRubles == 0) return true;
 
-        var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token));
+        var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token!));
         var response =
             await PurchasesServerApiClient.PostAsync(
-                "api/v1/Purchases/verify",
+                string.Empty,
                 new StringContent(requestString, Encoding.UTF8, "application/json"));
 
         return response.StatusCode is HttpStatusCode.OK;

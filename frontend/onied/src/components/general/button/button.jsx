@@ -1,9 +1,12 @@
 import classes from "./button.module.css";
 
-function Button(props) {
+function Button({ className, ...props }) {
   return (
     <>
-      <button className={classes.button} {...props}></button>
+      <button
+        className={[classes.button, className].join(" ")}
+        {...props}
+      ></button>
     </>
   );
 }

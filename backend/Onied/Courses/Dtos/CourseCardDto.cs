@@ -10,4 +10,6 @@ public class CourseCardDto
     public AuthorDto Author { get; set; } = null!;
     public bool IsArchived { get; set; }
     public bool IsGlowing { get; set; }
+
+    public bool IsOwned { get; set; }
 }

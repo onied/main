@@ -15,6 +15,6 @@ public class CourseUpdatedProducer(
     {
         var courseUpdated = mapper.Map<CourseUpdated>(course);
         await publishEndpoint.Publish(courseUpdated);
-        logger.LogInformation("Published course(id={courseId})", course.Id);
+        logger.LogInformation("Published updated course(id={courseId})", course.Id);
     }
 }

@@ -13,25 +13,23 @@ public class PurchaseManagementService(
 {
     public async Task<IResult?> ValidatePurchase(PurchaseRequestDto dto, PurchaseType purchaseType)
     {
-        if (dto.PurchaseType is not PurchaseType.Course
-            || dto.CourseId is null) return Results.BadRequest();
-
-        var user = await userRepository.GetAsync(dto.UserId!.Value, true);
-        var course = await courseRepository.GetAsync(dto.CourseId!.Value);
-        if (user is null || course is null) return Results.NotFound(); // validation service
-
-
         return dto.PurchaseType switch
         {
-            PurchaseType.Course => ValidateCoursePurchase(dto, user, course),
-            PurchaseType.Certificate => ValidateCertificatePurchase(dto, user, course),
+            PurchaseType.Course => await ValidateCoursePurchase(dto),
+            PurchaseType.Certificate => await ValidateCertificatePurchase(dto),
             PurchaseType.Subscription => null,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
-    private IResult? ValidateCoursePurchase(PurchaseRequestDto dto, User user, Course course)
+    private async Task<IResult?> ValidateCoursePurchase(PurchaseRequestDto dto)
     {
+        if (dto.CourseId is null) return Results.BadRequest();
+
+        var user = await userRepository.GetAsync(dto.UserId!.Value, true);
+        var course = await courseRepository.GetAsync(dto.CourseId!.Value);
+        if (user is null || course is null) return Results.NotFound(); // validation service
+
         var maybeAlreadyBought = user.Purchases
             .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Course
                                   && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == course.Id);
@@ -41,8 +39,14 @@ public class PurchaseManagementService(
 
     }
 
-    private IResult? ValidateCertificatePurchase(PurchaseRequestDto dto, User user, Course course)
+    private async Task<IResult?> ValidateCertificatePurchase(PurchaseRequestDto dto)
     {
+        if (dto.CourseId is null) return Results.BadRequest();
+
+        var user = await userRepository.GetAsync(dto.UserId!.Value, true);
+        var course = await courseRepository.GetAsync(dto.CourseId!.Value);
+        if (user is null || course is null) return Results.NotFound(); // validation service
+
         var maybeAlreadyBought = user.Purchases
             .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Certificate
                                   && (p.PurchaseDetails as CertificatePurchaseDetails)!.CourseId == course.Id);

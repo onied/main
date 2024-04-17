@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../hooks";
 import { CourseHierarchyActionTypes } from "../../redux/reducers/courseHierarchyReducer";
 import NotFound from "../../components/general/responses/notFound/notFound";
+import Forbid from "../../components/general/responses/forbid/forbid";
 
 function Course() {
   const { courseId } = useParams();
@@ -15,8 +16,8 @@ function Course() {
   const hierarchyState = useAppSelector((state) => state.hierarchy);
   const dispatch = useDispatch();
   const [courseFound, setCourseFound] = useState(false);
+  const [canVisit, setCanVisit] = useState(true);
   const [currentBlock, setCurrentBlock] = useState();
-  const notFound = <NotFound>Курс не найден.</NotFound>;
   const id = Number(courseId);
 
   useEffect(() => {
@@ -48,17 +49,17 @@ function Course() {
         if ("response" in error && error.response.status == 404) {
           dispatch({ type: CourseHierarchyActionTypes.FETCH_HIERARCHY_ERROR });
           setCourseFound(false);
+        } else if ("response" in error && error.response.status == 403) {
+          dispatch({ type: CourseHierarchyActionTypes.FETCH_HIERARCHY_ERROR });
+          setCanVisit(false);
         }
       });
   }, []);
 
-  if (isNaN(id)) {
-    console.log(id);
-    console.log(courseId);
-    return notFound;
-  }
+  if (!canVisit) return <Forbid>У вас нет доступа к этому курсу</Forbid>;
 
-  if (hierarchyState.hierarchy != null && !courseFound) return notFound;
+  if (isNaN(id) || (hierarchyState.hierarchy != null && !courseFound))
+    return <NotFound>Курс не найден</NotFound>;
 
   return (
     <>
