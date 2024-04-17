@@ -4,6 +4,8 @@ using System.Text.Json;
 using Courses.Dtos;
 using AutoMapper;
 using Courses.Dtos.ModeratorDtos.Response;
+using Courses.Enums;
+using Courses.Extensions;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -17,7 +19,7 @@ public class CourseManagementService(
     IMapper mapper) : ICourseManagementService
 {
     public HttpClient PurchasesServerApiClient
-        => httpClientFactory.CreateClient("PurchasesServer");
+        => httpClientFactory.CreateClient(ServerApiConfig.PurchasesServer.GetStringValue()!);
 
     public async Task<Results<Ok<Course>, NotFound, ForbidHttpResult>> CheckCourseAuthorAsync(int courseId, string? userId)
     {
@@ -37,7 +39,7 @@ public class CourseManagementService(
         var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token));
         var response =
             await PurchasesServerApiClient.PostAsync(
-                "api/v1/Purchases/verify",
+                string.Empty,
                 new StringContent(requestString, Encoding.UTF8, "application/json"));
 
         return response.StatusCode is HttpStatusCode.OK;
