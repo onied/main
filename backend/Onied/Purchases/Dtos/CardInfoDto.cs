@@ -11,7 +11,7 @@ public class CardInfoDto
     public string Holder { get; set; } = null!;
 
     [Range(1, 12)]
-    public int Month;
+    public int Month { get; set; }
 
     [Range(0, 99)]
     public int Year { get; set; }
