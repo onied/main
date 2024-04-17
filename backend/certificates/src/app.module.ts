@@ -5,6 +5,7 @@ import { UserModule } from "./user/user.module";
 import { OrderModule } from "./order/order.module";
 import { CourseModule } from "./course/course.module";
 import { CertificateModule } from "./certificate/certificate.module";
+import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { CertificateModule } from "./certificate/certificate.module";
       host: process.env.DATABASE_HOST,
       port: Number(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
+      password: process.env.DATABASE_PASS,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
       synchronize: true,
@@ -23,6 +24,17 @@ import { CertificateModule } from "./certificate/certificate.module";
     OrderModule,
     CourseModule,
     CertificateModule,
+    RabbitMQModule.forRoot(RabbitMQModule, {
+      uri: "amqp://guest:guest@localhost:5672",
+      connectionInitOptions: { wait: false },
+      connectionManagerOptions: {
+        connectionOptions: {
+          clientProperties: {
+            connection_name: "Certificates",
+          },
+        },
+      },
+    }),
   ],
 })
 export class AppModule {}
