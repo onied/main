@@ -14,7 +14,7 @@ public class CourseUpdatedConsumer(
     public async Task Consume(ConsumeContext<CourseUpdated> context)
     {
         var courseUpdateInfo = mapper.Map<Course>(context.Message);
-        logger.LogInformation("Trying to create course(id={courseId}) in database", courseUpdateInfo.Id);
+        logger.LogInformation("Trying to update course(id={courseId}) in database", courseUpdateInfo.Id);
 
         var course = await courseRepository.GetAsync(courseUpdateInfo.Id);
         if (course is null)
@@ -27,6 +27,6 @@ public class CourseUpdatedConsumer(
         course.Price = courseUpdateInfo.Price;
         course.HasCertificates = courseUpdateInfo.HasCertificates;
         await courseRepository.UpdateAsync(course);
-        logger.LogInformation("Created User profile(id={courseId}) in database", courseUpdateInfo.Id);
+        logger.LogInformation("Updated course(id={courseId}) in database", courseUpdateInfo.Id);
     }
 }
