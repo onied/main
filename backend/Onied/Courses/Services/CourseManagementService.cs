@@ -33,10 +33,11 @@ public class CourseManagementService(
 
     public async Task<bool> AllowVisitCourse(Guid userId, int courseId)
     {
-        var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId);
+        var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
         if (userCourseInfo is null) return false;
+        if (userCourseInfo.Course.PriceRubles == 0) return true;
 
-        var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token));
+        var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token!));
         var response =
             await PurchasesServerApiClient.PostAsync(
                 string.Empty,

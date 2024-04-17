@@ -7,7 +7,7 @@ import PreviewPicture from "../../components/preview/previewPicture/previewPictu
 import CourseProgram from "../../components/preview/courseProgram/courseProgram";
 import Button from "../../components/general/button/button";
 import AuthorBlock from "../../components/preview/authorBlock/authorBlock";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import BeatLoader from "react-spinners/BeatLoader";
 import api from "../../config/axios";
 import NotFound from "../../components/general/responses/notFound/notFound";
@@ -32,6 +32,7 @@ type PreviewDto = {
 };
 
 function Preview(): ReactNode {
+  const navigate = useNavigate();
   const { courseId } = useParams();
   const [dto, setDto] = useState<PreviewDto | undefined>();
   const [found, setFound] = useState<boolean | undefined>();
@@ -85,7 +86,7 @@ function Preview(): ReactNode {
         <PreviewPicture href={dto.pictureHref} isArchived={dto.isArchived} />
         {dto.price > 0 && <h2 className={classes.price}>{dto.price}</h2>}
         {dto.isOwned ? (
-          <Link to={"/purchases/course/" + courseId}>
+          <Link to={"/course/" + courseId + "/learn"}>
             <Button
               className={[classes.previewButton, classes.continueCourse].join(
                 " "
@@ -99,13 +100,20 @@ function Preview(): ReactNode {
             <Button className={classes.previewButton}>купить</Button>
           </Link>
         ) : (
-          <Link to={"/purchases/course/" + courseId}>
-            <Button
-              className={[classes.previewButton, classes.freeCourse].join(" ")}
-            >
-              начать
-            </Button>
-          </Link>
+          <Button
+            className={[classes.previewButton, classes.freeCourse].join(" ")}
+            onClick={() => {
+              if (dto.isOwned) navigate("/course/" + courseId + "/learn");
+              api
+                .post("courses/" + courseId + "/enter")
+                .then(() => {
+                  navigate("/course/" + courseId + "/learn");
+                })
+                .catch((response) => console.log(response));
+            }}
+          >
+            начать
+          </Button>
         )}
 
         <AuthorBlock

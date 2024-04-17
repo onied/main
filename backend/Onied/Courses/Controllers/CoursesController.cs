@@ -61,6 +61,24 @@ public class CoursesController : ControllerBase
         return preview;
     }
 
+    [HttpPost("enter")]
+    public async Task<ActionResult> EnterFreeCourse(int id, [FromQuery] Guid userId)
+    {
+        var course = await _courseRepository.GetCourseAsync(id);
+        if (course == null || course.PriceRubles > 0) return NotFound();
+
+        var maybeAlreadyEntered = await _userCourseInfoRepository
+            .GetUserCourseInfoAsync(userId, course.Id);
+        if (maybeAlreadyEntered is not null) return Forbid();
+        var userCourseInfo = new UserCourseInfo()
+        {
+            UserId = userId,
+            CourseId = course.Id
+        };
+        await _userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
+        return Ok();
+    }
+
     [HttpGet]
     [Route("hierarchy")]
     public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id, [FromQuery] Guid userId)
