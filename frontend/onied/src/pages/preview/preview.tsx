@@ -29,6 +29,7 @@ type PreviewDto = {
   isArchived: boolean;
   hasCertificates: boolean;
   courseProgram: Array<string> | undefined;
+  isOwned: boolean;
 };
 
 function Preview(): ReactNode {
