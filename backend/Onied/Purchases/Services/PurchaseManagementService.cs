@@ -52,6 +52,13 @@ public class PurchaseManagementService(
                                   && (p.PurchaseDetails as CertificatePurchaseDetails)!.CourseId == course.Id);
         if (maybeAlreadyBought is not null) return Results.Forbid();
 
+        // курс должен быть бесплатный или уже купленный 
+        if (course.Price > 0
+            && user.Purchases.SingleOrDefault(p =>
+                p.PurchaseDetails.PurchaseType is PurchaseType.Course
+                && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == course.Id) is null)
+            return Results.Forbid();
+
         return dto.Price != 1000 ? Results.BadRequest() : null; // check price service
     }
 }
