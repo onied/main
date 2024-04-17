@@ -19,8 +19,8 @@ public class PurchasesMakingController(
     IPurchaseTokenService tokenService,
     IPurchaseCreatedProducer purchaseCreatedProducer) : ControllerBase
 {
-    [HttpGet("course/{courseId:int}")]
-    public async Task<IResult> GetCoursePreparedPurchase(int courseId)
+    [HttpGet("course")]
+    public async Task<IResult> GetCoursePreparedPurchase([FromQuery] int courseId)
     {
         var course = await courseRepository.GetAsync(courseId);
         if (course is null) return Results.NotFound();
@@ -32,8 +32,8 @@ public class PurchasesMakingController(
         return Results.Ok(coursePurchaseInfo);
     }
 
-    [HttpPost("course/{courseId:int}")]
-    public async Task<IResult> MakeCoursePurchase(int courseId, [FromBody] PurchaseRequestDto dto, Guid userId)
+    [HttpPost("course")]
+    public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
     {
         dto = dto with { UserId = userId };
         var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Course);

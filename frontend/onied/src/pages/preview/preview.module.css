@@ -75,3 +75,17 @@
   margin-left: 0.5rem;
   content: "₽";
 }
+
+.previewButton {
+  width: 100%;
+  font-size: 20pt;
+  text-decoration: none;
+}
+
+.freeCourse {
+  background-color: #81d581;
+}
+
+.continueCourse {
+  background-color: #81d581;
+}

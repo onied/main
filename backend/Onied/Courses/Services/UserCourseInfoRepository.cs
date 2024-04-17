@@ -6,10 +6,17 @@ namespace Courses.Services;
 
 public class UserCourseInfoRepository(AppDbContext dbContext) : IUserCourseInfoRepository
 {
-    public async Task<UserCourseInfo?> GetUserCourseInfoAsync(Guid userId, int courseId)
-        => await dbContext.UserCourseInfos
-            .AsNoTracking()
-            .SingleOrDefaultAsync(uci => uci.UserId == userId && uci.CourseId == courseId);
+    public async Task<UserCourseInfo?> GetUserCourseInfoAsync(
+        Guid userId,
+        int courseId,
+        bool withCourse = false)
+    {
+        var query = dbContext.UserCourseInfos.AsNoTracking();
+        if (withCourse) query = query.Include(uci => uci.Course);
+
+        return await query.SingleOrDefaultAsync(
+            uci => uci.UserId == userId && uci.CourseId == courseId);
+    }
 
     public async Task<bool> AddUserCourseInfoAsync(UserCourseInfo userCourseInfo)
     {
