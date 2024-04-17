@@ -17,6 +17,10 @@ describe("CourseService", () => {
           provide: getRepositoryToken(Course),
           useClass: Repository,
         },
+        {
+          provide: getRepositoryToken(User),
+          useClass: Repository,
+        },
       ],
     }).compile();
 
