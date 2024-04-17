@@ -1,6 +1,7 @@
 import CourseCardsContainer from "../../components/catalog/courseCardsContainer.jsx";
 import CatalogHeader from "../../components/catalog/catalogHeader/catalogHeader.jsx";
 import CatalogNavigation from "../../components/catalog/catalogNavigation/catalogNavigation.jsx";
+import NotificationComponent from "../../components/notifications/notification.tsx";
 import { useEffect, useState } from "react";
 import api from "../../config/axios.ts";
 import classes from "./catalog.module.css";
