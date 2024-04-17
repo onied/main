@@ -5,6 +5,8 @@ import { User } from "./user.entity";
 import { RabbitSubscribe } from "@golevelup/nestjs-rabbitmq";
 import { MassTransitWrapper } from "../common/events/massTransitWrapper";
 import { ProfileUpdated } from "../common/events/profileUpdated";
+import { ProfilePhotoUpdated } from "../common/events/profilePhotoUpdated";
+import { UserCreated } from "../common/events/userCreated";
 
 @Injectable()
 export class UserService {
@@ -23,11 +25,32 @@ export class UserService {
     queue: "profile-updated-certificates",
   })
   public async profileUpdatedHandler(msg: MassTransitWrapper<ProfileUpdated>) {
+    let user = await this.usersRepository.findOneBy({ id: msg.message.id });
+    user = this.usersRepository.merge(user, msg.message);
+    await this.usersRepository.save(user);
+  }
+
+  @RabbitSubscribe({
+    exchange: "MassTransit.Data.Messages:ProfilePhotoUpdated",
+    routingKey: "",
+    queue: "profile-photo-updated-certificates",
+  })
+  public async profilePhotoUpdatedHandler(
+    msg: MassTransitWrapper<ProfilePhotoUpdated>
+  ) {
     const user = await this.usersRepository.findOneBy({ id: msg.message.id });
-    user.firstName = msg.message.firstName;
-    user.lastName = msg.message.lastName;
-    user.gender = msg.message.gender;
-    this.usersRepository.merge(user, msg.message);
+    user.avatar = msg.message.avatarHref;
+    await this.usersRepository.save(user);
+  }
+
+  @RabbitSubscribe({
+    exchange: "MassTransit.Data.Messages:UserCreated",
+    routingKey: "",
+    queue: "user-created-certificates",
+  })
+  public async userCreatedHandler(msg: MassTransitWrapper<UserCreated>) {
+    const user = this.usersRepository.create(msg.message);
+    user.avatar = msg.message.avatarHref;
     await this.usersRepository.save(user);
   }
 }

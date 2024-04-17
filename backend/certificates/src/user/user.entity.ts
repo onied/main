@@ -12,7 +12,7 @@ export class User {
   lastName: string;
 
   @Column()
-  avatar: string;
+  avatar: string | null;
 
   @Column({ default: 0 })
   gender: number;
