@@ -33,7 +33,7 @@ public class PurchasesMakingController(
     }
 
     [HttpPost("course")]
-    public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, Guid userId)
+    public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
     {
         dto = dto with { UserId = userId };
         var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Course);
