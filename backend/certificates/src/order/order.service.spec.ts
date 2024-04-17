@@ -37,6 +37,7 @@ describe("OrderService", () => {
       firstName: "asdf",
       lastName: "lkj",
       avatar: "",
+      gender: 0,
     };
 
     const user: User = {
@@ -44,6 +45,7 @@ describe("OrderService", () => {
       firstName: "sdfsdf",
       lastName: "fdsfds",
       avatar: "",
+      gender: 0,
     };
 
     const course: Course = {
@@ -83,6 +85,7 @@ describe("OrderService", () => {
       firstName: "asdf",
       lastName: "lkj",
       avatar: "",
+      gender: 0,
     };
 
     const user: User = {
@@ -90,6 +93,7 @@ describe("OrderService", () => {
       firstName: "sdfsdf",
       lastName: "fdsfds",
       avatar: "",
+      gender: 0,
     };
 
     const course: Course = {

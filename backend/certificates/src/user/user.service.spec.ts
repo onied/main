@@ -38,6 +38,7 @@ describe("UserService", () => {
       lastName: "Теркин",
       avatar:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Lynx_lynx-4.JPG/640px-Lynx_lynx-4.JPG",
+      gender: 1,
     };
     jest.spyOn(repo, "findOneBy").mockResolvedValueOnce(testUser);
 

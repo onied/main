@@ -13,4 +13,7 @@ export class User {
 
   @Column()
   avatar: string;
+
+  @Column({ default: 0 })
+  gender: number;
 }
