@@ -4,8 +4,8 @@ using Courses.Controllers;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
-using Courses.Services;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseCreatedProducer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -23,6 +23,9 @@ public class CoursesControllerTests
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
     private readonly Mock<IUserRepository> _userRepository = new();
+    private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
+    private readonly Mock<CourseCreatedProducer> _courseCreatedProducer = new();
+    private readonly Mock<ICourseManagementService> _courseManagementService = new();
     private readonly CoursesController _controller;
     private readonly Fixture _fixture = new();
 
@@ -35,7 +38,10 @@ public class CoursesControllerTests
             _blockRepository.Object,
             _categoryRepository.Object,
             _userRepository.Object,
-            _blockCompletedInfoRepository.Object);
+            _userCourseInfoRepository.Object,
+            _blockCompletedInfoRepository.Object,
+            _courseCreatedProducer.Object,
+            _courseManagementService.Object);
     }
 
     [Fact]
@@ -48,7 +54,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.GetCoursePreview(courseId);
+        var result = await _controller.GetCoursePreview(courseId, Guid.NewGuid());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -83,7 +89,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.GetCoursePreview(courseId);
+        var result = await _controller.GetCoursePreview(courseId, Guid.NewGuid());
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
@@ -122,7 +128,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.GetCoursePreview(courseId);
+        var result = await _controller.GetCoursePreview(courseId, Guid.NewGuid());
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);

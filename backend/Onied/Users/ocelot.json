@@ -51,20 +51,6 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/v1/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5135
-        }
-      ],
-      "UpstreamPathTemplate": "/api/v1/{everything}",
-      "AddQueriesToRequest": {
-        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
-      }
-    },
-    {
       "DownstreamPathTemplate": "/api/v1/purchases/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -88,6 +74,20 @@
         }
       ],
       "UpstreamPathTemplate": "/api/v1/notifications/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5135
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/{everything}",
       "AddQueriesToRequest": {
         "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }

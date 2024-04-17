@@ -12,6 +12,7 @@ public class CheckTasksController(
     ILogger<CoursesController> logger,
     IMapper mapper,
     IUserTaskPointsRepository userTaskPointsRepository,
+    ICourseManagementService courseManagementService,
     ICheckTaskManagementService checkTaskManagementService) : ControllerBase
 {
     [HttpGet]
@@ -21,6 +22,9 @@ public class CheckTasksController(
         int blockId,
         [FromQuery] Guid userId)
     {
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+            return TypedResults.Forbid();
+
         var response = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true);
         if (response.Result is not Ok<TasksBlock> ok)
@@ -60,6 +64,9 @@ public class CheckTasksController(
             [FromQuery] Guid userId,
             [FromBody] List<UserInputDto> inputsDto)
     {
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+            return TypedResults.Forbid();
+
         var responseGetTaskBlock = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true, true);
         if (responseGetTaskBlock.Result is not Ok<TasksBlock> okGetTaskBlock)

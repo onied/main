@@ -11,5 +11,5 @@ public class UserCourseInfo
     public int CourseId { get; set; }
     public Course Course { get; set; } = null!;
 
-    public List<UserTaskPoints> UserTaskPointsStorage { get; init; } = null!;
+    public string? Token { get; set; }
 }
