@@ -23,7 +23,9 @@ function GeneralCourseCard({ card }) {
               {card.title}
             </Link>
           </h3>
-          <p to={"/catalog?category=" + card.category.id}>{card.category.name}</p>
+          <p to={"/catalog?category=" + card.category.id}>
+            {card.category.name}
+          </p>
           <h4>{card.author.name}</h4>
         </div>
       </div>
