@@ -32,10 +32,11 @@ function CoursePurchase() {
       .get("/purchases/new/course?courseId=" + courseId)
       .then((response: any) => {
         setPurchaseInfo(response.data as PurchaseInfoData);
-        setLoading(false);
       })
       .catch((error) => {
         if (error.response.status == 404) setPurchaseInfo(null);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
