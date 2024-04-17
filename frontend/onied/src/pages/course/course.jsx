@@ -16,7 +16,7 @@ function Course() {
   const hierarchyState = useAppSelector((state) => state.hierarchy);
   const dispatch = useDispatch();
   const [courseFound, setCourseFound] = useState(false);
-  const [canVisit, setCanVisit] = useState(false);
+  const [canVisit, setCanVisit] = useState(true);
   const [currentBlock, setCurrentBlock] = useState();
   const id = Number(courseId);
 

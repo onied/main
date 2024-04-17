@@ -10,7 +10,7 @@ using Purchases.Services.Abstractions;
 
 namespace Purchases.Controllers;
 
-[Route("api/v1/purchases/new/course")]
+[Route("api/v1/purchases/new")]
 public class PurchasesMakingController(
     IMapper mapper,
     IPurchaseManagementService purchaseManagementService,
@@ -19,7 +19,7 @@ public class PurchasesMakingController(
     IPurchaseTokenService tokenService,
     IPurchaseCreatedProducer purchaseCreatedProducer) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("course")]
     public async Task<IResult> GetCoursePreparedPurchase([FromQuery] int courseId)
     {
         var course = await courseRepository.GetAsync(courseId);
@@ -32,7 +32,7 @@ public class PurchasesMakingController(
         return Results.Ok(coursePurchaseInfo);
     }
 
-    [HttpPost]
+    [HttpPost("course")]
     public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };

@@ -71,7 +71,7 @@ function CoursePurchase() {
           };
           setLoading(true);
           api
-            .post("/purchases/new/course/" + courseId, purchase)
+            .post("/purchases/new/course?courseId=" + courseId, purchase)
             .then(() => navigate(-1))
             .catch((error) => {
               if (error.response.status == 400)
