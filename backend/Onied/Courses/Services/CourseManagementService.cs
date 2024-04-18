@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Courses.Dtos;
 using AutoMapper;
+using Courses.Dtos;
 using Courses.Dtos.ModeratorDtos.Response;
 using Courses.Enums;
 using Courses.Extensions;
@@ -33,6 +33,9 @@ public class CourseManagementService(
 
     public async Task<bool> AllowVisitCourse(Guid userId, int courseId)
     {
+        var course = await courseRepository.GetCourseAsync(courseId);
+        if (course?.AuthorId == userId)
+            return true;
         var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
         if (userCourseInfo is null) return false;
         if (userCourseInfo.Course.PriceRubles == 0) return true;
