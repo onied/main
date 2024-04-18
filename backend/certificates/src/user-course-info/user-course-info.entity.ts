@@ -1,6 +1,4 @@
-import { Course } from "../course/course.entity";
-import { User } from "../user/user.entity";
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 /**
@@ -12,12 +10,10 @@ import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
  */
 export class UserCourseInfo {
   @PrimaryColumn()
-  @ManyToOne(() => User)
-  user: User;
+  userId: string;
 
   @PrimaryColumn()
-  @ManyToOne(() => Course)
-  course: Course;
+  courseId: number;
 
   @Column()
   token: string | null;

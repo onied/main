@@ -32,8 +32,8 @@ export class UserCourseInfoService {
     course: Course
   ): Promise<boolean> {
     const completed = await this.userCourseInfoRepository.findOneBy({
-      user: user,
-      course: course,
+      userId: user.id,
+      courseId: course.id,
     });
     if (completed === null) return false; // User has not completed the course yet
     const response = await firstValueFrom(
@@ -49,6 +49,13 @@ export class UserCourseInfoService {
         )
     );
     return response.status == 200;
+  }
+
+  public async getAllAvailableCertificates(user: User) {
+    const res = (
+      await this.userCourseInfoRepository.findBy({ userId: user.id })
+    ).map((uci) => uci.courseId);
+    return await this.courseService.findInList(res);
   }
 
   @RabbitSubscribe({

@@ -11,16 +11,16 @@ import { CertificatePreview } from "./dto/response/certificatePreview";
 import { CertificateService } from "./certificate.service";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
+import { CertificateListCard } from "./dto/response/certificateListCard";
 
-@Controller("api/v1/certificate/:courseId")
+@Controller("api/v1/certificates")
 export class CertificateController {
   constructor(private certificateService: CertificateService) {}
-  @Get()
+  @Get(":courseId")
   async getCertificatePreview(
     @Query("userId") userId: string,
     @Param("courseId") courseId: string
   ): Promise<CertificatePreview> {
-    console.log("here");
     const nCourseId = Number(courseId);
     if (isNaN(nCourseId)) throw new NotFoundException();
     const result = await this.certificateService.getCertificatePreview(
@@ -30,7 +30,16 @@ export class CertificateController {
     return result;
   }
 
-  @Post("order")
+  @Get()
+  async getCertificatesList(
+    @Query("userId") userId: string
+  ): Promise<CertificateListCard[]> {
+    const result =
+      await this.certificateService.getAvailableCertificates(userId);
+    return result;
+  }
+
+  @Post(":courseId/order")
   createOrder(
     @Query("userId") userId: string,
     @Param("courseId") courseId: string,

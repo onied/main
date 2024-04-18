@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Course } from "./course.entity";
 import { CourseCreated } from "../common/events/courseCreated";
 import { MassTransitWrapper } from "../common/events/massTransitWrapper";
@@ -20,6 +20,15 @@ export class CourseService {
   findOne(id: number): Promise<Course | null> {
     return this.courseRepository.findOne({
       where: { id: id },
+      relations: {
+        author: true,
+      },
+    });
+  }
+
+  findInList(ids: number[]): Promise<Course[]> {
+    return this.courseRepository.find({
+      where: { id: In(ids) },
       relations: {
         author: true,
       },
@@ -49,6 +58,7 @@ export class CourseService {
     let course = await this.courseRepository.findOneBy({
       id: msg.message.id,
     });
+    if (course === null) return;
     course = this.courseRepository.merge(course, msg.message);
     await this.courseRepository.save(course);
   }

@@ -82,7 +82,7 @@ function OrderCertificate() {
       return;
     }
     api
-      .get("/certificate/" + id)
+      .get("/certificates/" + id)
       .then((response) => {
         setCertificateInfo(response.data);
         setLoadStatus(200);

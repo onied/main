@@ -10,6 +10,7 @@ import { CourseService } from "../course/course.service";
 import { UserService } from "../user/user.service";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
+import { CertificateListCard } from "./dto/response/certificateListCard";
 import { OrderService } from "../order/order.service";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
@@ -105,5 +106,16 @@ export class CertificateService {
         orderRequest.address
       ),
     } as OrderIdResponse;
+  }
+
+  async getAvailableCertificates(userId: string) {
+    const user = await this.userService.findOne(userId);
+    if (user === null) throw new UnauthorizedException();
+    const list =
+      await this.userCourseInfoService.getAllAvailableCertificates(user);
+    return list.map(
+      (course) =>
+        <CertificateListCard>{ courseTitle: course.title, courseId: course.id }
+    );
   }
 }

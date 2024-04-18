@@ -37,7 +37,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/v1/certificate/{everything}",
+      "DownstreamPathTemplate": "/api/v1/certificates/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -45,7 +45,7 @@
           "Port": 5508
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/certificate/{everything}",
+      "UpstreamPathTemplate": "/api/v1/certificates/{everything}",
       "AddQueriesToRequest": {
         "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
