@@ -6,6 +6,7 @@ import { OrderModule } from "./order/order.module";
 import { CourseModule } from "./course/course.module";
 import { CertificateModule } from "./certificate/certificate.module";
 import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
+import { UserCourseInfoModule } from "./user-course-info/user-course-info.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
         },
       },
     }),
+    UserCourseInfoModule,
   ],
 })
 export class AppModule {}
