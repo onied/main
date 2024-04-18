@@ -123,4 +123,55 @@ describe("OrderService", () => {
 
     expect(result).toEqual(order.id);
   });
+
+  it("should return whatever exists returns", async () => {
+    // Arrange
+
+    const author: User = {
+      id: "70cd45d8-4dd1-4576-8f63-10afcfaf9b46",
+      firstName: "asdf",
+      lastName: "lkj",
+      avatar: "",
+      gender: 0,
+    };
+
+    const user: User = {
+      id: "3c839d46-e349-4a50-8429-ec7b9298be8d",
+      firstName: "sdfsdf",
+      lastName: "fdsfds",
+      avatar: "",
+      gender: 0,
+    };
+
+    const course: Course = {
+      id: 1,
+      title: "asdfasdf",
+      author: author,
+      hasCertificates: true,
+    };
+
+    // Arrange for false
+
+    jest.spyOn(repo, "existsBy").mockReturnValueOnce(Promise.resolve(false));
+
+    // Act for false
+
+    const resultFalse = await service.existsOrderWithCourseUser(course, user);
+
+    // Assert for false
+
+    expect(resultFalse).toEqual(false);
+
+    // Arrange for true
+
+    jest.spyOn(repo, "existsBy").mockReturnValueOnce(Promise.resolve(true));
+
+    // Act for true
+
+    const resultTrue = await service.existsOrderWithCourseUser(course, user);
+
+    // Assert for true
+
+    expect(resultTrue).toEqual(true);
+  });
 });
