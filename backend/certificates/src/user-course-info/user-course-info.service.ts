@@ -65,12 +65,6 @@ export class UserCourseInfoService {
   })
   public async userCreatedHandler(msg: MassTransitWrapper<PurchaseCreated>) {
     if (msg.message.purchaseType !== PurchaseType.Certificate) return;
-    const user = await this.userService.findOne(msg.message.userId);
-    const course = await this.courseService.findOne(msg.message.courseId);
-    await this.userCourseInfoRepository.save({
-      user: user,
-      course: course,
-      token: msg.message.token,
-    });
+    await this.userCourseInfoRepository.save(msg.message as UserCourseInfo);
   }
 }

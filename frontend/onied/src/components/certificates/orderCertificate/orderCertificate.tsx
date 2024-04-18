@@ -5,11 +5,7 @@ import Map from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Config from "../../../config/config";
-import {
-  AddressAutofill,
-  SearchBox,
-  useConfirmAddress,
-} from "@mapbox/search-js-react";
+import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl from "mapbox-gl";
 import PrintCertificate from "../printCertificate/printCertificate";
 import NotFound from "../../general/responses/notFound/notFound";
@@ -70,7 +66,9 @@ function OrderCertificate() {
           if (features.length === 0) setError("Адрес не найден.");
           const main = features[0];
           setAddress(main.properties.full_address);
-          navigate("/purchases/certificate/" + courseId);
+          navigate("/purchases/certificate/" + courseId, {
+            state: { address: main.properties.full_address },
+          });
         }
       });
   };
