@@ -73,7 +73,7 @@ public class PurchasesMakingController(
 
         var purchase = mapper.Map<Purchase>(dto);
 
-        var purchaseDetails = new CoursePurchaseDetails()
+        var purchaseDetails = new CertificatePurchaseDetails
         {
             PurchaseType = PurchaseType.Certificate,
             CourseId = dto.CourseId!.Value,
