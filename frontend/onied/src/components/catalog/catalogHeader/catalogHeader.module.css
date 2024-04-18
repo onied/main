@@ -1,3 +1,17 @@
 .catalogHeader {
   padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sort {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  width: 100%;
+}
+
+.label {
+  font-size: 14pt;
+  font-weight: 600;
 }
