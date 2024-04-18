@@ -12,5 +12,6 @@ import { CourseModule } from "../course/course.module";
     CourseModule,
   ],
   providers: [UserCourseInfoService],
+  exports: [UserCourseInfoService],
 })
 export class UserCourseInfoModule {}

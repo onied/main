@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -13,6 +14,7 @@ import { OrderService } from "../order/order.service";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
 import { catchError, firstValueFrom } from "rxjs";
+import { UserCourseInfoService } from "../user-course-info/user-course-info.service";
 
 @Injectable()
 export class CertificateService {
@@ -20,6 +22,7 @@ export class CertificateService {
     private userService: UserService,
     private courseService: CourseService,
     private orderService: OrderService,
+    private userCourseInfoService: UserCourseInfoService,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService
   ) {}
@@ -55,6 +58,13 @@ export class CertificateService {
     const course = await this.courseService.findOne(courseId);
     if (course === null || !course.hasCertificates)
       throw new NotFoundException();
+    if (
+      !(await this.userCourseInfoService.checkIfUserCanBuyCertificate(
+        user,
+        course
+      ))
+    )
+      throw new ForbiddenException();
     orderRequest.address = orderRequest.address?.trim();
     if (orderRequest.address == null || orderRequest.address.length == 0)
       throw new BadRequestException("Address is missing");
@@ -62,7 +72,7 @@ export class CertificateService {
       throw new BadRequestException("Address too long");
     const response = await firstValueFrom(
       this.httpService
-        .get("https://api.mapbox.com/search/geocode/v6/forward", {
+        .get(this.configService.get<string>("MAPBOX_API_URL"), {
           params: {
             q: orderRequest.address,
             country: "ru",

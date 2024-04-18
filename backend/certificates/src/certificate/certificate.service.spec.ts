@@ -10,6 +10,8 @@ import { OrderService } from "../order/order.service";
 import { Order } from "../order/order.entity";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
+import { UserCourseInfoService } from "../user-course-info/user-course-info.service";
+import { UserCourseInfo } from "../user-course-info/user-course-info.entity";
 
 describe("CertificateService", () => {
   let service: CertificateService;
@@ -31,6 +33,11 @@ describe("CertificateService", () => {
         OrderService,
         {
           provide: getRepositoryToken(Order),
+          useClass: Repository,
+        },
+        UserCourseInfoService,
+        {
+          provide: getRepositoryToken(UserCourseInfo),
           useClass: Repository,
         },
         {

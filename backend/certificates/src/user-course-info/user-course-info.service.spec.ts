@@ -7,6 +7,8 @@ import { UserService } from "../user/user.service";
 import { CourseService } from "../course/course.service";
 import { User } from "../user/user.entity";
 import { Course } from "../course/course.entity";
+import { HttpService } from "@nestjs/axios";
+import { ConfigService } from "@nestjs/config";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
@@ -28,6 +30,18 @@ describe("UserCourseInfoService", () => {
         {
           provide: getRepositoryToken(Course),
           useClass: Repository,
+        },
+        {
+          provide: HttpService,
+          useValue: {
+            get: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: () => "",
+          },
         },
       ],
     }).compile();
