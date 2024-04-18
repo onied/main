@@ -9,7 +9,8 @@ namespace Purchases.Services;
 
 public class PurchaseManagementService(
     IUserRepository userRepository,
-    ICourseRepository courseRepository) : IPurchaseManagementService
+    ICourseRepository courseRepository,
+    IUserCourseInfoRepository userCourseInfoRepository) : IPurchaseManagementService
 {
     public async Task<IResult?> ValidatePurchase(PurchaseRequestDto dto, PurchaseType purchaseType)
     {
@@ -59,6 +60,9 @@ public class PurchaseManagementService(
                 p.PurchaseDetails.PurchaseType is PurchaseType.Course
                 && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == course.Id) is null)
             return Results.Forbid();
+
+        var uci = await userCourseInfoRepository.GetAsync(user.Id, course.Id);
+        if (uci is null || !uci.IsCompleted) return Results.Forbid();
 
         return dto.Price != 1000 ? Results.BadRequest() : null; // check price service
     }
