@@ -10,7 +10,7 @@ import { OrderService } from "./order.service";
 import { UserService } from "../user/user.service";
 import { OrderStatus } from "./dto/response/orderStatus";
 
-@Controller("/api/v1/certificate/order/:orderId")
+@Controller("/api/v1/certificates/order/:orderId")
 export class OrderController {
   constructor(
     private orderService: OrderService,
