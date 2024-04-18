@@ -60,4 +60,49 @@ describe("CourseService", () => {
 
     expect(result).toEqual(course);
   });
+
+  it("should return for findInList", async () => {
+    // Arrange
+
+    const author: User = {
+      id: "066c23b2-cabf-4a7f-a6cd-e2c8b9e92425",
+      firstName: "Василий",
+      lastName: "Теркин",
+      avatar:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Lynx_lynx-4.JPG/640px-Lynx_lynx-4.JPG",
+      gender: 0,
+    };
+
+    const coursesIds = [1, 2, 3];
+
+    const courses = [
+      {
+        id: 1,
+        title: "asdfasdf",
+        author: author,
+        hasCertificates: true,
+      },
+      {
+        id: 2,
+        title: "asdfasdf",
+        author: author,
+        hasCertificates: true,
+      },
+      {
+        id: 3,
+        title: "asdfasdf",
+        author: author,
+        hasCertificates: true,
+      },
+    ];
+    jest.spyOn(repo, "find").mockResolvedValueOnce(courses);
+
+    // Act
+
+    const result = await service.findInList(coursesIds);
+
+    // Assert
+
+    expect(result).toEqual(courses);
+  });
 });
