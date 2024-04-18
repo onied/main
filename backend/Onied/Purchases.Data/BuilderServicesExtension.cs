@@ -12,6 +12,7 @@ public static class BuilderServicesExtension
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<ICourseRepository, CourseRepository>()
             .AddScoped<ISubscriptionRepository, SubscriptionRepository>()
-            .AddScoped<IPurchaseRepository, PurchaseRepository>();
+            .AddScoped<IPurchaseRepository, PurchaseRepository>()
+            .AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
     }
 }

@@ -9,7 +9,8 @@ namespace Purchases.Services;
 
 public class PurchaseManagementService(
     IUserRepository userRepository,
-    ICourseRepository courseRepository) : IPurchaseManagementService
+    ICourseRepository courseRepository,
+    IUserCourseInfoRepository userCourseInfoRepository) : IPurchaseManagementService
 {
     public async Task<IResult?> ValidatePurchase(PurchaseRequestDto dto, PurchaseType purchaseType)
     {
@@ -46,11 +47,22 @@ public class PurchaseManagementService(
         var user = await userRepository.GetAsync(dto.UserId!.Value, true);
         var course = await courseRepository.GetAsync(dto.CourseId!.Value);
         if (user is null || course is null) return Results.NotFound(); // validation service
+        if (!course.HasCertificates) return Results.Forbid();
 
         var maybeAlreadyBought = user.Purchases
             .SingleOrDefault(p => p.PurchaseDetails.PurchaseType is PurchaseType.Certificate
                                   && (p.PurchaseDetails as CertificatePurchaseDetails)!.CourseId == course.Id);
         if (maybeAlreadyBought is not null) return Results.Forbid();
+
+        // курс должен быть бесплатный или уже купленный 
+        if (course.Price > 0
+            && user.Purchases.SingleOrDefault(p =>
+                p.PurchaseDetails.PurchaseType is PurchaseType.Course
+                && (p.PurchaseDetails as CoursePurchaseDetails)!.CourseId == course.Id) is null)
+            return Results.Forbid();
+
+        var uci = await userCourseInfoRepository.GetAsync(user.Id, course.Id);
+        if (uci is null || !uci.IsCompleted) return Results.Forbid();
 
         return dto.Price != 1000 ? Results.BadRequest() : null; // check price service
     }

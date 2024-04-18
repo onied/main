@@ -53,4 +53,36 @@ public class PurchasesMakingController(
         await purchaseCreatedProducer.PublishAsync(purchase);
         return Results.Ok();
     }
+
+    [HttpGet("certificate")]
+    public async Task<IResult> GetCertificatePreparedPurchase([FromQuery] int courseId)
+    {
+        var course = await courseRepository.GetAsync(courseId);
+        if (course is null) return Results.NotFound();
+
+        var coursePurchaseInfo = new PreparedPurchaseResponseDto(course.Title, 1000, PurchaseType.Certificate);
+        return Results.Ok(coursePurchaseInfo);
+    }
+
+    [HttpPost("certificate")]
+    public async Task<IResult> MakeCertificatePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
+    {
+        dto = dto with { UserId = userId };
+        var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Certificate);
+        if (maybeError is not null) return maybeError;
+
+        var purchase = mapper.Map<Purchase>(dto);
+
+        var purchaseDetails = new CertificatePurchaseDetails
+        {
+            PurchaseType = PurchaseType.Certificate,
+            CourseId = dto.CourseId!.Value,
+        };
+
+        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+        purchase.Token = tokenService.GetToken(purchase);
+        await purchaseRepository.UpdateAsync(purchase);
+        await purchaseCreatedProducer.PublishAsync(purchase);
+        return Results.Ok();
+    }
 }

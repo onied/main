@@ -21,6 +21,8 @@ public static class MassTransitExtensions
                 .Endpoint(e => e.Name = "course-created-purchases");
             x.AddConsumer<CourseUpdatedConsumer>()
                 .Endpoint(e => e.Name = "course-updated-purchases");
+            x.AddConsumer<CourseCompletedConsumer>()
+                .Endpoint(e => e.Name = "course-completed-purchases");
             x.AddConsumer<UserCreatedConsumer>()
                 .Endpoint(e => e.Name = "user-created-purchases");
 
