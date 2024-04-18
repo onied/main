@@ -86,6 +86,8 @@ public class CheckTasksController(
                 pointsInfo, userId, courseId, blockId);
         await checkTaskManagementService
             .ManageTaskBlockCompleted(pointsInfo, userId, blockId);
+        await checkTaskManagementService
+            .ManageCourseCompleted(userId, courseId);
 
         var pointsPrepared = block.Tasks
             .Select(task =>

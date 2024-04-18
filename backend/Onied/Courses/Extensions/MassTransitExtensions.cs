@@ -1,4 +1,5 @@
 using Courses.Services.Consumers;
+using Courses.Services.Producers.CourseCompletedProducer;
 using Courses.Services.Producers.CourseCreatedProducer;
 using Courses.Services.Producers.CourseUpdatedProducer;
 using MassTransit;
@@ -37,7 +38,7 @@ public static class MassTransitExtensions
         });
         serviceCollection.AddScoped<ICourseCreatedProducer, CourseCreatedProducer>();
         serviceCollection.AddScoped<ICourseUpdatedProducer, CourseUpdatedProducer>();
-
+        serviceCollection.AddScoped<ICourseCompletedProducer, CourseCompletedProducer>();
         return serviceCollection;
     }
 }

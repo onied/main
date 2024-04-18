@@ -21,4 +21,6 @@ public interface ICheckTaskManagementService
         List<UserTaskPoints> pointsInfo,
         Guid userId,
         int blockId);
+
+    public Task ManageCourseCompleted(Guid userId, int courseId);
 }
