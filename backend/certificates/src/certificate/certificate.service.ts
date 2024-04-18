@@ -113,9 +113,27 @@ export class CertificateService {
     if (user === null) throw new UnauthorizedException();
     const list =
       await this.userCourseInfoService.getAllAvailableCertificates(user);
-    return list.map(
-      (course) =>
-        <CertificateListCard>{ courseTitle: course.title, courseId: course.id }
-    );
+    return (
+      await Promise.all(
+        list.map(async (course) => {
+          return {
+            predicate: !(await this.orderService.existsOrderWithCourseUser(
+              course,
+              user
+            )),
+            course: course,
+          };
+        })
+      )
+    )
+      .filter((p) => p.predicate)
+      .map((p) => p.course)
+      .map(
+        (course) =>
+          <CertificateListCard>{
+            courseTitle: course.title,
+            courseId: course.id,
+          }
+      );
   }
 }

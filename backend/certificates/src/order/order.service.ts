@@ -21,6 +21,10 @@ export class OrderService {
     });
   }
 
+  existsOrderWithCourseUser(course: Course, user: User): Promise<boolean> {
+    return this.orderRepository.existsBy({ course: course, user: user });
+  }
+
   async create(user: User, course: Course, address: string): Promise<string> {
     const newOrder = this.orderRepository.create({
       user: user,
