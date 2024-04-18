@@ -8,7 +8,6 @@ import {
   PurchaseType,
 } from "../common/events/purchaseCreated";
 import { MassTransitWrapper } from "../common/events/massTransitWrapper";
-import { UserService } from "../user/user.service";
 import { CourseService } from "../course/course.service";
 import { User } from "../user/user.entity";
 import { Course } from "../course/course.entity";
@@ -21,7 +20,6 @@ export class UserCourseInfoService {
   constructor(
     @InjectRepository(UserCourseInfo)
     private userCourseInfoRepository: Repository<UserCourseInfo>,
-    private userService: UserService,
     private courseService: CourseService,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService
