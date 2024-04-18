@@ -1,9 +1,9 @@
-using Courses.Models;
+using MassTransit.Data.Messages;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services.Producers.CourseCompletedProducer;
 
 public interface ICourseCompletedProducer
 {
-    public Task PublishAsync(Course course, User user);
+    public Task PublishAsync(CourseCompleted courseCompleted);
 }

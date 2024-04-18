@@ -9,11 +9,11 @@ public class CourseCompletedProducer(
     ILogger<CourseCompletedProducer> logger,
     IPublishEndpoint publishEndpoint) : ICourseCompletedProducer
 {
-    public async Task PublishAsync(Course course, User user)
+    public async Task PublishAsync(CourseCompleted courseCompleted)
     {
-        await publishEndpoint.Publish(new CourseCompleted(user.Id, course.Id));
+        await publishEndpoint.Publish(courseCompleted);
         logger.LogInformation("Sent course completed(userId={userId}, courseId={CourseId}",
-            user.Id,
-            course.Id);
+            courseCompleted.UserId,
+            courseCompleted.CourseId);
     }
 }
