@@ -26,7 +26,7 @@ import { UserCourseInfoModule } from "./user-course-info/user-course-info.module
     CourseModule,
     CertificateModule,
     RabbitMQModule.forRoot(RabbitMQModule, {
-      uri: "amqp://guest:guest@localhost:5672",
+      uri: process.env.RABBITMQ_CONNECTION_STRING,
       connectionInitOptions: { wait: false },
       connectionManagerOptions: {
         connectionOptions: {
