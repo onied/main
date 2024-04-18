@@ -16,8 +16,15 @@ import {
 } from "../../components/landing/temporaryCoursesSource";
 import GeneralCourseCard from "../../components/catalog/courseCards/generalCourseCard";
 import CustomArrow from "../../components/landing/customArrow/customArrow";
+import { useProfile } from "../../hooks/profile/useProfile";
+import api from "../../config/axios";
 
 function Landing() {
+  const [profile, _] = useProfile();
+  const [userCourses, setUserCourses] = useState<
+    Array<CourseCard> | undefined
+  >();
+
   const [mostPopularCourses, setMostPopularCourses] = useState<
     Array<CourseCard> | undefined
   >();
@@ -26,8 +33,12 @@ function Landing() {
     Array<CourseCard> | undefined
   >();
 
+  const userCoursesSlider = useRef<Slider>(null);
   const mostPopularCoursesSlider = useRef<Slider>(null);
   const recommendedCoursesSlider = useRef<Slider>(null);
+
+  const [isUserCoursesCarouselInfinite, setIsUserCoursesCarouselInfinite] =
+    useState<boolean>(false);
 
   const callToStartLearningData: CallToActionData = {
     imageSrc: StartLearning,
@@ -45,7 +56,16 @@ function Landing() {
     redirectTo: "/teaching",
   };
 
-  const sliderSettings = {
+  const testUserCoursesSliderSettings = (
+    courseCardsAmount: number,
+    slider: RefObject<Slider>
+  ) => {
+    setIsUserCoursesCarouselInfinite(
+      courseCardsAmount > slider.current?.innerSlider?.track.props.slidesToShow
+    );
+  };
+
+  const [sliderSettings, setSliderSettings] = useState({
     dots: true,
     arrows: false,
     infinite: true,
@@ -72,7 +92,7 @@ function Landing() {
         },
       },
     ],
-  };
+  });
 
   const sliderNext = (slider: RefObject<Slider>) => {
     slider?.current?.slickNext();
@@ -82,6 +102,22 @@ function Landing() {
     slider?.current?.slickPrev();
   };
   useEffect(() => {
+    if (profile != null) {
+      api
+        .get("/account/courses")
+        .then((response) => {
+          console.log(response);
+          setUserCourses(response.data);
+          testUserCoursesSliderSettings(
+            response.data.length,
+            userCoursesSlider
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
     setTimeout(() => {
       setMostPopularCourses(tempPopularCourses);
       setRecommendedCourses(tempRecommendedCourses);
@@ -90,6 +126,35 @@ function Landing() {
 
   return (
     <div className={classes.contentWrapper}>
+      {profile == null || userCourses === undefined ? (
+        <></>
+      ) : (
+        <>
+          <h2>Ваши курсы</h2>
+          <div className={classes.carouselWrapper}>
+            <div className={classes.sliderWrapper}>
+              <CustomArrow
+                onClick={() => sliderPrev(userCoursesSlider)}
+                next={false}
+              />
+              <Slider
+                ref={userCoursesSlider}
+                {...{ sliderSettings, infinite: isUserCoursesCarouselInfinite }}
+              >
+                {userCourses.map((courseCard: CourseCard) => (
+                  <div className={classes.sliderItem} key={courseCard.id}>
+                    <GeneralCourseCard card={courseCard} owned={true} />
+                  </div>
+                ))}
+              </Slider>
+              <CustomArrow
+                onClick={() => sliderNext(userCoursesSlider)}
+                next={true}
+              />
+            </div>
+          </div>
+        </>
+      )}
       <h2>Самые популярные курсы</h2>
       <div className={classes.carouselWrapper}>
         {mostPopularCourses === undefined ? (
