@@ -1,16 +1,20 @@
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseCompletedProducer;
+using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
 public class CheckTaskManagementService(
+    ICourseRepository courseRepository,
     IBlockRepository blockRepository,
     IBlockCompletedInfoRepository blockCompletedInfoRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
-    ICheckTasksService checkTasksService)
+    ICheckTasksService checkTasksService,
+    ICourseCompletedProducer courseCompletedProducer)
     : ICheckTaskManagementService
 {
     public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
@@ -68,5 +72,21 @@ public class CheckTaskManagementService(
         {
             await blockCompletedInfoRepository.DeleteCompletedCourseBlocksAsync(bci);
         }
+    }
+
+    public async Task ManageCourseCompleted(Guid userId, int courseId)
+    {
+        var courseBlocks = (await courseRepository.GetCourseWithBlocksAsync(courseId))!
+            .Modules
+            .SelectMany(m => m.Blocks)
+            .Where(b => b.BlockType is BlockType.TasksBlock)
+            .Select(b => b.Id).Order();
+        var userBlocks = (await blockCompletedInfoRepository
+            .GetAllCompletedCourseBlocksByUser(userId, courseId))
+            .Where(b => b.Block.BlockType is BlockType.TasksBlock)
+            .Select(b => b.BlockId).Order();
+
+        if (courseBlocks.SequenceEqual(userBlocks))
+            await courseCompletedProducer.PublishAsync(new CourseCompleted(userId, courseId));
     }
 }

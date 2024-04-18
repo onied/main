@@ -55,6 +55,7 @@ public class ManualReviewService(
                     answer.Task.TasksBlockId))
             .ToList();
         await checkTaskManagementService.ManageTaskBlockCompleted(pointsInfo, answer.UserId, answer.Task.TasksBlockId);
+        await checkTaskManagementService.ManageCourseCompleted(answer.UserId, answer.CourseId);
         return TypedResults.Ok();
     }
 
