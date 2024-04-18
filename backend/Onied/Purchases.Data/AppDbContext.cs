@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Course> Courses { get; set; } = null!;
+    public DbSet<UserCourseInfo> UserCourseInfos { get; set; } = null!;
     public DbSet<Subscription> Subscriptions { get; set; } = null!;
     public DbSet<Purchase> Purchases { get; set; } = null!;
     public DbSet<PurchaseDetails> PurchaseDetails { get; set; } = null!;
@@ -66,6 +67,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasOne<Subscription>(u => u.Subscription)
             .WithMany(s => s.Users)
             .HasForeignKey(u => u.SubscriptionId);
+
+        modelBuilder.Entity<User>()
+            .HasMany<Course>()
+            .WithMany()
+            .UsingEntity<UserCourseInfo>(
+                j => j.HasOne<Course>()
+                    .WithMany()
+                    .HasForeignKey(tp => tp.CourseId),
+                j => j
+                    .HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(tp => tp.UserId),
+                j => { j.HasKey(uci => new { uci.UserId, uci.CourseId }); });
 
         var freeSubscription = new Subscription()
         {
