@@ -7,7 +7,7 @@
 
   /* width: max-content;
     height: min-content; */
-  width: 200px;
+  width: fit-content;
   height: min-content;
 
   background: #ffffff;

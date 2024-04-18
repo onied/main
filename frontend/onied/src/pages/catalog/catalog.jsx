@@ -4,6 +4,7 @@ import CatalogNavigation from "../../components/catalog/catalogNavigation/catalo
 import { useEffect, useState } from "react";
 import api from "../../config/axios.ts";
 import classes from "./catalog.module.css";
+import NotificationContainer from "../../components/notifications/notificationContainer/notificationContainer";
 
 function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +31,22 @@ function Catalog() {
   return (
     <div>
       <CatalogHeader />
+      <NotificationContainer
+        notifications={[
+          {
+            id: 1,
+            title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
+            img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
+            message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+          },
+          {
+            id: 1,
+            title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
+            img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
+            message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+          },
+        ]}
+      />
       <div className={classes.courseCardsContainerContainer}>
         <CourseCardsContainer coursesList={coursesList} />
       </div>

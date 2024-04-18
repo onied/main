@@ -1,0 +1,16 @@
+.notificationsContainer {
+  box-sizing: border-box;
+  --background-color: #282828;
+
+  background-color: var(--background-color);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  width: 200px;
+  min-width: fit-content;
+
+  padding: 0.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+}

@@ -1,5 +1,5 @@
 import classes from "./notification.module.css";
-import { Notification } from "../../types/notifications";
+import { Notification } from "../../../types/notifications";
 
 function NotificationComponent({
   notification,
@@ -15,7 +15,9 @@ function NotificationComponent({
         <h4 className={classes.notificationTitle}>{notification.title}</h4>
         <span>{notification.message}</span>
       </div>
-      <span className={classes.notificationReadButton} />
+      {!notification.read && (
+        <span className={classes.notificationReadButton} />
+      )}
     </div>
   );
 }
