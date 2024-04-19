@@ -15,6 +15,6 @@ export class UserCourseInfo {
   @PrimaryColumn()
   courseId: number;
 
-  @Column()
+  @Column({ nullable: true })
   token: string | null;
 }

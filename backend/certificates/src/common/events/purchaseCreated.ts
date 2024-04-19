@@ -8,6 +8,6 @@ export class PurchaseType {
 export type PurchaseCreated = {
   userId: string;
   purchaseType: number;
-  courseId: number;
+  courseId: number | null;
   token: string;
 };

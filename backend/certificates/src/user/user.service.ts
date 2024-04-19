@@ -25,6 +25,7 @@ export class UserService {
     queue: "profile-updated-certificates",
   })
   public async profileUpdatedHandler(msg: MassTransitWrapper<ProfileUpdated>) {
+    if (msg.message.gender === null) msg.message.gender = 0;
     let user = await this.usersRepository.findOneBy({ id: msg.message.id });
     user = this.usersRepository.merge(user, msg.message);
     await this.usersRepository.save(user);
@@ -49,6 +50,7 @@ export class UserService {
     queue: "user-created-certificates",
   })
   public async userCreatedHandler(msg: MassTransitWrapper<UserCreated>) {
+    if (msg.message.gender === null) msg.message.gender = 0;
     const user = this.usersRepository.create(msg.message);
     user.avatar = msg.message.avatarHref;
     await this.usersRepository.save(user);
