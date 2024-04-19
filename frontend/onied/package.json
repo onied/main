@@ -27,6 +27,7 @@
     "@types/node": "^20.11.25",
     "@uiw/react-md-editor": "^4.0.3",
     "axios": "^1.6.7",
+    "font-awesome": "^4.7.0",
     "mapbox-gl": "^3.3.0",
     "ol": "^9.1.0",
     "react": "^18.2.0",
