@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { useParams, Link } from "react-router-dom";
-import classes from "../editPreview/editPreview.module.css";
+import classes from "./editPreview.module.css";
 import imagePlaceholder from "../../../assets/imagePlaceholder.svg";
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
