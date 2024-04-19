@@ -9,9 +9,14 @@
 }
 
 .notificationsButtonContainer {
-  margin-block-start: 0;
-  margin-block-end: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   height: var(--header-height);
+}
+.notificationsButtonContainer img {
+  object-fit: cover;
 }
 
 .notidicationsDropdown {

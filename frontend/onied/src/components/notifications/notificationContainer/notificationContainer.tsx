@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Notification } from "../../../types/notifications";
-import Button from "../../general/button/button";
 import NotificationComponent from "../notificationComponent";
+
+import bellLogo from "../../../assets/bell.svg";
+import bellActiveLogo from "../../../assets/bellActive.svg";
 import classes from "./notificationContainer.module.css";
 
 function NotificationContainer() {
+  const [newNotifications, setNewNotifications] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([
     {
@@ -54,9 +57,10 @@ function NotificationContainer() {
   return (
     <div className={classes.notificationsWrapper}>
       <div className={classes.notificationsButtonContainer}>
-        <Button onClick={() => setShowDropdown((value) => !value)}>
-          уведомления
-        </Button>
+        <img
+          src={newNotifications ? bellActiveLogo : bellLogo}
+          onClick={() => setShowDropdown((value) => !value)}
+        />
       </div>
       <div
         className={[
