@@ -3,8 +3,10 @@ import { Notification } from "../../../types/notifications";
 
 function NotificationComponent({
   notification,
+  onRead,
 }: {
   notification: Notification;
+  onRead: (notification: Notification) => void;
 }) {
   return (
     <div className={classes.notification}>
@@ -15,8 +17,11 @@ function NotificationComponent({
         <h4 className={classes.notificationTitle}>{notification.title}</h4>
         <span>{notification.message}</span>
       </div>
-      {!notification.read && (
-        <span className={classes.notificationReadButton} />
+      {!notification.isRead && (
+        <span
+          className={classes.notificationReadButton}
+          onClick={() => onRead({ ...notification, isRead: true })}
+        />
       )}
     </div>
   );

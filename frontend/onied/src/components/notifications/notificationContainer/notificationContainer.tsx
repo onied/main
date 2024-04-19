@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Notification } from "../../../types/notifications";
 import NotificationComponent from "../notificationComponent";
 
@@ -7,7 +7,7 @@ import bellActiveLogo from "../../../assets/bellActive.svg";
 import classes from "./notificationContainer.module.css";
 
 function NotificationContainer() {
-  const [newNotifications, setNewNotifications] = useState<boolean>(false);
+  const [unread, setUnread] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([
     {
@@ -15,50 +15,67 @@ function NotificationContainer() {
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: false,
     },
     {
       id: 1,
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: false,
     },
     {
       id: 1,
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: true,
     },
     {
       id: 1,
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: true,
     },
     {
       id: 1,
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: true,
     },
     {
       id: 1,
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: true,
     },
     {
       id: 1,
       title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
       message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      isRead: true,
     },
   ]);
+
+  useEffect(() => {
+    setUnread(notifications.some((n) => !n.isRead));
+  }, [notifications]);
+
+  const updateNotification = (index: number, notification: Notification) => {
+    var newNotifications = [...notifications];
+    newNotifications[index] = notification;
+    setNotifications(newNotifications);
+  };
 
   return (
     <div className={classes.notificationsWrapper}>
       <div className={classes.notificationsButtonContainer}>
         <img
-          src={newNotifications ? bellActiveLogo : bellLogo}
+          src={unread ? bellActiveLogo : bellLogo}
           onClick={() => setShowDropdown((value) => !value)}
         />
       </div>
@@ -75,6 +92,9 @@ function NotificationContainer() {
             <NotificationComponent
               key={"notification_" + index}
               notification={value}
+              onRead={(notification: Notification) => {
+                updateNotification(index, notification);
+              }}
             />
           ))}
         </div>

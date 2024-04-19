@@ -3,4 +3,5 @@ export type Notification = {
   img: string;
   title: string;
   message: string;
+  isRead: boolean;
 };
