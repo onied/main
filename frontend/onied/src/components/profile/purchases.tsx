@@ -11,8 +11,8 @@ function ProfilePurchases() {
   >();
 
   useEffect(() => {
-    //setPurchasesList(undefined);
-    setPurchasesList([
+    setPurchasesList(undefined);
+    /*setPurchasesList([
       {
         purchaseDate: new Date("2024-04-17"),
         purchaseType: 3,
@@ -41,23 +41,23 @@ function ProfilePurchases() {
         name: "Курс с мегаультрасупердуперпупердлинным названием",
         price: 2000,
       },
-    ]);
+    ]);*/
   }, []);
   if (profile == null) return <></>;
 
+  if (!purchasesList)
+    return (
+      <p className={classes.noCourses} style={{ margin: "40px" }}>
+        Вы не совершали покупок
+      </p>
+    );
+
   return (
     <div style={{ margin: "0 40px 40px 40px" }}>
-      {purchasesList ? <Columns></Columns> : ""}
-      {purchasesList ? (
-        purchasesList?.map((purchase, index) => (
-          <PurchaseContainer
-            purchase={purchase}
-            key={index}
-          ></PurchaseContainer>
-        ))
-      ) : (
-        <p className={classes.noCourses}>Вы не совершали покупок</p>
-      )}
+      <Columns></Columns>
+      {purchasesList.map((purchase, index) => (
+        <PurchaseContainer purchase={purchase} key={index}></PurchaseContainer>
+      ))}
     </div>
   );
 }
