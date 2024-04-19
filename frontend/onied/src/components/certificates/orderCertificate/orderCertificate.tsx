@@ -5,11 +5,7 @@ import Map from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Config from "../../../config/config";
-import {
-  AddressAutofill,
-  SearchBox,
-  useConfirmAddress,
-} from "@mapbox/search-js-react";
+import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl from "mapbox-gl";
 import PrintCertificate from "../printCertificate/printCertificate";
 import NotFound from "../../general/responses/notFound/notFound";
@@ -37,7 +33,6 @@ export type Certificate = {
 
 function OrderCertificate() {
   const navigate = useNavigate();
-  const confirmAddress = useConfirmAddress();
   const { courseId } = useParams();
   const [profile, loading] = useProfile();
   const [certificateInfo, setCertificateInfo] = useState<
@@ -71,7 +66,9 @@ function OrderCertificate() {
           if (features.length === 0) setError("Адрес не найден.");
           const main = features[0];
           setAddress(main.properties.full_address);
-          navigate("/purchases/certificate/" + courseId);
+          navigate("/purchases/certificate/" + courseId, {
+            state: { address: main.properties.full_address },
+          });
         }
       });
   };
@@ -82,23 +79,10 @@ function OrderCertificate() {
       setLoadStatus(-1);
       return;
     }
-    const decomposeAuthor = (s: string) => {
-      const splitted = s.split(" ");
-      return {
-        firstName: splitted[0],
-        lastName: splitted[1],
-      };
-    };
     api
-      .get("/courses/" + id)
+      .get("/certificates/" + id)
       .then((response) => {
-        setCertificateInfo({
-          price: 1000,
-          course: {
-            title: response.data.title,
-            author: decomposeAuthor(response.data.courseAuthor.name),
-          },
-        });
+        setCertificateInfo(response.data);
         setLoadStatus(200);
       })
       .catch((e) => {

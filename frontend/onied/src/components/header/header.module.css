@@ -11,10 +11,13 @@
   height: var(--header-height);
   background-color: var(--background-color);
   box-shadow: var(--shadow);
-  overflow: hidden;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.header * {
+  box-sizing: border-box;
 }
 
 .leftWrapper {
