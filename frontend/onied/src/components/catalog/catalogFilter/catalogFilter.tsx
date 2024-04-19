@@ -102,7 +102,8 @@ function CatalogFilter() {
       .get("categories")
       .then((response) => {
         console.log(response.data);
-        setCategories(response.data);
+        const array: CategoryDto[] = response.data;
+        setCategories(array.toSorted((a, b) => a.id - b.id));
       })
       .catch((error) => {
         console.log(error);
