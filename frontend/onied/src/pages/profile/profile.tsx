@@ -6,6 +6,7 @@ import ProfileSidebar from "../../components/sidebar/profileSidebar";
 import { useProfile } from "../../hooks/profile/useProfile";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProfilePurchases from "../../components/profile/purchases";
+import ProfileSubcriptions from "../../components/profile/subscriptions";
 
 function ProfilePage() {
   const [profile, loading] = useProfile();
@@ -19,6 +20,7 @@ function ProfilePage() {
           <Route path="/courses" element={<ProfileCourses />} />
           <Route path="/certificates" element={<ProfileCertificates />} />
           <Route path="/purchases" element={<ProfilePurchases />} />
+          <Route path="/subscriptions" element={<ProfileSubcriptions />} />
           <Route path="*" element={<Navigate to="/profile" />} />
         </Routes>
       </ProfilePageContainer>

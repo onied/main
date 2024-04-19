@@ -135,3 +135,10 @@
   text-align: center;
   width: 100%;
 }
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 50px;
+  margin: 80px;
+}
