@@ -23,10 +23,9 @@ function CatalogHeader() {
         <label className={classes.label}>Сортировка: </label>
         <select
           className={classes.sortOrder}
-          value={sort ?? "bestMatch"}
+          value={sort ?? "popular"}
           onChange={(e) => setSort(e.target.value)}
         >
-          <option value="bestMatch">Лучшее совпадение</option>
           <option value="popular">Сначала популярные</option>
           <option value="new">Сначала новые</option>
           <option value="priceAsc">Цена (по возрастанию)</option>

@@ -11,7 +11,7 @@ public class CatalogGetQueriesDto : PageQuery
 
     public string? Sort { get; set; }
 
-    public int? CategoryId { get; set; }
+    public int? Category { get; set; }
 
     public int? PriceFrom { get; set; }
     public int? PriceTo { get; set; }

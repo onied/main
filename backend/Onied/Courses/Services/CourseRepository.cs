@@ -39,8 +39,8 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .AsQueryable();
 
-        if (catalogGetQueriesDto.CategoryId != null)
-            query = query.Where(course => course.CategoryId == catalogGetQueriesDto.CategoryId.Value);
+        if (catalogGetQueriesDto.Category != null)
+            query = query.Where(course => course.CategoryId == catalogGetQueriesDto.Category.Value);
         if (catalogGetQueriesDto.PriceFrom != null)
             query = query.Where(course => course.PriceRubles >= catalogGetQueriesDto.PriceFrom.Value);
         if (catalogGetQueriesDto.PriceTo != null)
