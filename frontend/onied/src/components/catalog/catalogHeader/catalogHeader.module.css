@@ -1,3 +1,30 @@
 .catalogHeader {
   padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sort {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  width: 100%;
+}
+
+.label {
+  font-size: 14pt;
+  font-weight: 600;
+}
+
+.sortOrder {
+  border: none;
+  outline: none;
+  font-size: 14pt;
+  font-weight: 600;
+  text-decoration: underline;
+  color: var(--accent-color);
+  background-color: transparent;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  width: fit-content;
 }
