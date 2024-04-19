@@ -1,0 +1,68 @@
+.subscriptionCardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subscriptionCardHeader h1 {
+  margin: 0 0 0.5rem 0;
+}
+
+.subscriptionTitle {
+  letter-spacing: 0.2rem;
+}
+
+.subscriptionPrice {
+  letter-spacing: 0.15rem;
+}
+
+.defaultSubscriptionCard,
+.fullSubscriptionCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 3rem;
+  border-radius: 1.25rem;
+  height: fit-content;
+}
+
+.defaultSubscriptionCard {
+  border: 3px solid #dbdbdb;
+}
+
+.fullSubscriptionCard {
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(180deg, #ffcc4d, #9715d3) border-box;
+  border: 4px solid transparent;
+}
+
+.subscriptionFeaturesList ul {
+  padding-left: 0;
+}
+
+.subscriptionFeaturesList li {
+  display: flex;
+  align-items: start;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+}
+
+.subscriptionFeaturesList li::before {
+  content: url("/src/assets/checkmark.svg");
+  margin-right: 0.5rem;
+}
+
+.checkboxAndTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkboxAndTitle label {
+  padding: 0 0.5rem;
+}
+
+.formLabel {
+  font-size: 24px;
+}
