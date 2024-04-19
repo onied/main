@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Button from "../../general/button/button";
 import CardContainer from "../cardContainer";
 import PurchaseInfo from "../purchaseInfo/purchaseInfo";
@@ -25,7 +25,14 @@ function CertificatePurchase() {
   const [card, setCard] = useState<CardInfo | null>();
   const [error, setError] = useState<string | null>();
 
+  const { state } = useLocation();
+  const address = state?.address;
+
   useEffect(() => {
+    if (address == null) {
+      navigate(-1);
+      return;
+    }
     setLoading(true);
     api
       .get("/purchases/new/certificate?courseId=" + courseId)
@@ -40,6 +47,7 @@ function CertificatePurchase() {
       });
   }, []);
 
+  if (address == null) return <></>;
   if (loading) return <BeatLoader color="var(--accent-color)" />;
   if (error == null && purchaseInfo === null)
     return <NotFound>Курс не найден</NotFound>;
@@ -71,7 +79,22 @@ function CertificatePurchase() {
           setLoading(true);
           api
             .post("/purchases/new/certificate", purchase)
-            .then(() => navigate(-1))
+            .then(() => {
+              api
+                .post("/certificates/" + courseId + "/order", {
+                  address: address,
+                })
+                .then((response) => {
+                  alert(
+                    "Заказ был успешно совершен. ID заказа: " +
+                      response.data.orderId
+                  );
+                })
+                .catch(console.log)
+                .finally(() => {
+                  navigate(-1);
+                });
+            })
             .catch((error) => {
               if (error.response.status == 400)
                 setError("Возникла ошибка при валидации");
