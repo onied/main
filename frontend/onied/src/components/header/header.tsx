@@ -4,6 +4,7 @@ import Logo from "../../assets/logo.svg";
 import Avatar from "react-avatar";
 import { useProfile } from "../../hooks/profile/useProfile";
 import { getProfileName } from "../../hooks/profile/profile";
+import NotificationContainer from "../notifications/notificationContainer";
 
 function Header() {
   const [profile, _] = useProfile();
@@ -31,15 +32,18 @@ function Header() {
             Войти
           </Link>
         ) : (
-          <Link to="/profile" className={classes.profileContainer}>
-            <p className={classes.profileName}>{getProfileName(profile)}</p>
-            <Avatar
-              name={getProfileName(profile)}
-              size="50"
-              className={classes.profileAvatar}
-              src={profile.avatar ? profile.avatar : undefined}
-            ></Avatar>
-          </Link>
+          <>
+            <NotificationContainer />
+            <Link to="/profile" className={classes.profileContainer}>
+              <p className={classes.profileName}>{getProfileName(profile)}</p>
+              <Avatar
+                name={getProfileName(profile)}
+                size="50"
+                className={classes.profileAvatar}
+                src={profile.avatar ? profile.avatar : undefined}
+              ></Avatar>
+            </Link>
+          </>
         )}
       </div>
     </header>
