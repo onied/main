@@ -47,9 +47,11 @@ function NotificationContainer() {
     },
     {
       id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
+      title:
+        "sdfsdfsf ddsfsdfs dfdfddsffsdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfd",
       img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
+      message:
+        "z fdgfgfdsgfsdfaasd dsfsdfd z fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfd",
       isRead: true,
     },
     {
@@ -81,8 +83,8 @@ function NotificationContainer() {
       </div>
       <div
         className={[
-          classes.notidicationsDropdown,
-          showDropdown ? classes.notidicationsDropdownOpen : "",
+          classes.notificationsDropdown,
+          showDropdown ? classes.notificationsDropdownOpen : "",
         ]
           .join(" ")
           .trim()}

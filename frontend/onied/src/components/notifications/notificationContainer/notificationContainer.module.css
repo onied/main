@@ -18,9 +18,11 @@
 
 .notificationsButtonContainer img {
   object-fit: cover;
+  width: 40px;
+  height: 40px;
 }
 
-.notidicationsDropdown {
+.notificationsDropdown {
   --background-color: #282828;
   background-color: var(--background-color);
 
@@ -39,7 +41,7 @@
   border-radius: 0 0 0.5rem 0.5rem;
 }
 
-.notidicationsDropdownOpen {
+.notificationsDropdownOpen {
   max-height: 350px;
   padding: 0.5rem 0.5rem 3px 0.5rem;
 }
