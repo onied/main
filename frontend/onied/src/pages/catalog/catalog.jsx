@@ -30,10 +30,13 @@ function Catalog() {
 
   return (
     <div className={classes.container}>
-      <div></div>
-      <CatalogHeader />
-      <CatalogFilter />
-      <div>
+      <div className={classes.upRight}>
+        <CatalogHeader />
+      </div>
+      <div className={classes.downLeft}>
+        <CatalogFilter />
+      </div>
+      <div className={classes.downRight}>
         <div className={classes.courseCardsContainerContainer}>
           <CourseCardsContainer coursesList={coursesList} />
         </div>
