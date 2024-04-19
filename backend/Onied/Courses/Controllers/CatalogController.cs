@@ -17,17 +17,10 @@ public class CatalogController(
 {
     [HttpGet]
     public async Task<Page<CourseCardDto>> Get(
-        [FromQuery] PageQuery pageQuery,
+        [FromQuery] CatalogGetQueriesDto catalogGetQueries,
         [FromQuery] Guid? userId)
     {
-        var page = Page<CourseCardDto>.Prepare(
-            pageQuery,
-            await courseRepository.CountAsync(),
-            out var offset);
-        var courses = await courseRepository.GetCoursesAsync(
-            offset,
-            page.ElementsPerPage);
-
+        var (courses, count) = await courseRepository.GetCoursesAsync(catalogGetQueries);
         var courseDtos = mapper.Map<List<CourseCardDto>>(courses);
 
         var userCourses = (userId is null
@@ -36,7 +29,6 @@ public class CatalogController(
             .Select(x => x.Id).ToList() ?? [];
         courseDtos.ForEach(x => x.IsOwned = userCourses.Contains(x.Id));
 
-        page.Elements = courseDtos;
-        return page;
+        return Page<CourseCardDto>.Prepare(catalogGetQueries, count, courseDtos);
     }
 }

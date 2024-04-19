@@ -34,7 +34,7 @@ public class CatalogControllerTests
     public async Task Get_UsesCorrectOffsetAndLimit()
     {
         // Arrange
-        var pageQuery = new PageQuery(); // Adjust as needed
+        var pageQuery = new CatalogGetQueriesDto(); // Adjust as needed
 
         var courses = _fixture.Build<Course>()
             .CreateMany(3)
