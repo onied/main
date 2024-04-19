@@ -1,0 +1,65 @@
+.notificationsWrapper {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.notificationsWrapper * {
+  box-sizing: border-box;
+}
+
+.notificationsButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: var(--header-height);
+}
+
+.notificationsButtonContainer img {
+  object-fit: cover;
+  width: 40px;
+  height: 40px;
+}
+
+.notificationsDropdown {
+  --background-color: #282828;
+  background-color: var(--background-color);
+
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 9999;
+
+  overflow: hidden;
+  width: 350px;
+  max-height: 0;
+  transition:
+    max-height 0.15s ease-in-out,
+    padding 0.15s linear;
+
+  border-radius: 0 0 0.5rem 0.5rem;
+  padding: 0 0.5rem 0 0.5rem;
+}
+
+.notificationsDropdownOpen {
+  max-height: 350px;
+  padding: 0.5rem 0.5rem 3px 0.5rem;
+}
+
+.notificationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  width: 100%;
+  max-height: calc(350px - 0.5rem - 3px);
+
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.notificationsList::-webkit-scrollbar {
+  display: none;
+}

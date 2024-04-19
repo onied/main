@@ -6,6 +6,7 @@ import api from "../../config/axios.ts";
 import classes from "./catalog.module.css";
 import CatalogFilter from "../../components/catalog/catalogFilter/catalogFilter.tsx";
 
+
 function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(1);
