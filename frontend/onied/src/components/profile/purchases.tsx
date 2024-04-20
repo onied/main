@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import PurchaseContainer, { Purchase } from "./purchase/purchase";
 import classes from "./profile.module.css";
 import Columns from "./purchase/columns";
+import { PurchaseType } from "../../types/purchase";
+import api from "../../config/axios";
 
 function ProfilePurchases() {
   const [profile, _] = useProfile();
@@ -11,41 +13,59 @@ function ProfilePurchases() {
   >();
 
   useEffect(() => {
-    setPurchasesList(undefined);
-    /*setPurchasesList([
+    //setPurchasesList(undefined);
+    /*api
+      .get("purchases")
+      .then((res) => {
+        console.log(res.data);
+        setPurchasesList(res.data);
+      })
+      .catch((error) => console.log(error));*/
+    setPurchasesList([
       {
-        purchaseDate: new Date("2024-04-17"),
-        purchaseType: 3,
-        courseId: null,
-        name: "Базовая",
+        id: 1,
+        purchaseDetails: {
+          purchaseType: PurchaseType.Subscription,
+          subscription: { id: 2, title: "Базовая" },
+          startDate: new Date("2024-04-17"),
+        },
         price: 2000,
       },
       {
-        purchaseDate: new Date("2024-04-17"),
-        purchaseType: 3,
-        courseId: null,
-        name: "Полная",
+        id: 2,
+        purchaseDetails: {
+          purchaseType: PurchaseType.Subscription,
+          subscription: { id: 1, title: "Полная" },
+          startDate: new Date("2024-04-17"),
+        },
         price: 10000,
       },
       {
-        purchaseDate: new Date("2024-04-17"),
-        purchaseType: 1,
-        courseId: 1,
-        name: "Название курса",
+        id: 3,
+        purchaseDetails: {
+          purchaseType: PurchaseType.Course,
+          course: { id: 1, title: "Название курса" },
+          startDate: new Date("2024-04-17"),
+        },
         price: 2000,
       },
       {
-        purchaseDate: new Date("2024-04-17"),
-        purchaseType: 2,
-        courseId: 2,
-        name: "Курс с мегаультрасупердуперпупердлинным названием",
+        id: 4,
+        purchaseDetails: {
+          purchaseType: PurchaseType.Course,
+          course: {
+            id: 2,
+            title: "Курс с мегаультрасупердуперпупердлинным названием",
+          },
+          startDate: new Date("2024-04-17"),
+        },
         price: 2000,
       },
-    ]);*/
+    ]);
   }, []);
   if (profile == null) return <></>;
 
-  if (!purchasesList)
+  if (!purchasesList || purchasesList?.length == 0)
     return (
       <p className={classes.noCourses} style={{ margin: "40px" }}>
         Вы не совершали покупок
