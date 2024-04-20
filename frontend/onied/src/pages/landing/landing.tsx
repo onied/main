@@ -216,8 +216,16 @@ function Landing() {
 
   return (
     <div className={classes.contentWrapper}>
-      {profile == null || userCourses === undefined ? (
+      {profile == null ? (
         <></>
+      ) : userCourses === undefined ? (
+        <>
+          <h2>Ваши курсы</h2>
+          <BeatLoader
+            cssOverride={{ margin: "2rem", padding: "2rem" }}
+            color="var(--accent-color)"
+          ></BeatLoader>
+        </>
       ) : (
         <>
           <h2>Ваши курсы</h2>
@@ -253,7 +261,7 @@ function Landing() {
       <div className={classes.carouselWrapper}>
         {mostPopularCourses === undefined ? (
           <BeatLoader
-            cssOverride={{ margin: "30px 30px" }}
+            cssOverride={{ margin: "2rem" }}
             color="var(--accent-color)"
           ></BeatLoader>
         ) : (
@@ -290,7 +298,7 @@ function Landing() {
       <div className={classes.carouselWrapper}>
         {recommendedCourses === undefined ? (
           <BeatLoader
-            cssOverride={{ margin: "30px 30px" }}
+            cssOverride={{ margin: "2rem" }}
             color="var(--accent-color)"
           ></BeatLoader>
         ) : (
