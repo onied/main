@@ -1,3 +1,9 @@
+@media (width: 1024px), screen {
+    .sliderItem{
+        max-width: 23vw;
+    }
+}
+
 .contentWrapper{
     display: flex;
     flex-direction: column;

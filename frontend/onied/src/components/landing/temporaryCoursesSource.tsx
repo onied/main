@@ -14,6 +14,7 @@ const plainCourse: CourseCard = {
   },
   price: 7777,
   isGlowing: false,
+  isOwned: true,
 };
 const freeCourse: CourseCard = {
   id: "1",
@@ -29,6 +30,7 @@ const freeCourse: CourseCard = {
   },
   price: 0,
   isGlowing: false,
+  isOwned: true,
 };
 const courseWithSubscription: CourseCard = {
   id: "1",
@@ -44,11 +46,12 @@ const courseWithSubscription: CourseCard = {
   },
   price: 77777,
   isGlowing: true,
+  isOwned: false,
 };
 
 export const tempPopularCourses: Array<CourseCard> = [
-  ...Array.from({ length: 25 }, () => ({ ...freeCourse })),
-  ...Array.from({ length: 25 }, () => ({ ...plainCourse })),
+  ...Array.from({ length: 2 }, () => ({ ...freeCourse })),
+  ...Array.from({ length: 2 }, () => ({ ...courseWithSubscription })),
 ];
 
 export const tempRecommendedCourses: Array<CourseCard> = [
