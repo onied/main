@@ -1,25 +1,11 @@
 import classes from "./subscription.module.css";
-import { SubscriptionType } from "../../../pages/subscriptions/subscriptionsPreview";
+import { Subscription } from "./subscription";
 
-function SubscriptionHeader(props: {
-  subscriptionType: SubscriptionType;
-  endDate: Date;
-}) {
-  const subscriptionTypeMapByStyle = {
-    0: undefined,
-    1: { fontStyle: "italic" },
-  };
-  const slantStyle = subscriptionTypeMapByStyle[props.subscriptionType];
-
-  const subscriptionTypeMapByName = {
-    0: "Базовая",
-    1: "Полная",
-  };
-  const name = subscriptionTypeMapByName[props.subscriptionType];
-
+function SubscriptionHeader(props: { subscription: Subscription }) {
   const today = new Date();
   const daysLeft = Math.ceil(
-    (props.endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (props.subscription.endDate.getTime() - today.getTime()) /
+      (1000 * 60 * 60 * 24)
   );
 
   const getDaysString = (days: number) => {
@@ -40,8 +26,15 @@ function SubscriptionHeader(props: {
 
   return (
     <div className={classes.subscriptionCardHeader}>
-      <div className={classes.subscriptionTitle} style={slantStyle}>
-        <h1>{name}</h1>
+      <div
+        className={classes.subscriptionTitle}
+        style={
+          props.subscription.coursesHighlightingEnabled
+            ? { fontStyle: "italic" }
+            : undefined
+        }
+      >
+        <h1>{props.subscription.title}</h1>
       </div>
       <div style={{ fontSize: "24px" }}>{durationText}</div>
     </div>
