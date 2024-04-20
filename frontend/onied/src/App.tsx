@@ -28,6 +28,7 @@ import PurchasePage from "./pages/purchase/purchase";
 import OrderCertificatePage from "./pages/certificates/orderCertificate";
 import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
 import ManageModerators from "./pages/manageModerators/manageModerators";
+import Landing from "./pages/landing/landing";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -48,6 +49,7 @@ function App() {
           <Header></Header>
           <main>
             <Routes>
+              <Route path="/" element={<Landing />}></Route>
               <Route path="/course/create" element={<CreateCourse />}></Route>
               <Route
                 path="/course/:courseId/learn/*"

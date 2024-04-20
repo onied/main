@@ -12,18 +12,22 @@ function GeneralCourseCard({ card }) {
         card.isGlowing ? classes.highlightedCourseCard : "",
       ].join(" ")}
     >
-      <img src={card.pictureHref} />
-      <div className={classes.courseCardInfo}>
-        <h3>
-          <Link
-            to={"/course/" + card.id}
-            style={{ color: "black", textDecoration: "none" }}
-          >
-            {card.title}
-          </Link>
-        </h3>
-        <p to={"/catalog?category=" + card.category.id}>{card.category.name}</p>
-        <h4>{card.author.name}</h4>
+      <div>
+        <img className={classes.courseCardPicture} src={card.pictureHref} />
+        <div className={classes.courseCardInfo}>
+          <h3>
+            <Link
+              to={"/course/" + card.id}
+              style={{ color: "black", textDecoration: "none" }}
+            >
+              {card.title}
+            </Link>
+          </h3>
+          <p to={"/catalog?category=" + card.category.id}>
+            {card.category.name}
+          </p>
+          <h4>{card.author.name}</h4>
+        </div>
       </div>
       {card.isOwned ? (
         <ContinueCourseCardFooter courseId={card.id} />
