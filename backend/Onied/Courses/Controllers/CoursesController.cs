@@ -178,7 +178,8 @@ public class CoursesController : ControllerBase
             Title = "Без названия",
             Description = "Без описания",
             PictureHref = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg",
-            CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id
+            CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id,
+            CreatedDate = DateTime.UtcNow
         });
         await _courseCreatedProducer.PublishAsync(newCourse);
         return TypedResults.Ok(new CreateCourseResponseDto

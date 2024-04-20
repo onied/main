@@ -66,7 +66,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
                 query = query.OrderByDescending(course => course.Users.Count);
                 break;
             case "new":
-                query = query.OrderByDescending(course => course.Id);
+                query = query.OrderByDescending(course => course.CreatedDate);
                 break;
             case "priceAsc":
                 query = query.OrderBy(course => course.PriceRubles);
