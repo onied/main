@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
       - id: check-yaml
@@ -16,5 +16,6 @@ repos:
       - id: dotnet-format
         name: dotnet-format
         language: system
-        entry: dotnet format backend/Onied -v normal --include
+        entry: dotnet format backend/Onied -v normal --no-restore --include
         types_or: ["c#"]
+        require_serial: true
