@@ -2,6 +2,7 @@ import classes from "./subscription.module.css";
 
 function SubscriptionFeatures(props: {
   coursesHighlightingEnabled: boolean;
+  showingMainPageEnabled: boolean;
   adsEnabled: boolean;
   certificatesEnabled: boolean;
   activeCoursesNumber: number;
@@ -12,7 +13,7 @@ function SubscriptionFeatures(props: {
       : "Любое количество активных курсов",
     props.adsEnabled ? "Реклама в рассылке" : undefined,
     props.certificatesEnabled ? "Выдача сертификатов" : undefined,
-    props.coursesHighlightingEnabled ? "Показ на главной странице" : undefined,
+    props.showingMainPageEnabled ? "Показ на главной странице" : undefined,
     props.coursesHighlightingEnabled
       ? "Визуальное выделение курсов"
       : undefined,

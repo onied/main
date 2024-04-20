@@ -14,6 +14,7 @@ export type Subscription = {
   endDate: Date;
   autoRenewalEnabled: boolean;
   coursesHighlightingEnabled: boolean;
+  showingMainPageEnabled: boolean;
   adsEnabled: boolean;
   certificatesEnabled: boolean;
   activeCoursesNumber: number;
@@ -44,6 +45,7 @@ function SubscriptionContainer({
       <SubscriptionHeader subscription={subscription} />
       <SubscriptionFeatures
         coursesHighlightingEnabled={subscription.coursesHighlightingEnabled}
+        showingMainPageEnabled={subscription.showingMainPageEnabled}
         activeCoursesNumber={subscription.activeCoursesNumber}
         adsEnabled={subscription.adsEnabled}
         certificatesEnabled={subscription.certificatesEnabled}
