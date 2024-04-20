@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,16 @@ namespace Courses.Services;
 
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
+    public async Task<List<User>> GetUsersWithConditionAsync(Func<User, bool>? condition = null)
+    {
+        var query = dbContext.Users.AsNoTracking().AsQueryable();
+
+        if (condition is null) return await query.ToListAsync();
+
+        var expression = Expression.Lambda<Func<User, bool>>(Expression.Call(condition.Method));
+        return await query.Where(expression).ToListAsync();
+    }
+
     public async Task<User?> GetUserAsync(Guid id)
         => await dbContext.Users
             .AsNoTracking()

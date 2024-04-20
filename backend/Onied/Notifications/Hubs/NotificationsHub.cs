@@ -1,26 +1,32 @@
+using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
+using Notifications.Data.Abstractions;
+using Notifications.Data.Models;
+using Notifications.Dtos.Responses;
 
 namespace Notifications.Hubs;
 
-public class NotificationsHub : Hub
+public class NotificationsHub(
+    IMapper mapper,
+    INotificationRepository notificationRepository
+    ) : Hub
 {
-    /*public override Task OnConnectedAsync()
+    public override Task OnConnectedAsync()
     {
         Console.WriteLine("A Client Connected: " + Context.ConnectionId);
         return base.OnConnectedAsync();
     }
 
-    public override Task OnDisconnectedAsync(Exception exception)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
         Console.WriteLine("A client disconnected: " + Context.ConnectionId);
         return base.OnDisconnectedAsync(exception);
     }
-    
-    public async Task Send(Message message)
+
+    public async Task Send(Notification notification)
     {
-        Console.WriteLine($"message: {message.Text}");
-        await Clients.All.SendAsync("Receive", message);
-        await messageService.AddMessage(message);
-        // await Clients.All.SendAsync("Receive", message);
-    }*/
+        var storedNotification = await notificationRepository.AddAsync(notification);
+        var dto = mapper.Map<NotificationResponseDto>(storedNotification);
+        await Clients.Client(notification.UserId.ToString()).SendAsync("Receive", dto);
+    }
 }

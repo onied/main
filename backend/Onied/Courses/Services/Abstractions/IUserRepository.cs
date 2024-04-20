@@ -5,6 +5,7 @@ namespace Courses.Services.Abstractions;
 
 public interface IUserRepository
 {
+    public Task<List<User>> GetUsersWithConditionAsync(Func<User, bool>? condition = null);
     public Task<User?> GetUserAsync(Guid id);
     public Task<User?> GetUserWithCoursesAsync(Guid id);
     public Task<User?> GetUserWithTeachingCoursesAsync(Guid id);
