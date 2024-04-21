@@ -20,7 +20,7 @@ public class NotificationSenderService(
         var notification = mapper.Map<Notification>(notificationSent);
         notification = await notificationRepository.AddAsync(notification);
 
-        var dto = mapper.Map<NotificationResponseDto>(notification);
-        await hubContext.Clients.Client(notification.UserId.ToString()).SendAsync("Receive", dto);
+        var dto = mapper.Map<NotificationDto>(notification);
+        await hubContext.Clients.User(notification.UserId.ToString()).SendAsync("Receive", dto);
     }
 }

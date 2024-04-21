@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Notifications.Dtos.Responses;
 
-public class NotificationResponseDto
+public class NotificationDto
 {
     public int Id { get; set; }
 

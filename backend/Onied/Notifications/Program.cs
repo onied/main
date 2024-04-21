@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.SignalR;
 using Notifications.Data;
 using Notifications.Extensions;
 using Notifications.Hubs;
 using Notifications.Profiles;
+using Notifications.Services;
+using Notifications.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +21,12 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContextConfigured();
 builder.Services.AddRepositories();
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+
+builder.Services.AddMassTransitConfigured();
+builder.Services.AddScoped<INotificationSenderService, NotificationSenderService>();
+
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
+builder.Services.AddSingleton<IUserIdProvider, MyCustomProvider>();
 
 var app = builder.Build();
 

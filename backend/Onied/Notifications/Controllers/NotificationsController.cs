@@ -14,6 +14,6 @@ public class NotificationsController(
     public async Task<IResult> Get([FromQuery] Guid userId)
     {
         var notifications = await notificationRepository.GetRangeByUserAsync(userId);
-        return Results.Ok(mapper.Map<List<NotificationResponseDto>>(notifications));
+        return Results.Ok(mapper.Map<List<NotificationDto>>(notifications));
     }
 }

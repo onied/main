@@ -89,13 +89,15 @@ public class CheckTaskManagementService(
             .Select(b => b.BlockId).Order();
 
         if (courseBlocks.SequenceEqual(userBlocks))
+        {
             await courseCompletedProducer.PublishAsync(new CourseCompleted(userId, courseId));
 
-        var notificationSent = new NotificationSent(
-            course.Title.Length > 100 ? string.Concat(course.Title.AsSpan(0, 97), "...") : course.Title,
-            "Вы успешно закончили обучение на курсе!",
-            userId,
-            course.PictureHref);
-        await notificationSentProducer.PublishForOne(notificationSent);
+            var notificationSent = new NotificationSent(
+                course.Title.Length > 100 ? string.Concat(course.Title.AsSpan(0, 97), "...") : course.Title,
+                "Вы успешно закончили обучение на курсе!",
+                userId,
+                course.PictureHref);
+            await notificationSentProducer.PublishForOne(notificationSent);
+        }
     }
 }

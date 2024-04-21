@@ -1,4 +1,5 @@
 class Config {
+  static BaseURL = "http://localhost:5298/api/v1/";
   static ClientId = "51882579";
   static RedirectUrl = "https://onied.com/oauth-redirect";
   static VkAuthorizationUrl = "https://oauth.vk.com/authorize";

@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
           <PrivateAssets>all</PrivateAssets>
@@ -21,6 +22,12 @@
     <ItemGroup>
       <ProjectReference Include="..\MassTransit.Data\MassTransit.Data.csproj" />
       <ProjectReference Include="..\Notifications.Data\Notifications.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Authentication.Negotiate">
+        <HintPath>..\..\..\..\..\..\..\home\enhisir\.nuget\packages\microsoft.aspnetcore.authentication.negotiate\8.0.3\lib\net8.0\Microsoft.AspNetCore.Authentication.Negotiate.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
