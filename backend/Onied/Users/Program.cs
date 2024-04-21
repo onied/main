@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Users;
-using Users.Hubs;
 using Users.Profiles;
 using Users.Services.EmailSender;
 using Users.Services.ProfileProducer;
@@ -43,7 +42,6 @@ builder.Services.AddMassTransit(x =>
         cfg.ConfigureEndpoints(context);
     });
 });
-builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
 builder.Services.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
@@ -71,5 +69,4 @@ app.UseEndpoints(e => { e.MapControllers(); });
 app.UseWebSockets();
 app.UseOcelot().Wait();
 
-app.MapHub<NotificationsHub>("/api/v1/notifications/hub");
 app.Run();

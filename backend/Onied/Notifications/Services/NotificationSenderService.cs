@@ -3,7 +3,7 @@ using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.SignalR;
 using Notifications.Data.Abstractions;
 using Notifications.Data.Models;
-using Notifications.Dtos;
+using Notifications.Dtos.Responses;
 using Notifications.Hubs;
 using Notifications.Services.Abstractions;
 

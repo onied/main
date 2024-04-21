@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Notifications.Dtos;
+namespace Notifications.Dtos.Responses;
 
 public class NotificationDto
 {

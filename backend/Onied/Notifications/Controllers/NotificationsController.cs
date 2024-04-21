@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Notifications.Data.Abstractions;
-using Notifications.Dtos;
+using Notifications.Dtos.Responses;
 
 namespace Notifications.Controllers;
 
