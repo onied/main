@@ -13,7 +13,7 @@
 }
 
 .defaultSubscriptionCard,
-.fullSubscriptionCard {
+.highlightingSubscriptionCard {
   display: flex;
   flex-direction: column;
   padding: 1.5rem 3rem;
@@ -25,11 +25,28 @@
   border: 3px solid #dbdbdb;
 }
 
-.fullSubscriptionCard {
+.highlightingSubscriptionCard {
   background:
     linear-gradient(white, white) padding-box,
     linear-gradient(180deg, #ffcc4d, #9715d3) border-box;
   border: 4px solid transparent;
+}
+
+.subscriptionFeaturesList ul {
+  padding-left: 0;
+}
+
+.subscriptionFeaturesList li {
+  display: flex;
+  align-items: start;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+}
+
+.subscriptionFeaturesList li::before {
+  content: url("/src/assets/checkmark.svg");
+  margin-right: 0.5rem;
 }
 
 .checkboxAndTitle {

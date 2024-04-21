@@ -1,6 +1,6 @@
 import classes from "./subscription.module.css";
 import SubscriptionHeader from "./subscriptionHeader";
-import SubscriptionFeatures from "../../subscriptions/subscriptionCards/subscriptionFeatures";
+import SubscriptionFeatures from "./subscriptionFeatures";
 import Checkbox from "../../general/checkbox/checkbox";
 
 export enum SubscriptionType {
@@ -9,10 +9,15 @@ export enum SubscriptionType {
 }
 
 export type Subscription = {
-  subscriptionId: number;
-  subscriptionType: SubscriptionType;
+  id: number;
+  title: string;
   endDate: Date;
   autoRenewalEnabled: boolean;
+  coursesHighlightingEnabled: boolean;
+  showingMainPageEnabled: boolean;
+  adsEnabled: boolean;
+  certificatesEnabled: boolean;
+  activeCoursesNumber: number;
 };
 
 function SubscriptionContainer({
@@ -22,22 +27,6 @@ function SubscriptionContainer({
   subscription: Subscription;
   onChange: (subscription: Subscription) => void;
 }) {
-  const subscriptionTypeMapInClassName = {
-    0: classes.defaultSubscriptionCard,
-    1: classes.fullSubscriptionCard,
-  };
-
-  const subscriptionTypeMapInFeatures = {
-    0: ["3 активных платных курса"],
-    1: [
-      "Реклама в рассылке",
-      "Выдача сертификатов",
-      "3 активных платных курса",
-      "Показ на главной странице",
-      "Визуальное выделение курсов",
-    ],
-  };
-
   const updateAutoRenewal = () => {
     onChange({
       ...subscription!,
@@ -47,14 +36,19 @@ function SubscriptionContainer({
 
   return (
     <div
-      className={subscriptionTypeMapInClassName[subscription.subscriptionType]}
+      className={
+        subscription.coursesHighlightingEnabled
+          ? classes.highlightingSubscriptionCard
+          : classes.defaultSubscriptionCard
+      }
     >
-      <SubscriptionHeader
-        subscriptionType={subscription.subscriptionType}
-        endDate={subscription.endDate}
-      />
+      <SubscriptionHeader subscription={subscription} />
       <SubscriptionFeatures
-        features={subscriptionTypeMapInFeatures[subscription.subscriptionType]}
+        coursesHighlightingEnabled={subscription.coursesHighlightingEnabled}
+        showingMainPageEnabled={subscription.showingMainPageEnabled}
+        activeCoursesNumber={subscription.activeCoursesNumber}
+        adsEnabled={subscription.adsEnabled}
+        certificatesEnabled={subscription.certificatesEnabled}
       />
       <div className={classes.checkboxAndTitle}>
         <Checkbox

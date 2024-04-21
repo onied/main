@@ -2,19 +2,28 @@ import classes from "./purchase.module.css";
 import { format } from "date-fns";
 import ruLocale from "date-fns/locale/ru";
 import { Link } from "react-router-dom";
+import { PurchaseType } from "../../../types/purchase";
 
-export enum PurchaseType {
-  Any,
-  Course,
-  Certificate,
-  Subscription,
-}
+export type Course = {
+  id: number;
+  title: string;
+};
+
+export type Subscription = {
+  id: number;
+  title: string;
+};
+
+export type PurchaseDetails = {
+  purchaseType: PurchaseType;
+  course?: Course;
+  subscription?: Subscription;
+  startDate: Date;
+};
 
 export type Purchase = {
-  purchaseDate: Date;
-  purchaseType: PurchaseType;
-  courseId: number | null;
-  name: string;
+  id: number;
+  purchaseDetails: PurchaseDetails;
   price: number;
 };
 
@@ -24,25 +33,32 @@ function PurchaseContainer({ purchase }: { purchase: Purchase }) {
   };
 
   const purchaseTypeMap = {
-    0: "",
-    1: "Курс",
-    2: "Сертификат",
-    3: "Подписка",
+    [PurchaseType.Any]: "",
+    [PurchaseType.Course]: "Курс",
+    [PurchaseType.Certificate]: "Сертификат",
+    [PurchaseType.Subscription]: "Подписка",
   };
 
   return (
     <div className={classes.rowPurchase}>
       <div className={classes.leftColumns}>
-        <p style={{ width: "168pt" }}>{formatDate(purchase.purchaseDate)}</p>
-        <p style={{ width: "152pt" }}>
-          {purchaseTypeMap[purchase.purchaseType]}
+        <p style={{ width: "168pt" }}>
+          {formatDate(purchase.purchaseDetails.startDate)}
         </p>
-        {purchase.courseId ? (
-          <Link to={`/course/${purchase.courseId}`} className={classes.name}>
-            {purchase.name}
+        <p style={{ width: "152pt" }}>
+          {purchaseTypeMap[purchase.purchaseDetails.purchaseType]}
+        </p>
+        {purchase.purchaseDetails.course ? (
+          <Link
+            to={`/course/${purchase.purchaseDetails.course.id}`}
+            className={classes.name}
+          >
+            {purchase.purchaseDetails.course.title}
           </Link>
         ) : (
-          <p className={classes.name}>{purchase.name}</p>
+          <p className={classes.name}>
+            {purchase.purchaseDetails.subscription?.title}
+          </p>
         )}
       </div>
       <div className={classes.rightColumns}>

@@ -1,3 +1,17 @@
+& .slick-list {
+  margin: 0 2rem;
+  & .slick-track {
+    margin-left: 0;
+    display: grid;
+    grid-auto-flow: column;
+
+    & .slick-slide > div {
+      padding: 0 1rem;
+      height: 100%;
+    }
+  }
+}
+
 #root {
   --header-height: 5rem;
   --sidebar-width: 19rem;

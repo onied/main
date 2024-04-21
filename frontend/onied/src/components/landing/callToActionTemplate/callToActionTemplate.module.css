@@ -1,0 +1,23 @@
+.templateWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 16vw;
+    margin: 7rem 0;
+}
+
+.rightPart{
+    display: flex;
+    flex-direction: column;
+    margin-left: 8vw;
+}
+
+.rightPart h2,
+.rightPart p{
+    margin: 0 0 1rem 0;
+}
+
+.rightPart p{
+    font-size: 1.5rem;
+}
+
