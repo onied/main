@@ -32,11 +32,4 @@ public class NotificationsHub(
         notification.IsRead = true;
         await notificationRepository.UpdateAsync(notification);
     }
-
-    public async Task Send(Notification notification)
-    {
-        var storedNotification = await notificationRepository.AddAsync(notification);
-        var dto = mapper.Map<NotificationDto>(storedNotification);
-        await Clients.User(notification.UserId.ToString()).SendAsync("Receive", dto);
-    }
 }
