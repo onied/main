@@ -8,14 +8,13 @@ namespace Courses.Services;
 
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
-    public async Task<List<User>> GetUsersWithConditionAsync(Func<User, bool>? condition = null)
+    public async Task<List<User>> GetUsersWithConditionAsync(Expression<Func<User, bool>>? condition = null)
     {
         var query = dbContext.Users.AsNoTracking().AsQueryable();
 
         if (condition is null) return await query.ToListAsync();
 
-        var expression = Expression.Lambda<Func<User, bool>>(Expression.Call(condition.Method));
-        return await query.Where(expression).ToListAsync();
+        return await query.Where(condition).ToListAsync();
     }
 
     public async Task<User?> GetUserAsync(Guid id)
