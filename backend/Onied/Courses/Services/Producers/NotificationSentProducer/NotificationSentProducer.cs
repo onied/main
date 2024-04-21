@@ -7,8 +7,9 @@ namespace Courses.Services.Producers.NotificationSentProducer;
 public class NotificationSentProducer(
     ILogger<NotificationSentProducer> logger,
     IUserRepository userRepository,
+    INotificationPreparerService notificationPreparerService,
     IPublishEndpoint publishEndpoint
-    ) : INotificationSentProducer
+) : INotificationSentProducer
 {
     public async Task PublishForAll(NotificationSent notificationSent)
     {
@@ -19,9 +20,11 @@ public class NotificationSentProducer(
             throw new InvalidOperationException();
         }
 
-        var allUsersNotifications = (await userRepository
-            .GetUsersWithConditionAsync())
-            .Select(u => notificationSent with { UserId = u.Id });
+        var allUsersNotifications = (await userRepository.GetUsersWithConditionAsync())
+            .Select(
+                u => notificationPreparerService
+                    .PrepareNotification(notificationSent with { UserId = u.Id })
+            );
 
         foreach (var notification in allUsersNotifications)
             await publishEndpoint.Publish(notification);
@@ -35,6 +38,10 @@ public class NotificationSentProducer(
                             "notification for concrete user cannot have UserId=Guid.Empty");
             throw new InvalidOperationException();
         }
-        await publishEndpoint.Publish(notificationSent);
+
+        await publishEndpoint.Publish(
+            notificationPreparerService
+                .PrepareNotification(notificationSent)
+        );
     }
 }
