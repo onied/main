@@ -10,10 +10,7 @@ import Config from "../../../config/config";
 import api from "../../../config/axios";
 
 function NotificationContainer() {
-  const { connection } = useSignalR(
-    Config.BaseURL +
-      "notifications/hub?userId=1b2d5c4b-635b-459e-a9e0-996366a56a86"
-  );
+  const { connection } = useSignalR(Config.BaseURL + "notifications/hub");
 
   const [unread, setUnread] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
