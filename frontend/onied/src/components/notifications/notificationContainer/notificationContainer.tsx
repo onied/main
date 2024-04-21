@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Notification } from "../../../types/notifications";
 import NotificationComponent from "../notificationComponent";
-
-import bellLogo from "../../../assets/bell.svg";
-import bellActiveLogo from "../../../assets/bellActive.svg";
-import classes from "./notificationContainer.module.css";
 import useSignalR from "../../../hooks/signalr";
 import Config from "../../../config/config";
 import api from "../../../config/axios";
+
+import oniedLogo from "../../../assets/logo.svg";
+import bellLogo from "../../../assets/bell.svg";
+import bellActiveLogo from "../../../assets/bellActive.svg";
+import classes from "./notificationContainer.module.css";
 
 function NotificationContainer() {
   const { connection } = useSignalR(Config.BaseURL + "notifications/hub");
@@ -20,7 +21,19 @@ function NotificationContainer() {
     api
       .get("notifications")
       .then((response: unknown) => {
-        setNotifications(response.data);
+        if (response.data.length == 0) {
+          setNotifications([
+            {
+              id: Number.NaN,
+              img: oniedLogo,
+              title: "Уведомлений нет",
+              message: "",
+              isRead: true,
+            },
+          ]);
+        } else {
+          setNotifications(response.data);
+        }
       })
       .catch(() => {
         console.log("error occured loading notifications");
