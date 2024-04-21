@@ -25,7 +25,7 @@ function NotificationContainer() {
       .catch(() => {
         console.log("error occured loading notifications");
       });
-  });
+  }, []);
 
   useEffect(() => {
     if (!connection) return;
@@ -39,7 +39,6 @@ function NotificationContainer() {
   }, [connection]);
 
   useEffect(() => {
-    setNotifications(notifications.toSorted((a, b) => (a.isRead ? -1 : 1)));
     setUnread(notifications.some((n) => !n.isRead));
   }, [notifications]);
 
