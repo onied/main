@@ -8,9 +8,7 @@ function SubscriptionFeatures(props: {
   activeCoursesNumber: number;
 }) {
   const subscriptionFeatures = [
-    props.activeCoursesNumber != -1
-      ? `${props.activeCoursesNumber} активных платных курса`
-      : "Любое количество активных курсов",
+    props.activeCoursesNumber != -1 ? "Создание курсов" : undefined,
     props.adsEnabled ? "Реклама в рассылке" : undefined,
     props.certificatesEnabled ? "Выдача сертификатов" : undefined,
     props.showingMainPageEnabled ? "Показ на главной странице" : undefined,
