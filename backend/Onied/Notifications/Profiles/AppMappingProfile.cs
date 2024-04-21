@@ -1,7 +1,7 @@
 using AutoMapper;
 using MassTransit.Data.Messages;
 using Notifications.Data.Models;
-using Notifications.Dtos.Responses;
+using Notifications.Dtos;
 
 namespace Notifications.Profiles;
 
