@@ -1,15 +1,8 @@
-using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using Notifications.Data.Abstractions;
-using Notifications.Data.Models;
-using Notifications.Dtos.Responses;
-
 namespace Notifications.Hubs;
 
-public class NotificationsHub(
-    IMapper mapper,
-    INotificationRepository notificationRepository
-    ) : Hub
+public class NotificationsHub(INotificationRepository notificationRepository) : Hub
 {
     public override Task OnConnectedAsync()
     {
