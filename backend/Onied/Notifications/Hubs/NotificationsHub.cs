@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using Notifications.Data.Abstractions;
 using Notifications.Data.Models;
-using Notifications.Dtos.Responses;
+using Notifications.Dtos;
 
 namespace Notifications.Hubs;
 
@@ -31,12 +31,5 @@ public class NotificationsHub(
 
         notification.IsRead = true;
         await notificationRepository.UpdateAsync(notification);
-    }
-
-    public async Task Send(Notification notification)
-    {
-        var storedNotification = await notificationRepository.AddAsync(notification);
-        var dto = mapper.Map<NotificationDto>(storedNotification);
-        await Clients.User(notification.UserId.ToString()).SendAsync("Receive", dto);
     }
 }
