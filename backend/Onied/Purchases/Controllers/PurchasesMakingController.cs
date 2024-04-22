@@ -97,10 +97,11 @@ public class PurchasesMakingController(
 
         var purchase = mapper.Map<Purchase>(dto);
 
-        var purchaseDetails = new CertificatePurchaseDetails
+        var purchaseDetails = new SubscriptionPurchaseDetails
         {
-            PurchaseType = PurchaseType.Certificate,
-            CourseId = dto.CourseId!.Value,
+            PurchaseType = PurchaseType.Subscription,
+            SubscriptionId = dto.SubscriptionId!.Value,
+            AutoRenewalEnabled = true
         };
 
         purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
