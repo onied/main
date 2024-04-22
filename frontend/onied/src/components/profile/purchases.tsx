@@ -13,55 +13,12 @@ function ProfilePurchases() {
   >();
 
   useEffect(() => {
-    //setPurchasesList(undefined);
-    /*api
+    api
       .get("purchases")
       .then((res) => {
-        console.log(res.data);
         setPurchasesList(res.data);
       })
-      .catch((error) => console.log(error));*/
-    setPurchasesList([
-      {
-        id: 1,
-        purchaseDetails: {
-          purchaseType: PurchaseType.Subscription,
-          subscription: { id: 2, title: "Базовая" },
-          startDate: new Date("2024-04-17"),
-        },
-        price: 2000,
-      },
-      {
-        id: 2,
-        purchaseDetails: {
-          purchaseType: PurchaseType.Subscription,
-          subscription: { id: 1, title: "Полная" },
-          startDate: new Date("2024-04-17"),
-        },
-        price: 10000,
-      },
-      {
-        id: 3,
-        purchaseDetails: {
-          purchaseType: PurchaseType.Course,
-          course: { id: 1, title: "Название курса" },
-          startDate: new Date("2024-04-17"),
-        },
-        price: 2000,
-      },
-      {
-        id: 4,
-        purchaseDetails: {
-          purchaseType: PurchaseType.Course,
-          course: {
-            id: 2,
-            title: "Курс с мегаультрасупердуперпупердлинным названием",
-          },
-          startDate: new Date("2024-04-17"),
-        },
-        price: 2000,
-      },
-    ]);
+      .catch((error) => console.log(error));
   }, []);
   if (profile == null) return <></>;
 
