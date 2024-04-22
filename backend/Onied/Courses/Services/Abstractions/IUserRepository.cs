@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Courses.Models;
 using Task = System.Threading.Tasks.Task;
 
@@ -5,6 +6,7 @@ namespace Courses.Services.Abstractions;
 
 public interface IUserRepository
 {
+    public Task<List<User>> GetUsersWithConditionAsync(Expression<Func<User, bool>>? condition = null);
     public Task<User?> GetUserAsync(Guid id);
     public Task<User?> GetUserWithCoursesAsync(Guid id);
     public Task<User?> GetUserWithTeachingCoursesAsync(Guid id);

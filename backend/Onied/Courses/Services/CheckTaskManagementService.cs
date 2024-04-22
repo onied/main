@@ -2,6 +2,7 @@ using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseCompletedProducer;
+using Courses.Services.Producers.NotificationSentProducer;
 using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Task = System.Threading.Tasks.Task;
@@ -14,7 +15,8 @@ public class CheckTaskManagementService(
     IBlockCompletedInfoRepository blockCompletedInfoRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
     ICheckTasksService checkTasksService,
-    ICourseCompletedProducer courseCompletedProducer)
+    ICourseCompletedProducer courseCompletedProducer,
+    INotificationSentProducer notificationSentProducer)
     : ICheckTaskManagementService
 {
     public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
@@ -76,8 +78,8 @@ public class CheckTaskManagementService(
 
     public async Task ManageCourseCompleted(Guid userId, int courseId)
     {
-        var courseBlocks = (await courseRepository.GetCourseWithBlocksAsync(courseId))!
-            .Modules
+        var course = (await courseRepository.GetCourseWithBlocksAsync(courseId))!;
+        var courseBlocks = course.Modules
             .SelectMany(m => m.Blocks)
             .Where(b => b.BlockType is BlockType.TasksBlock)
             .Select(b => b.Id).Order();
@@ -87,6 +89,15 @@ public class CheckTaskManagementService(
             .Select(b => b.BlockId).Order();
 
         if (courseBlocks.SequenceEqual(userBlocks))
+        {
             await courseCompletedProducer.PublishAsync(new CourseCompleted(userId, courseId));
+
+            var notificationSent = new NotificationSent(
+                course.Title,
+                "Вы успешно закончили обучение на курсе!",
+                userId,
+                course.PictureHref);
+            await notificationSentProducer.PublishForOne(notificationSent);
+        }
     }
 }

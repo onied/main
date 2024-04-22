@@ -22,7 +22,7 @@ public class CourseCompletedConsumer(
             uci.CourseId, uci.UserId);
 
         var course = await courseRepository.GetAsync(uci.CourseId);
-        var user = await userRepository.GetAsync(uci.UserId);
+        var user = await userRepository.GetAsync(uci.UserId, true);
 
         if (course is null
             || user is null

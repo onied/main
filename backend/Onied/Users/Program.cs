@@ -66,6 +66,7 @@ if (app.Environment.IsDevelopment())
 app.UseEndpoints(e => { e.MapControllers(); });
 #pragma warning restore ASP0014
 
+app.UseWebSockets();
 app.UseOcelot().Wait();
 
 app.Run();

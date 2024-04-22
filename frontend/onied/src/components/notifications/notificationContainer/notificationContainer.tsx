@@ -1,67 +1,55 @@
 import { useEffect, useState } from "react";
 import { Notification } from "../../../types/notifications";
 import NotificationComponent from "../notificationComponent";
+import useSignalR from "../../../hooks/signalr";
+import Config from "../../../config/config";
+import api from "../../../config/axios";
 
+import oniedLogo from "../../../assets/logo.svg";
 import bellLogo from "../../../assets/bell.svg";
 import bellActiveLogo from "../../../assets/bellActive.svg";
 import classes from "./notificationContainer.module.css";
 
 function NotificationContainer() {
+  const { connection } = useSignalR(Config.BaseURL + "notifications/hub");
+
   const [unread, setUnread] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: false,
-    },
-    {
-      id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: false,
-    },
-    {
-      id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: true,
-    },
-    {
-      id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: true,
-    },
-    {
-      id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: true,
-    },
-    {
-      id: 1,
-      title:
-        "sdfsdfsf ddsfsdfs dfdfddsffsdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message:
-        "z fdgfgfdsgfsdfaasd dsfsdfd z fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfdz fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: true,
-    },
-    {
-      id: 1,
-      title: "sdfsdfsf ddsfsdfs dfdfddsffsd",
-      img: "https://images-prod.dazeddigital.com/1090/134-1-1090-726/azure/dazed-prod/1310/5/1315594.jpeg",
-      message: "z fdgfgfdsgfsdfaasd dsfsdfd",
-      isRead: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    api
+      .get("notifications")
+      .then((response: any) => {
+        if (response.data.length == 0) {
+          setNotifications([
+            {
+              id: Number.NaN,
+              img: oniedLogo,
+              title: "Уведомлений нет",
+              message: "",
+              isRead: true,
+            },
+          ]);
+        } else {
+          setNotifications(response.data);
+        }
+      })
+      .catch(() => {
+        console.log("error occured loading notifications");
+      });
+  }, [showDropdown]);
+
+  useEffect(() => {
+    if (!connection) return;
+
+    connection.on("Receive", (message: Notification) => {
+      setNotifications([message, ...notifications]);
+      console.log("notification from the server", message);
+    });
+
+    return () => connection.off("Receive");
+  }, [connection]);
 
   useEffect(() => {
     setUnread(notifications.some((n) => !n.isRead));
@@ -95,6 +83,7 @@ function NotificationContainer() {
               key={"notification_" + index}
               notification={value}
               onRead={(notification: Notification) => {
+                connection?.send("UpdateRead", value.id);
                 updateNotification(index, notification);
               }}
             />
