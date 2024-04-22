@@ -38,7 +38,7 @@ function NotificationContainer() {
       .catch(() => {
         console.log("error occured loading notifications");
       });
-  }, []);
+  }, [showDropdown]);
 
   useEffect(() => {
     if (!connection) return;
