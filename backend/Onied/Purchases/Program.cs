@@ -29,6 +29,7 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>(
     x => ActivatorUtilities.CreateInstance<JwtTokenService>(x, x.GetService<IConfiguration>()!["JwtSecretKey"]!));
 builder.Services.AddScoped<IPurchaseTokenService, PurchaseTokenService>();
 builder.Services.AddScoped<IPurchaseManagementService, PurchaseManagementService>();
+builder.Services.AddScoped<ISubscriptionManagementService, SubscriptionManagementService>();
 
 var app = builder.Build();
 
