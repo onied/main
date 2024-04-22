@@ -1,4 +1,3 @@
-using AutoMapper;
 using Courses.Services.Abstractions;
 using MassTransit;
 using MassTransit.Data.Messages;

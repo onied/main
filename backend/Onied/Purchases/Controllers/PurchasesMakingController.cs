@@ -17,7 +17,9 @@ public class PurchasesMakingController(
     ICourseRepository courseRepository,
     IPurchaseRepository purchaseRepository,
     IPurchaseTokenService tokenService,
-    IPurchaseCreatedProducer purchaseCreatedProducer) : ControllerBase
+    IPurchaseCreatedProducer purchaseCreatedProducer,
+    ISubscriptionChangedProducer subscriptionChangedProducer
+) : ControllerBase
 {
     [HttpGet("course")]
     public async Task<IResult> GetCoursePreparedPurchase([FromQuery] int courseId)
@@ -69,6 +71,28 @@ public class PurchasesMakingController(
     {
         dto = dto with { UserId = userId };
         var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Certificate);
+        if (maybeError is not null) return maybeError;
+
+        var purchase = mapper.Map<Purchase>(dto);
+
+        var purchaseDetails = new CertificatePurchaseDetails
+        {
+            PurchaseType = PurchaseType.Certificate,
+            CourseId = dto.CourseId!.Value,
+        };
+
+        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+        purchase.Token = tokenService.GetToken(purchase);
+        await purchaseRepository.UpdateAsync(purchase);
+        await purchaseCreatedProducer.PublishAsync(purchase);
+        return Results.Ok();
+    }
+
+    [HttpPost("subscription")]
+    public async Task<IResult> MakeSubscriptionPurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
+    {
+        dto = dto with { UserId = userId };
+        var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Subscription);
         if (maybeError is not null) return maybeError;
 
         var purchase = mapper.Map<Purchase>(dto);
