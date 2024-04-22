@@ -8,7 +8,9 @@ using Courses.Services.Abstractions;
 namespace Courses.Services;
 
 public class SubscriptionManagementService(
-    IHttpClientFactory httpClientFactory
+    IHttpClientFactory httpClientFactory,
+    IUserRepository userRepository,
+    ICourseRepository courseRepository
 ) : ISubscriptionManagementService
 {
     public async Task<bool> VerifyGivingCertificatesAsync(Guid userId)
@@ -21,6 +23,30 @@ public class SubscriptionManagementService(
     {
         var subscription = await GetSubscriptionAsync(userId);
         return subscription?.CourseCreatingEnabled ?? false;
+    }
+
+    public async Task SetAuthorCoursesCertificatesEnabled(Guid userId, bool status)
+    {
+        var user = await userRepository.GetUserWithTeachingCoursesAsync(userId);
+        if (user is null) throw new ArgumentException(null, nameof(userId));
+
+        foreach (var course in user.TeachingCourses)
+        {
+            course.HasCertificates = status;
+            await courseRepository.UpdateCourseAsync(course);
+        }
+    }
+
+    public async Task SetAuthorCoursesHighlightingEnabled(Guid userId, bool status)
+    {
+        var user = await userRepository.GetUserWithTeachingCoursesAsync(userId);
+        if (user is null) throw new ArgumentException(null, nameof(userId));
+
+        foreach (var course in user.TeachingCourses)
+        {
+            course.IsGlowing = status;
+            await courseRepository.UpdateCourseAsync(course);
+        }
     }
 
     private HttpClient SubscriptionsServerApiClient(Guid userId)
@@ -37,5 +63,9 @@ public class SubscriptionManagementService(
         return await JsonSerializer
             .DeserializeAsync<SubscriptionRequestDto>(
                 await response.Content.ReadAsStreamAsync());
+    }
+
+    public SubscriptionManagementService(IHttpClientFactory httpClientFactory) : this(httpClientFactory)
+    {
     }
 }
