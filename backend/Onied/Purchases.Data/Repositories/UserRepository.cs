@@ -7,7 +7,7 @@ namespace Purchases.Data.Repositories;
 
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
-    public async Task<User?> GetAsync(Guid id, bool withPurchases = false)
+    public async Task<User?> GetAsync(Guid id, bool withPurchases = false, bool withSubscription = false)
     {
         var query = dbContext.Users.AsNoTracking().AsQueryable();
         if (withPurchases) query = query
@@ -20,6 +20,9 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             .Include(u => u.Purchases)
             .ThenInclude(p => p.PurchaseDetails)
             .ThenInclude(pd => ((SubscriptionPurchaseDetails)pd).Subscription);
+
+        if (withSubscription) query = query
+            .Include(u => u.Subscription);
 
         return await query.FirstOrDefaultAsync(u => u.Id == id);
     }
