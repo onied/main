@@ -7,14 +7,23 @@ namespace Courses.Services.Consumers;
 
 public class SubscriptionChangedConsumer(
     ILogger<SubscriptionChangedConsumer> logger,
-    ISubscriptionManagementService
+    ISubscriptionManagementService subscriptionManagementService,
     IMapper mapper) : IConsumer<SubscriptionChanged>
 {
-    public Task Consume(ConsumeContext<SubscriptionChanged> context)
+    public async Task Consume(ConsumeContext<SubscriptionChanged> context)
     {
         var message = context.Message;
+        logger.LogInformation("Trying to process subscription change " +
+                              "(id={userId}) in database", message.UserId);
 
+        await subscriptionManagementService
+            .SetAuthorCoursesCertificatesEnabled(
+                message.UserId, message.CertificatesEnabled);
+        await subscriptionManagementService
+            .SetAuthorCoursesHighlightingEnabled(
+                message.UserId, message.CertificatesEnabled);
 
-        logger.LogInformation("Trying to update process subscription change (id={userId}) photo in database", message.Id);
+        logger.LogInformation("Processed subscription change " +
+                              "(id={userId}) in database successfully", message.UserId);
     }
 }
