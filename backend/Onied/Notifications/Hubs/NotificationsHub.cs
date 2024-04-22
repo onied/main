@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Notifications.Data.Abstractions;
+
 namespace Notifications.Hubs;
 
 public class NotificationsHub(INotificationRepository notificationRepository) : Hub
@@ -18,7 +19,6 @@ public class NotificationsHub(INotificationRepository notificationRepository) : 
 
     public async Task UpdateRead(int id)
     {
-        Console.WriteLine(Context.UserIdentifier);
         var notification = await notificationRepository.GetAsync(id);
         if (notification is null) return;
 

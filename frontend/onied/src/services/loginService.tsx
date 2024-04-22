@@ -95,6 +95,11 @@ class LoginService {
         LoginService.setRefreshingTokens!(false);
       });
   }
+
+  static getAccessToken() {
+    if (!LoginService.checkLoggedIn()) return null;
+    return localStorage.getItem("access_token");
+  }
 }
 
 export default LoginService;
