@@ -20,7 +20,7 @@ function NotificationContainer() {
   useEffect(() => {
     api
       .get("notifications")
-      .then((response: unknown) => {
+      .then((response: any) => {
         if (response.data.length == 0) {
           setNotifications([
             {
