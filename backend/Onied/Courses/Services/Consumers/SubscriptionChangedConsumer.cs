@@ -7,8 +7,8 @@ namespace Courses.Services.Consumers;
 
 public class SubscriptionChangedConsumer(
     ILogger<SubscriptionChangedConsumer> logger,
-    ISubscriptionManagementService subscriptionManagementService,
-    IMapper mapper) : IConsumer<SubscriptionChanged>
+    ISubscriptionManagementService subscriptionManagementService
+    ) : IConsumer<SubscriptionChanged>
 {
     public async Task Consume(ConsumeContext<SubscriptionChanged> context)
     {
