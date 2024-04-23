@@ -16,7 +16,13 @@ function ProfilePurchases() {
     api
       .get("purchases")
       .then((res) => {
-        setPurchasesList(res.data);
+        setPurchasesList(
+          res.data.sort((a: Purchase, b: Purchase) =>
+            a.purchaseDetails.purchaseDate > b.purchaseDetails.purchaseDate
+              ? -1
+              : 1
+          )
+        );
       })
       .catch((error) => console.log(error));
   }, []);
