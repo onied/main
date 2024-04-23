@@ -1,7 +1,7 @@
 using AutoMapper;
 using MassTransit;
-using MassTransit.Courier.Contracts;
 using MassTransit.Data.Messages;
+using Purchases.Data.Models;
 using Purchases.Services.Abstractions;
 
 namespace Purchases.Services.Producers;
