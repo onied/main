@@ -33,6 +33,12 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task UpdateAsync(User user)
+    {
+        dbContext.Users.Update(user);
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task RemoveAsync(User user)
     {
         dbContext.Users.Remove(user);

@@ -14,7 +14,9 @@ namespace Purchases.Controllers;
 public class PurchasesMakingController(
     IMapper mapper,
     IPurchaseManagementService purchaseManagementService,
+    IUserRepository userRepository,
     ICourseRepository courseRepository,
+    ISubscriptionRepository subscriptionRepository,
     IPurchaseRepository purchaseRepository,
     IPurchaseTokenService tokenService,
     IPurchaseCreatedProducer purchaseCreatedProducer,
@@ -88,6 +90,18 @@ public class PurchasesMakingController(
         return Results.Ok();
     }
 
+    [HttpGet("subscription")]
+    public async Task<IResult> GetSubscriptionPreparedPurchase([FromQuery] int subscriptionId)
+    {
+        var subscription = await subscriptionRepository.GetAsync(subscriptionId);
+        if (subscription is null) return Results.NotFound();
+        if (subscription.Id == (int)SubscriptionType.Free) return Results.Forbid();
+
+        var purchaseInfo = new PreparedPurchaseResponseDto(
+            subscription.Title, 1000, PurchaseType.Subscription);
+        return Results.Ok(purchaseInfo);
+    }
+
     [HttpPost("subscription")]
     public async Task<IResult> MakeSubscriptionPurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
     {
@@ -108,6 +122,14 @@ public class PurchasesMakingController(
         purchase.Token = tokenService.GetToken(purchase);
         await purchaseRepository.UpdateAsync(purchase);
         await purchaseCreatedProducer.PublishAsync(purchase);
+
+        var user = (await userRepository.GetAsync(userId))!;
+        user!.SubscriptionId = dto.SubscriptionId!.Value;
+        await userRepository.UpdateAsync(user);
+
+        var subscription = (await subscriptionRepository
+            .GetAsync(dto.SubscriptionId.Value))!;
+        await subscriptionChangedProducer.PublishAsync(subscription, userId);
         return Results.Ok();
     }
 }

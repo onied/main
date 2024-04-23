@@ -1,4 +1,4 @@
-using MassTransit.Courier.Contracts;
+using Subscription = Purchases.Data.Models.Subscription;
 
 namespace Purchases.Services.Abstractions;
 

@@ -64,8 +64,4 @@ public class SubscriptionManagementService(
             .DeserializeAsync<SubscriptionRequestDto>(
                 await response.Content.ReadAsStreamAsync());
     }
-
-    public SubscriptionManagementService(IHttpClientFactory httpClientFactory) : this(httpClientFactory)
-    {
-    }
 }
