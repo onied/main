@@ -50,5 +50,7 @@ public class AppMappingProfile : Profile
         CreateMap<CourseCompleted, UserCourseInfo>().ForMember(
             dest => dest.IsCompleted,
             opt => opt.MapFrom(src => true));
+
+        CreateMap<Subscription, SubscriptionChanged>();
     }
 }
