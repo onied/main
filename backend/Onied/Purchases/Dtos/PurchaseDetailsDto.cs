@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Purchases.Data.Enums;
 using Purchases.Data.Models;
 
@@ -8,6 +9,7 @@ public class PurchaseDetailsDto
     public PurchaseType PurchaseType { get; set; }
     public CourseDto? Course { get; set; }
     public SubscriptionDto? Subscription { get; set; }
+    public DateTime PurchaseDate { get; set; }
 
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
