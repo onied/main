@@ -27,4 +27,9 @@ public class SubscriptionManagementService(
 
         return Results.Ok(pInfo);
     }
+
+    public async Task<IResult> UpdateAutoRenewal(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
 }
