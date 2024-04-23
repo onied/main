@@ -13,4 +13,11 @@ public class SubscriptionsController(
     {
         return await subscriptionManagementService.GetSubscriptionsByUser(userId);
     }
+
+    [HttpGet]
+    [Route("all")]
+    public async Task<IResult> GetAllSubscriptions()
+    {
+        return await subscriptionManagementService.GetAllSubscriptions();
+    }
 }
