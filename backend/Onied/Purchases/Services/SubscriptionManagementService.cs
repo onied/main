@@ -8,6 +8,7 @@ namespace Purchases.Services;
 
 public class SubscriptionManagementService(
     IUserRepository userRepository,
+    IPurchaseRepository purchaseRepository,
     IMapper mapper
     ) : ISubscriptionManagementService
 {
@@ -19,17 +20,27 @@ public class SubscriptionManagementService(
         var purchaseSubscription = user.Purchases
             .Where(p => p.PurchaseDetails.GetType() == typeof(SubscriptionPurchaseDetails))
             .FirstOrDefault(p => ((SubscriptionPurchaseDetails)p.PurchaseDetails).EndDate > DateTime.Today);
+
         if (purchaseSubscription == default) return Results.Ok();
 
         var pInfo = mapper.Map<SubscriptionUserDto>(user.Subscription);
+
+        pInfo.Id = purchaseSubscription.Id;
         pInfo.EndDate = ((SubscriptionPurchaseDetails)purchaseSubscription
             .PurchaseDetails).EndDate;
+        pInfo.AutoRenewalEnabled = ((SubscriptionPurchaseDetails)purchaseSubscription
+            .PurchaseDetails).AutoRenewalEnabled;
 
         return Results.Ok(pInfo);
     }
 
-    public async Task<IResult> UpdateAutoRenewal(Guid userId)
+    public async Task<IResult> UpdateAutoRenewal(Guid userId, int subscriptionId)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetAsync(userId, true, true);
+        if (user is null) return Results.NotFound();
+
+        if (await purchaseRepository.UpdateAutoRenewal(subscriptionId)) return Results.Ok();
+
+        return Results.NotFound();
     }
 }
