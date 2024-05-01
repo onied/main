@@ -35,9 +35,8 @@ function SubscriptionContainer({
       autoRenewalEnabled: autoRenewal,
     });
 
-    api.patch("purchases/subscriptions", {
-      subscriptionId: subscription.id,
-      autoRenewal,
+    api.patch(`purchases/subscriptions/${subscription.id}`, {
+      autoRenewal: autoRenewal,
     });
   };
 

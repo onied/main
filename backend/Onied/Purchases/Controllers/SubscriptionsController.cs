@@ -13,10 +13,10 @@ public class SubscriptionsController(
     public async Task<IResult> GetSubscriptionsByUser(Guid userId)
         => await subscriptionManagementService.GetSubscriptionsByUser(userId);
 
-    [HttpPatch]
-    public async Task<IResult> UpdateAutoRenewal(Guid userId, [FromBody] AutoRenewalRequestDto requestDto)
-        => await subscriptionManagementService.UpdateAutoRenewal(
-            userId,
-            requestDto.SubscriptionId,
-            requestDto.AutoRenewal);
+    [HttpPatch("{subscriptionId}")]
+    public async Task<IResult> UpdateAutoRenewal(
+        Guid userId,
+        int subscriptionId,
+        [FromBody] AutoRenewalRequestDto requestDto)
+        => await subscriptionManagementService.UpdateAutoRenewal(userId, subscriptionId, requestDto.AutoRenewal);
 }

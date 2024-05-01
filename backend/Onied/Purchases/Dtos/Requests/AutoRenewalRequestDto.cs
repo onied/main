@@ -2,6 +2,5 @@
 
 public class AutoRenewalRequestDto
 {
-    public int SubscriptionId { get; set; }
     public bool AutoRenewal { get; set; }
 }
