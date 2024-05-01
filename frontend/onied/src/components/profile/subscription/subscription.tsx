@@ -29,12 +29,16 @@ function SubscriptionContainer({
   onChange: (subscription: Subscription) => void;
 }) {
   const updateAutoRenewal = () => {
+    const autoRenewal = !subscription.autoRenewalEnabled;
     onChange({
       ...subscription!,
-      autoRenewalEnabled: !subscription.autoRenewalEnabled,
+      autoRenewalEnabled: autoRenewal,
     });
 
-    api.patch(`purchases/subscriptions/${subscription.id}`);
+    api.patch("purchases/subscriptions", {
+      subscriptionId: subscription.id,
+      autoRenewal,
+    });
   };
 
   return (

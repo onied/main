@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Purchases.Dtos.Requests;
 using Purchases.Services.Abstractions;
 
 namespace Purchases.Controllers;
@@ -12,7 +13,10 @@ public class SubscriptionsController(
     public async Task<IResult> GetSubscriptionsByUser(Guid userId)
         => await subscriptionManagementService.GetSubscriptionsByUser(userId);
 
-    [HttpPatch("{subscriptionId}")]
-    public async Task<IResult> UpdateAutoRenewal(Guid userId, int subscriptionId)
-        => await subscriptionManagementService.UpdateAutoRenewal(userId, subscriptionId);
+    [HttpPatch]
+    public async Task<IResult> UpdateAutoRenewal(Guid userId, [FromBody] AutoRenewalRequestDto requestDto)
+        => await subscriptionManagementService.UpdateAutoRenewal(
+            userId,
+            requestDto.SubscriptionId,
+            requestDto.AutoRenewal);
 }

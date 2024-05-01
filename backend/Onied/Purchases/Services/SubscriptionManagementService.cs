@@ -34,12 +34,12 @@ public class SubscriptionManagementService(
         return Results.Ok(pInfo);
     }
 
-    public async Task<IResult> UpdateAutoRenewal(Guid userId, int subscriptionId)
+    public async Task<IResult> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal)
     {
         var user = await userRepository.GetAsync(userId, true, true);
         if (user is null) return Results.NotFound();
 
-        if (await purchaseRepository.UpdateAutoRenewal(userId, subscriptionId)) return Results.Ok();
+        if (await purchaseRepository.UpdateAutoRenewal(userId, subscriptionId, autoRenewal)) return Results.Ok();
 
         return Results.NotFound();
     }
