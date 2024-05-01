@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
-using Purchases.Configurations;
 using Purchases.Data;
 using Purchases.Extensions;
 using Purchases.Profiles;

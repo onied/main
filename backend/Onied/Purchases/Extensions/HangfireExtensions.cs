@@ -1,10 +1,8 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
-using Purchases.Data.Models;
-using Purchases.Services;
 using Purchases.Services.Abstractions;
 
-namespace Purchases.Configurations;
+namespace Purchases.Extensions;
 
 public static class HangfireExtensions
 {
