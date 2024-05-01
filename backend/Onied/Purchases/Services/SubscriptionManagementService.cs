@@ -39,7 +39,7 @@ public class SubscriptionManagementService(
         var user = await userRepository.GetAsync(userId, true, true);
         if (user is null) return Results.NotFound();
 
-        if (await purchaseRepository.UpdateAutoRenewal(subscriptionId)) return Results.Ok();
+        if (await purchaseRepository.UpdateAutoRenewal(userId, subscriptionId)) return Results.Ok();
 
         return Results.NotFound();
     }

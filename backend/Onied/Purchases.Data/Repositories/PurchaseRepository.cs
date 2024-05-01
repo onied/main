@@ -42,7 +42,7 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<bool> UpdateAutoRenewal(int subscriptionId)
+    public async Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId)
     {
         var purchaseSubscription = await dbContext.Purchases
             .Where(p => p.Id == subscriptionId)
@@ -50,7 +50,8 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
             .FirstOrDefaultAsync(p => p.Id == subscriptionId);
 
         if (purchaseSubscription != null
-            && purchaseSubscription.PurchaseDetails.GetType() == typeof(SubscriptionPurchaseDetails))
+            && purchaseSubscription.PurchaseDetails.GetType() == typeof(SubscriptionPurchaseDetails)
+            && purchaseSubscription.UserId == userId)
         {
             var subscriptionDetails = (SubscriptionPurchaseDetails)purchaseSubscription.PurchaseDetails;
             subscriptionDetails.AutoRenewalEnabled = !subscriptionDetails.AutoRenewalEnabled;
