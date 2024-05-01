@@ -11,7 +11,6 @@ public static class HangfireExtensions
     public static IServiceCollection AddHangfireWorker(this IServiceCollection serviceCollection)
         => serviceCollection.AddHangfire(x => x.UseMemoryStorage());
 
-    [Obsolete("Obsolete")]
     public static IApplicationBuilder UseHangfireWorker(
         this IApplicationBuilder app,
         IConfiguration configuration)
@@ -23,7 +22,7 @@ public static class HangfireExtensions
 
         RecurringJob.AddOrUpdate<ISubscriptionManagementService>(
             typeof(ISubscriptionManagementService).FullName,
-            (x) => x.UpdateSubscriptionWithAutoRenewal(),
+            x => x.UpdateSubscriptionWithAutoRenewal(),
             hangfireOptions["CronUpdateSubscription"],
             TimeZoneInfo.Utc);
 

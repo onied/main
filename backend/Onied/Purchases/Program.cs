@@ -43,9 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-#pragma warning disable CS0618 // Type or member is obsolete
 app.UseHangfireWorker(builder.Configuration);
-#pragma warning restore CS0618 // Type or member is obsolete
 
 app.UseHttpsRedirection();
 
