@@ -13,6 +13,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import api from "../../config/axios";
 import ProfileService from "../../services/profileService";
+import LoginService from "../../services/loginService";
+import { useNavigate } from "react-router-dom";
 
 type Errors = {
   firstName: string | null;
@@ -22,6 +24,7 @@ type Errors = {
 };
 
 function ProfileInfo() {
+  const navigate = useNavigate();
   const [originalProfile, _] = useProfile();
   const [profile, setProfile] = useState<Profile>({
     ...originalProfile,
@@ -122,6 +125,12 @@ function ProfileInfo() {
         setPasswordSent(true);
       })
       .catch();
+  };
+  const logout = () => {
+    LoginService.unregisterAutomaticRefresh();
+    LoginService.clearTokens();
+    ProfileService.clearProfile();
+    navigate("/");
   };
   if (originalProfile == null) return <></>;
   return (
@@ -302,6 +311,10 @@ function ProfileInfo() {
             <></>
           )}
         </div>
+
+        <hr className={classes.hr}></hr>
+
+        <Button onClick={logout}>Выйти</Button>
       </div>
       <Dialog
         open={avatarChangeModalOpen}
