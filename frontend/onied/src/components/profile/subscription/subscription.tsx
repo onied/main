@@ -2,6 +2,7 @@ import classes from "./subscription.module.css";
 import SubscriptionHeader from "./subscriptionHeader";
 import SubscriptionFeatures from "./subscriptionFeatures";
 import Checkbox from "../../general/checkbox/checkbox";
+import api from "../../../config/axios";
 
 export enum SubscriptionType {
   Default,
@@ -32,6 +33,8 @@ function SubscriptionContainer({
       ...subscription!,
       autoRenewalEnabled: !subscription.autoRenewalEnabled,
     });
+
+    api.patch(`purchases/subscriptions/${subscription.id}`);
   };
 
   return (
