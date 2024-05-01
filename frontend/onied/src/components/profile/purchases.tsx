@@ -15,7 +15,6 @@ function ProfilePurchases() {
     api
       .get("purchases")
       .then((res) => {
-        console.log(res.data);
         setPurchasesList(
           res.data.sort((a: Purchase, b: Purchase) =>
             a.purchaseDetails.purchaseDate > b.purchaseDetails.purchaseDate
