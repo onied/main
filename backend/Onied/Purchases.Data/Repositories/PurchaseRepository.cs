@@ -19,6 +19,7 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
         var purchaseSaved = await dbContext.Purchases.AddAsync(purchase);
+        // todo избавиться от двух записей в бд, сделав foreign key.
         await dbContext.SaveChangesAsync();
         purchaseDetails.Id = purchaseSaved.Entity.Id;
         await dbContext.PurchaseDetails.AddAsync(purchaseDetails);
@@ -39,5 +40,25 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
     {
         dbContext.Purchases.Remove(purchase);
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> UpdateAutoRenewal(int subscriptionId)
+    {
+        var purchaseSubscription = await dbContext.Purchases
+            .Where(p => p.Id == subscriptionId)
+            .Include(purchase => purchase.PurchaseDetails)
+            .FirstOrDefaultAsync(p => p.Id == subscriptionId);
+
+        if (purchaseSubscription != null
+            && purchaseSubscription.PurchaseDetails.GetType() == typeof(SubscriptionPurchaseDetails))
+        {
+            var subscriptionDetails = (SubscriptionPurchaseDetails)purchaseSubscription.PurchaseDetails;
+            subscriptionDetails.AutoRenewalEnabled = !subscriptionDetails.AutoRenewalEnabled;
+            await dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        return false;
     }
 }
