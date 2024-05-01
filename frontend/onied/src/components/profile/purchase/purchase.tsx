@@ -18,7 +18,7 @@ export type PurchaseDetails = {
   purchaseType: PurchaseType;
   course?: Course;
   subscription?: Subscription;
-  purchaseDate: Date;
+  startDate: Date;
 };
 
 export type Purchase = {
@@ -43,7 +43,7 @@ function PurchaseContainer({ purchase }: { purchase: Purchase }) {
     <div className={classes.rowPurchase}>
       <div className={classes.leftColumns}>
         <p style={{ width: "168pt" }}>
-          {formatDate(purchase.purchaseDetails.purchaseDate)}
+          {formatDate(purchase.purchaseDetails.startDate)}
         </p>
         <p style={{ width: "152pt" }}>
           {purchaseTypeMap[purchase.purchaseDetails.purchaseType]}
