@@ -25,7 +25,10 @@ public static class HangfireExtensions
             typeof(ISubscriptionManagementService).FullName,
             x => x.UpdateSubscriptionWithAutoRenewal(),
             hangfireOptions["CronUpdateSubscription"],
-            new RecurringJobOptions());
+            new RecurringJobOptions
+            {
+                TimeZone = TimeZoneInfo.Utc
+            });
 
         return app;
     }
