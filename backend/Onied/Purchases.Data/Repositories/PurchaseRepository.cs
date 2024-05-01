@@ -61,4 +61,22 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
 
         return false;
     }
+
+    public async Task UpdateSubscriptionWithAutoRenewal()
+    {
+        var purchases = dbContext.Purchases
+            .Include(purchase => purchase.PurchaseDetails);
+
+        foreach (var purchase in purchases)
+        {
+            if (purchase.PurchaseDetails is SubscriptionPurchaseDetails subscriptionDetails &&
+                subscriptionDetails.EndDate.Date == DateTime.UtcNow.Date &&
+                subscriptionDetails.AutoRenewalEnabled)
+            {
+                subscriptionDetails.EndDate = DateTime.UtcNow.Date + TimeSpan.FromDays(30);
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 }

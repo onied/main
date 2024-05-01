@@ -43,4 +43,9 @@ public class SubscriptionManagementService(
 
         return Results.NotFound();
     }
+
+    public async Task UpdateSubscriptionWithAutoRenewal()
+    {
+        await purchaseRepository.UpdateSubscriptionWithAutoRenewal();
+    }
 }
