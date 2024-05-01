@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Purchases.Configurations;
 using Purchases.Data;
 using Purchases.Extensions;
 using Purchases.Profiles;
@@ -17,6 +18,8 @@ builder.Services.AddDbContextConfigured();
 builder.Services.AddRepositories();
 
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+
+builder.Services.AddHangfireWorker();
 
 builder.Services.AddControllers();
 
@@ -39,6 +42,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+app.UseHangfireWorker(builder.Configuration);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 app.UseHttpsRedirection();
 
