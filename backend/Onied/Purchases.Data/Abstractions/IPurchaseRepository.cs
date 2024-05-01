@@ -9,4 +9,8 @@ public interface IPurchaseRepository
     public Task<Purchase> AddAsync(Purchase purchase, PurchaseDetails purchaseDetails);
     public Task<Purchase> UpdateAsync(Purchase purchase);
     public Task RemoveAsync(Purchase purchase);
+
+    public Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal);
+
+    public Task UpdateSubscriptionWithAutoRenewal();
 }

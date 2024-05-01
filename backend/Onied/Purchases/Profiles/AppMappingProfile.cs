@@ -21,6 +21,7 @@ public class AppMappingProfile : Profile
         CreateMap<CoursePurchaseDetails, PurchaseDetailsDto>();
 
         CreateMap<Subscription, SubscriptionDto>();
+        CreateMap<Subscription, SubscriptionUserDto>();
         CreateMap<SubscriptionPurchaseDetails, PurchaseDetailsDto>();
 
         CreateMap<CertificatePurchaseDetails, PurchaseDetailsDto>();

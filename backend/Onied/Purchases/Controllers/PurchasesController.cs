@@ -20,7 +20,7 @@ public class PurchasesController(
         var user = await userRepository.GetAsync(userId, true);
         if (user is null) return Results.NotFound();
 
-        var pInfo = mapper.Map<List<PurchaseInfoResponseDto>>(user.Purchases);
+        var pInfo = mapper.Map<List<PurchaseInfoResponseDto>>(user.Purchases.Where(p => p.Price > 0));
         return Results.Ok(pInfo);
     }
 

@@ -19,6 +19,7 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
         var purchaseSaved = await dbContext.Purchases.AddAsync(purchase);
+        // todo избавиться от двух записей в бд, сделав foreign key.
         await dbContext.SaveChangesAsync();
         purchaseDetails.Id = purchaseSaved.Entity.Id;
         await dbContext.PurchaseDetails.AddAsync(purchaseDetails);
@@ -38,6 +39,45 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
     public async Task RemoveAsync(Purchase purchase)
     {
         dbContext.Purchases.Remove(purchase);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal)
+    {
+        var purchaseSubscription = await dbContext.Purchases
+            .Where(p => p.Id == subscriptionId)
+            .Include(purchase => purchase.PurchaseDetails)
+            .FirstOrDefaultAsync(p => p.Id == subscriptionId);
+
+        if (purchaseSubscription != null
+            && purchaseSubscription.PurchaseDetails.GetType() == typeof(SubscriptionPurchaseDetails)
+            && purchaseSubscription.UserId == userId)
+        {
+            var subscriptionDetails = (SubscriptionPurchaseDetails)purchaseSubscription.PurchaseDetails;
+            subscriptionDetails.AutoRenewalEnabled = autoRenewal;
+            await dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task UpdateSubscriptionWithAutoRenewal()
+    {
+        var purchases = dbContext.Purchases
+            .Include(purchase => purchase.PurchaseDetails);
+
+        foreach (var purchase in purchases)
+        {
+            if (purchase.PurchaseDetails is SubscriptionPurchaseDetails subscriptionDetails &&
+                subscriptionDetails.EndDate.Date <= DateTime.UtcNow.Date &&
+                subscriptionDetails.AutoRenewalEnabled)
+            {
+                subscriptionDetails.EndDate = DateTime.UtcNow.Date + TimeSpan.FromDays(30);
+            }
+        }
+
         await dbContext.SaveChangesAsync();
     }
 }
