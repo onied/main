@@ -71,7 +71,7 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         foreach (var purchase in purchases)
         {
             if (purchase.PurchaseDetails is SubscriptionPurchaseDetails subscriptionDetails &&
-                subscriptionDetails.EndDate.Date == DateTime.UtcNow.Date &&
+                subscriptionDetails.EndDate.Date <= DateTime.UtcNow.Date &&
                 subscriptionDetails.AutoRenewalEnabled)
             {
                 subscriptionDetails.EndDate = DateTime.UtcNow.Date + TimeSpan.FromDays(30);
