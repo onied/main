@@ -9,7 +9,10 @@ namespace Purchases.Configurations;
 public static class HangfireExtensions
 {
     public static IServiceCollection AddHangfireWorker(this IServiceCollection serviceCollection)
-        => serviceCollection.AddHangfire(x => x.UseMemoryStorage());
+    {
+        serviceCollection.AddHangfire(x => x.UseMemoryStorage());
+        return serviceCollection.AddHangfireServer();
+    }
 
     public static IApplicationBuilder UseHangfireWorker(
         this IApplicationBuilder app,
@@ -18,13 +21,11 @@ public static class HangfireExtensions
         var hangfireOptions = configuration.GetSection("Hangfire");
         app.UseHangfireDashboard("/worker");
 
-        app.UseHangfireServer();
-
         RecurringJob.AddOrUpdate<ISubscriptionManagementService>(
             typeof(ISubscriptionManagementService).FullName,
             x => x.UpdateSubscriptionWithAutoRenewal(),
             hangfireOptions["CronUpdateSubscription"],
-            TimeZoneInfo.Utc);
+            new RecurringJobOptions());
 
         return app;
     }
