@@ -1,13 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classes from "./header.module.css";
 import Logo from "../../assets/logo.svg";
 import Avatar from "react-avatar";
 import { useProfile } from "../../hooks/profile/useProfile";
 import { getProfileName } from "../../hooks/profile/profile";
 import NotificationContainer from "../notifications/notificationContainer";
+import LoupeIcon from "../../assets/loupe.svg";
+import { useState } from "react";
 
 function Header() {
   const [profile, _] = useProfile();
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && searchQuery != "") {
+      navigate(`/catalog?q=${searchQuery}`);
+    }
+  };
+
   return (
     <header className={classes.header}>
       <div className={classes.leftWrapper}>
@@ -27,6 +38,17 @@ function Header() {
         </div>
       </div>
       <div className={classes.rightWrapper}>
+        <div className={classes.searchWrapper}>
+          <img className={classes.loupeIcon} src={LoupeIcon} />
+          <input
+            className={classes.search}
+            type="text"
+            placeholder={"Поиск..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyPress}
+          ></input>
+        </div>
         {profile == null ? (
           <Link to="/login" className={classes.profileContainer}>
             Войти
