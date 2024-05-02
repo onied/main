@@ -66,6 +66,15 @@ if (app.Environment.IsDevelopment())
 app.UseEndpoints(e => { e.MapControllers(); });
 #pragma warning restore ASP0014
 
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<AppDbContext>();
+    if (context.Database.GetPendingMigrations().Any()) context.Database.Migrate();
+}
+
 app.UseWebSockets();
 app.UseOcelot().Wait();
 
