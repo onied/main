@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models;
@@ -8,11 +7,9 @@ using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
 using Purchases.Services.Abstractions;
 
-namespace Purchases.Controllers;
+namespace Purchases.Services;
 
-[Route("api/v1/purchases/new")]
-public class PurchasesMakingController(
-    IPurchaseMakingService purchaseMakingService,
+public class PurchaseMakingService(
     IMapper mapper,
     IValidatePurchaseService validatePurchaseService,
     IUserRepository userRepository,
@@ -22,10 +19,9 @@ public class PurchasesMakingController(
     IPurchaseTokenService tokenService,
     IPurchaseCreatedProducer purchaseCreatedProducer,
     ISubscriptionChangedProducer subscriptionChangedProducer
-) : ControllerBase
+) : IPurchaseMakingService
 {
-    [HttpGet("course")]
-    public async Task<IResult> GetCoursePreparedPurchase([FromQuery] int courseId)
+    public async Task<IResult> GetCoursePreparedPurchase(int courseId)
     {
         var course = await courseRepository.GetAsync(courseId);
         if (course is null) return Results.NotFound();
@@ -37,8 +33,7 @@ public class PurchasesMakingController(
         return Results.Ok(coursePurchaseInfo);
     }
 
-    [HttpPost("course")]
-    public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
+    public async Task<IResult> MakeCoursePurchase(PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };
         var maybeError = await validatePurchaseService.ValidatePurchase(dto, PurchaseType.Course);
@@ -60,8 +55,7 @@ public class PurchasesMakingController(
         return Results.Ok();
     }
 
-    [HttpGet("certificate")]
-    public async Task<IResult> GetCertificatePreparedPurchase([FromQuery] int courseId)
+    public async Task<IResult> GetCertificatePreparedPurchase(int courseId)
     {
         var course = await courseRepository.GetAsync(courseId);
         if (course is null) return Results.NotFound();
@@ -70,8 +64,7 @@ public class PurchasesMakingController(
         return Results.Ok(coursePurchaseInfo);
     }
 
-    [HttpPost("certificate")]
-    public async Task<IResult> MakeCertificatePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
+    public async Task<IResult> MakeCertificatePurchase(PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };
         var maybeError = await validatePurchaseService.ValidatePurchase(dto, PurchaseType.Certificate);
@@ -93,8 +86,7 @@ public class PurchasesMakingController(
         return Results.Ok();
     }
 
-    [HttpGet("subscription")]
-    public async Task<IResult> GetSubscriptionPreparedPurchase([FromQuery] int subscriptionId)
+    public async Task<IResult> GetSubscriptionPreparedPurchase(int subscriptionId)
     {
         var subscription = await subscriptionRepository.GetAsync(subscriptionId);
         if (subscription is null) return Results.NotFound();
@@ -105,8 +97,7 @@ public class PurchasesMakingController(
         return Results.Ok(purchaseInfo);
     }
 
-    [HttpPost("subscription")]
-    public async Task<IResult> MakeSubscriptionPurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
+    public async Task<IResult> MakeSubscriptionPurchase(PurchaseRequestDto dto, Guid userId)
     {
         dto = dto with { UserId = userId };
         var maybeError = await validatePurchaseService.ValidatePurchase(dto, PurchaseType.Subscription);
@@ -127,7 +118,7 @@ public class PurchasesMakingController(
         await purchaseCreatedProducer.PublishAsync(purchase);
 
         var user = (await userRepository.GetAsync(userId))!;
-        user!.SubscriptionId = dto.SubscriptionId!.Value;
+        user.SubscriptionId = dto.SubscriptionId!.Value;
         await userRepository.UpdateAsync(user);
 
         var subscription = (await subscriptionRepository

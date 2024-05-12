@@ -1,17 +1,16 @@
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
-using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos.Requests;
 using Purchases.Services.Abstractions;
 
 namespace Purchases.Services;
 
-public class PurchaseManagementService(
+public class ValidatePurchaseService(
     IUserRepository userRepository,
     ICourseRepository courseRepository,
     ISubscriptionRepository subscriptionRepository,
-    IUserCourseInfoRepository userCourseInfoRepository) : IPurchaseManagementService
+    IUserCourseInfoRepository userCourseInfoRepository) : IValidatePurchaseService
 {
     public async Task<IResult?> ValidatePurchase(PurchaseRequestDto dto, PurchaseType purchaseType)
     {
@@ -19,7 +18,7 @@ public class PurchaseManagementService(
         {
             PurchaseType.Course => await ValidateCoursePurchase(dto),
             PurchaseType.Certificate => await ValidateCertificatePurchase(dto),
-            PurchaseType.Subscription => null,
+            PurchaseType.Subscription => await ValidateSubscriptionPurchase(dto),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
