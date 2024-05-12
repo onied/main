@@ -1,5 +1,6 @@
-namespace Users.Dtos.Users.Response;
 using Users.Data;
+
+namespace Users.Dtos.Users.Response;
 public class UserProfileResponse
 {
     public string? FirstName { get; set; } = null!;

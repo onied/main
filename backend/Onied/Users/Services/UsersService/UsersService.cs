@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using Users.Data;
 using Users.Dtos.Users.Request;
 using Users.Dtos.Users.Response;
 using Users.Dtos.VkOauth.Request;

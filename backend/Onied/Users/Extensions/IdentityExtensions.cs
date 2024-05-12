@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Users.Data;
 
 namespace Users.Extensions;
 

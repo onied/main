@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Users.Data;
 
 namespace Users.Extensions;
 
