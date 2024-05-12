@@ -19,9 +19,6 @@ public class SubscriptionsController(
         int subscriptionId,
         [FromBody] AutoRenewalRequestDto requestDto)
         => await subscriptionManagementService.UpdateAutoRenewal(userId, subscriptionId, requestDto.AutoRenewal);
-    {
-        return await subscriptionManagementService.GetSubscriptionsByUser(userId);
-    }
 
     [HttpGet]
     [Route("all")]
