@@ -1,3 +1,5 @@
+using Users.Data;
+
 namespace Users.Services.ProfileProducer;
 
 public interface IProfileProducer

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Users;
+using Users.Data;
 using Users.Profiles;
 using Users.Services.EmailSender;
 using Users.Services.ProfileProducer;

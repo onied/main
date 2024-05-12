@@ -1,3 +1,5 @@
+using Users.Data;
+
 namespace Users.Services.UserCreatedProducer;
 
 public interface IUserCreatedProducer

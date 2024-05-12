@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Users.Data;
 using Users.Dtos;
 using Users.Services.ProfileProducer;
 

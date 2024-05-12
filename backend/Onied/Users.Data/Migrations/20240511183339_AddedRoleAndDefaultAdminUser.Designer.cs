@@ -9,7 +9,7 @@ using Users;
 
 #nullable disable
 
-namespace Users.Migrations
+namespace Users.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20240511183339_AddedRoleAndDefaultAdminUser")]

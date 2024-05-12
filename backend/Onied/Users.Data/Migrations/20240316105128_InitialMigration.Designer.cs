@@ -9,11 +9,11 @@ using Users;
 
 #nullable disable
 
-namespace Users.Migrations
+namespace Users.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240322094431_AddedAvatarToUser")]
-    partial class AddedAvatarToUser
+    [Migration("20240316105128_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -198,11 +198,6 @@ namespace Users.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer")
                         .HasColumnName("access_failed_count");
-
-                    b.Property<string>("Avatar")
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)")
-                        .HasColumnName("avatar");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

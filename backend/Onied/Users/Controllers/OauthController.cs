@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Users.Data;
 using Users.Dtos;
 using Users.Dtos.VkUserInfoResponseDtos;
 using Users.Services.UserCreatedProducer;
