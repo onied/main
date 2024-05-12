@@ -69,7 +69,7 @@ function SubscriptionPurchase() {
               if (error.response.status == 400)
                 setError("Возникла ошибка при валидации");
               else if (error.response.status == 403)
-                setError("Вы не можете купить данный курс");
+                setError("Вы не можете купить данную подписку");
               else if (error.response.status >= 500)
                 setError("Возникла ошибка на сервере");
               setLoading(false);
