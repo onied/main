@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Users.Data;
+using Users.Data.Enums;
 
 namespace Users.Dtos.Profile.Request;
 

@@ -1,4 +1,4 @@
-using Users.Data;
+using Users.Data.Entities;
 
 namespace Users.Services.UserCreatedProducer;
 

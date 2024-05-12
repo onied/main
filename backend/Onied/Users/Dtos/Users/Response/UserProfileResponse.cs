@@ -1,4 +1,4 @@
-using Users.Data;
+using Users.Data.Enums;
 
 namespace Users.Dtos.Users.Response;
 public class UserProfileResponse

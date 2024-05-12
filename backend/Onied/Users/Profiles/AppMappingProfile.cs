@@ -1,7 +1,6 @@
 using AutoMapper;
 using MassTransit.Data.Messages;
-using Users.Data;
-using Users.Dtos;
+using Users.Data.Entities;
 using Users.Dtos.Users.Response;
 
 namespace Users.Profiles;

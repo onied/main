@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Users.Data;
+using Users.Data.Entities;
 using Users.Dtos.Profile.Request;
 using Users.Dtos.Users.Response;
 using Users.Services.ProfileProducer;

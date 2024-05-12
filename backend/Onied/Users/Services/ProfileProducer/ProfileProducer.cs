@@ -2,7 +2,7 @@ using AutoMapper;
 using MassTransit;
 using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Identity;
-using Users.Data;
+using Users.Data.Entities;
 
 namespace Users.Services.ProfileProducer;
 

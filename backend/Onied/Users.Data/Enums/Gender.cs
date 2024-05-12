@@ -1,4 +1,4 @@
-namespace Users.Data;
+namespace Users.Data.Enums;
 
 public enum Gender
 {

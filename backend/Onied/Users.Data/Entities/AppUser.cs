@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Users.Data.Enums;
 
-namespace Users.Data;
+namespace Users.Data.Entities;
 
 public class AppUser : IdentityUser
 {
