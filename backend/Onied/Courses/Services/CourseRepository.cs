@@ -131,8 +131,9 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
         => await dbContext.Courses
             .Include(course => course.Author)
             .Include(course => course.Category)
-            .AsNoTracking() 
-            .OrderByDescending(course => course.Id) // TODO: Filter out courses whose authors have a full subscription
+            .AsNoTracking()
+            .Where(course => course.IsGlowing)
+            .OrderByDescending(course => course.Id)
             .Take(50)
             .ToListAsync();
     
