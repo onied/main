@@ -37,15 +37,15 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamPathTemplate": "/api/v1/certificates/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5135
+          "Port": 5508
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/{everything}",
+      "UpstreamPathTemplate": "/api/v1/certificates/{everything}",
       "AddQueriesToRequest": {
         "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
@@ -65,6 +65,10 @@
       }
     },
     {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
       "DownstreamPathTemplate": "/api/v1/notifications/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -79,15 +83,15 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/v1/certificates/{everything}",
+      "DownstreamPathTemplate": "/api/v1/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5508
+          "Port": 5135
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/certificates/{everything}",
+      "UpstreamPathTemplate": "/api/v1/{everything}",
       "AddQueriesToRequest": {
         "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }

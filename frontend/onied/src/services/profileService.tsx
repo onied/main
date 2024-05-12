@@ -27,6 +27,11 @@ class ProfileService {
       .catch()
       .finally(() => ProfileService.setLoading!(false));
   }
+
+  static clearProfile() {
+    if (ProfileService.setProfile !== undefined)
+      ProfileService.setProfile!(null);
+  }
 }
 
 export default ProfileService;

@@ -1,7 +1,5 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Models;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +16,10 @@ public class AccountsController(IUserRepository userRepository, IMapper mapper) 
         var user = await userRepository.GetUserWithCoursesAsync(id);
         if (user is null) return NotFound();
 
-        return mapper.Map<List<CourseCardDto>>(user.Courses);
+        var courses = mapper.Map<List<CourseCardDto>>(user.Courses);
+        foreach (var course in courses)
+            course.IsOwned = true;
+
+        return courses;
     }
 }

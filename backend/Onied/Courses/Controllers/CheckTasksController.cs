@@ -2,6 +2,7 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.NotificationSentProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,9 @@ public class CheckTasksController(
     ILogger<CoursesController> logger,
     IMapper mapper,
     IUserTaskPointsRepository userTaskPointsRepository,
-    ICheckTaskManagementService checkTaskManagementService) : ControllerBase
+    ICourseManagementService courseManagementService,
+    ICheckTaskManagementService checkTaskManagementService
+) : ControllerBase
 {
     [HttpGet]
     [Route("points")]
@@ -21,6 +24,9 @@ public class CheckTasksController(
         int blockId,
         [FromQuery] Guid userId)
     {
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+            return TypedResults.Forbid();
+
         var response = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true);
         if (response.Result is not Ok<TasksBlock> ok)
@@ -60,6 +66,9 @@ public class CheckTasksController(
             [FromQuery] Guid userId,
             [FromBody] List<UserInputDto> inputsDto)
     {
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+            return TypedResults.Forbid();
+
         var responseGetTaskBlock = await checkTaskManagementService
             .TryGetTaskBlock(userId, courseId, blockId, true, true);
         if (responseGetTaskBlock.Result is not Ok<TasksBlock> okGetTaskBlock)
@@ -79,6 +88,8 @@ public class CheckTasksController(
                 pointsInfo, userId, courseId, blockId);
         await checkTaskManagementService
             .ManageTaskBlockCompleted(pointsInfo, userId, blockId);
+        await checkTaskManagementService
+            .ManageCourseCompleted(userId, courseId);
 
         var pointsPrepared = block.Tasks
             .Select(task =>

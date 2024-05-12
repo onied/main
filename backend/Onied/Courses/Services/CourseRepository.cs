@@ -1,3 +1,4 @@
+using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,55 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
         }
 
         return await query.ToListAsync();
+    }
+
+    public async Task<(List<Course> list, int count)> GetCoursesAsync(CatalogGetQueriesDto catalogGetQueriesDto)
+    {
+        var query = dbContext.Courses
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (catalogGetQueriesDto.Category != null)
+            query = query.Where(course => course.CategoryId == catalogGetQueriesDto.Category.Value);
+        if (catalogGetQueriesDto.PriceFrom != null)
+            query = query.Where(course => course.PriceRubles >= catalogGetQueriesDto.PriceFrom.Value);
+        if (catalogGetQueriesDto.PriceTo != null)
+            query = query.Where(course => course.PriceRubles <= catalogGetQueriesDto.PriceTo.Value);
+        if (catalogGetQueriesDto.TimeFrom != null)
+            query = query.Where(course => course.HoursCount >= catalogGetQueriesDto.TimeFrom.Value);
+        if (catalogGetQueriesDto.TimeTo != null)
+            query = query.Where(course => course.HoursCount <= catalogGetQueriesDto.TimeTo.Value);
+        if (catalogGetQueriesDto.CertificatesOnly)
+            query = query.Where(course => course.HasCertificates);
+        if (catalogGetQueriesDto.ActiveOnly)
+            query = query.Where(course => !course.IsArchived);
+        if (catalogGetQueriesDto.Q.Length > 0)
+            query = query.Where(course =>
+                course.Title.ToLower().Contains(catalogGetQueriesDto.Q.ToLower()) ||
+                course.Description.ToLower().Contains(catalogGetQueriesDto.Q.ToLower()));
+
+        catalogGetQueriesDto.Sort ??= "popular";
+
+        switch (catalogGetQueriesDto.Sort)
+        {
+            case "popular":
+                query = query.OrderByDescending(course => course.Users.Count);
+                break;
+            case "new":
+                query = query.OrderByDescending(course => course.CreatedDate);
+                break;
+            case "priceAsc":
+                query = query.OrderBy(course => course.PriceRubles);
+                break;
+            case "priceDesc":
+                query = query.OrderByDescending(course => course.PriceRubles);
+                break;
+        }
+
+        return (await query.Skip(catalogGetQueriesDto.Offset).Take(catalogGetQueriesDto.ElementsOnPage).ToListAsync(),
+            await query.CountAsync());
     }
 
     public async Task<Course?> GetCourseAsync(int id)

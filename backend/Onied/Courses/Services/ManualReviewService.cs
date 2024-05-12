@@ -3,6 +3,8 @@ using Courses.Dtos.ManualReviewDtos.Request;
 using Courses.Dtos.ManualReviewDtos.Response;
 using Courses.Models;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.NotificationSentProducer;
+using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Courses.Services;
@@ -12,6 +14,7 @@ public class ManualReviewService(
     IManualReviewTaskUserAnswerRepository manualReviewTaskUserAnswerRepository,
     ICheckTaskManagementService checkTaskManagementService,
     IUserTaskPointsRepository userTaskPointsRepository,
+    INotificationSentProducer notificationSentProducer,
     IMapper mapper) : IManualReviewService
 {
     private async Task<Results<Ok<ManualReviewTaskUserAnswer>, NotFound, UnauthorizedHttpResult,
@@ -54,7 +57,17 @@ public class ManualReviewService(
                 .GetUserTaskPointsByUserAndBlock(userId, answer.Task.TasksBlock.Module.CourseId,
                     answer.Task.TasksBlockId))
             .ToList();
+
+        var course = answer.Task.TasksBlock.Module.Course;
+        var notificationSent = new NotificationSent(
+            course.Title,
+            $"Задание \"{answer.Task.Title}\" проверено!",
+            userId,
+            course.PictureHref);
+        await notificationSentProducer.PublishForOne(notificationSent);
+
         await checkTaskManagementService.ManageTaskBlockCompleted(pointsInfo, answer.UserId, answer.Task.TasksBlockId);
+        await checkTaskManagementService.ManageCourseCompleted(answer.UserId, answer.CourseId);
         return TypedResults.Ok();
     }
 

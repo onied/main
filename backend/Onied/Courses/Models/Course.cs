@@ -38,6 +38,8 @@ public class Course
 
     public bool IsProgramVisible { get; set; }
 
+    public DateTime CreatedDate { get; set; } = DateTime.UnixEpoch;
+
     public ICollection<Module> Modules { get; } = new List<Module>();
 
     public ICollection<User> Users { get; } = new List<User>();

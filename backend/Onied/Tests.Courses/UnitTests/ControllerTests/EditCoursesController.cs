@@ -6,6 +6,8 @@ using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseCreatedProducer;
+using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -24,6 +26,7 @@ public class EditCoursesControllerTests
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<IModuleRepository> _moduleRepository = new();
     private readonly Mock<UpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<CourseUpdatedProducer> _courseUpdatedProducer = new();
     private readonly EditCoursesController _controller;
     private readonly Fixture _fixture = new();
 
@@ -37,7 +40,8 @@ public class EditCoursesControllerTests
             _courseManagementService.Object,
             _categoryRepository.Object,
             _moduleRepository.Object,
-            _updateTasksBlockService.Object);
+            _updateTasksBlockService.Object,
+            _courseUpdatedProducer.Object);
     }
 
     [Fact]

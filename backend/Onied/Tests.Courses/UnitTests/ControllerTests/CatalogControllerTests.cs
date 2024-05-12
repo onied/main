@@ -5,7 +5,6 @@ using Courses.Dtos;
 using Courses.Helpers;
 using Courses.Models;
 using Courses.Profiles;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -19,18 +18,23 @@ public class CatalogControllerTests
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Fixture _fixture = new();
     private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Mock<ILogger<CatalogController>> _logger = new();
 
     public CatalogControllerTests()
     {
-        _controller = new CatalogController(_logger.Object, _mapper, _courseRepository.Object);
+        _controller = new CatalogController(
+            _logger.Object,
+            _mapper,
+            _courseRepository.Object,
+            _userRepository.Object);
     }
 
     [Fact]
     public async Task Get_UsesCorrectOffsetAndLimit()
     {
         // Arrange
-        var pageQuery = new PageQuery(); // Adjust as needed
+        var pageQuery = new CatalogGetQueriesDto(); // Adjust as needed
 
         var courses = _fixture.Build<Course>()
             .CreateMany(3)
@@ -57,7 +61,7 @@ public class CatalogControllerTests
             .Returns(Task.FromResult(courses));
 
         // Act
-        var result = await _controller.Get(pageQuery);
+        var result = await _controller.Get(pageQuery, Guid.NewGuid());
 
         // Assert
         Assert.IsType<Page<CourseCardDto>>(result);
