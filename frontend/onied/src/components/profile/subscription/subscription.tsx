@@ -2,6 +2,7 @@ import classes from "./subscription.module.css";
 import SubscriptionHeader from "./subscriptionHeader";
 import SubscriptionFeatures from "./subscriptionFeatures";
 import Checkbox from "../../general/checkbox/checkbox";
+import api from "../../../config/axios";
 
 export enum SubscriptionType {
   Default,
@@ -28,9 +29,14 @@ function SubscriptionContainer({
   onChange: (subscription: Subscription) => void;
 }) {
   const updateAutoRenewal = () => {
+    const autoRenewal = !subscription.autoRenewalEnabled;
     onChange({
       ...subscription!,
-      autoRenewalEnabled: !subscription.autoRenewalEnabled,
+      autoRenewalEnabled: autoRenewal,
+    });
+
+    api.patch(`purchases/subscriptions/${subscription.id}`, {
+      autoRenewal: autoRenewal,
     });
   };
 

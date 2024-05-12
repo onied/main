@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import PurchaseContainer, { Purchase } from "./purchase/purchase";
 import classes from "./profile.module.css";
 import Columns from "./purchase/columns";
-import { PurchaseType } from "../../types/purchase";
 import api from "../../config/axios";
 
 function ProfilePurchases() {

@@ -1,6 +1,4 @@
-using System.Runtime.InteropServices.JavaScript;
 using Purchases.Data.Enums;
-using Purchases.Data.Models;
 
 namespace Purchases.Dtos;
 

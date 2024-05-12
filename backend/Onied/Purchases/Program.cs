@@ -18,6 +18,8 @@ builder.Services.AddRepositories();
 
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 
+builder.Services.AddHangfireWorker();
+
 builder.Services.AddControllers();
 
 builder.Services.AddMassTransitConfigured();
@@ -39,6 +41,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHangfireWorker(builder.Configuration);
 
 app.UseHttpsRedirection();
 
