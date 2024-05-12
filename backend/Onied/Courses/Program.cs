@@ -52,7 +52,11 @@ builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepo
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
 builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
+<<<<<<< HEAD
 builder.Services.AddScoped<ISubscriptionManagementService, SubscriptionManagementService>();
+=======
+builder.Services.AddScoped<INotificationPreparerService, NotificationPreparerService>();
+>>>>>>> dev
 builder.Services.AddTransient<UserAnswerToTasksListConverter>();
 
 var app = builder.Build();

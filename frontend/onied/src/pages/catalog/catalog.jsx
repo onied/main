@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../config/axios.ts";
 import classes from "./catalog.module.css";
 import CatalogFilter from "../../components/catalog/catalogFilter/catalogFilter.tsx";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function Catalog() {
+  const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(1);
@@ -31,6 +32,7 @@ function Catalog() {
         setCoursesList(undefined);
         setPagesCount(1);
         setCurrentPage(1);
+        if (error.response && error.response.status === 403) navigate("/login");
       })
       .finally(() => {
         loadingCourses.current = false;

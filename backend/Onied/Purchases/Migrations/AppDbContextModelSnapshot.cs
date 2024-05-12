@@ -104,6 +104,10 @@ namespace Purchases.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("purchase_date");
+
                     b.Property<int>("PurchaseType")
                         .HasColumnType("integer")
                         .HasColumnName("purchase_type");

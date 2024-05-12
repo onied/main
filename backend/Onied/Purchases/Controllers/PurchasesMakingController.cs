@@ -49,6 +49,7 @@ public class PurchasesMakingController(
         {
             PurchaseType = PurchaseType.Course,
             CourseId = dto.CourseId!.Value,
+            PurchaseDate = DateTime.UtcNow
         };
 
         purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
@@ -81,6 +82,7 @@ public class PurchasesMakingController(
         {
             PurchaseType = PurchaseType.Certificate,
             CourseId = dto.CourseId!.Value,
+            PurchaseDate = DateTime.UtcNow
         };
 
         purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);

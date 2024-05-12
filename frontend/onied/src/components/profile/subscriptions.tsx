@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import SubscriptionContainer, {
   Subscription,
 } from "./subscription/subscription";
+import api from "../../config/axios";
 
 function ProfileSubcriptions() {
   const [profile, _] = useProfile();
@@ -11,28 +12,15 @@ function ProfileSubcriptions() {
 
   useEffect(() => {
     setSubscription(undefined);
-    setSubscription({
-      id: 1,
-      title: "базовая",
-      endDate: new Date("2024-04-31"),
-      autoRenewalEnabled: true,
-      coursesHighlightingEnabled: false,
-      showingMainPageEnabled: false,
-      adsEnabled: false,
-      certificatesEnabled: false,
-      activeCoursesNumber: 3,
-    });
-    setSubscription({
-      id: 2,
-      title: "Полная",
-      endDate: new Date("2024-04-25"),
-      autoRenewalEnabled: true,
-      coursesHighlightingEnabled: true,
-      showingMainPageEnabled: true,
-      adsEnabled: true,
-      certificatesEnabled: true,
-      activeCoursesNumber: -1,
-    });
+    api
+      .get("purchases/subscriptions")
+      .then((res) => {
+        if (res.data) {
+          res.data.endDate = new Date(res.data.endDate);
+          setSubscription(res.data);
+        }
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   if (profile == null) return <></>;

@@ -2,6 +2,7 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.NotificationSentProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,8 @@ public class CheckTasksController(
     IMapper mapper,
     IUserTaskPointsRepository userTaskPointsRepository,
     ICourseManagementService courseManagementService,
-    ICheckTaskManagementService checkTaskManagementService) : ControllerBase
+    ICheckTaskManagementService checkTaskManagementService
+) : ControllerBase
 {
     [HttpGet]
     [Route("points")]
