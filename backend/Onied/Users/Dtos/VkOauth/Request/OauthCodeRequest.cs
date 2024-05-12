@@ -1,6 +1,6 @@
-namespace Users.Dtos;
+namespace Users.Dtos.VkOauth.Request;
 
-public class OauthCodeDto
+public class OauthCodeRequest
 {
     /// <summary>
     ///     Временный код, полученный после прохождения авторизации.

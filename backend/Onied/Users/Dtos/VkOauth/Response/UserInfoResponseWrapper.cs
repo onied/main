@@ -1,4 +1,4 @@
-namespace Users.Dtos.VkUserInfoResponseDtos;
+namespace Users.Dtos.VkOauth.Response;
 
 public class UserInfoResponseWrapper
 {

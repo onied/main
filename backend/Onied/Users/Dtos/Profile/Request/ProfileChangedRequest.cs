@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Users.Dtos;
+namespace Users.Dtos.Profile.Request;
 
-public class ProfileChangedDto
+public class ProfileChangedRequest
 {
     [MaxLength(50)]
     public string FirstName { get; set; } = null!;

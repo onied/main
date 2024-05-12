@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using Users.Dtos;
-using Users.Dtos.VkUserInfoResponseDtos;
+using Users.Dtos.Users.Request;
+using Users.Dtos.Users.Response;
+using Users.Dtos.VkOauth.Request;
+using Users.Dtos.VkOauth.Response;
 using Users.Factories;
 using Users.Services.UserCreatedProducer;
 
@@ -30,7 +32,7 @@ public class UsersService(
 {
     private static readonly EmailAddressAttribute EmailAddressAttribute = new();
 
-    public async Task<IResult> Register(RegisterUserDto registration, HttpContext context)
+    public async Task<IResult> Register(RegisterUserRequest registration, HttpContext context)
     {
         if (!userManager.SupportsUserEmail)
             throw new NotSupportedException($"{nameof(Register)} requires a user store with email support.");
@@ -248,7 +250,7 @@ public class UsersService(
         var user = await userManager.FindByEmailAsync(email);
         if (user is null) return TypedResults.NotFound();
 
-        var response = new TwoFactorEnabledDto(user.TwoFactorEnabled);
+        var response = new TwoFactorEnabledResponse(user.TwoFactorEnabled);
         return TypedResults.Ok(response);
     }
 
@@ -302,7 +304,7 @@ public class UsersService(
         });
     }
 
-    public async Task<IResult> SigninVk(OauthCodeDto oauthCodeDto)
+    public async Task<IResult> SigninVk(OauthCodeRequest oauthCodeRequest)
     {
         var client = clientFactory.CreateClient();
         var url = new UriBuilder(configuration.GetConnectionString("VkAccessTokenUri")!);
@@ -310,8 +312,8 @@ public class UsersService(
         var vkConfig = configuration.GetSection("Authentication:VK");
         query.Add("client_id", vkConfig["ClientId"]!);
         query.Add("client_secret", vkConfig["ClientSecret"]!);
-        query.Add("redirect_uri", oauthCodeDto.RedirectUri);
-        query.Add("code", oauthCodeDto.Code);
+        query.Add("redirect_uri", oauthCodeRequest.RedirectUri);
+        query.Add("code", oauthCodeRequest.Code);
         url.Query = query.ToString();
         var response = await client.GetAsync(url.ToString());
         if (!response.IsSuccessStatusCode)

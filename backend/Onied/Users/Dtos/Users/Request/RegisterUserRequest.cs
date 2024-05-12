@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Users.Dtos;
+namespace Users.Dtos.Users.Request;
 
-public class RegisterUserDto
+public class RegisterUserRequest
 {
     [MaxLength(50)]
     public string FirstName { get; set; } = null!;

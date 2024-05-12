@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Users.Dtos.VkUserInfoResponseDtos;
+namespace Users.Dtos.VkOauth.Response;
 
 public class UserInfoResponse
 {

@@ -1,12 +1,13 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.Data;
-using Users.Dtos;
+using Users.Dtos.Users.Request;
+using Users.Dtos.VkOauth.Request;
 
 namespace Users.Services.UsersService;
 
 public interface IUsersService
 {
-    public Task<IResult> Register(RegisterUserDto registration, HttpContext context);
+    public Task<IResult> Register(RegisterUserRequest registration, HttpContext context);
 
     public Task<IResult> Login(LoginRequest login);
 
@@ -28,5 +29,5 @@ public interface IUsersService
 
     public Task<IResult> PostInfo(InfoRequest infoRequest, HttpContext context);
 
-    public Task<IResult> SigninVk(OauthCodeDto oauthCodeDto);
+    public Task<IResult> SigninVk(OauthCodeRequest oauthCodeRequest);
 }

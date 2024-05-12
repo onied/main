@@ -2,6 +2,8 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Users.Dtos;
+using Users.Dtos.Profile.Request;
+using Users.Dtos.Users.Response;
 using Users.Services.ProfileProducer;
 
 namespace Users.Services.ProfileService;
@@ -13,12 +15,12 @@ public class ProfileService(IProfileProducer profileProducer, UserManager<AppUse
         var user = await userManager.GetUserAsync(claimsPrincipal);
         if (user == null)
             return Results.Unauthorized();
-        var userProfile = mapper.Map<UserProfileDto>(user);
+        var userProfile = mapper.Map<UserProfileResponse>(user);
 
         return Results.Ok(userProfile);
     }
 
-    public async Task<IResult> EditProfile(ProfileChangedDto profileChanged, ClaimsPrincipal claimsPrincipal)
+    public async Task<IResult> EditProfile(ProfileChangedRequest profileChanged, ClaimsPrincipal claimsPrincipal)
     {
         var user = await userManager.GetUserAsync(claimsPrincipal);
         if (user == null)
@@ -32,7 +34,7 @@ public class ProfileService(IProfileProducer profileProducer, UserManager<AppUse
         return Results.Ok();
     }
 
-    public async Task<IResult> Avatar(AvatarChangedDto avatar, ClaimsPrincipal claimsPrincipal)
+    public async Task<IResult> Avatar(AvatarChangedRequest avatar, ClaimsPrincipal claimsPrincipal)
     {
         var user = await userManager.GetUserAsync(claimsPrincipal);
         if (user == null)

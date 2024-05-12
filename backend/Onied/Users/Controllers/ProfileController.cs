@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Users.Dtos;
+using Users.Dtos.Profile.Request;
 using Users.Services.ProfileService;
 
 namespace Users.Controllers;
@@ -15,13 +15,13 @@ public class ProfileController(IProfileService profileService) : ControllerBase
     }
 
     [HttpPut]
-    public Task<IResult> EditProfile([FromBody] ProfileChangedDto profileChanged)
+    public Task<IResult> EditProfile([FromBody] ProfileChangedRequest profileChanged)
     {
         return profileService.EditProfile(profileChanged, User);
     }
 
     [HttpPut("avatar")]
-    public Task<IResult> Avatar([FromBody] AvatarChangedDto avatar)
+    public Task<IResult> Avatar([FromBody] AvatarChangedRequest avatar)
     {
         return profileService.Avatar(avatar, User);
     }

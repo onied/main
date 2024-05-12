@@ -1,8 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+namespace Users.Dtos.Users.Response;
 
-namespace Users.Dtos;
-
-public class UserProfileDto
+public class UserProfileResponse
 {
     public string? FirstName { get; set; } = null!;
 

@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Users.Dtos;
+namespace Users.Dtos.Profile.Request;
 
-public class AvatarChangedDto
+public class AvatarChangedRequest
 {
     [Url]
     [MaxLength(2048)]

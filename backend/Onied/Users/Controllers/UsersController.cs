@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Users.Dtos;
+using Users.Dtos.Users.Request;
+using Users.Dtos.VkOauth.Request;
 using Users.Services.UsersService;
 
 namespace Users.Controllers;
@@ -10,7 +11,7 @@ namespace Users.Controllers;
 public class UsersController(IUsersService usersService) : ControllerBase
 {
     [HttpPost]
-    public Task<IResult> Register([FromBody] RegisterUserDto registration)
+    public Task<IResult> Register([FromBody] RegisterUserRequest registration)
     {
         return usersService.Register(registration, HttpContext);
     }
@@ -81,8 +82,8 @@ public class UsersController(IUsersService usersService) : ControllerBase
     }
 
     [HttpPost]
-    public Task<IResult> SigninVk([FromBody] OauthCodeDto oauthCodeDto)
+    public Task<IResult> SigninVk([FromBody] OauthCodeRequest oauthCodeRequest)
     {
-        return usersService.SigninVk(oauthCodeDto);
+        return usersService.SigninVk(oauthCodeRequest);
     }
 }
