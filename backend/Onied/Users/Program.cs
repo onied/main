@@ -43,7 +43,7 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-builder.Services.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
+builder.Services.AddScoped<IEmailSender<AppUser>, YandexEmailSender>();
 builder.Services.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
 builder.Services.AddScoped<IProfileProducer, ProfileProducer>();
 
