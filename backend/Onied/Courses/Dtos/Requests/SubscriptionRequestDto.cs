@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Purchases.Dtos;
+namespace Courses.Dtos;
 
-public class SubscriptionDto
+public class SubscriptionRequestDto
 {
     public int Id { get; set; }
 

@@ -14,10 +14,14 @@ namespace Purchases.Controllers;
 public class PurchasesMakingController(
     IMapper mapper,
     IPurchaseManagementService purchaseManagementService,
+    IUserRepository userRepository,
     ICourseRepository courseRepository,
+    ISubscriptionRepository subscriptionRepository,
     IPurchaseRepository purchaseRepository,
     IPurchaseTokenService tokenService,
-    IPurchaseCreatedProducer purchaseCreatedProducer) : ControllerBase
+    IPurchaseCreatedProducer purchaseCreatedProducer,
+    ISubscriptionChangedProducer subscriptionChangedProducer
+) : ControllerBase
 {
     [HttpGet("course")]
     public async Task<IResult> GetCoursePreparedPurchase([FromQuery] int courseId)
@@ -85,6 +89,49 @@ public class PurchasesMakingController(
         purchase.Token = tokenService.GetToken(purchase);
         await purchaseRepository.UpdateAsync(purchase);
         await purchaseCreatedProducer.PublishAsync(purchase);
+        return Results.Ok();
+    }
+
+    [HttpGet("subscription")]
+    public async Task<IResult> GetSubscriptionPreparedPurchase([FromQuery] int subscriptionId)
+    {
+        var subscription = await subscriptionRepository.GetAsync(subscriptionId);
+        if (subscription is null) return Results.NotFound();
+        if (subscription.Id == (int)SubscriptionType.Free) return Results.Forbid();
+
+        var purchaseInfo = new PreparedPurchaseResponseDto(
+            subscription.Title, 1000, PurchaseType.Subscription);
+        return Results.Ok(purchaseInfo);
+    }
+
+    [HttpPost("subscription")]
+    public async Task<IResult> MakeSubscriptionPurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
+    {
+        dto = dto with { UserId = userId };
+        var maybeError = await purchaseManagementService.ValidatePurchase(dto, PurchaseType.Subscription);
+        if (maybeError is not null) return maybeError;
+
+        var purchase = mapper.Map<Purchase>(dto);
+
+        var purchaseDetails = new SubscriptionPurchaseDetails
+        {
+            PurchaseType = PurchaseType.Subscription,
+            SubscriptionId = dto.SubscriptionId!.Value,
+            AutoRenewalEnabled = true
+        };
+
+        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+        purchase.Token = tokenService.GetToken(purchase);
+        await purchaseRepository.UpdateAsync(purchase);
+        await purchaseCreatedProducer.PublishAsync(purchase);
+
+        var user = (await userRepository.GetAsync(userId))!;
+        user!.SubscriptionId = dto.SubscriptionId!.Value;
+        await userRepository.UpdateAsync(user);
+
+        var subscription = (await subscriptionRepository
+            .GetAsync(dto.SubscriptionId.Value))!;
+        await subscriptionChangedProducer.PublishAsync(subscription, userId);
         return Results.Ok();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Models.PurchaseDetails;
+using Purchases.Dtos;
 using Purchases.Dtos.Responses;
 using Purchases.Services.Abstractions;
 
@@ -12,6 +13,15 @@ public class SubscriptionManagementService(
     IMapper mapper
     ) : ISubscriptionManagementService
 {
+    public async Task<IResult> GetActiveSubscription(Guid userId)
+    {
+        var user = await userRepository.GetAsync(userId, withSubscription: true);
+
+        return user is null
+            ? Results.NotFound()
+            : Results.Ok(mapper.Map<SubscriptionDto>(user.Subscription));
+    }
+
     public async Task<IResult> GetSubscriptionsByUser(Guid userId)
     {
         var user = await userRepository.GetAsync(userId, true, true);
