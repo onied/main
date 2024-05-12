@@ -17,10 +17,6 @@ import {
   useState,
 } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
-import {
-  tempPopularCourses,
-  tempRecommendedCourses,
-} from "../../components/landing/temporaryCoursesSource";
 import GeneralCourseCard from "../../components/catalog/courseCards/generalCourseCard";
 import CustomArrow from "../../components/landing/customArrow/customArrow";
 import { useProfile } from "../../hooks/profile/useProfile";
@@ -181,10 +177,23 @@ function Landing() {
   }, [profile]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setMostPopularCourses(tempPopularCourses);
-      setRecommendedCourses(tempRecommendedCourses);
-    }, 700);
+    api
+      .get("/landing/most-popular")
+      .then((response) => {
+        console.log(response);
+        setMostPopularCourses(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/landing/recommended")
+      .then((response) => {
+        console.log(response);
+        setRecommendedCourses(response.data);
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
