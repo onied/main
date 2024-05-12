@@ -167,7 +167,7 @@ public class CoursesController : ControllerBase
 
     [HttpPost]
     [Route("/api/v1/[controller]/create")]
-    public async Task<Results<Ok<CreateCourseResponseDto>, ValidationProblem, UnauthorizedHttpResult>> CreateCourse(
+    public async Task<Results<Ok<CreateCourseResponseDto>, ForbidHttpResult, UnauthorizedHttpResult>> CreateCourse(
         [FromQuery] string? userId)
     {
         if (userId == null || !Guid.TryParse(userId, out var authorId))
@@ -176,12 +176,9 @@ public class CoursesController : ControllerBase
         if (user == null)
             return TypedResults.Unauthorized();
 
-        if (await _subscriptionManagementService
+        if (!await _subscriptionManagementService
                 .VerifyCreatingCoursesAsync(Guid.Parse(userId)))
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                ["HasCertificates"] = ["You cannot create courses"]
-            });
+            return TypedResults.Forbid();
 
         var newCourse = await _courseRepository.AddCourseAsync(new Course
         {

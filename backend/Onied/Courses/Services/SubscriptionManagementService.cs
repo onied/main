@@ -49,19 +49,22 @@ public class SubscriptionManagementService(
         }
     }
 
-    private HttpClient SubscriptionsServerApiClient(Guid userId)
+    private HttpClient SubscriptionsServerApiClient()
         => httpClientFactory.CreateClient(
-            ServerApiConfig.SubscriptionsServer.GetStringValue()!
-            + $"?userId={userId}");
+            ServerApiConfig.SubscriptionsServer.GetStringValue()!);
 
     private async Task<SubscriptionRequestDto?> GetSubscriptionAsync(Guid userId)
     {
-        using var client = SubscriptionsServerApiClient(userId);
-        var response = await client.GetAsync(string.Empty);
+        using var client = SubscriptionsServerApiClient();
+        var response = await client.GetAsync($"?userId={userId}");
 
         if (response.StatusCode is not HttpStatusCode.OK) return null;
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
         return await JsonSerializer
             .DeserializeAsync<SubscriptionRequestDto>(
-                await response.Content.ReadAsStreamAsync());
+                await response.Content.ReadAsStreamAsync(), options);
     }
 }

@@ -93,7 +93,7 @@ public class PurchaseMakingService(
         if (subscription.Id == (int)SubscriptionType.Free) return Results.Forbid();
 
         var purchaseInfo = new PreparedPurchaseResponseDto(
-            subscription.Title, 1000, PurchaseType.Subscription);
+            subscription.Title, subscription.Price, PurchaseType.Subscription);
         return Results.Ok(purchaseInfo);
     }
 

@@ -51,10 +51,7 @@ public class EditCoursesController(
         if (editCourseDto.HasCertificates &&
             !await subscriptionManagementService
                 .VerifyGivingCertificatesAsync(Guid.Parse(userId)))
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                [nameof(editCourseDto.CategoryId)] = ["You cannot create courses with certificates"]
-            });
+            return TypedResults.Forbid();
 
         mapper.Map(editCourseDto, course);
         course.Category = category;

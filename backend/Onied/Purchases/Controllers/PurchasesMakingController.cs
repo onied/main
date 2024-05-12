@@ -11,7 +11,7 @@ public class PurchasesMakingController(
 {
     [HttpGet("course")]
     public async Task<IResult> GetCoursePreparedPurchase([FromQuery] int courseId)
-        => await purchaseMakingService.GetCertificatePreparedPurchase(courseId);
+        => await purchaseMakingService.GetCoursePreparedPurchase(courseId);
 
     [HttpPost("course")]
     public async Task<IResult> MakeCoursePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
@@ -23,13 +23,13 @@ public class PurchasesMakingController(
 
     [HttpPost("certificate")]
     public async Task<IResult> MakeCertificatePurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
-        => await purchaseMakingService.MakeCoursePurchase(dto, userId);
+        => await purchaseMakingService.MakeCertificatePurchase(dto, userId);
 
     [HttpGet("subscription")]
     public async Task<IResult> GetSubscriptionPreparedPurchase([FromQuery] int subscriptionId)
-        => await purchaseMakingService.GetCertificatePreparedPurchase(subscriptionId);
+        => await purchaseMakingService.GetSubscriptionPreparedPurchase(subscriptionId);
 
     [HttpPost("subscription")]
     public async Task<IResult> MakeSubscriptionPurchase([FromBody] PurchaseRequestDto dto, [FromQuery] Guid userId)
-        => await purchaseMakingService.MakeCoursePurchase(dto, userId);
+        => await purchaseMakingService.MakeSubscriptionPurchase(dto, userId);
 }
