@@ -7,7 +7,9 @@ using Users;
 using Users.Profiles;
 using Users.Services.EmailSender;
 using Users.Services.ProfileProducer;
+using Users.Services.ProfileService;
 using Users.Services.UserCreatedProducer;
+using Users.Services.UsersService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json");
@@ -22,6 +24,9 @@ builder.Services.AddAuthorization();
 builder.Services.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 builder.Services.AddCors();
+
+builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
