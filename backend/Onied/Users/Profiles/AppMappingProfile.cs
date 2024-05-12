@@ -1,5 +1,6 @@
 using AutoMapper;
 using MassTransit.Data.Messages;
+using Users.Data;
 using Users.Dtos;
 using Users.Dtos.Users.Response;
 

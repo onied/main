@@ -1,6 +1,7 @@
 using System.Web;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Users.Data;
 
 namespace Users.Services.EmailSender;
 

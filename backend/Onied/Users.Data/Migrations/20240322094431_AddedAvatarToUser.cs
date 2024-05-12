@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Users.Migrations
+namespace Users.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddedAvatarToUser : Migration

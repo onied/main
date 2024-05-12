@@ -1,5 +1,5 @@
 namespace Users.Dtos.Users.Response;
-
+using Users.Data;
 public class UserProfileResponse
 {
     public string? FirstName { get; set; } = null!;
