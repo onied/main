@@ -1,18 +1,17 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Web;
 using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Users.Dtos;
 using Users.Dtos.VkUserInfoResponseDtos;
+using Users.Factories;
 using Users.Services.UserCreatedProducer;
 
 namespace Users.Services.UsersService;
@@ -40,7 +39,8 @@ public class UsersService(
         var email = registration.Email;
 
         if (string.IsNullOrEmpty(email) || !EmailAddressAttribute.IsValid(email))
-            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
+            return ValidationProblemFactory.CreateValidationProblem(
+                IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
 
         var user = new AppUser();
         await userStore.SetUserNameAsync(user, email, CancellationToken.None);
@@ -50,18 +50,18 @@ public class UsersService(
         user.LastName = registration.LastName;
         var result = await userManager.CreateAsync(user, registration.Password);
 
-        if (!result.Succeeded) return CreateValidationProblem(result);
+        if (!result.Succeeded) return ValidationProblemFactory.CreateValidationProblem(result);
         await userManager.AddToRoleAsync(user, "Student");
 
         await userCreatedProducer.PublishAsync(user);
-        await SendConfirmationEmailAsync(user, userManager, context, email);
+        await SendConfirmationEmailAsync(user, context, email);
         return TypedResults.Ok();
     }
 
     public async Task<IResult> Login(LoginRequest login)
     {
-        var useCookieScheme = false;
-        var isPersistent = false;
+        const bool useCookieScheme = false;
+        const bool isPersistent = false;
         signInManager.AuthenticationScheme =
             useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
 
@@ -139,7 +139,7 @@ public class UsersService(
     {
         if (await userManager.FindByEmailAsync(resendRequest.Email) is not { } user) return TypedResults.Ok();
 
-        await SendConfirmationEmailAsync(user, userManager, context, resendRequest.Email);
+        await SendConfirmationEmailAsync(user, context, resendRequest.Email);
         return TypedResults.Ok();
     }
 
@@ -167,7 +167,8 @@ public class UsersService(
         if (user is null || !await userManager.IsEmailConfirmedAsync(user))
             // Don't reveal that the user does not exist or is not confirmed, so don't return a 200 if we would have
             // returned a 400 for an invalid code given a valid user email.
-            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidToken()));
+            return ValidationProblemFactory.CreateValidationProblem(
+                IdentityResult.Failed(userManager.ErrorDescriber.InvalidToken()));
 
         IdentityResult result;
         try
@@ -180,7 +181,7 @@ public class UsersService(
             result = IdentityResult.Failed(userManager.ErrorDescriber.InvalidToken());
         }
 
-        if (!result.Succeeded) return CreateValidationProblem(result);
+        if (!result.Succeeded) return ValidationProblemFactory.CreateValidationProblem(result);
 
         return TypedResults.Ok();
     }
@@ -193,14 +194,14 @@ public class UsersService(
         if (tfaRequest.Enable == true)
         {
             if (tfaRequest.ResetSharedKey)
-                return CreateValidationProblem("CannotResetSharedKeyAndEnable",
+                return ValidationProblemFactory.CreateValidationProblem("CannotResetSharedKeyAndEnable",
                     "Resetting the 2fa shared key must disable 2fa until a 2fa token based on the new shared key is validated.");
             if (string.IsNullOrEmpty(tfaRequest.TwoFactorCode))
-                return CreateValidationProblem("RequiresTwoFactor",
+                return ValidationProblemFactory.CreateValidationProblem("RequiresTwoFactor",
                     "No 2fa token was provided by the request. A valid 2fa token is required to enable 2fa.");
             if (!await userManager.VerifyTwoFactorTokenAsync(user,
                     userManager.Options.Tokens.AuthenticatorTokenProvider, tfaRequest.TwoFactorCode))
-                return CreateValidationProblem("InvalidTwoFactorCode",
+                return ValidationProblemFactory.CreateValidationProblem("InvalidTwoFactorCode",
                     "The 2fa token provided by the request was invalid. A valid 2fa token is required to enable 2fa.");
 
             await userManager.SetTwoFactorEnabledAsync(user, true);
@@ -256,7 +257,12 @@ public class UsersService(
         if (await userManager.GetUserAsync(claimsPrincipal) is not { } user)
             return TypedResults.NotFound();
 
-        return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
+        return TypedResults.Ok(new InfoResponse
+        {
+            Email = await userManager.GetEmailAsync(user) ??
+                    throw new NotSupportedException("Users must have an email."),
+            IsEmailConfirmed = await userManager.IsEmailConfirmedAsync(user)
+        });
     }
 
     public async Task<IResult> PostInfo(InfoRequest infoRequest, HttpContext context)
@@ -265,18 +271,19 @@ public class UsersService(
             return TypedResults.NotFound();
 
         if (!string.IsNullOrEmpty(infoRequest.NewEmail) && !EmailAddressAttribute.IsValid(infoRequest.NewEmail))
-            return CreateValidationProblem(
+            return ValidationProblemFactory.CreateValidationProblem(
                 IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(infoRequest.NewEmail)));
 
         if (!string.IsNullOrEmpty(infoRequest.NewPassword))
         {
             if (string.IsNullOrEmpty(infoRequest.OldPassword))
-                return CreateValidationProblem("OldPasswordRequired",
+                return ValidationProblemFactory.CreateValidationProblem("OldPasswordRequired",
                     "The old password is required to set a new password. If the old password is forgotten, use /resetPassword.");
 
             var changePasswordResult =
                 await userManager.ChangePasswordAsync(user, infoRequest.OldPassword, infoRequest.NewPassword);
-            if (!changePasswordResult.Succeeded) return CreateValidationProblem(changePasswordResult);
+            if (!changePasswordResult.Succeeded)
+                return ValidationProblemFactory.CreateValidationProblem(changePasswordResult);
         }
 
         if (!string.IsNullOrEmpty(infoRequest.NewEmail))
@@ -284,83 +291,15 @@ public class UsersService(
             var email = await userManager.GetEmailAsync(user);
 
             if (email != infoRequest.NewEmail)
-                await SendConfirmationEmailAsync(user, userManager, context, infoRequest.NewEmail, true);
+                await SendConfirmationEmailAsync(user, context, infoRequest.NewEmail, true);
         }
 
-        return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
-    }
-
-    private async Task SendConfirmationEmailAsync(AppUser user, UserManager<AppUser> userManager, HttpContext context,
-        string email, bool isChange = false)
-    {
-        var code = isChange
-            ? await userManager.GenerateChangeEmailTokenAsync(user, email)
-            : await userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-        var userId = await userManager.GetUserIdAsync(user);
-        var routeValues = new RouteValueDictionary
-        {
-            ["userId"] = userId,
-            ["code"] = code
-        };
-
-        if (isChange)
-            // This is validated by the /confirmEmail endpoint on change.
-            routeValues.Add("changedEmail", email);
-
-        var confirmEmailUrl = linkGenerator.GetUriByAction(context, nameof(ConfirmEmail), "Users", routeValues)
-                              ?? throw new NotSupportedException(
-                                  $"Could not find endpoint named '{nameof(ConfirmEmail)}'.");
-
-        await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
-    }
-
-    private static ValidationProblem CreateValidationProblem(string errorCode, string errorDescription)
-    {
-        return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-        {
-            { errorCode, [errorDescription] }
-        });
-    }
-
-    private static ValidationProblem CreateValidationProblem(IdentityResult result)
-    {
-        // We expect a single error code and description in the normal case.
-        // This could be golfed with GroupBy and ToDictionary, but perf! :P
-        Debug.Assert(!result.Succeeded);
-        var errorDictionary = new Dictionary<string, string[]>(1);
-
-        foreach (var error in result.Errors)
-        {
-            string[] newDescriptions;
-
-            if (errorDictionary.TryGetValue(error.Code, out var descriptions))
-            {
-                newDescriptions = new string[descriptions.Length + 1];
-                Array.Copy(descriptions, newDescriptions, descriptions.Length);
-                newDescriptions[descriptions.Length] = error.Description;
-            }
-            else
-            {
-                newDescriptions = [error.Description];
-            }
-
-            errorDictionary[error.Code] = newDescriptions;
-        }
-
-        return TypedResults.ValidationProblem(errorDictionary);
-    }
-
-    private static async Task<InfoResponse> CreateInfoResponseAsync<TUser>(TUser user, UserManager<TUser> userManager)
-        where TUser : class
-    {
-        return new InfoResponse
+        return TypedResults.Ok(new InfoResponse
         {
             Email = await userManager.GetEmailAsync(user) ??
                     throw new NotSupportedException("Users must have an email."),
             IsEmailConfirmed = await userManager.IsEmailConfirmedAsync(user)
-        };
+        });
     }
 
     public async Task<IResult> SigninVk(OauthCodeDto oauthCodeDto)
@@ -422,5 +361,31 @@ public class UsersService(
         await signInManager.SignInAsync(user, false);
         await userCreatedProducer.PublishAsync(user);
         return Results.Empty;
+    }
+
+    private async Task SendConfirmationEmailAsync(AppUser user, HttpContext context, string email,
+        bool isChange = false)
+    {
+        var code = isChange
+            ? await userManager.GenerateChangeEmailTokenAsync(user, email)
+            : await userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        var userId = await userManager.GetUserIdAsync(user);
+        var routeValues = new RouteValueDictionary
+        {
+            ["userId"] = userId,
+            ["code"] = code
+        };
+
+        if (isChange)
+            // This is validated by the /confirmEmail endpoint on change.
+            routeValues.Add("changedEmail", email);
+
+        var confirmEmailUrl = linkGenerator.GetUriByAction(context, nameof(ConfirmEmail), "Users", routeValues)
+                              ?? throw new NotSupportedException(
+                                  $"Could not find endpoint named '{nameof(ConfirmEmail)}'.");
+
+        await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
     }
 }
