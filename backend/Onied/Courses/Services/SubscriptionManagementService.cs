@@ -4,13 +4,15 @@ using Courses.Dtos;
 using Courses.Enums;
 using Courses.Extensions;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseUpdatedProducer;
 
 namespace Courses.Services;
 
 public class SubscriptionManagementService(
     IHttpClientFactory httpClientFactory,
     IUserRepository userRepository,
-    ICourseRepository courseRepository
+    ICourseRepository courseRepository,
+    ICourseUpdatedProducer courseUpdatedProducer
 ) : ISubscriptionManagementService
 {
     public async Task<bool> VerifyGivingCertificatesAsync(Guid userId)
@@ -34,6 +36,7 @@ public class SubscriptionManagementService(
         {
             course.HasCertificates = status;
             await courseRepository.UpdateCourseAsync(course);
+            await courseUpdatedProducer.PublishAsync(course);
         }
     }
 

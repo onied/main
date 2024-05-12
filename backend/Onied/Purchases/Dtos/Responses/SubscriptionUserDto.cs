@@ -11,6 +11,7 @@ public class SubscriptionUserDto
     public bool AdsEnabled { get; set; }
     public bool CertificatesEnabled { get; set; }
 
+    public bool CourseCreatingEnabled { get; set; }
     public int ActiveCoursesNumber { get; set; }
 
     public decimal Price { get; set; }

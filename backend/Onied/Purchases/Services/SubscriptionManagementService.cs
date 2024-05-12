@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Purchases.Data.Abstractions;
+using Purchases.Data.Enums;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos;
 using Purchases.Dtos.Responses;
@@ -17,9 +18,9 @@ public class SubscriptionManagementService(
     {
         var user = await userRepository.GetAsync(userId, withSubscription: true);
 
-        return user is null
+        return user is null || user.Subscription.Id == (int)SubscriptionType.Free
             ? Results.NotFound()
-            : Results.Ok(mapper.Map<SubscriptionDto>(user.Subscription));
+            : Results.Ok(mapper.Map<SubscriptionUserDto>(user.Subscription));
     }
 
     public async Task<IResult> GetSubscriptionsByUser(Guid userId)

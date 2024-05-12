@@ -109,6 +109,8 @@ public class PurchaseMakingService(
         {
             PurchaseType = PurchaseType.Subscription,
             SubscriptionId = dto.SubscriptionId!.Value,
+            StartDate = DateTime.Now.ToUniversalTime(),
+            EndDate = DateTime.Now.AddMonths(1).ToUniversalTime(),
             AutoRenewalEnabled = true
         };
 
