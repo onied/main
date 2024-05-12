@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Users;
@@ -11,9 +12,11 @@ using Users;
 namespace Users.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240511183339_AddedRoleAndDefaultAdminUser")]
+    partial class AddedRoleAndDefaultAdminUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,13 +62,6 @@ namespace Users.Migrations
                             ConcurrencyStamp = "eb9e8982-218e-47f8-8d4f-75055b023f98",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "81ad64cf-b580-4b51-aa34-4e74dbd44c4b",
-                            ConcurrencyStamp = "d27d2713-cc11-4f31-91ef-8dd2dfa3a303",
-                            Name = "Student",
-                            NormalizedName = "STUDENT"
                         });
                 });
 
@@ -176,6 +172,13 @@ namespace Users.Migrations
                         .HasDatabaseName("ix_asp_net_user_roles_role_id");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "a544f3f9-3c5f-4eda-9166-082210d50588",
+                            RoleId = "b7e95e9c-19fb-4b3d-81a4-ccb77379f4c6"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -299,6 +302,26 @@ namespace Users.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a544f3f9-3c5f-4eda-9166-082210d50588",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b39ac881-780e-40f0-a560-97c9c8018e96",
+                            Email = "admin@onied.com",
+                            EmailConfirmed = true,
+                            FirstName = "Admin",
+                            LastName = "Admin",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ONIED.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB1qk8whYR9UirUH76sySwGuYSHw4eNSzn8DxjoMy8uw/Vb6bti2B33s582ewoF+zg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "FRIXFW6KU665IZU6CDPKR4I7GWKAQPZ4",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

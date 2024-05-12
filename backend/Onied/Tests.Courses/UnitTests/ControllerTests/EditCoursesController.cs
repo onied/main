@@ -6,7 +6,6 @@ using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseCreatedProducer;
 using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -56,7 +55,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.EditCourse(courseId, userId, editCourseDto);
+        var result = await _controller.EditCourse(courseId, userId, null, editCourseDto);
 
         // Assert
         Assert.IsType<NotFound>(result.Result);
@@ -76,7 +75,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.EditCourse(courseId, userId, editCourseDto);
+        var result = await _controller.EditCourse(courseId, userId, null, editCourseDto);
 
         // Assert
         Assert.IsType<UnauthorizedHttpResult>(result.Result);
@@ -99,7 +98,7 @@ public class EditCoursesControllerTests
         editCourseDto.CategoryId = 0;
 
         // Act
-        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), null, editCourseDto);
 
         // Assert
         Assert.IsType<ValidationProblem>(result.Result);
@@ -125,7 +124,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Category?>(category));
 
         // Act
-        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), null, editCourseDto);
 
         // Assert
         Assert.IsType<Ok<PreviewDto>>(result.Result);
@@ -165,7 +164,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Category?>(category));
 
         // Act
-        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), null, editCourseDto);
 
         // Assert
         Assert.IsType<Ok<PreviewDto>>(result.Result);

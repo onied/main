@@ -49,7 +49,7 @@ public class CheckTasksControllerTests
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -83,7 +83,7 @@ public class CheckTasksControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -124,7 +124,7 @@ public class CheckTasksControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
@@ -181,7 +181,7 @@ public class CheckTasksControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid());
+        var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);
@@ -208,7 +208,7 @@ public class CheckTasksControllerTests
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
-        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, new List<UserInputDto>());
+        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, null, new List<UserInputDto>());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -243,7 +243,7 @@ public class CheckTasksControllerTests
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
-        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, new List<UserInputDto>());
+        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, null, new List<UserInputDto>());
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -283,7 +283,7 @@ public class CheckTasksControllerTests
             .ToList();
 
         // Act
-        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, inputsDto);
+        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
 
         // Assert
         Assert.IsType<BadRequestResult>(result.Result);
@@ -323,7 +323,7 @@ public class CheckTasksControllerTests
             .ToList();
 
         // Act
-        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, inputsDto);
+        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
 
         // Assert
         Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -371,7 +371,7 @@ public class CheckTasksControllerTests
             .ToList();
 
         // Act
-        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, inputsDto);
+        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -425,7 +425,7 @@ public class CheckTasksControllerTests
             });
 
         // Act
-        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, inputsDto);
+        var result = await _controller.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<List<UserTaskPointsDto>>>(result);

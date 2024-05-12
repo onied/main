@@ -25,4 +25,8 @@
       <ProjectReference Include="..\MassTransit.Data\MassTransit.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="ClaimsIdentityFactories\" />
+    </ItemGroup>
+
 </Project>

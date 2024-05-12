@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Courses.Dtos;
 using AutoMapper;
+using Courses.Dtos;
 using Courses.Dtos.ModeratorDtos.Response;
 using Courses.Enums;
 using Courses.Extensions;
@@ -21,18 +21,21 @@ public class CourseManagementService(
     public HttpClient PurchasesServerApiClient
         => httpClientFactory.CreateClient(ServerApiConfig.PurchasesServer.GetStringValue()!);
 
-    public async Task<Results<Ok<Course>, NotFound, ForbidHttpResult>> CheckCourseAuthorAsync(int courseId, string? userId)
+    public async Task<Results<Ok<Course>, NotFound, ForbidHttpResult>> CheckCourseAuthorAsync(int courseId,
+        string? userId, string? role)
     {
         var course = await courseRepository.GetCourseAsync(courseId);
         if (course == null)
             return TypedResults.NotFound();
-        if (userId == null || course.Author?.Id.ToString() != userId)
+        if (role != "Admin" && (userId == null || course.Author?.Id.ToString() != userId))
             return TypedResults.Forbid();
         return TypedResults.Ok(course);
     }
 
-    public async Task<bool> AllowVisitCourse(Guid userId, int courseId)
+    public async Task<bool> AllowVisitCourse(Guid userId, int courseId, string? role = null)
     {
+        if (role == "Admin")
+            return true;
         var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
         if (userCourseInfo is null) return false;
         if (userCourseInfo.Course.PriceRubles == 0) return true;

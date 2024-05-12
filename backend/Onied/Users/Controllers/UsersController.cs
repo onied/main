@@ -61,6 +61,7 @@ public class UsersController : ControllerBase
         var result = await userManager.CreateAsync(user, registration.Password);
 
         if (!result.Succeeded) return CreateValidationProblem(result);
+        await userManager.AddToRoleAsync(user, "Student");
 
         await _userCreatedProducer.PublishAsync(user);
         await SendConfirmationEmailAsync(user, userManager, HttpContext, email);
