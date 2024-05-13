@@ -15,7 +15,10 @@ public class SubscriptionRepository(AppDbContext dbContext) : ISubscriptionRepos
     }
 
     public async Task<List<Subscription>> GetAllSubscriptions()
-        => await dbContext.Subscriptions.AsNoTracking().ToListAsync();
+        => await dbContext.Subscriptions
+            .AsNoTracking()
+            .OrderBy(subscription => subscription.Id)
+            .ToListAsync();
     
     public async Task AddAsync(Subscription subscription)
     {

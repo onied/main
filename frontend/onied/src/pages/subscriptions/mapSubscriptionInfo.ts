@@ -12,9 +12,11 @@ export function mapSubscriptionInfo(subscriptions: Array<SubscriptionInfoDto>) {
       durationPolicy: "на одного пользователя в месяц",
       isHighlighted: sub.coursesHighlightingEnabled,
       features: [
-        sub.activeCoursesNumber >= 0
+        sub.activeCoursesNumber > 0
           ? `${sub.activeCoursesNumber} активных платных курса`
-          : "Неограниченные платные курсы",
+          : sub.activeCoursesNumber == 0
+            ? ""
+            : "Неограниченные платные курсы",
         sub.adsEnabled ? "Реклама в рассылке" : "",
         sub.adsEnabled ? "Показ на главной странице" : "",
         sub.certificatesEnabled ? "Выдача сертифкатов" : "",
