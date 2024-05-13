@@ -19,6 +19,7 @@ public class EditCoursesController(
     ICategoryRepository categoryRepository,
     IModuleRepository moduleRepository,
     IUpdateTasksBlockService updateTasksBlockService,
+    ISubscriptionManagementService subscriptionManagementService,
     ICourseUpdatedProducer courseUpdatedProducer)
 {
     [HttpPut]
@@ -28,9 +29,9 @@ public class EditCoursesController(
     {
         if (userId is null)
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-                {
-                    { "userId", ["userId queue parameter cannot be null"] }
-                });
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
         if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
             return TypedResults.Forbid();
 
@@ -45,6 +46,13 @@ public class EditCoursesController(
             {
                 [nameof(editCourseDto.CategoryId)] = ["This category does not exist."]
             });
+
+
+        if (editCourseDto.HasCertificates &&
+            !await subscriptionManagementService
+                .VerifyGivingCertificatesAsync(Guid.Parse(userId)))
+            return TypedResults.Forbid();
+
         mapper.Map(editCourseDto, course);
         course.Category = category;
         course.CategoryId = category.Id;
@@ -156,8 +164,6 @@ public class EditCoursesController(
 
         return TypedResults.Ok();
     }
-
-
 
     [HttpPost]
     [Route("add-block/{moduleId:int}")]

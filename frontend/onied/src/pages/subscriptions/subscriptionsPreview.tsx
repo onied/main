@@ -18,14 +18,14 @@ function SubscriptionsPreview() {
   useEffect(() => {
     setTimeout(() => {
       setDefaultSubscriptionInfo({
-        subscriptionId: 1,
+        subscriptionId: 2,
         subscriptionType: SubscriptionType.Default,
         price: 2000,
         durationPolicy: "на одного пользователя в месяц",
         features: ["3 активных платных курса"],
       });
       setFullSubscriptionInfo({
-        subscriptionId: 2,
+        subscriptionId: 3,
         subscriptionType: SubscriptionType.Full,
         price: 10000,
         durationPolicy: "на одного пользователя в месяц",
@@ -40,9 +40,9 @@ function SubscriptionsPreview() {
       setElaborateFeatureDescriptions([
         {
           featureDescription: "Количество активных платных курсов",
-          free: "1",
+          free: false,
           default: "3",
-          full: "3",
+          full: "∞",
         },
         {
           featureDescription: "Автоматическая проверка тестовых заданий",

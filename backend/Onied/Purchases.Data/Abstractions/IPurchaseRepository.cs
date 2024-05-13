@@ -11,6 +11,7 @@ public interface IPurchaseRepository
     public Task RemoveAsync(Purchase purchase);
 
     public Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal);
+    public Task<bool> AddDaysToSubscriptionEndDate(Guid userId, int subscriptionId, TimeSpan addDays);
 
     public Task UpdateSubscriptionWithAutoRenewal();
 }

@@ -9,11 +9,11 @@ using Purchases.Data;
 
 #nullable disable
 
-namespace Purchases.Migrations
+namespace Purchases.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240415082438_addedTitleForSubscription")]
-    partial class addedTitleForSubscription
+    [Migration("20240415192242_AddData")]
+    partial class AddData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,16 @@ namespace Purchases.Migrations
                         .HasDatabaseName("ix_courses_author_id");
 
                     b.ToTable("courses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
+                            HasCertificates = true,
+                            Price = 0m,
+                            Title = "Название курса. Как я встретил вашу маму. Осуждаю."
+                        });
                 });
 
             modelBuilder.Entity("Purchases.Data.Models.Purchase", b =>
@@ -145,6 +155,38 @@ namespace Purchases.Migrations
                         .HasName("pk_subscriptions");
 
                     b.ToTable("subscriptions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActiveCoursesNumber = 0,
+                            AdsEnabled = false,
+                            CertificatesEnabled = false,
+                            CoursesHighlightingEnabled = false,
+                            Price = 0m,
+                            Title = "Микрочелик"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActiveCoursesNumber = 3,
+                            AdsEnabled = false,
+                            CertificatesEnabled = false,
+                            CoursesHighlightingEnabled = false,
+                            Price = 2000m,
+                            Title = "Я карлик"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActiveCoursesNumber = -1,
+                            AdsEnabled = true,
+                            CertificatesEnabled = true,
+                            CoursesHighlightingEnabled = true,
+                            Price = 10000m,
+                            Title = "Король инфоцыган"
+                        });
                 });
 
             modelBuilder.Entity("Purchases.Data.Models.User", b =>
@@ -165,6 +207,13 @@ namespace Purchases.Migrations
                         .HasDatabaseName("ix_users_subscription_id");
 
                     b.ToTable("users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
+                            SubscriptionId = 1
+                        });
                 });
 
             modelBuilder.Entity("Purchases.Data.Models.PurchaseDetails.CertificatePurchaseDetails", b =>
