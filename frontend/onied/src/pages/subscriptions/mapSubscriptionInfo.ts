@@ -12,11 +12,7 @@ export function mapSubscriptionInfo(subscriptions: Array<SubscriptionInfoDto>) {
       durationPolicy: "на одного пользователя в месяц",
       isHighlighted: sub.coursesHighlightingEnabled,
       features: [
-        sub.activeCoursesNumber > 0
-          ? `${sub.activeCoursesNumber} активных платных курса`
-          : sub.activeCoursesNumber == 0
-            ? ""
-            : "Неограниченные платные курсы",
+        sub.courseCreatingEnabled ? "Создание курсов" : "",
         sub.adsEnabled ? "Реклама в рассылке" : "",
         sub.adsEnabled ? "Показ на главной странице" : "",
         sub.certificatesEnabled ? "Выдача сертифкатов" : "",
@@ -30,18 +26,19 @@ export function mapSubscriptionFeaturesInfo(
   subscriptions: Array<SubscriptionInfoDto>
 ) {
   let featuresInfo: Array<SubscriptionFeatureInfo> = [];
-  featuresInfo.push({
-    featureDescription: "Количество активных платных курсов",
-    free: subscriptions[0].activeCoursesNumber.toString(),
-    default: subscriptions[1].activeCoursesNumber.toString(),
-    full: subscriptions[2].activeCoursesNumber.toString(),
-  });
 
   featuresInfo.push({
     featureDescription: "Автоматическая проверка тестовых заданий",
     free: subscriptions[0].autoTestsReview,
     default: subscriptions[1].autoTestsReview,
     full: subscriptions[2].autoTestsReview,
+  });
+
+  featuresInfo.push({
+    featureDescription: "Создание курсов",
+    free: subscriptions[0].courseCreatingEnabled,
+    default: subscriptions[1].courseCreatingEnabled,
+    full: subscriptions[2].courseCreatingEnabled,
   });
 
   featuresInfo.push({
@@ -95,7 +92,7 @@ export type SubscriptionInfoDto = {
   id: number;
   price: number;
   title: string;
-  activeCoursesNumber: number;
+  courseCreatingEnabled: boolean;
   adsEnabled: boolean;
   certificatesEnabled: boolean;
   coursesHighlightingEnabled: boolean;
