@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Purchases.Data.Abstractions;
+using Purchases.Data.Enums;
 using Purchases.Data.Models;
 using Purchases.Data.Models.PurchaseDetails;
 
@@ -45,22 +46,17 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
     public async Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal)
     {
         var purchaseSubscription = await dbContext.Purchases
-            .Where(p => p.Id == subscriptionId)
+            .Where(p => p.UserId == userId && p.PurchaseDetails.PurchaseType == PurchaseType.Subscription &&
+                        (p.PurchaseDetails as SubscriptionPurchaseDetails)!.Subscription.Id == subscriptionId)
             .Include(purchase => purchase.PurchaseDetails)
-            .FirstOrDefaultAsync(p => p.Id == subscriptionId);
+            .FirstOrDefaultAsync();
 
-        if (purchaseSubscription != null
-            && purchaseSubscription.PurchaseDetails.GetType() == typeof(SubscriptionPurchaseDetails)
-            && purchaseSubscription.UserId == userId)
-        {
-            var subscriptionDetails = (SubscriptionPurchaseDetails)purchaseSubscription.PurchaseDetails;
-            subscriptionDetails.AutoRenewalEnabled = autoRenewal;
-            await dbContext.SaveChangesAsync();
+        if (purchaseSubscription is not { PurchaseDetails: SubscriptionPurchaseDetails subscriptionDetails }
+            || purchaseSubscription.UserId != userId) return false;
 
-            return true;
-        }
-
-        return false;
+        subscriptionDetails.AutoRenewalEnabled = autoRenewal;
+        await dbContext.SaveChangesAsync();
+        return true;
     }
 
     public async Task UpdateSubscriptionWithAutoRenewal()
