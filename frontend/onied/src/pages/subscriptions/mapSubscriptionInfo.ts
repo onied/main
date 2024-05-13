@@ -45,10 +45,19 @@ export function mapSubscriptionFeaturesInfo(
   });
 
   featuresInfo.push({
-    featureDescription: "Неограниченное число учащихся",
-    free: subscriptions[0].studentsOnCourseLimit == -1,
-    default: subscriptions[1].studentsOnCourseLimit == -1,
-    full: subscriptions[2].studentsOnCourseLimit == -1,
+    featureDescription: "Число учащихся на каждом курсе",
+    free:
+      subscriptions[0].studentsOnCourseLimit > -1
+        ? `до ${subscriptions[0].studentsOnCourseLimit}`
+        : "неограничено",
+    default:
+      subscriptions[1].studentsOnCourseLimit > -1
+        ? `до ${subscriptions[1].studentsOnCourseLimit}`
+        : "неограничено",
+    full:
+      subscriptions[2].studentsOnCourseLimit > -1
+        ? `до ${subscriptions[2].studentsOnCourseLimit}`
+        : "неограничено",
   });
 
   featuresInfo.push({
