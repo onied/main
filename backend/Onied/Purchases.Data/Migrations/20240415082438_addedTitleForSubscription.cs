@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Purchases.Migrations
+namespace Purchases.Data.Migrations
 {
     /// <inheritdoc />
     public partial class addedTitleForSubscription : Migration
