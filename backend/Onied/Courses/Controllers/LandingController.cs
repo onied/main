@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Courses.Dtos;
+﻿using Courses.Dtos;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Courses.Controllers;
 
 [Route("api/v1/[controller]")]
-public class LandingController(
-    ILandingPageContentService landingPageContentService,
-    IMapper mapper) : ControllerBase
+public class LandingController(ILandingPageContentService landingPageContentService) : ControllerBase
 {
     [HttpGet]
     [Route("most-popular")]
