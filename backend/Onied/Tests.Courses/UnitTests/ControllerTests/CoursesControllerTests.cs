@@ -26,6 +26,7 @@ public class CoursesControllerTests
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
     private readonly Mock<CourseCreatedProducer> _courseCreatedProducer = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
+    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly CoursesController _controller;
     private readonly Fixture _fixture = new();
 
@@ -41,7 +42,8 @@ public class CoursesControllerTests
             _userCourseInfoRepository.Object,
             _blockCompletedInfoRepository.Object,
             _courseCreatedProducer.Object,
-            _courseManagementService.Object);
+            _courseManagementService.Object,
+            _subscriptionManagementService.Object);
     }
 
     [Fact]

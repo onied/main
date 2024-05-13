@@ -38,11 +38,16 @@
     border-radius: 20px
 }
 
+.featureDescriptionsTitle{
+    font-size: 1.3rem;
+}
+
+
 .freeSubscriptionTitle,
-.featureDescriptionsTitle,
 .defaultSubscriptionTitle,
 .fullSubscriptionTitle{
     font-size: 1.3rem;
+    text-align: center;
 }
 
 

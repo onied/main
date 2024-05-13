@@ -2,25 +2,22 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Purchases.Data;
 
 #nullable disable
 
-namespace Purchases.Migrations
+namespace Purchases.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240418080735_addedMtM")]
-    partial class addedMtM
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -107,6 +104,10 @@ namespace Purchases.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("purchase_date");
+
                     b.Property<int>("PurchaseType")
                         .HasColumnType("integer")
                         .HasColumnName("purchase_type");
@@ -138,6 +139,10 @@ namespace Purchases.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("ads_enabled");
 
+                    b.Property<bool>("AutoTestsReview")
+                        .HasColumnType("boolean")
+                        .HasColumnName("auto_tests_review");
+
                     b.Property<bool>("CertificatesEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("certificates_enabled");
@@ -150,9 +155,14 @@ namespace Purchases.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("price");
 
+                    b.Property<int>("StudentsOnCourseLimit")
+                        .HasColumnType("integer")
+                        .HasColumnName("students_on_course_limit");
+
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("title");
 
                     b.HasKey("Id")
@@ -166,9 +176,11 @@ namespace Purchases.Migrations
                             Id = 1,
                             ActiveCoursesNumber = 0,
                             AdsEnabled = false,
+                            AutoTestsReview = true,
                             CertificatesEnabled = false,
                             CoursesHighlightingEnabled = false,
                             Price = 0m,
+                            StudentsOnCourseLimit = -1,
                             Title = "Микрочелик"
                         },
                         new
@@ -176,9 +188,11 @@ namespace Purchases.Migrations
                             Id = 2,
                             ActiveCoursesNumber = 3,
                             AdsEnabled = false,
+                            AutoTestsReview = true,
                             CertificatesEnabled = false,
                             CoursesHighlightingEnabled = false,
                             Price = 2000m,
+                            StudentsOnCourseLimit = -1,
                             Title = "Я карлик"
                         },
                         new
@@ -186,9 +200,11 @@ namespace Purchases.Migrations
                             Id = 3,
                             ActiveCoursesNumber = -1,
                             AdsEnabled = true,
+                            AutoTestsReview = true,
                             CertificatesEnabled = true,
                             CoursesHighlightingEnabled = true,
                             Price = 10000m,
+                            StudentsOnCourseLimit = -1,
                             Title = "Король инфоцыган"
                         });
                 });

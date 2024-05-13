@@ -9,11 +9,11 @@ using Purchases.Data;
 
 #nullable disable
 
-namespace Purchases.Migrations
+namespace Purchases.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240423081128_AddedPurchaseDate")]
-    partial class AddedPurchaseDate
+    [Migration("20240423123429_addedTwoFieldsForSubscriptions")]
+    partial class addedTwoFieldsForSubscriptions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,6 +142,10 @@ namespace Purchases.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("ads_enabled");
 
+                    b.Property<bool>("AutoTestsReview")
+                        .HasColumnType("boolean")
+                        .HasColumnName("auto_tests_review");
+
                     b.Property<bool>("CertificatesEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("certificates_enabled");
@@ -153,6 +157,10 @@ namespace Purchases.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")
                         .HasColumnName("price");
+
+                    b.Property<int>("StudentsOnCourseLimit")
+                        .HasColumnType("integer")
+                        .HasColumnName("students_on_course_limit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -170,9 +178,11 @@ namespace Purchases.Migrations
                             Id = 1,
                             ActiveCoursesNumber = 0,
                             AdsEnabled = false,
+                            AutoTestsReview = true,
                             CertificatesEnabled = false,
                             CoursesHighlightingEnabled = false,
                             Price = 0m,
+                            StudentsOnCourseLimit = -1,
                             Title = "Микрочелик"
                         },
                         new
@@ -180,9 +190,11 @@ namespace Purchases.Migrations
                             Id = 2,
                             ActiveCoursesNumber = 3,
                             AdsEnabled = false,
+                            AutoTestsReview = true,
                             CertificatesEnabled = false,
                             CoursesHighlightingEnabled = false,
                             Price = 2000m,
+                            StudentsOnCourseLimit = -1,
                             Title = "Я карлик"
                         },
                         new
@@ -190,9 +202,11 @@ namespace Purchases.Migrations
                             Id = 3,
                             ActiveCoursesNumber = -1,
                             AdsEnabled = true,
+                            AutoTestsReview = true,
                             CertificatesEnabled = true,
                             CoursesHighlightingEnabled = true,
                             Price = 10000m,
+                            StudentsOnCourseLimit = -1,
                             Title = "Король инфоцыган"
                         });
                 });

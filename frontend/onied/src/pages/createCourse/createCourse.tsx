@@ -16,8 +16,12 @@ function CreateCourse() {
         .then((response) => {
           navigate("/course/" + response.data.id + "/edit");
         })
-        .catch((_) => {
-          setNoAccess(true);
+        .catch((response) => {
+          if (response.response.status == 403) {
+            navigate("/subscriptions");
+          } else {
+            navigate("/login");
+          }
         });
     }
   });
