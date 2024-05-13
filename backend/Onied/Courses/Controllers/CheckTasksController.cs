@@ -2,7 +2,6 @@ using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.NotificationSentProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +21,9 @@ public class CheckTasksController(
     public async Task<Results<Ok<List<UserTaskPointsDto>>, NotFound, ForbidHttpResult>> GetTaskPointsStored(
         int courseId,
         int blockId,
-        [FromQuery] Guid userId)
+        [FromQuery] Guid userId, [FromQuery] string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId, role))
             return TypedResults.Forbid();
 
         var response = await checkTaskManagementService
@@ -63,10 +62,10 @@ public class CheckTasksController(
         CheckTaskBlock(
             int courseId,
             int blockId,
-            [FromQuery] Guid userId,
+            [FromQuery] Guid userId, [FromQuery] string? role,
             [FromBody] List<UserInputDto> inputsDto)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId, role))
             return TypedResults.Forbid();
 
         var responseGetTaskBlock = await checkTaskManagementService
