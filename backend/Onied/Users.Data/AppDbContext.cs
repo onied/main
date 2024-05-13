@@ -13,14 +13,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         builder.Entity<IdentityRole>().HasData(new IdentityRole
         {
             Id = "b7e95e9c-19fb-4b3d-81a4-ccb77379f4c6",
-            Name = "Admin",
-            NormalizedName = "ADMIN".ToUpper(),
+            Name = Shared.Roles.Admin,
+            NormalizedName = Shared.Roles.Admin.ToUpper(),
             ConcurrencyStamp = "eb9e8982-218e-47f8-8d4f-75055b023f98"
         }, new IdentityRole
         {
             Id = "81ad64cf-b580-4b51-aa34-4e74dbd44c4b",
-            Name = "Student",
-            NormalizedName = "STUDENT".ToUpper(),
+            Name = Shared.Roles.Student,
+            NormalizedName = Shared.Roles.Student.ToUpper(),
             ConcurrencyStamp = "d27d2713-cc11-4f31-91ef-8dd2dfa3a303"
         });
     }

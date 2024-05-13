@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using Shared;
 using Users.Data.Entities;
 using Users.Data.Enums;
 using Users.Dtos.Users.Request;
@@ -55,7 +56,7 @@ public class UsersService(
         var result = await userManager.CreateAsync(user, registration.Password);
 
         if (!result.Succeeded) return ValidationProblemFactory.CreateValidationProblem(result);
-        await userManager.AddToRoleAsync(user, "Student");
+        await userManager.AddToRoleAsync(user, Roles.Student);
 
         await userCreatedProducer.PublishAsync(user);
         await SendConfirmationEmailAsync(user, context, email);
@@ -358,12 +359,13 @@ public class UsersService(
             var result = await userManager.CreateAsync(user);
 
             if (!result.Succeeded) return Results.Unauthorized();
+            await userManager.AddToRoleAsync(user, Roles.Student);
+            await userCreatedProducer.PublishAsync(user);
         }
 
         signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
 
         await signInManager.SignInAsync(user, false);
-        await userCreatedProducer.PublishAsync(user);
         return Results.Empty;
     }
 
