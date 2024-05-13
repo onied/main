@@ -151,7 +151,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.GetCourseHierarchy(courseId, userId);
+        var result = await _controller.GetCourseHierarchy(courseId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -183,7 +183,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<List<BlockCompletedInfo>>([]));
 
         // Act
-        var result = await _controller.GetCourseHierarchy(courseId, userId);
+        var result = await _controller.GetCourseHierarchy(courseId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<CourseDto>>(result);
@@ -205,7 +205,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -240,7 +240,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -274,7 +274,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _controller.GetSummaryBlock(courseId, blockId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<SummaryBlockDto>>(result);
@@ -295,7 +295,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
+        var result = await _controller.GetVideoBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -329,7 +329,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<VideoBlock?>(block));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
+        var result = await _controller.GetVideoBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -364,7 +364,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<VideoBlock?>(block));
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
+        var result = await _controller.GetVideoBlock(courseId, blockId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<VideoBlockDto>>(result);
@@ -385,7 +385,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(null));
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
+        var result = await _controller.GetTaskBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -420,7 +420,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
+        var result = await _controller.GetTaskBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
@@ -455,7 +455,7 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<TasksBlock?>(block));
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
+        var result = await _controller.GetTaskBlock(courseId, blockId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<TasksBlockDto>>(result);

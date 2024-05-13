@@ -4,13 +4,15 @@ using Courses.Dtos;
 using Courses.Enums;
 using Courses.Extensions;
 using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseUpdatedProducer;
 
 namespace Courses.Services;
 
 public class SubscriptionManagementService(
     IHttpClientFactory httpClientFactory,
     IUserRepository userRepository,
-    ICourseRepository courseRepository
+    ICourseRepository courseRepository,
+    ICourseUpdatedProducer courseUpdatedProducer
 ) : ISubscriptionManagementService
 {
     public async Task<bool> VerifyGivingCertificatesAsync(Guid userId)
@@ -34,6 +36,7 @@ public class SubscriptionManagementService(
         {
             course.HasCertificates = status;
             await courseRepository.UpdateCourseAsync(course);
+            await courseUpdatedProducer.PublishAsync(course);
         }
     }
 
@@ -49,19 +52,22 @@ public class SubscriptionManagementService(
         }
     }
 
-    private HttpClient SubscriptionsServerApiClient(Guid userId)
+    private HttpClient SubscriptionsServerApiClient()
         => httpClientFactory.CreateClient(
-            ServerApiConfig.SubscriptionsServer.GetStringValue()!
-            + $"?userId={userId}");
+            ServerApiConfig.SubscriptionsServer.GetStringValue()!);
 
     private async Task<SubscriptionRequestDto?> GetSubscriptionAsync(Guid userId)
     {
-        using var client = SubscriptionsServerApiClient(userId);
-        var response = await client.GetAsync(string.Empty);
+        using var client = SubscriptionsServerApiClient();
+        var response = await client.GetAsync($"?userId={userId}");
 
         if (response.StatusCode is not HttpStatusCode.OK) return null;
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
         return await JsonSerializer
             .DeserializeAsync<SubscriptionRequestDto>(
-                await response.Content.ReadAsStreamAsync());
+                await response.Content.ReadAsStreamAsync(), options);
     }
 }

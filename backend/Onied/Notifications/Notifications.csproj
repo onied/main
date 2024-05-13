@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,6 +29,12 @@
       <Reference Include="Microsoft.AspNetCore.Authentication.Negotiate">
         <HintPath>..\..\..\..\..\..\..\home\enhisir\.nuget\packages\microsoft.aspnetcore.authentication.negotiate\8.0.3\lib\net8.0\Microsoft.AspNetCore.Authentication.Negotiate.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

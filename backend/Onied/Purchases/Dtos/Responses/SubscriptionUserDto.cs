@@ -10,8 +10,11 @@ public class SubscriptionUserDto
     public bool CoursesHighlightingEnabled { get; set; }
     public bool AdsEnabled { get; set; }
     public bool CertificatesEnabled { get; set; }
+    public bool AutoTestsReview { get; set; }
 
+    public bool CourseCreatingEnabled { get; set; }
     public int ActiveCoursesNumber { get; set; }
+    public int StudentsOnCourseLimit { get; set; }
 
     public decimal Price { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Purchases.Data.Abstractions;
+using Purchases.Data.Enums;
 using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos;
 using Purchases.Dtos.Responses;
@@ -10,16 +11,27 @@ namespace Purchases.Services;
 public class SubscriptionManagementService(
     IUserRepository userRepository,
     IPurchaseRepository purchaseRepository,
+    ISubscriptionRepository subscriptionRepository,
     IMapper mapper
     ) : ISubscriptionManagementService
 {
     public async Task<IResult> GetActiveSubscription(Guid userId)
     {
-        var user = await userRepository.GetAsync(userId, withSubscription: true);
+        var user = await userRepository.GetAsync(userId, withSubscription: true, withPurchases: true);
+        if (user is null || user.Subscription.Id == (int)SubscriptionType.Free)
+            return Results.NotFound();
 
-        return user is null
-            ? Results.NotFound()
-            : Results.Ok(mapper.Map<SubscriptionDto>(user.Subscription));
+        var activeSubPurchase = user.Purchases
+            .Single(
+                p => p.PurchaseDetails.PurchaseType is PurchaseType.Subscription
+                     && (p.PurchaseDetails as SubscriptionPurchaseDetails)!.SubscriptionId == user.SubscriptionId
+                     && ((SubscriptionPurchaseDetails)p.PurchaseDetails).EndDate > DateTime.Today);
+        var pd = (SubscriptionPurchaseDetails)activeSubPurchase.PurchaseDetails;
+
+        var subscriptionDto = mapper.Map<SubscriptionUserDto>(user.Subscription);
+        subscriptionDto.AutoRenewalEnabled = pd.AutoRenewalEnabled;
+        subscriptionDto.EndDate = pd.EndDate;
+        return Results.Ok(subscriptionDto);
     }
 
     public async Task<IResult> GetSubscriptionsByUser(Guid userId)
@@ -57,5 +69,15 @@ public class SubscriptionManagementService(
     public async Task UpdateSubscriptionWithAutoRenewal()
     {
         await purchaseRepository.UpdateSubscriptionWithAutoRenewal();
+    }
+
+    public async Task<IResult> GetAllSubscriptions()
+    {
+        var subscriptions = await subscriptionRepository.GetAllSubscriptions();
+
+        if (subscriptions.Count == 0)
+            return Results.NotFound();
+
+        return Results.Ok(mapper.Map<List<SubscriptionDto>>(subscriptions));
     }
 }

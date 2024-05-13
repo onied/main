@@ -7,4 +7,5 @@ public interface ISubscriptionManagementService
     public Task<IResult> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal);
 
     public Task UpdateSubscriptionWithAutoRenewal();
+    public Task<IResult> GetAllSubscriptions();
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Notifications.Data;
 using Notifications.Extensions;
 using Notifications.Hubs;
@@ -46,5 +47,14 @@ app.UseCors(x => x
 
 app.MapControllers();
 app.MapHub<NotificationsHub>("api/v1/notifications/hub");
+
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<AppDbContext>();
+    if (context.Database.GetPendingMigrations().Any()) context.Database.Migrate();
+}
 
 app.Run();

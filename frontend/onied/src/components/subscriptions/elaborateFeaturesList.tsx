@@ -5,6 +5,7 @@ import { SubscriptionFeatureInfo } from "../../pages/subscriptions/subscriptions
 
 function ElaborateFeaturesList(props: {
   featureDescriptions: Array<SubscriptionFeatureInfo>;
+  subscriptionsTitles: Array<string>;
 }) {
   return (
     <div className={classes.outerGrid}>
@@ -15,12 +16,12 @@ function ElaborateFeaturesList(props: {
           Особенности
         </div>
         <div className={`${classes.gridItem} ${classes.freeSubscriptionTitle}`}>
-          Бесплатный
+          {props.subscriptionsTitles[0]}
         </div>
         <div
           className={`${classes.gridItem} ${classes.defaultSubscriptionTitle}`}
         >
-          Базовый
+          {props.subscriptionsTitles[1]}
         </div>
         {props.featureDescriptions.map((featureInfo, index) => (
           <div key={index} style={{ display: "contents" }}>
@@ -30,15 +31,21 @@ function ElaborateFeaturesList(props: {
             <div className={classes.gridItem}>
               {typeof featureInfo.free === "boolean" ? (
                 <img src={featureInfo.free ? Checkmark : Cross} />
+              ) : featureInfo.free == "-1" ? (
+                <span style={{ fontSize: "1.5rem" }}>∞</span>
               ) : (
-                featureInfo.free
+                <span style={{ fontSize: "1.5rem" }}>{featureInfo.free}</span>
               )}
             </div>
             <div className={classes.gridItem}>
               {typeof featureInfo.default === "boolean" ? (
                 <img src={featureInfo.default ? Checkmark : Cross} />
+              ) : featureInfo.default == "-1" ? (
+                <span style={{ fontSize: "1.5rem" }}>∞</span>
               ) : (
-                featureInfo.default
+                <span style={{ fontSize: "1.5rem" }}>
+                  {featureInfo.default}
+                </span>
               )}
             </div>
           </div>
@@ -48,14 +55,16 @@ function ElaborateFeaturesList(props: {
         <div
           className={`${classes.gridItemLastColumn} ${classes.fullSubscriptionTitle}`}
         >
-          Полный
+          {props.subscriptionsTitles[2]}
         </div>
         {props.featureDescriptions.map((featureInfo, index) => (
           <div className={classes.gridItemLastColumn} key={index}>
             {typeof featureInfo.full === "boolean" ? (
               <img src={featureInfo.full ? Checkmark : Cross} />
+            ) : featureInfo.full == "-1" ? (
+              <span style={{ fontSize: "1.5rem" }}>∞</span>
             ) : (
-              featureInfo.full
+              <span style={{ fontSize: "1.5rem" }}>{featureInfo.full}</span>
             )}
           </div>
         ))}

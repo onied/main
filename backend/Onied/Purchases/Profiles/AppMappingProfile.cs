@@ -23,8 +23,11 @@ public class AppMappingProfile : Profile
         CreateMap<Subscription, SubscriptionDto>()
             .ForMember(
                 dest => dest.CourseCreatingEnabled,
-                opt => opt.MapFrom(src => src.ActiveCoursesNumber > 0));
-        CreateMap<Subscription, SubscriptionUserDto>();
+                opt => opt.MapFrom(src => src.ActiveCoursesNumber != 0));
+        CreateMap<Subscription, SubscriptionUserDto>()
+            .ForMember(
+                dest => dest.CourseCreatingEnabled,
+                opt => opt.MapFrom(src => src.ActiveCoursesNumber != 0));
 
         CreateMap<SubscriptionPurchaseDetails, PurchaseDetailsDto>();
 
