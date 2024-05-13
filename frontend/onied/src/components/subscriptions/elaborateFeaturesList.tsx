@@ -64,7 +64,7 @@ function ElaborateFeaturesList(props: {
             ) : featureInfo.full == "-1" ? (
               <span style={{ fontSize: "1.5rem" }}>∞</span>
             ) : (
-              <span style={{ fontSize: "1.5rem" }}>featureInfo.full</span>
+              <span style={{ fontSize: "1.5rem" }}>{featureInfo.full}</span>
             )}
           </div>
         ))}
