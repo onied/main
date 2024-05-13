@@ -14,14 +14,14 @@ public class ModeratorsCourseController(
     ) : ControllerBase
 {
     [HttpGet]
-    public async Task<Results<Ok<CourseStudentsDto>, NotFound, ForbidHttpResult>> GetStudents(int id, [FromQuery] Guid userId)
+    public async Task<IResult> GetStudents(int id, [FromQuery] Guid userId)
     {
         return await courseManagementService.GetStudents(id, userId);
     }
 
     [HttpPatch]
     [Route("delete")]
-    public async Task<Results<Ok, NotFound<string>, ForbidHttpResult>> DeleteModerator(
+    public async Task<IResult> DeleteModerator(
         int id,
         [FromQuery] Guid studentId,
         [FromQuery] Guid userId
@@ -32,7 +32,7 @@ public class ModeratorsCourseController(
 
     [HttpPatch]
     [Route("add")]
-    public async Task<Results<Ok, NotFound<string>, ForbidHttpResult>> AddModerator(
+    public async Task<IResult> AddModerator(
         int id,
         [FromQuery] Guid studentId,
         [FromQuery] Guid userId

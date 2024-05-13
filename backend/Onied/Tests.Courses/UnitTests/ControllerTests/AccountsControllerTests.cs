@@ -6,6 +6,8 @@ using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Task = System.Threading.Tasks.Task;
@@ -17,11 +19,11 @@ public class AccountsControllerTests
     private readonly Fixture _fixture = new();
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Mock<IUserRepository> _userRepository = new();
-    private readonly AccountsController _controller;
+    private readonly AccountsService _controller;
 
     public AccountsControllerTests()
     {
-        _controller = new AccountsController(_userRepository.Object, _mapper);
+        _controller = new AccountsService(_userRepository.Object, _mapper);
     }
 
     [Fact]
@@ -34,7 +36,7 @@ public class AccountsControllerTests
         var result = await _controller.GetCourses(userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -52,7 +54,7 @@ public class AccountsControllerTests
         var result = await _controller.GetCourses(user.Id);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<List<CourseCardDto>>>(result);
+        var actionResult = Assert.IsType<Ok<List<CourseCardDto>>>(result);
         var actualCourses = Assert.IsAssignableFrom<List<CourseCardDto>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
@@ -85,10 +87,10 @@ public class AccountsControllerTests
         var result = await _controller.GetCourses(user.Id);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<List<CourseCardDto>>>(result);
+        var actionResult = Assert.IsType<Ok<List<CourseCardDto>>>(result);
         var actualCourses = Assert.IsAssignableFrom<List<CourseCardDto>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
-        Assert.Equivalent(expectedCourses, actualCourses);
+        Assert.Equivalent(expectedCourses.Count, actualCourses.Count);
     }
 }

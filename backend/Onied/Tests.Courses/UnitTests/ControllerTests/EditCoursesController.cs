@@ -6,7 +6,6 @@ using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseCreatedProducer;
 using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -21,27 +20,29 @@ public class EditCoursesControllerTests
     private readonly IMapper _mapper =
         new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Mock<ICourseRepository> _courseRepository = new();
+    private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
+    private readonly Mock<IHttpClientFactory> _httpClientFactory = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<IModuleRepository> _moduleRepository = new();
-    private readonly Mock<UpdateTasksBlockService> _updateTasksBlockService = new();
-    private readonly Mock<CourseUpdatedProducer> _courseUpdatedProducer = new();
-    private readonly EditCoursesController _controller;
+    private readonly Mock<IUpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<ICourseUpdatedProducer> _courseUpdatedProducer = new();
+    private readonly CourseManagementService _controller;
     private readonly Fixture _fixture = new();
 
     public EditCoursesControllerTests()
     {
-        _controller = new EditCoursesController(
-            _logger.Object,
-            _mapper,
+        _controller = new CourseManagementService(
             _courseRepository.Object,
+            _userCourseInfoRepository.Object,
+            _httpClientFactory.Object,
             _blockRepository.Object,
-            _courseManagementService.Object,
-            _categoryRepository.Object,
-            _moduleRepository.Object,
             _updateTasksBlockService.Object,
-            _courseUpdatedProducer.Object);
+            _moduleRepository.Object,
+            _categoryRepository.Object,
+            _courseUpdatedProducer.Object,
+            _mapper);
     }
 
     [Fact]
@@ -59,27 +60,7 @@ public class EditCoursesControllerTests
         var result = await _controller.EditCourse(courseId, userId, editCourseDto);
 
         // Assert
-        Assert.IsType<NotFound>(result.Result);
-    }
-
-    [Fact]
-    public async Task EditCourse_ReturnsUnauthorized_WhenUserNotAuthor()
-    {
-        // Arrange
-        var userId = Guid.NewGuid().ToString();
-
-        var course = _fixture.Build<Course>().Create();
-        var editCourseDto = _mapper.Map<EditCourseDto>(course);
-        var courseId = course.Id;
-
-        _courseRepository.Setup(r => r.GetCourseAsync(courseId))
-            .Returns(Task.FromResult<Course?>(course));
-
-        // Act
-        var result = await _controller.EditCourse(courseId, userId, editCourseDto);
-
-        // Assert
-        Assert.IsType<UnauthorizedHttpResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -102,7 +83,7 @@ public class EditCoursesControllerTests
         var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
 
         // Assert
-        Assert.IsType<ValidationProblem>(result.Result);
+        Assert.IsType<ProblemHttpResult>(result);
     }
 
     [Fact]
@@ -128,8 +109,8 @@ public class EditCoursesControllerTests
         var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
 
         // Assert
-        Assert.IsType<Ok<PreviewDto>>(result.Result);
-        var actualResult = (result.Result as Ok<PreviewDto>)?.Value;
+        Assert.IsType<Ok<PreviewDto>>(result);
+        var actualResult = (result as Ok<PreviewDto>)?.Value;
         Assert.Equivalent(coursePreview, actualResult);
     }
 
@@ -168,8 +149,8 @@ public class EditCoursesControllerTests
         var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
 
         // Assert
-        Assert.IsType<Ok<PreviewDto>>(result.Result);
-        var actualResult = (result.Result as Ok<PreviewDto>)?.Value;
+        Assert.IsType<Ok<PreviewDto>>(result);
+        var actualResult = (result as Ok<PreviewDto>)?.Value;
         Assert.Equivalent(coursePreview, actualResult);
     }
 }

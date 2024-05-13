@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using Courses.Dtos;
+﻿using Courses.Dtos;
 using Courses.Filters;
-using Courses.Models;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseUpdatedProducer;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -13,259 +9,138 @@ namespace Courses.Controllers;
 [Route("api/v1/courses/{id:int}/edit")]
 public class EditCoursesController(
     ILogger<CoursesController> logger,
-    IMapper mapper,
-    ICourseRepository courseRepository,
-    IBlockRepository blockRepository,
-    ICourseManagementService courseManagementService,
-    ICategoryRepository categoryRepository,
-    IModuleRepository moduleRepository,
-    IUpdateTasksBlockService updateTasksBlockService,
-    ICourseUpdatedProducer courseUpdatedProducer)
+    ICourseManagementService courseManagementService)
 {
     [HttpPut]
     [AuthorValidationFilter]
-    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditCourse(int id,
+    public async Task<IResult> EditCourse(int id,
         [FromQuery] string? userId,
         [FromBody] EditCourseDto editCourseDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course> ok)
-            return (dynamic)response.Result;
-
-        var course = ok.Value!;
-        var category = await categoryRepository.GetCategoryById(editCourseDto.CategoryId);
-        if (category == null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                [nameof(editCourseDto.CategoryId)] = ["This category does not exist."]
-            });
-        mapper.Map(editCourseDto, course);
-        course.Category = category;
-        course.CategoryId = category.Id;
-        await courseRepository.UpdateCourseAsync(course);
-        await courseUpdatedProducer.PublishAsync(course);
-        return TypedResults.Ok(mapper.Map<PreviewDto>(course));
+        return await courseManagementService.EditCourse(id, userId, editCourseDto);
     }
 
     [HttpPut]
     [Route("hierarchy")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditHierarchy(
+    public async Task<IResult> EditHierarchy(
         int id,
         [FromQuery] string? userId,
         [FromBody] CourseDto courseDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course> ok)
-            return (dynamic)response.Result;
-
-        var course = ok.Value!;
-        mapper.Map(courseDto, course);
-        await courseRepository.UpdateCourseAsync(course);
-
-        return TypedResults.Ok();
+        return await courseManagementService.EditHierarchy(id, userId, courseDto);
     }
 
     [HttpPost]
     [Route("add-module")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok<int>, NotFound, ValidationProblem, ForbidHttpResult>> AddModule(
+    public async Task<IResult> AddModule(
         int id,
         [FromQuery] string? userId)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        var addedModuleId = await moduleRepository.AddModuleReturnIdAsync(new Module
-        {
-            CourseId = id,
-            Title = "Новый модуль"
-        });
-
-        return TypedResults.Ok(addedModuleId);
+        return await courseManagementService.AddModule(id, userId);
     }
 
     [HttpDelete]
     [Route("delete-module")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> DeleteModule(
+    public async Task<IResult> DeleteModule(
         int id,
         [FromQuery] int moduleId,
         [FromQuery] string? userId)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        if (!await moduleRepository.DeleteModuleAsync(moduleId))
-            return TypedResults.NotFound();
-
-        return TypedResults.Ok();
+        return await courseManagementService.DeleteModule(id, moduleId, userId);
     }
 
     [HttpPut]
     [Route("rename-module")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> RenameModule(
+    public async Task<IResult> RenameModule(
         int id,
         [FromQuery] int moduleId,
         [FromQuery] string title,
         [FromQuery] string? userId)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        if (!await moduleRepository.RenameModuleAsync(moduleId, title))
-            return TypedResults.NotFound();
-
-        return TypedResults.Ok();
+        return await courseManagementService.RenameModule(id, moduleId, title, userId);
     }
-
-
 
     [HttpPost]
     [Route("add-block/{moduleId:int}")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok<int>, NotFound, ValidationProblem, ForbidHttpResult>> AddBlock(
+    public async Task<IResult> AddBlock(
         int id,
         int moduleId,
         [FromQuery] int blockType,
         [FromQuery] string? userId)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        var module = await moduleRepository.GetModuleAsync(moduleId);
-        if (module == null)
-            return TypedResults.NotFound();
-
-        var addedBlockId = await blockRepository.AddBlockReturnIdAsync(new Block
-        {
-            ModuleId = moduleId,
-            Title = "Новый блок",
-            BlockType = (BlockType)blockType
-        });
-
-        return TypedResults.Ok(addedBlockId);
+        return await courseManagementService.AddBlock(id, moduleId, blockType, userId);
     }
 
     [HttpDelete]
     [Route("delete-block")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> DeleteBlock(
+    public async Task<IResult> DeleteBlock(
         int id,
         [FromQuery] int blockId,
         [FromQuery] string? userId)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        if (!await blockRepository.DeleteBlockAsync(blockId))
-            return TypedResults.NotFound();
-
-        return TypedResults.Ok();
+        return await courseManagementService.DeleteBlock(id, blockId, userId);
     }
 
     [HttpPut]
     [Route("rename-block")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> RenameBlock(
+    public async Task<IResult> RenameBlock(
         int id,
+        [FromQuery] string? userId,
         [FromQuery] int blockId,
-        [FromQuery] string title,
-        [FromQuery] string? userId)
+        [FromQuery] string title)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        if (!await blockRepository.RenameBlockAsync(blockId, title))
-            return TypedResults.NotFound();
-
-        return TypedResults.Ok();
+        return await courseManagementService.RenameBlock(id, blockId, title, userId);
     }
 
     [HttpPut]
     [Route("video/{blockId:int}")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditVideoBlock(
+    public async Task<IResult> EditVideoBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
         [FromBody] VideoBlockDto videoBlockDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        var block = await blockRepository.GetVideoBlock(blockId);
-        if (block == null || block.Module.CourseId != id)
-            return TypedResults.NotFound();
-
-        mapper.Map(videoBlockDto, block);
-        await blockRepository.UpdateVideoBlock(block);
-        return TypedResults.Ok();
+        return await courseManagementService.EditVideoBlock(id, blockId, userId, videoBlockDto);
     }
 
     [HttpPut]
     [Route("summary/{blockId:int}")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditSummaryBlock(
+    public async Task<IResult> EditSummaryBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
         [FromBody] SummaryBlockDto summaryBlockDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        var block = await blockRepository.GetSummaryBlock(blockId);
-        if (block == null || block.Module.CourseId != id)
-            return TypedResults.NotFound();
-
-        mapper.Map(summaryBlockDto, block);
-        await blockRepository.UpdateSummaryBlock(block);
-        return TypedResults.Ok();
+        return await courseManagementService.EditSummaryBlock(id, blockId, userId, summaryBlockDto);
     }
 
     [HttpPut]
     [Route("tasks/{blockId:int}")]
     [AuthorValidationFilter]
-    public async Task<Results<Ok<EditTasksBlockDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditTasksBlock(
+    public async Task<IResult> EditTasksBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
         [FromBody] EditTasksBlockDto tasksBlockDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
-
-        var block = await blockRepository.GetTasksBlock(blockId);
-        if (block == null || block.Module.CourseId != id)
-            return TypedResults.NotFound();
-
-
-        var updatedBlock = await updateTasksBlockService.UpdateTasksBlock(tasksBlockDto);
-        var updatedBlockDto = mapper.Map<EditTasksBlockDto>(updatedBlock);
-
-        return TypedResults.Ok(updatedBlockDto);
+        return await courseManagementService.EditTasksBlock(id, blockId, userId, tasksBlockDto);
     }
 
     [HttpGet]
     [Route("check-edit-course")]
-    [AuthorValidationFilter]
     public async Task<IResult> CheckEditCourse(
         int id,
         [FromQuery] string? userId)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-
-        return response.Result;
+        return await courseManagementService.CheckCourseAuthorAsync(id, userId);
     }
 }

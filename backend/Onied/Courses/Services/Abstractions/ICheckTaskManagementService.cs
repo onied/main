@@ -7,12 +7,12 @@ namespace Courses.Services.Abstractions;
 
 public interface ICheckTaskManagementService
 {
-    public Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
+    public Task<IResult> TryGetTaskBlock(
         Guid userId, int courseId, int blockId,
         bool includeVariants = false,
         bool includeAnswers = false);
 
-    public Results<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
+    public IResult GetUserTaskPoints(
         List<UserInputDto> inputsDto,
         TasksBlock block,
         Guid userId);
@@ -23,4 +23,15 @@ public interface ICheckTaskManagementService
         int blockId);
 
     public Task ManageCourseCompleted(Guid userId, int courseId);
+
+    public Task<IResult> GetTaskPointsStored(
+        int courseId,
+        int blockId,
+        Guid userId);
+
+    public Task<IResult> CheckTaskBlock(
+        int courseId,
+        int blockId,
+        Guid userId,
+        List<UserInputDto> inputsDto);
 }

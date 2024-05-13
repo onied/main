@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Courses;
 using Courses.Extensions;
 using Courses.Profiles;
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,6 +49,10 @@ builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
 builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
 builder.Services.AddScoped<INotificationPreparerService, NotificationPreparerService>();
+builder.Services.AddScoped<IAccountsService, AccountsService>();
+builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ITeachingService, TeachingService>();
 builder.Services.AddTransient<UserAnswerToTasksListConverter>();
 
 var app = builder.Build();

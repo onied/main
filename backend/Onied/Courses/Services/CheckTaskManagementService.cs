@@ -1,3 +1,4 @@
+using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Services.Abstractions;
@@ -16,10 +17,13 @@ public class CheckTaskManagementService(
     IUserCourseInfoRepository userCourseInfoRepository,
     ICheckTasksService checkTasksService,
     ICourseCompletedProducer courseCompletedProducer,
-    INotificationSentProducer notificationSentProducer)
+    ICourseManagementService courseManagementService,
+    IUserTaskPointsRepository userTaskPointsRepository,
+    INotificationSentProducer notificationSentProducer,
+    IMapper mapper)
     : ICheckTaskManagementService
 {
-    public async Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
+    public async Task<IResult> TryGetTaskBlock(
         Guid userId, int courseId, int blockId,
         bool includeVariants = false,
         bool includeAnswers = false)
@@ -27,15 +31,15 @@ public class CheckTaskManagementService(
         var block = await blockRepository.GetTasksBlock(blockId, includeVariants, includeAnswers);
 
         if (block == null || block.Module.CourseId != courseId)
-            return TypedResults.NotFound();
+            return Results.NotFound();
 
         if (await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId) is null)
-            return TypedResults.Forbid();
+            return Results.Forbid();
 
-        return TypedResults.Ok(block);
+        return Results.Ok(block);
     }
 
-    public Results<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
+    public IResult GetUserTaskPoints(
         List<UserInputDto> inputsDto,
         TasksBlock block,
         Guid userId)
@@ -46,10 +50,10 @@ public class CheckTaskManagementService(
             var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
 
             if (task is null)
-                return TypedResults.NotFound($"Task with id={inputDto.TaskId} not found.");
+                return Results.NotFound($"Task with id={inputDto.TaskId} not found.");
 
             if (task.TaskType != inputDto.TaskType)
-                return TypedResults.BadRequest(
+                return Results.BadRequest(
                     $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
 
             var tp = checkTasksService.CheckTask(task, inputDto);
@@ -58,7 +62,7 @@ public class CheckTaskManagementService(
             points.Add(tp);
         }
 
-        return TypedResults.Ok(points);
+        return Results.Ok(points);
     }
 
     public async Task ManageTaskBlockCompleted(List<UserTaskPoints> pointsInfo, Guid userId, int blockId)
@@ -99,5 +103,90 @@ public class CheckTaskManagementService(
                 course.PictureHref);
             await notificationSentProducer.PublishForOne(notificationSent);
         }
+    }
+
+    public async Task<IResult> GetTaskPointsStored(
+        int courseId,
+        int blockId,
+        Guid userId)
+    {
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+            return Results.Forbid();
+
+        var response = await TryGetTaskBlock(userId, courseId, blockId, true);
+        if (response is not Ok<TasksBlock> ok)
+            return response;
+        var block = ok.Value!;
+
+        var storedPoints = (await userTaskPointsRepository
+            .GetUserTaskPointsByUserAndBlock(userId, courseId, blockId)).ToList();
+
+        var points = block.Tasks.Select(task =>
+            {
+                var points = storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id);
+                if (points == null)
+                    return new UserTaskPointsDto
+                    {
+                        TaskId = task.Id,
+                        Points = null
+                    };
+                var dto = mapper.Map<UserTaskPointsDto>(points);
+                if (!points.Checked)
+                    dto.Points = null;
+                if (points is ManualReviewTaskUserAnswer manualReviewTaskUserAnswer)
+                    dto.Content = manualReviewTaskUserAnswer.Content;
+                return dto;
+            }
+        ).ToList();
+
+        return Results.Ok(points);
+    }
+
+    public async Task<IResult> CheckTaskBlock(
+            int courseId,
+            int blockId,
+            Guid userId,
+            List<UserInputDto> inputsDto)
+    {
+        if (!await courseManagementService.AllowVisitCourse(userId, courseId))
+            return TypedResults.Forbid();
+
+        var responseGetTaskBlock = await TryGetTaskBlock(userId, courseId, blockId, true, true);
+        if (responseGetTaskBlock is not Ok<TasksBlock> okGetTaskBlock)
+            return responseGetTaskBlock;
+
+        var block = okGetTaskBlock.Value!;
+
+        var responseGetTaskPoints = GetUserTaskPoints(inputsDto, block, userId);
+        if (responseGetTaskPoints is not Ok<List<UserTaskPoints>> okGetTaskPoints)
+            return responseGetTaskPoints;
+
+        var pointsInfo = okGetTaskPoints.Value!;
+
+        await userTaskPointsRepository
+            .StoreUserTaskPointsForConcreteUserAndBlock(
+                pointsInfo, userId, courseId, blockId);
+        await ManageTaskBlockCompleted(pointsInfo, userId, blockId);
+        await ManageCourseCompleted(userId, courseId);
+
+        var pointsPrepared = block.Tasks
+            .Select(task =>
+            {
+                var points = pointsInfo.SingleOrDefault(tp => tp.TaskId == task.Id);
+                if (points == null)
+                    return new UserTaskPointsDto
+                    {
+                        TaskId = task.Id,
+                        Points = null
+                    };
+                var dto = mapper.Map<UserTaskPointsDto>(points);
+                if (!points.Checked)
+                    dto.Points = null;
+                if (points is ManualReviewTaskUserAnswer manualReviewTaskUserAnswer)
+                    dto.Content = manualReviewTaskUserAnswer.Content;
+                return dto;
+            }).ToList();
+
+        return Results.Ok(pointsPrepared);
     }
 }

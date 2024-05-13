@@ -1,7 +1,10 @@
-﻿using Courses.Services;
+﻿using Courses.Models;
+using Courses.Services;
 using Courses.Services.Abstractions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Filters;
 
@@ -34,6 +37,13 @@ public class AuthorValidationFilterAttribute : ActionFilterAttribute
         if (!await courseManagementService.AllowVisitCourse(userId, id))
         {
             context.Result = new ForbidResult();
+            return;
+        }
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId.ToString());
+        if (response is not Ok<string>)
+        {
+            context.Result = (IActionResult)response;
             return;
         }
 

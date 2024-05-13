@@ -6,20 +6,20 @@ namespace Courses.Services.Abstractions;
 
 public interface IManualReviewService
 {
-    public Task<Results<Ok<ManualReviewTaskUserAnswerDto>, NotFound, UnauthorizedHttpResult, ForbidHttpResult>>
+    public Task<IResult>
         GetManualReviewTaskUserAnswer(Guid userId,
             Guid manualReviewTaskUserAnswerId);
 
-    public Task<Results<Ok, NotFound, UnauthorizedHttpResult, ForbidHttpResult, ValidationProblem>> ReviewUserAnswer(
+    public Task<IResult> ReviewUserAnswer(
         Guid userId,
         Guid manualReviewTaskUserAnswerId, ReviewTaskDto reviewTaskDto);
 
-    public Task<Results<Ok<List<ManualReviewTaskUserAnswerDto>>, UnauthorizedHttpResult>> GetUncheckedForTeacher(
+    public Task<IResult> GetUncheckedForTeacher(
         Guid teacherId);
 
-    public Task<Results<Ok<List<ManualReviewTaskUserAnswerDto>>, UnauthorizedHttpResult>> GetCheckedForTeacher(
+    public Task<IResult> GetCheckedForTeacher(
         Guid teacherId);
 
-    public Task<Results<Ok<List<CourseWithManualReviewTasksDto>>, UnauthorizedHttpResult>> GetTasksToCheckForTeacher(
+    public Task<IResult> GetTasksToCheckForTeacher(
         Guid teacherId);
 }
