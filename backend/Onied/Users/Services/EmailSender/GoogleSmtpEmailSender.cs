@@ -5,7 +5,7 @@ using MimeKit;
 
 namespace Users.Services.EmailSender;
 
-public class YandexEmailSender(ILogger<YandexEmailSender> logger, IConfiguration configuration) : IYandexEmailSender
+public class GoogleSmtpEmailSender(ILogger<GoogleSmtpEmailSender> logger, IConfiguration configuration) : IGoogleSmtpEmailSender
 {
     public async Task SendConfirmationLinkAsync(AppUser user, string email, string confirmationLink)
     {
