@@ -134,7 +134,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .Where(course => course.IsGlowing)
             .OrderByDescending(course => course.Id)
-            .Take(50)
+            .Take(amount)
             .ToListAsync();
     
 
