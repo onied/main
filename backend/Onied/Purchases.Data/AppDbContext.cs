@@ -87,9 +87,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             Title = "Микрочелик",
             Price = 0,
             ActiveCoursesNumber = 0,
+            StudentsOnCourseLimit = -1,
             CoursesHighlightingEnabled = false,
             CertificatesEnabled = false,
             AdsEnabled = false,
+            AutoTestsReview = true,
         };
         modelBuilder.Entity<Subscription>().HasData(freeSubscription);
         modelBuilder.Entity<Subscription>().HasData(new Subscription()
@@ -98,9 +100,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             Title = "Я карлик",
             Price = 2_000,
             ActiveCoursesNumber = 3,
+            StudentsOnCourseLimit = -1,
             CoursesHighlightingEnabled = false,
             CertificatesEnabled = false,
             AdsEnabled = false,
+            AutoTestsReview = true,
         });
         modelBuilder.Entity<Subscription>().HasData(new Subscription()
         {
@@ -108,9 +112,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             Title = "Король инфоцыган",
             Price = 10_000,
             ActiveCoursesNumber = -1,
+            StudentsOnCourseLimit = -1,
             CoursesHighlightingEnabled = true,
             CertificatesEnabled = true,
             AdsEnabled = true,
+            AutoTestsReview = true,
         });
 
         var firstCourseAuthorId = Guid.Parse("e768e60f-fa76-46d9-a936-4dd5ecbbf326");

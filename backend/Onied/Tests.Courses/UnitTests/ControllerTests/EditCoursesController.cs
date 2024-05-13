@@ -25,6 +25,7 @@ public class EditCoursesControllerTests
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<IModuleRepository> _moduleRepository = new();
     private readonly Mock<UpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly Mock<CourseUpdatedProducer> _courseUpdatedProducer = new();
     private readonly EditCoursesController _controller;
     private readonly Fixture _fixture = new();
@@ -40,6 +41,7 @@ public class EditCoursesControllerTests
             _categoryRepository.Object,
             _moduleRepository.Object,
             _updateTasksBlockService.Object,
+            _subscriptionManagementService.Object,
             _courseUpdatedProducer.Object);
     }
 

@@ -9,11 +9,11 @@ using Purchases.Data;
 
 #nullable disable
 
-namespace Purchases.Migrations
+namespace Purchases.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240416061623_addedToken")]
-    partial class addedToken
+    [Migration("20240418080735_addedMtM")]
+    partial class addedMtM
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -220,6 +220,29 @@ namespace Purchases.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Purchases.Data.Models.UserCourseInfo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer")
+                        .HasColumnName("course_id");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_completed");
+
+                    b.HasKey("UserId", "CourseId")
+                        .HasName("pk_user_course_infos");
+
+                    b.HasIndex("CourseId")
+                        .HasDatabaseName("ix_user_course_infos_course_id");
+
+                    b.ToTable("user_course_infos", (string)null);
+                });
+
             modelBuilder.Entity("Purchases.Data.Models.PurchaseDetails.CertificatePurchaseDetails", b =>
                 {
                     b.HasBaseType("Purchases.Data.Models.PurchaseDetails.PurchaseDetails");
@@ -326,6 +349,23 @@ namespace Purchases.Migrations
                         .HasConstraintName("fk_users_subscriptions_subscription_id");
 
                     b.Navigation("Subscription");
+                });
+
+            modelBuilder.Entity("Purchases.Data.Models.UserCourseInfo", b =>
+                {
+                    b.HasOne("Purchases.Data.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_course_infos_courses_course_id");
+
+                    b.HasOne("Purchases.Data.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_course_infos_users_user_id");
                 });
 
             modelBuilder.Entity("Purchases.Data.Models.PurchaseDetails.CertificatePurchaseDetails", b =>

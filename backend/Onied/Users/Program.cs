@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
 builder.Services.AddMassTransitConfigured(builder.Configuration);
 
-builder.Services.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
+builder.Services.AddScoped<IEmailSender<AppUser>, GoogleSmtpEmailSender>();
 builder.Services.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
 builder.Services.AddScoped<IProfileProducer, ProfileProducer>();
 
