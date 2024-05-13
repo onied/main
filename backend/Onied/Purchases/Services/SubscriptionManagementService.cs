@@ -2,6 +2,7 @@
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models.PurchaseDetails;
+using Purchases.Dtos;
 using Purchases.Dtos.Responses;
 using Purchases.Services.Abstractions;
 
