@@ -33,8 +33,7 @@ public interface ICourseManagementService
 
     public Task<IResult> RenameBlock(
         int id,
-        int blockId,
-        string title,
+        RenameBlockDto renameBlockDto,
         string? userId);
 
     public Task<IResult> DeleteBlock(
@@ -50,9 +49,8 @@ public interface ICourseManagementService
 
     public Task<IResult> RenameModule(
         int id,
-        int moduleId,
-        string title,
-        string? userId);
+        string? userId,
+        RenameModuleDto renameModuleDto);
 
     public Task<IResult> DeleteModule(
         int id,

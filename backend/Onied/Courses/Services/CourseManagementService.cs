@@ -150,12 +150,12 @@ public class CourseManagementService(
 
     public async Task<IResult> RenameBlock(
         int id,
-        int blockId,
-        string title,
+        RenameBlockDto renameBlockDto,
         string? userId)
     {
 
-        if (!await blockRepository.RenameBlockAsync(blockId, title))
+        if (!await blockRepository.RenameBlockAsync(
+                renameBlockDto.BlockId, renameBlockDto.Title))
             return Results.NotFound();
 
         return Results.Ok();
@@ -194,11 +194,11 @@ public class CourseManagementService(
 
     public async Task<IResult> RenameModule(
         int id,
-        int moduleId,
-        string title,
-        string? userId)
+        string? userId,
+        RenameModuleDto renameModuleDto)
     {
-        if (!await moduleRepository.RenameModuleAsync(moduleId, title))
+        if (!await moduleRepository.RenameModuleAsync(
+                renameModuleDto.ModuleId, renameModuleDto.Title))
             return Results.NotFound();
 
         return Results.Ok();

@@ -57,11 +57,10 @@ public class EditCoursesController(
     [AuthorValidationFilter]
     public async Task<IResult> RenameModule(
         int id,
-        [FromQuery] int moduleId,
-        [FromQuery] string title,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId,
+        [FromBody] RenameModuleDto renameModuleDto)
     {
-        return await courseManagementService.RenameModule(id, moduleId, title, userId);
+        return await courseManagementService.RenameModule(id, userId, renameModuleDto);
     }
 
     [HttpPost]
@@ -70,10 +69,11 @@ public class EditCoursesController(
     public async Task<IResult> AddBlock(
         int id,
         int moduleId,
-        [FromQuery] int blockType,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId,
+        [FromBody] AddBlockDto addBlockDto)
     {
-        return await courseManagementService.AddBlock(id, moduleId, blockType, userId);
+        return await courseManagementService.AddBlock(
+            id, moduleId, addBlockDto.BlockType, userId);
     }
 
     [HttpDelete]
@@ -93,10 +93,9 @@ public class EditCoursesController(
     public async Task<IResult> RenameBlock(
         int id,
         [FromQuery] string? userId,
-        [FromQuery] int blockId,
-        [FromQuery] string title)
+        [FromBody] RenameBlockDto renameBlockDto)
     {
-        return await courseManagementService.RenameBlock(id, blockId, title, userId);
+        return await courseManagementService.RenameBlock(id, renameBlockDto, userId);
     }
 
     [HttpPut]

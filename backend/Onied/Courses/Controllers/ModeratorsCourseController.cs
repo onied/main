@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Courses.Dtos;
 using Courses.Dtos.ModeratorDtos.Response;
 using Courses.Services;
 using Courses.Services.Abstractions;
@@ -23,21 +24,21 @@ public class ModeratorsCourseController(
     [Route("delete")]
     public async Task<IResult> DeleteModerator(
         int id,
-        [FromQuery] Guid studentId,
+        [FromBody] EditModeratorDto dto,
         [FromQuery] Guid userId
         )
     {
-        return await courseManagementService.DeleteModerator(id, studentId, userId);
+        return await courseManagementService.DeleteModerator(id, dto.StudentId, userId);
     }
 
     [HttpPatch]
     [Route("add")]
     public async Task<IResult> AddModerator(
         int id,
-        [FromQuery] Guid studentId,
+        [FromBody] EditModeratorDto dto,
         [FromQuery] Guid userId
         )
     {
-        return await courseManagementService.AddModerator(id, studentId, userId);
+        return await courseManagementService.AddModerator(id, dto.StudentId, userId);
     }
 }
