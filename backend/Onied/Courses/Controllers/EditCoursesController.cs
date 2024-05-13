@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
+using Courses.Filters;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseUpdatedProducer;
@@ -22,18 +23,11 @@ public class EditCoursesController(
     ICourseUpdatedProducer courseUpdatedProducer)
 {
     [HttpPut]
+    [AuthorValidationFilter]
     public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditCourse(int id,
         [FromQuery] string? userId,
         [FromBody] EditCourseDto editCourseDto)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-                {
-                    { "userId", ["userId queue parameter cannot be null"] }
-                });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course> ok)
             return (dynamic)response.Result;
@@ -55,19 +49,12 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("hierarchy")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditHierarchy(
         int id,
         [FromQuery] string? userId,
         [FromBody] CourseDto courseDto)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course> ok)
             return (dynamic)response.Result;
@@ -81,18 +68,11 @@ public class EditCoursesController(
 
     [HttpPost]
     [Route("add-module")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok<int>, NotFound, ValidationProblem, ForbidHttpResult>> AddModule(
         int id,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -108,19 +88,12 @@ public class EditCoursesController(
 
     [HttpDelete]
     [Route("delete-module")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> DeleteModule(
         int id,
         [FromQuery] int moduleId,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -133,20 +106,13 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("rename-module")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> RenameModule(
         int id,
         [FromQuery] int moduleId,
         [FromQuery] string title,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -161,20 +127,13 @@ public class EditCoursesController(
 
     [HttpPost]
     [Route("add-block/{moduleId:int}")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok<int>, NotFound, ValidationProblem, ForbidHttpResult>> AddBlock(
         int id,
         int moduleId,
         [FromQuery] int blockType,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -195,19 +154,12 @@ public class EditCoursesController(
 
     [HttpDelete]
     [Route("delete-block")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> DeleteBlock(
         int id,
         [FromQuery] int blockId,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -220,20 +172,13 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("rename-block")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> RenameBlock(
         int id,
         [FromQuery] int blockId,
         [FromQuery] string title,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -246,20 +191,13 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("video/{blockId:int}")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditVideoBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
         [FromBody] VideoBlockDto videoBlockDto)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -275,20 +213,13 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("summary/{blockId:int}")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditSummaryBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
         [FromBody] SummaryBlockDto summaryBlockDto)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -304,20 +235,13 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("tasks/{blockId:int}")]
+    [AuthorValidationFilter]
     public async Task<Results<Ok<EditTasksBlockDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditTasksBlock(
         int id,
         int blockId,
         [FromQuery] string? userId,
         [FromBody] EditTasksBlockDto tasksBlockDto)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
         if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
@@ -335,22 +259,13 @@ public class EditCoursesController(
 
     [HttpGet]
     [Route("check-edit-course")]
-    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> CheckEditCourse(
+    [AuthorValidationFilter]
+    public async Task<IResult> CheckEditCourse(
         int id,
         [FromQuery] string? userId)
     {
-        if (userId is null)
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "userId", ["userId queue parameter cannot be null"] }
-            });
-        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id))
-            return TypedResults.Forbid();
-
         var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result is not Ok<Course>)
-            return (dynamic)response.Result;
 
-        return TypedResults.Ok();
+        return response.Result;
     }
 }
