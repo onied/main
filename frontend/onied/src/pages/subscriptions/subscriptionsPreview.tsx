@@ -4,6 +4,12 @@ import classes from "./subscriptionsPreview.module.css";
 import { useEffect, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import ElaborateFeaturesList from "../../components/subscriptions/elaborateFeaturesList";
+import api from "../../config/axios";
+import {
+  mapSubscriptionFeaturesInfo,
+  mapSubscriptionInfo,
+  SubscriptionInfoDto,
+} from "./mapSubscriptionInfo";
 
 function SubscriptionsPreview() {
   const [defaultSubscriptionInfo, setDefaultSubscriptionInfo] = useState<
@@ -14,81 +20,33 @@ function SubscriptionsPreview() {
   >();
   const [elaborateFeatureDescriptions, setElaborateFeatureDescriptions] =
     useState<Array<SubscriptionFeatureInfo> | undefined>();
+  const [subscriptionTitles, setSubscriptionTitles] = useState<
+    Array<string> | undefined
+  >();
 
   useEffect(() => {
-    setTimeout(() => {
-      setDefaultSubscriptionInfo({
-        subscriptionId: 2,
-        subscriptionType: SubscriptionType.Default,
-        price: 2000,
-        durationPolicy: "на одного пользователя в месяц",
-        features: ["3 активных платных курса"],
-      });
-      setFullSubscriptionInfo({
-        subscriptionId: 3,
-        subscriptionType: SubscriptionType.Full,
-        price: 10000,
-        durationPolicy: "на одного пользователя в месяц",
-        features: [
-          "Реклама в рассылке",
-          "Выдача сертификатов",
-          "3 активных платных курса",
-          "Показ на главной странице",
-          "Визуальное выделение курсов",
-        ],
-      });
-      setElaborateFeatureDescriptions([
-        {
-          featureDescription: "Количество активных платных курсов",
-          free: false,
-          default: "3",
-          full: "∞",
-        },
-        {
-          featureDescription: "Автоматическая проверка тестовых заданий",
-          free: true,
-          default: true,
-          full: true,
-        },
-        {
-          featureDescription: "Неограниченное число учащихся",
-          free: true,
-          default: true,
-          full: true,
-        },
-        {
-          featureDescription: "Реклама в рассылке пользователей",
-          free: false,
-          default: false,
-          full: true,
-        },
-        {
-          featureDescription:
-            "Выдача сертификатов пользователю по окончанию курса",
-          free: false,
-          default: false,
-          full: true,
-        },
-        {
-          featureDescription: "Визуальное выделение курсов",
-          free: false,
-          default: false,
-          full: true,
-        },
-        {
-          featureDescription: "Показ на главной странице ",
-          free: false,
-          default: false,
-          full: true,
-        },
-      ]);
-    }, 500);
+    api
+      .get("purchases/subscriptions/all")
+      .then((response) => {
+        console.log(response.data);
+        let mappedSubscriptions = mapSubscriptionInfo(response.data);
+        setDefaultSubscriptionInfo(mappedSubscriptions[1]);
+        setFullSubscriptionInfo(mappedSubscriptions[2]);
+
+        let mappedFeaturesInfos = mapSubscriptionFeaturesInfo(response.data);
+        setElaborateFeatureDescriptions(mappedFeaturesInfos);
+        setSubscriptionTitles(
+          response.data.map((subDto: SubscriptionInfoDto) => subDto.title)
+        );
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   if (
     defaultSubscriptionInfo == undefined ||
     fullSubscriptionInfo == undefined ||
-    elaborateFeatureDescriptions == undefined
+    elaborateFeatureDescriptions == undefined ||
+    subscriptionTitles == undefined
   )
     return (
       <BeatLoader
@@ -107,6 +65,7 @@ function SubscriptionsPreview() {
         </div>
         <ElaborateFeaturesList
           featureDescriptions={elaborateFeatureDescriptions}
+          subscriptionsTitles={subscriptionTitles!}
         />
       </div>
     </div>
@@ -115,15 +74,11 @@ function SubscriptionsPreview() {
 
 export default SubscriptionsPreview;
 
-export enum SubscriptionType {
-  Default,
-  Full,
-}
-
 export type SubscriptionInfo = {
   subscriptionId: number;
-  subscriptionType: SubscriptionType;
+  title: string;
   price: number;
+  isHighlighted: boolean;
   durationPolicy: string;
   features: Array<string>;
 };

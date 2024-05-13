@@ -5,10 +5,10 @@ function SubscriptionFeatures(props: {
   showingMainPageEnabled: boolean;
   adsEnabled: boolean;
   certificatesEnabled: boolean;
-  activeCoursesNumber: number;
+  courseCreatingEnabled: boolean;
 }) {
   const subscriptionFeatures = [
-    props.activeCoursesNumber != -1 ? "Создание курсов" : undefined,
+    props.courseCreatingEnabled ? "Создание курсов" : undefined,
     props.adsEnabled ? "Реклама в рассылке" : undefined,
     props.certificatesEnabled ? "Выдача сертификатов" : undefined,
     props.showingMainPageEnabled ? "Показ на главной странице" : undefined,

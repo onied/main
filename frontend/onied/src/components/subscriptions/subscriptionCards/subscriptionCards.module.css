@@ -12,6 +12,10 @@
     letter-spacing: .2rem;
 }
 
+.subscriptionTitle > h1{
+    text-align: center;
+}
+
 .subscriptionPrice{
     letter-spacing: .15rem;
 }

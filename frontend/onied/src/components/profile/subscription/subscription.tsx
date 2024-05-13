@@ -18,7 +18,7 @@ export type Subscription = {
   showingMainPageEnabled: boolean;
   adsEnabled: boolean;
   certificatesEnabled: boolean;
-  activeCoursesNumber: number;
+  courseCreatingEnabled: boolean;
 };
 
 function SubscriptionContainer({
@@ -52,7 +52,7 @@ function SubscriptionContainer({
       <SubscriptionFeatures
         coursesHighlightingEnabled={subscription.coursesHighlightingEnabled}
         showingMainPageEnabled={subscription.showingMainPageEnabled}
-        activeCoursesNumber={subscription.activeCoursesNumber}
+        courseCreatingEnabled={subscription.courseCreatingEnabled}
         adsEnabled={subscription.adsEnabled}
         certificatesEnabled={subscription.certificatesEnabled}
       />

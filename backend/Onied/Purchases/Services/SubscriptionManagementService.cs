@@ -2,6 +2,7 @@
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models.PurchaseDetails;
+using Purchases.Dtos;
 using Purchases.Dtos.Responses;
 using Purchases.Services.Abstractions;
 
@@ -10,6 +11,7 @@ namespace Purchases.Services;
 public class SubscriptionManagementService(
     IUserRepository userRepository,
     IPurchaseRepository purchaseRepository,
+    ISubscriptionRepository subscriptionRepository,
     IMapper mapper
     ) : ISubscriptionManagementService
 {
@@ -67,5 +69,15 @@ public class SubscriptionManagementService(
     public async Task UpdateSubscriptionWithAutoRenewal()
     {
         await purchaseRepository.UpdateSubscriptionWithAutoRenewal();
+    }
+
+    public async Task<IResult> GetAllSubscriptions()
+    {
+        var subscriptions = await subscriptionRepository.GetAllSubscriptions();
+
+        if (subscriptions.Count == 0)
+            return Results.NotFound();
+
+        return Results.Ok(mapper.Map<List<SubscriptionDto>>(subscriptions));
     }
 }
