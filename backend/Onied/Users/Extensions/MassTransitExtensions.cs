@@ -1,4 +1,6 @@
 using MassTransit;
+using Users.Services.ProfileProducer;
+using Users.Services.UserCreatedProducer;
 
 namespace Users.Extensions;
 
@@ -21,6 +23,8 @@ public static class MassTransitExtensions
                 cfg.ConfigureEndpoints(context);
             });
         });
+        serviceCollection.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
+        serviceCollection.AddScoped<IProfileProducer, ProfileProducer>();
 
         return serviceCollection;
     }

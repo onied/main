@@ -1,15 +1,10 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Users.Data;
-using Users.Data.Entities;
 using Users.Extensions;
 using Users.Profiles;
-using Users.Services.EmailSender;
-using Users.Services.ProfileProducer;
 using Users.Services.ProfileService;
-using Users.Services.UserCreatedProducer;
 using Users.Services.UsersService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,10 +23,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
 builder.Services.AddMassTransitConfigured(builder.Configuration);
-
-builder.Services.AddScoped<IEmailSender<AppUser>, GoogleSmtpEmailSender>();
-builder.Services.AddScoped<IUserCreatedProducer, UserCreatedProducer>();
-builder.Services.AddScoped<IProfileProducer, ProfileProducer>();
 
 var app = builder.Build();
 app.UseRouting();
