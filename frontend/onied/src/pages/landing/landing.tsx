@@ -29,11 +29,11 @@ function Landing() {
   >();
 
   const [mostPopularCourses, setMostPopularCourses] = useState<
-    Array<CourseCard> | undefined
+    Array<CourseCard> | null | undefined
   >();
 
   const [recommendedCourses, setRecommendedCourses] = useState<
-    Array<CourseCard> | undefined
+    Array<CourseCard> | null | undefined
   >();
 
   const userCoursesSlider = useRef<Slider>(null);
@@ -51,7 +51,7 @@ function Landing() {
   const callToStartTeachingData: CallToActionData = {
     imageSrc: StartTeaching,
     title: "Станьте преподавателем",
-    text: "Преподовайте из любой точки мира. OniEd предостовляет вам средства преподавать то, что вы любите.",
+    text: "Преподавайте из любой точки мира. OniEd предоставляет вам средства преподавать то, что вы любите.",
     buttonLabel: "начать преподавать",
     redirectTo: "/teaching",
   };
@@ -183,7 +183,10 @@ function Landing() {
         console.log(response);
         setMostPopularCourses(response.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setMostPopularCourses(null);
+      });
   }, []);
 
   useEffect(() => {
@@ -193,7 +196,10 @@ function Landing() {
         console.log(response);
         setRecommendedCourses(response.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setRecommendedCourses(null);
+      });
   }, []);
 
   useEffect(() => {
@@ -206,7 +212,7 @@ function Landing() {
   }, [userCourses]);
 
   useEffect(() => {
-    if (mostPopularCourses === undefined) return;
+    if (mostPopularCourses == undefined) return;
     configureSettings(
       mostPopularCourses!.length,
       mostPopularCoursesSlider,
@@ -215,7 +221,7 @@ function Landing() {
   }, [mostPopularCourses]);
 
   useEffect(() => {
-    if (recommendedCourses === undefined) return;
+    if (recommendedCourses == undefined) return;
     configureSettings(
       recommendedCourses!.length,
       recommendedCoursesSlider,
@@ -266,80 +272,94 @@ function Landing() {
           </div>
         </>
       )}
-      <h2>Самые популярные курсы</h2>
-      <div className={classes.carouselWrapper}>
-        {mostPopularCourses === undefined ? (
-          <BeatLoader
-            cssOverride={{ margin: "2rem" }}
-            color="var(--accent-color)"
-          ></BeatLoader>
-        ) : (
-          <div className={classes.sliderWrapper}>
-            {mostPopularCoursesSliderSettings.infinite ? (
-              <>
-                <CustomArrow
-                  onClick={() => sliderPrev(mostPopularCoursesSlider)}
-                  next={false}
-                />
-                <CustomArrow
-                  onClick={() => sliderNext(mostPopularCoursesSlider)}
-                  next={true}
-                />
-              </>
+      {mostPopularCourses === null ? (
+        <></>
+      ) : (
+        <>
+          <h2>Самые популярные курсы</h2>
+          <div className={classes.carouselWrapper}>
+            {mostPopularCourses === undefined ? (
+              <BeatLoader
+                cssOverride={{ margin: "2rem" }}
+                color="var(--accent-color)"
+              ></BeatLoader>
             ) : (
-              <></>
-            )}
+              <div className={classes.sliderWrapper}>
+                {mostPopularCoursesSliderSettings.infinite ? (
+                  <>
+                    <CustomArrow
+                      onClick={() => sliderPrev(mostPopularCoursesSlider)}
+                      next={false}
+                    />
+                    <CustomArrow
+                      onClick={() => sliderNext(mostPopularCoursesSlider)}
+                      next={true}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
 
-            <Slider
-              ref={mostPopularCoursesSlider}
-              {...mostPopularCoursesSliderSettings}
-            >
-              {mostPopularCourses.map((courseCard: CourseCard) => (
-                <div className={classes.sliderItem} key={courseCard.id}>
-                  <GeneralCourseCard card={courseCard} />
-                </div>
-              ))}
-            </Slider>
+                <Slider
+                  ref={mostPopularCoursesSlider}
+                  {...mostPopularCoursesSliderSettings}
+                >
+                  {mostPopularCourses.map((courseCard: CourseCard) => (
+                    <div className={classes.sliderItem} key={courseCard.id}>
+                      <GeneralCourseCard card={courseCard} />
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <h2>Рекомендуемые курсы</h2>
-      <div className={classes.carouselWrapper}>
-        {recommendedCourses === undefined ? (
-          <BeatLoader
-            cssOverride={{ margin: "2rem" }}
-            color="var(--accent-color)"
-          ></BeatLoader>
-        ) : (
-          <div className={classes.sliderWrapper}>
-            {recommendedCoursesSliderSettings.infinite ? (
-              <>
-                <CustomArrow
-                  onClick={() => sliderPrev(recommendedCoursesSlider)}
-                  next={false}
-                />
-                <CustomArrow
-                  onClick={() => sliderNext(recommendedCoursesSlider)}
-                  next={true}
-                />
-              </>
+        </>
+      )}
+
+      {recommendedCourses === null ? (
+        <></>
+      ) : (
+        <>
+          <h2>Рекомендуемые курсы</h2>
+          <div className={classes.carouselWrapper}>
+            {recommendedCourses === undefined ? (
+              <BeatLoader
+                cssOverride={{ margin: "2rem" }}
+                color="var(--accent-color)"
+              ></BeatLoader>
             ) : (
-              <></>
-            )}
+              <div className={classes.sliderWrapper}>
+                {recommendedCoursesSliderSettings.infinite ? (
+                  <>
+                    <CustomArrow
+                      onClick={() => sliderPrev(recommendedCoursesSlider)}
+                      next={false}
+                    />
+                    <CustomArrow
+                      onClick={() => sliderNext(recommendedCoursesSlider)}
+                      next={true}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
 
-            <Slider
-              ref={recommendedCoursesSlider}
-              {...recommendedCoursesSliderSettings}
-            >
-              {recommendedCourses.map((courseCard: CourseCard) => (
-                <div className={classes.sliderItem} key={courseCard.id}>
-                  <GeneralCourseCard card={courseCard} />
-                </div>
-              ))}
-            </Slider>
+                <Slider
+                  ref={recommendedCoursesSlider}
+                  {...recommendedCoursesSliderSettings}
+                >
+                  {recommendedCourses.map((courseCard: CourseCard) => (
+                    <div className={classes.sliderItem} key={courseCard.id}>
+                      <GeneralCourseCard card={courseCard} />
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
+
       <CallToActionTemplate
         data={callToStartLearningData}
       ></CallToActionTemplate>
