@@ -9,7 +9,7 @@ using Purchases.Data;
 
 #nullable disable
 
-namespace Purchases.Migrations
+namespace Purchases.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20240416061623_addedToken")]
