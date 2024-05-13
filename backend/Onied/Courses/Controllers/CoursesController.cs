@@ -21,6 +21,7 @@ public class CoursesController : ControllerBase
     private readonly IUserCourseInfoRepository _userCourseInfoRepository;
     private readonly ICourseCreatedProducer _courseCreatedProducer;
     private readonly ICourseManagementService _courseManagementService;
+    private readonly ISubscriptionManagementService _subscriptionManagementService;
 
     public CoursesController(
         ILogger<CoursesController> logger,
@@ -32,7 +33,8 @@ public class CoursesController : ControllerBase
         IUserCourseInfoRepository userCourseInfoRepository,
         IBlockCompletedInfoRepository blockCompletedInfoRepository,
         ICourseCreatedProducer courseCreatedProducer,
-        ICourseManagementService courseManagementService)
+        ICourseManagementService courseManagementService,
+        ISubscriptionManagementService subscriptionManagementService)
     {
         _mapper = mapper;
         _courseRepository = courseRepository;
@@ -42,6 +44,7 @@ public class CoursesController : ControllerBase
         _categoryRepository = categoryRepository;
         _courseCreatedProducer = courseCreatedProducer;
         _courseManagementService = courseManagementService;
+        _subscriptionManagementService = subscriptionManagementService;
         _userCourseInfoRepository = userCourseInfoRepository;
     }
 
@@ -164,7 +167,7 @@ public class CoursesController : ControllerBase
 
     [HttpPost]
     [Route("/api/v1/[controller]/create")]
-    public async Task<Results<Ok<CreateCourseResponseDto>, UnauthorizedHttpResult>> CreateCourse(
+    public async Task<Results<Ok<CreateCourseResponseDto>, ForbidHttpResult, UnauthorizedHttpResult>> CreateCourse(
         [FromQuery] string? userId)
     {
         if (userId == null || !Guid.TryParse(userId, out var authorId))
@@ -172,6 +175,11 @@ public class CoursesController : ControllerBase
         var user = await _userRepository.GetUserAsync(authorId);
         if (user == null)
             return TypedResults.Unauthorized();
+
+        if (!await _subscriptionManagementService
+                .VerifyCreatingCoursesAsync(Guid.Parse(userId)))
+            return TypedResults.Forbid();
+
         var newCourse = await _courseRepository.AddCourseAsync(new Course
         {
             AuthorId = user.Id,

@@ -11,6 +11,7 @@ public class NotificationsController(
     INotificationRepository notificationRepository
     ) : ControllerBase
 {
+    [HttpGet]
     public async Task<IResult> Get([FromQuery] Guid userId)
     {
         var notifications = await notificationRepository.GetRangeByUserAsync(userId);

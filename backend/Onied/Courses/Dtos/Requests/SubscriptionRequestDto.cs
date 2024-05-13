@@ -1,20 +1,19 @@
-﻿namespace Purchases.Dtos.Responses;
+using System.ComponentModel.DataAnnotations;
 
-public class SubscriptionUserDto
+namespace Courses.Dtos;
+
+public class SubscriptionRequestDto
 {
     public int Id { get; set; }
 
+    [MaxLength(200)]
     public string Title { get; set; } = null!;
-    public DateTime EndDate { get; set; }
-    public bool AutoRenewalEnabled { get; set; }
+
     public bool CoursesHighlightingEnabled { get; set; }
     public bool AdsEnabled { get; set; }
     public bool CertificatesEnabled { get; set; }
-    public bool AutoTestsReview { get; set; }
-
     public bool CourseCreatingEnabled { get; set; }
-    public int ActiveCoursesNumber { get; set; }
-    public int StudentsOnCourseLimit { get; set; }
 
+    [Range(0, 1000000)]
     public decimal Price { get; set; }
 }
