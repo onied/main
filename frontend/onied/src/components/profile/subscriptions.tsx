@@ -13,7 +13,7 @@ function ProfileSubcriptions() {
   useEffect(() => {
     setSubscription(undefined);
     api
-      .get("purchases/subscriptions/activeя")
+      .get("purchases/subscriptions/active")
       .then((res) => {
         if (res.data) {
           res.data.endDate = new Date(res.data.endDate);
