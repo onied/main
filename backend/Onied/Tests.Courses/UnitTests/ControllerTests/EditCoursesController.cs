@@ -6,7 +6,6 @@ using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseCreatedProducer;
 using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -26,6 +25,7 @@ public class EditCoursesControllerTests
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<IModuleRepository> _moduleRepository = new();
     private readonly Mock<UpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly Mock<CourseUpdatedProducer> _courseUpdatedProducer = new();
     private readonly EditCoursesController _controller;
     private readonly Fixture _fixture = new();
@@ -41,6 +41,7 @@ public class EditCoursesControllerTests
             _categoryRepository.Object,
             _moduleRepository.Object,
             _updateTasksBlockService.Object,
+            _subscriptionManagementService.Object,
             _courseUpdatedProducer.Object);
     }
 
@@ -56,7 +57,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.EditCourse(courseId, userId, editCourseDto);
+        var result = await _controller.EditCourse(courseId, userId, null, editCourseDto);
 
         // Assert
         Assert.IsType<NotFound>(result.Result);
@@ -76,7 +77,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.EditCourse(courseId, userId, editCourseDto);
+        var result = await _controller.EditCourse(courseId, userId, null, editCourseDto);
 
         // Assert
         Assert.IsType<UnauthorizedHttpResult>(result.Result);
@@ -99,7 +100,7 @@ public class EditCoursesControllerTests
         editCourseDto.CategoryId = 0;
 
         // Act
-        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), null, editCourseDto);
 
         // Assert
         Assert.IsType<ValidationProblem>(result.Result);
@@ -125,7 +126,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Category?>(category));
 
         // Act
-        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), null, editCourseDto);
 
         // Assert
         Assert.IsType<Ok<PreviewDto>>(result.Result);
@@ -165,7 +166,7 @@ public class EditCoursesControllerTests
             .Returns(Task.FromResult<Category?>(category));
 
         // Act
-        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _controller.EditCourse(course.Id, user.Id.ToString(), null, editCourseDto);
 
         // Assert
         Assert.IsType<Ok<PreviewDto>>(result.Result);

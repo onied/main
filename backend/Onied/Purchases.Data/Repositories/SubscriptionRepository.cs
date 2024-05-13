@@ -13,6 +13,13 @@ public class SubscriptionRepository(AppDbContext dbContext) : ISubscriptionRepos
 
         return await queue.FirstOrDefaultAsync(c => c.Id == id);
     }
+
+    public async Task<List<Subscription>> GetAllSubscriptions()
+        => await dbContext.Subscriptions
+            .AsNoTracking()
+            .OrderBy(subscription => subscription.Id)
+            .ToListAsync();
+    
     public async Task AddAsync(Subscription subscription)
     {
         await dbContext.Subscriptions.AddAsync(subscription);

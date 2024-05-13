@@ -18,32 +18,24 @@ function SubscriptionPurchase() {
   const navigate = useNavigate();
 
   const { subscriptionId } = useParams();
-  const [subscription, setSubscription] = useState<
-    PurchaseInfoData | null | undefined
-  >(undefined);
+  const [loading, setLoading] = useState<boolean>();
+  const [subscription, setSubscription] = useState<PurchaseInfoData | null>();
   const [card, setCard] = useState<CardInfo | null>();
   const [error, setError] = useState<string | null>();
 
   useEffect(() => {
-    // api
-    //   .get("/subscriptions/" + courseId)
-    //   .then((response: any) => {
-    //     setCourse(response.data as CoursePurchaseInfo);
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status == 404) setCourse(null);
-    //   });
-    const stub: PurchaseInfoData = {
-      id: 1,
-      title: "для серьезных людей",
-      price: 100_500,
-    };
-    setSubscription(stub);
+    api
+      .get("/purchases/new/subscription?subscriptionId=" + subscriptionId)
+      .then((response: any) => {
+        setSubscription(response.data as PurchaseInfoData);
+      })
+      .catch((error) => {
+        if (error.response.status == 404) setSubscription(null);
+      });
   }, []);
 
-  if (subscription === undefined)
-    return <BeatLoader color="var(--accent-color)" />;
-  if (subscription === null) return <NotFound>Подписка не найдена</NotFound>;
+  if (loading) return <BeatLoader color="var(--accent-color)" />;
+  if (subscription == null) return <NotFound>Подписка не найдена</NotFound>;
 
   return (
     <div className={classes.subscriptionPurchaseContainer}>
@@ -63,7 +55,25 @@ function SubscriptionPurchase() {
         }}
         onSubmit={(event) => {
           event.preventDefault();
-          // логика
+          const purchase = {
+            purchaseType: PurchaseType.Subscription,
+            price: subscription!.price,
+            cardInfo: card!,
+            subscriptionId: subscriptionId,
+          };
+          setLoading(true);
+          api
+            .post("/purchases/new/subscription", purchase)
+            .then(() => navigate(-1))
+            .catch((error) => {
+              if (error.response.status == 400)
+                setError("Возникла ошибка при валидации");
+              else if (error.response.status == 403)
+                setError("Вы не можете купить данную подписку");
+              else if (error.response.status >= 500)
+                setError("Возникла ошибка на сервере");
+              setLoading(false);
+            });
         }}
       >
         <CardContainer onChange={setCard} />

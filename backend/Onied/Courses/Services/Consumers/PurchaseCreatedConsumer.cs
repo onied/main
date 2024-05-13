@@ -8,7 +8,7 @@ using Task = System.Threading.Tasks.Task;
 namespace Courses.Services.Consumers;
 
 public class PurchaseCreatedConsumer(
-    ILogger<UserCreatedConsumer> logger,
+    ILogger<PurchaseCreatedConsumer> logger,
     IUserCourseInfoRepository userCourseInfoRepository) : IConsumer<PurchaseCreated>
 {
     public async Task Consume(ConsumeContext<PurchaseCreated> context)
