@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using Shared;
 using Users.Dtos;
 using Users.Services.UserCreatedProducer;
 
@@ -61,7 +62,7 @@ public class UsersController : ControllerBase
         var result = await userManager.CreateAsync(user, registration.Password);
 
         if (!result.Succeeded) return CreateValidationProblem(result);
-        await userManager.AddToRoleAsync(user, "Student");
+        await userManager.AddToRoleAsync(user, Roles.Student);
 
         await _userCreatedProducer.PublishAsync(user);
         await SendConfirmationEmailAsync(user, userManager, HttpContext, email);

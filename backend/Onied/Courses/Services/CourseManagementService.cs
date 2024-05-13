@@ -9,6 +9,7 @@ using Courses.Extensions;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Shared;
 
 namespace Courses.Services;
 
@@ -27,14 +28,14 @@ public class CourseManagementService(
         var course = await courseRepository.GetCourseAsync(courseId);
         if (course == null)
             return TypedResults.NotFound();
-        if (role != "Admin" && (userId == null || course.Author?.Id.ToString() != userId))
+        if (role != Roles.Admin && (userId == null || course.Author?.Id.ToString() != userId))
             return TypedResults.Forbid();
         return TypedResults.Ok(course);
     }
 
     public async Task<bool> AllowVisitCourse(Guid userId, int courseId, string? role = null)
     {
-        if (role == "Admin")
+        if (role == Roles.Admin)
             return true;
         var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
         if (userCourseInfo is null) return false;
