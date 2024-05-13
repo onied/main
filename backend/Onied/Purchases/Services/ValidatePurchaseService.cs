@@ -81,7 +81,7 @@ public class ValidatePurchaseService(
 
         var hasActive = user.Purchases
             .SingleOrDefault(
-                p => p.PurchaseDetails.PurchaseType is PurchaseType.Certificate
+                p => p.PurchaseDetails.PurchaseType is PurchaseType.Subscription
                      && (p.PurchaseDetails as SubscriptionPurchaseDetails)!.SubscriptionId == user.SubscriptionId);
         if (hasActive is not null) return Results.Forbid();
 
