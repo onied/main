@@ -59,6 +59,23 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         return true;
     }
 
+    public async Task<bool> AddDaysToSubscriptionEndDate(Guid userId, int subscriptionId, TimeSpan addDays)
+    {
+        var purchaseSubscription = await dbContext.Purchases
+            .Where(p => p.UserId == userId
+                        && p.PurchaseDetails.PurchaseType == PurchaseType.Subscription
+                        && (p.PurchaseDetails as SubscriptionPurchaseDetails)!.Subscription.Id == subscriptionId)
+            .Include(purchase => purchase.PurchaseDetails)
+            .FirstOrDefaultAsync();
+
+        if (purchaseSubscription is not { PurchaseDetails: SubscriptionPurchaseDetails subscriptionDetails }
+            || purchaseSubscription.UserId != userId) return false;
+
+        subscriptionDetails.EndDate = subscriptionDetails.EndDate.Add(addDays);
+        await dbContext.SaveChangesAsync();
+        return true;
+    }
+
     public async Task UpdateSubscriptionWithAutoRenewal()
     {
         var purchases = dbContext.Purchases
