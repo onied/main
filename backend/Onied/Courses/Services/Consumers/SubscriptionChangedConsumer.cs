@@ -20,7 +20,7 @@ public class SubscriptionChangedConsumer(
                 message.UserId, message.CertificatesEnabled);
         await subscriptionManagementService
             .SetAuthorCoursesHighlightingEnabled(
-                message.UserId, message.CertificatesEnabled);
+                message.UserId, message.CoursesHighlightingEnabled);
 
         logger.LogInformation("Processed subscription change " +
                               "(id={userId}) in database successfully", message.UserId);
