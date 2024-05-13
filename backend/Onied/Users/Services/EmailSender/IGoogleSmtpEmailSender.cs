@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Users.Data.Entities;
 
 namespace Users.Services.EmailSender;
 
