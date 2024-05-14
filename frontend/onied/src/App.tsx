@@ -29,6 +29,7 @@ import OrderCertificatePage from "./pages/certificates/orderCertificate";
 import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
 import ManageModerators from "./pages/manageModerators/manageModerators";
 import Landing from "./pages/landing/landing";
+import CustomBeatLoader from "./components/general/customBeatLoader";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -42,6 +43,9 @@ function App() {
     else if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
     else setLoading(false);
   }, [refreshingTokens]);
+
+  if (loading) return <CustomBeatLoader />;
+
   return (
     <>
       <ProfileContext.Provider value={profile}>

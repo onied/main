@@ -64,6 +64,8 @@ public class CheckTaskManagementServiceTests
 
         // Assert
         Assert.IsType<NotFound>(result);
+        /*Assert.Equivalent((Results<Ok<List<UserTaskPointsDto>>, NotFound, ForbidHttpResult>)TypedResults.Forbid(),
+            result);*/
     }
 
     [Fact]

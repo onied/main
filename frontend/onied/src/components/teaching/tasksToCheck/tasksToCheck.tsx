@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material/styles";
 import TaskToCheckDescription from "./taskToCheckDescription";
-import BeatLoader from "react-spinners/BeatLoader";
 import NoAccess from "../../general/responses/noAccess/noAccess";
 import NoContent from "../../general/responses/noContent/noContent";
 import api from "../../../config/axios";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function TasksToCheck() {
   const [loadStatus, setLoadStatus] = useState(0);
@@ -32,12 +32,7 @@ function TasksToCheck() {
 
   switch (loadStatus) {
     case 0:
-      return (
-        <BeatLoader
-          cssOverride={{ margin: "30px 30px" }}
-          color="var(--accent-color)"
-        ></BeatLoader>
-      );
+      return <CustomBeatLoader />;
     case 401:
       return <Navigate to="/login"></Navigate>;
     case 403:

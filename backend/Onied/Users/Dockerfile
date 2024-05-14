@@ -1,4 +1,5 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+RUN apt-get -y update; apt-get -y install curl
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080

@@ -1,5 +1,4 @@
 import classes from "./subscriptionCards.module.css";
-import { SubscriptionType } from "../../../pages/subscriptions/subscriptionsPreview";
 
 function SubscriptionHeader(props: {
   isHighlighted: boolean;

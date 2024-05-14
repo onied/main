@@ -25,17 +25,20 @@ public class CheckTasksServiceTests
         var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, false)
             .Create();
-        var expected = new UserTaskPoints()
+        var expected = new UserTaskPoints
         {
             TaskId = input.TaskId,
-            Points = 0
+            Points = 0,
+            Checked = true
         };
 
         // Act
         var actual = _checkTasksService.CheckTask(new Task(), input);
 
         // Assert
-        Assert.Equivalent(expected, actual, true);
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
     }
 
     [Theory]
@@ -61,14 +64,17 @@ public class CheckTasksServiceTests
         var expected = new UserTaskPoints
         {
             TaskId = input.TaskId,
-            Points = isMaxPoints ? task.MaxPoints : 0
+            Points = isMaxPoints ? task.MaxPoints : 0,
+            Checked = true
         };
 
         // Act
         var actual = _checkTasksService.CheckTask(task, input);
 
         // Assert
-        Assert.Equivalent(expected, actual, true);
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
     }
 
     [Theory]
@@ -93,13 +99,44 @@ public class CheckTasksServiceTests
         var expected = new UserTaskPoints
         {
             TaskId = input.TaskId,
-            Points = task.MaxPoints
+            Points = task.MaxPoints,
+            Checked = true
         };
 
         // Act
         var actual = _checkTasksService.CheckTask(task, input);
 
         // Assert
-        Assert.Equivalent(expected, actual, true);
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
+    }
+
+    [Fact]
+    public void CheckTask_ManualReview()
+    {
+        // Arrange
+        var task = _fixture.Build<InputTask>()
+            .With(task1 => task1.TaskType, TaskType.ManualReview)
+            .Create();
+
+        var input = _fixture.Build<UserInputRequest>()
+            .With(input1 => input1.IsDone, true)
+            .With(input1 => input1.Text, "answer")
+            .Create();
+        var expected = new UserTaskPoints
+        {
+            TaskId = input.TaskId,
+            Points = 0,
+            Checked = false
+        };
+
+        // Act
+        var actual = _checkTasksService.CheckTask(task, input);
+
+        // Assert
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
     }
 }

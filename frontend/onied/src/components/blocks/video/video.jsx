@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import EmbedVideo from "./embedVideo";
-import BeatLoader from "react-spinners/BeatLoader";
 import api from "../../../config/axios";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function Video({ courseId, blockId }) {
   const [videoBlock, setVideoBlock] = useState();
@@ -24,8 +24,7 @@ function Video({ courseId, blockId }) {
         }
       });
   }, [courseId, blockId]);
-  if (found == null)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (found == null) return <CustomBeatLoader />;
   if (!found) return <></>;
   return (
     <>

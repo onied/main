@@ -76,6 +76,7 @@ public class AccountsServiceTests
             user.Courses.Add(c);
 
         var expectedCourses = _mapper.Map<List<CourseCardResponse>>(courses);
+        expectedCourses.ForEach(course => { course.IsOwned = true; });
 
         _userRepository.Setup(a => a.GetUserWithCoursesAsync(user.Id))
             .Returns(Task.FromResult(user)!);
@@ -88,6 +89,6 @@ public class AccountsServiceTests
         var actualCourses = Assert.IsAssignableFrom<List<CourseCardResponse>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
-        Assert.Equivalent(expectedCourses.Count, actualCourses.Count);
+        Assert.Equivalent(expectedCourses, actualCourses);
     }
 }

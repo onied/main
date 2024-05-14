@@ -16,11 +16,11 @@ import {
   useRef,
   useState,
 } from "react";
-import BeatLoader from "react-spinners/BeatLoader";
 import GeneralCourseCard from "../../components/catalog/courseCards/generalCourseCard";
 import CustomArrow from "../../components/landing/customArrow/customArrow";
 import { useProfile } from "../../hooks/profile/useProfile";
 import api from "../../config/axios";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function Landing() {
   const [profile, _] = useProfile();
@@ -236,10 +236,7 @@ function Landing() {
       ) : userCourses === undefined ? (
         <>
           <h2>Ваши курсы</h2>
-          <BeatLoader
-            cssOverride={{ margin: "2rem", padding: "2rem" }}
-            color="var(--accent-color)"
-          ></BeatLoader>
+          <CustomBeatLoader />
         </>
       ) : (
         <>
@@ -279,10 +276,7 @@ function Landing() {
           <h2>Самые популярные курсы</h2>
           <div className={classes.carouselWrapper}>
             {mostPopularCourses === undefined ? (
-              <BeatLoader
-                cssOverride={{ margin: "2rem" }}
-                color="var(--accent-color)"
-              ></BeatLoader>
+              <CustomBeatLoader />
             ) : (
               <div className={classes.sliderWrapper}>
                 {mostPopularCoursesSliderSettings.infinite ? (
@@ -323,10 +317,7 @@ function Landing() {
           <h2>Рекомендуемые курсы</h2>
           <div className={classes.carouselWrapper}>
             {recommendedCourses === undefined ? (
-              <BeatLoader
-                cssOverride={{ margin: "2rem" }}
-                color="var(--accent-color)"
-              ></BeatLoader>
+              <CustomBeatLoader />
             ) : (
               <div className={classes.sliderWrapper}>
                 {recommendedCoursesSliderSettings.infinite ? (

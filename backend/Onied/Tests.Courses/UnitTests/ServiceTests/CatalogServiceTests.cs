@@ -55,12 +55,18 @@ public class CatalogServiceTests
             course.CategoryId = category.Id;
         }
 
+        var userId = Guid.NewGuid();
+
         _courseRepository
             .Setup(e => e.GetCoursesAsync(pageQuery))
-            .ReturnsAsync((courses, courses.Count));
+            .Returns(Task.FromResult((courses, courses.Count)));
+
+        _userRepository
+            .Setup(e => e.GetUserWithCoursesAsync(userId))
+            .Returns(Task.FromResult(new User() ?? null));
 
         // Act
-        var httpResult = await _service.Get(pageQuery, Guid.NewGuid());
+        var httpResult = await _service.Get(pageQuery, userId);
 
         // Assert
         var result = Assert.IsType<Ok<Page<CourseCardResponse>>>(httpResult);
