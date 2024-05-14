@@ -6,9 +6,8 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{userId:guid}")]
-public class TeachingController(
-    IManualReviewService manualReviewService,
-    ITeachingService teachingService) : ControllerBase
+public class TeachingController(IManualReviewService manualReviewService, ITeachingService teachingService)
+    : ControllerBase
 {
     [HttpGet]
     [Route("authored")]

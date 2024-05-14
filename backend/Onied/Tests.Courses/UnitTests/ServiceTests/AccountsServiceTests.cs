@@ -1,7 +1,7 @@
 using AutoFixture;
 using AutoMapper;
+using Courses.Data.Models;
 using Courses.Dtos.Catalog.Response;
-using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;

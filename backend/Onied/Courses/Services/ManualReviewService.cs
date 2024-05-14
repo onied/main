@@ -1,7 +1,7 @@
 using AutoMapper;
+using Courses.Data.Models;
 using Courses.Dtos.ManualReview.Request;
 using Courses.Dtos.ManualReview.Response;
-using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.NotificationSentProducer;
 using MassTransit.Data.Messages;

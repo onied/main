@@ -1,11 +1,9 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Courses.Controllers;
-using Courses.Dtos;
+using Courses.Data.Models;
 using Courses.Dtos.Catalog.Response;
-using Courses.Models;
 using Courses.Profiles;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;

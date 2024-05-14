@@ -1,8 +1,8 @@
 using AutoFixture;
 using AutoMapper;
+using Courses.Data.Models;
 using Courses.Dtos.CheckTasks.Request;
 using Courses.Dtos.CheckTasks.Response;
-using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
@@ -11,7 +11,7 @@ using Courses.Services.Producers.NotificationSentProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Task = System.Threading.Tasks.Task;
-using TaskProj = Courses.Models.Task;
+using TaskProj = Courses.Data.Models.Task;
 
 namespace Tests.Courses.UnitTests.ServiceTests;
 

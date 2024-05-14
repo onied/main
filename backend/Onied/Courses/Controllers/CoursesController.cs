@@ -5,9 +5,7 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{id:int}")]
-public class CoursesController(
-    ICourseService courseService
-    ) : ControllerBase
+public class CoursesController(ICourseService courseService) : ControllerBase
 {
     [HttpGet]
     public async Task<IResult> GetCoursePreview(int id, [FromQuery] Guid? userId)

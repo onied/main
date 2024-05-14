@@ -1,5 +1,6 @@
+using Courses.Data;
+using Courses.Data.Models;
 using Courses.Dtos.ManualReview.Request;
-using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,5 @@
+using Courses.Data.Models;
 using Courses.Dtos.ManualReview.Request;
-using Courses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Courses.Services.Abstractions;

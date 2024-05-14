@@ -1,7 +1,7 @@
 using AutoMapper;
+using Courses.Data.Models;
 using Courses.Dtos.CheckTasks.Request;
 using Courses.Dtos.CheckTasks.Response;
-using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseCompletedProducer;
 using Courses.Services.Producers.NotificationSentProducer;

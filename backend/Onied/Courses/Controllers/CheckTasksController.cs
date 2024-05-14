@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Courses.Controllers;
 
 [Route("api/v1/courses/{courseId:int}/tasks/{blockId:int}")]
-public class CheckTasksController(
-    ILogger<CoursesController> logger,
-    ICheckTaskManagementService checkTaskManagementService
-) : ControllerBase
+public class CheckTasksController(ICheckTaskManagementService checkTaskManagementService) : ControllerBase
 {
     [HttpGet]
     [Route("points")]

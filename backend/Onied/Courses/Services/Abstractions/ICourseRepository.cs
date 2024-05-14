@@ -1,6 +1,5 @@
-using Courses.Dtos;
+using Courses.Data.Models;
 using Courses.Dtos.Catalog.Request;
-using Courses.Models;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services.Abstractions;

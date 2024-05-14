@@ -1,7 +1,4 @@
-using AutoMapper;
-using Courses.Dtos;
 using Courses.Dtos.Catalog.Request;
-using Courses.Helpers;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +6,7 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class CatalogController(
-    ICatalogService catalogService,
-    ILogger<CatalogController> logger)
+public class CatalogController(ICatalogService catalogService)
     : ControllerBase
 {
     [HttpGet]

@@ -1,4 +1,4 @@
-﻿using Courses.Models;
+﻿using Courses.Data.Models;
 
 namespace Courses.Dtos.EditCourse.Request;
 

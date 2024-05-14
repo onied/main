@@ -1,19 +1,18 @@
 using AutoMapper;
-using Courses.Dtos;
+using Courses.Data.Models;
 using Courses.Dtos.Catalog.Response;
 using Courses.Dtos.CheckTasks.Response;
 using Courses.Dtos.Course.Response;
 using Courses.Dtos.EditCourse.Request;
 using Courses.Dtos.ManualReview.Response;
 using Courses.Dtos.Moderator.Response;
-using Courses.Models;
 using Courses.Profiles.Converters;
 using Courses.Profiles.Resolvers;
 using MassTransit.Data.Messages;
 using BlockResponse = Courses.Dtos.Course.Response.BlockResponse;
 using CourseResponse = Courses.Dtos.Course.Response.CourseResponse;
 using ModuleResponse = Courses.Dtos.Course.Response.ModuleResponse;
-using Task = Courses.Models.Task;
+using Task = Courses.Data.Models.Task;
 using TaskResponse = Courses.Dtos.Course.Response.TaskResponse;
 
 namespace Courses.Profiles;

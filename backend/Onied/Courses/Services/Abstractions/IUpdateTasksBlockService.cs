@@ -1,6 +1,5 @@
-﻿using Courses.Dtos;
+﻿using Courses.Data.Models;
 using Courses.Dtos.EditCourse.Request;
-using Courses.Models;
 
 namespace Courses.Services.Abstractions;
 

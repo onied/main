@@ -10,9 +10,7 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/courses/{id:int}/moderators")]
-public class ModeratorsCourseController(
-    ICourseManagementService courseManagementService
-    ) : ControllerBase
+public class ModeratorsCourseController(ICourseManagementService courseManagementService) : ControllerBase
 {
     [HttpGet]
     public async Task<IResult> GetStudents(int id, [FromQuery] Guid userId)

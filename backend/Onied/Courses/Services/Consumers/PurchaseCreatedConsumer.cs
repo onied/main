@@ -1,4 +1,4 @@
-using Courses.Models;
+using Courses.Data.Models;
 using Courses.Services.Abstractions;
 using MassTransit;
 using MassTransit.Data.Enums;

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Courses.Models;
+using Courses.Data.Models;
 
 namespace Courses.Dtos.CheckTasks.Request;
 

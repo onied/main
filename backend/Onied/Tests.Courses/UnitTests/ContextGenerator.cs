@@ -1,4 +1,4 @@
-﻿using Courses;
+﻿using Courses.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.Courses.UnitTests;

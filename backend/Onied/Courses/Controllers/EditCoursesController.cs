@@ -8,9 +8,7 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/courses/{id:int}/edit")]
-public class EditCoursesController(
-    ILogger<CoursesController> logger,
-    ICourseManagementService courseManagementService)
+public class EditCoursesController(ICourseManagementService courseManagementService)
 {
     [HttpPut]
     [AuthorValidationFilter]

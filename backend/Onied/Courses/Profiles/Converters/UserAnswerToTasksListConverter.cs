@@ -1,6 +1,6 @@
 using AutoMapper;
+using Courses.Data.Models;
 using Courses.Dtos.ManualReview.Response;
-using Courses.Models;
 
 namespace Courses.Profiles.Converters;
 

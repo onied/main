@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using Courses.Data.Models;
 using Courses.Dtos.Catalog.Request;
 using Courses.Dtos.Catalog.Response;
 using Courses.Helpers;
-using Courses.Models;
 using Courses.Profiles;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;

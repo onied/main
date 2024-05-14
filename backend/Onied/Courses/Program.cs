@@ -1,4 +1,4 @@
-using Courses;
+using Courses.Data;
 using Courses.Extensions;
 using Courses.Profiles;
 using Microsoft.AspNetCore.Authentication.Negotiate;

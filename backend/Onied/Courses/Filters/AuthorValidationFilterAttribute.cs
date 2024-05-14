@@ -1,5 +1,4 @@
-﻿using Courses.Models;
-using Courses.Services;
+﻿using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

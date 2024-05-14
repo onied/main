@@ -1,8 +1,7 @@
-using Courses.Dtos;
+using Courses.Data.Models;
 using Courses.Dtos.CheckTasks.Request;
-using Courses.Models;
 using Courses.Services.Abstractions;
-using Task = Courses.Models.Task;
+using Task = Courses.Data.Models.Task;
 
 namespace Courses.Services;
 

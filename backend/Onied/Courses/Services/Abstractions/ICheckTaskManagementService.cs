@@ -1,7 +1,5 @@
-using Courses.Dtos;
+using Courses.Data.Models;
 using Courses.Dtos.CheckTasks.Request;
-using Courses.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services.Abstractions;

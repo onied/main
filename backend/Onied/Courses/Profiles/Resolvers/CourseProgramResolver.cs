@@ -1,7 +1,6 @@
 using AutoMapper;
-using Courses.Dtos;
+using Courses.Data.Models;
 using Courses.Dtos.Course.Response;
-using Courses.Models;
 
 namespace Courses.Profiles.Resolvers;
 

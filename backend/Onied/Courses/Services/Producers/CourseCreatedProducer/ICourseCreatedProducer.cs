@@ -1,4 +1,4 @@
-using Courses.Models;
+using Courses.Data.Models;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services.Producers.CourseCreatedProducer;
