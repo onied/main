@@ -1,10 +1,6 @@
-using System.Text.Json.Serialization;
 using Courses;
 using Courses.Extensions;
 using Courses.Profiles;
-using Courses.Profiles.Converters;
-using Courses.Services;
-using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,46 +10,32 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
-    optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
-        .UseSnakeCaseNamingConvention());
+
+// Added context database
+builder.Services.AddDbContext(builder.Configuration);
+
+// Added profiles for mapper
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+
 builder.Services.AddCors();
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
     .AddNegotiate();
 
 builder.Services.AddMassTransitConfigured();
 
-builder.Services.AddHttpClient("PurchasesServer", config =>
-{
-    config.BaseAddress = new Uri(builder.Configuration["PurchasesServerApi"]!);
-    config.Timeout = new TimeSpan(0, 0, 30);
-    config.DefaultRequestHeaders.Clear();
-});
+builder.Services.AddHttpClient(builder.Configuration);
 
-builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
-builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
-builder.Services.AddScoped<IUserTaskPointsRepository, UserTaskPointsRepository>();
-builder.Services.AddScoped<IUpdateTasksBlockService, UpdateTasksBlockService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-builder.Services.AddScoped<IBlockRepository, BlockRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
-builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
-builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
-builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
-builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
-builder.Services.AddScoped<INotificationPreparerService, NotificationPreparerService>();
-builder.Services.AddScoped<IAccountsService, AccountsService>();
-builder.Services.AddScoped<ICatalogService, CatalogService>();
-builder.Services.AddScoped<ICourseService, CourseService>();
-builder.Services.AddScoped<ITeachingService, TeachingService>();
-builder.Services.AddTransient<UserAnswerToTasksListConverter>();
+// Added business logic services
+builder.Services.AddServices();
+
+// Added all repositories
+builder.Services.AddRepositories();
+
+// Added converters
+builder.Services.AddConverters();
 
 var app = builder.Build();
 
