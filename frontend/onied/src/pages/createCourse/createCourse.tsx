@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../../config/axios";
 import { Navigate, useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function CreateCourse() {
   const isCreated = useRef(false);
@@ -27,7 +27,7 @@ function CreateCourse() {
   });
 
   if (noAccess) return <Navigate to="/login"></Navigate>;
-  return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  return <CustomBeatLoader />;
 }
 
 export default CreateCourse;

@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../../config/axios";
 import QRCode from "react-qr-code";
-import LoginService from "../../../services/loginService";
 import { useProfile } from "../../../hooks/profile/useProfile";
 
 function ConfirmEmailComponent() {

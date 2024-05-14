@@ -2,11 +2,11 @@ import classes from "./manageModerators.module.css";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import ModeratorDescription from "./moderatorDescription";
-import BeatLoader from "react-spinners/BeatLoader";
 import NoAccess from "../../components/general/responses/noAccess/noAccess";
 import NoContent from "../../components/general/responses/noContent/noContent";
 import NotFound from "../../components/general/responses/notFound/notFound";
 import api from "../../config/axios";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function ManageModerators() {
   const { courseId } = useParams();
@@ -45,12 +45,7 @@ function ManageModerators() {
 
   switch (loadStatus) {
     case 0:
-      return (
-        <BeatLoader
-          cssOverride={{ margin: "30px 30px" }}
-          color="var(--accent-color)"
-        ></BeatLoader>
-      );
+      return <CustomBeatLoader />;
     case 401:
       return <Navigate to="/login"></Navigate>;
     case 403:

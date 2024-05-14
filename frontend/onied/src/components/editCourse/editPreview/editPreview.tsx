@@ -14,11 +14,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import PreviewModal from "./previewModal";
-import BeatLoader from "react-spinners/BeatLoader";
 import { AxiosResponse } from "axios";
 import { mapPreviewToEditPreview, PreviewDto } from "./mapPreviewDtos";
 import NotFound from "../../general/responses/notFound/notFound";
 import NoAccess from "../../general/responses/noAccess/noAccess";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function EditPreviewComponent() {
   const { courseId } = useParams();
@@ -163,16 +163,17 @@ function EditPreviewComponent() {
       });
   }, []);
 
-  if (canAccess !== undefined && !canAccess) return noAccess;
-
-  if (found !== undefined && !found) return notFound;
-
   if (
+    found === undefined ||
     previewInfo == undefined ||
     categories == undefined ||
     canAccess == undefined
   )
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+    return <CustomBeatLoader />;
+
+  if (canAccess !== undefined && !canAccess) return noAccess;
+
+  if (!found) return notFound;
 
   return (
     <>

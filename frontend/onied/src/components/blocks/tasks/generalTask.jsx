@@ -2,10 +2,8 @@ import MultipleAnswersTask from "./multipleAnswersTask";
 import SingleAnswersTask from "./singleAnswerTask";
 import InputAnswer from "./inputAnswerTask";
 import TaskTitle from "./taskTitle";
-import taskType from "./taskType";
 import ManualReviewTask from "./manualReviewTask";
 import classes from "./tasks.module.css";
-import { useCallback } from "react";
 
 function GeneralTask({ task, index, taskPoints, onChange }) {
   const bodies = [

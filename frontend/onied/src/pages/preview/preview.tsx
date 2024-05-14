@@ -8,9 +8,9 @@ import CourseProgram from "../../components/preview/courseProgram/courseProgram"
 import Button from "../../components/general/button/button";
 import AuthorBlock from "../../components/preview/authorBlock/authorBlock";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import BeatLoader from "react-spinners/BeatLoader";
 import api from "../../config/axios";
 import NotFound from "../../components/general/responses/notFound/notFound";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 type PreviewDto = {
   title: string;
@@ -60,8 +60,7 @@ function Preview(): ReactNode {
       });
   }, [courseId]);
 
-  if (found == undefined || dto == undefined)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (found == undefined || dto == undefined) return <CustomBeatLoader />;
   if (!found) return notFound;
   return (
     <div className={classes.previewContainer}>

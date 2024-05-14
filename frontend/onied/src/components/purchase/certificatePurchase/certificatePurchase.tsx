@@ -11,8 +11,8 @@ import {
 } from "../../../types/purchase";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
-import { BeatLoader } from "react-spinners";
 import NotFound from "../../general/responses/notFound/notFound";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function CertificatePurchase() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ function CertificatePurchase() {
   }, []);
 
   if (address == null) return <></>;
-  if (loading) return <BeatLoader color="var(--accent-color)" />;
+  if (loading) return <CustomBeatLoader />;
   if (error == null && purchaseInfo === null)
     return <NotFound>Курс не найден</NotFound>;
 

@@ -52,11 +52,7 @@ public class SubscriptionManagementService(
         }
     }
 
-    private HttpClient SubscriptionsServerApiClient()
-        => httpClientFactory.CreateClient(
-            ServerApiConfig.SubscriptionsServer.GetStringValue()!);
-
-    private async Task<SubscriptionRequestDto?> GetSubscriptionAsync(Guid userId)
+    public async Task<SubscriptionRequestDto?> GetSubscriptionAsync(Guid userId)
     {
         using var client = SubscriptionsServerApiClient();
         var response = await client.GetAsync($"?userId={userId}");
@@ -70,4 +66,8 @@ public class SubscriptionManagementService(
             .DeserializeAsync<SubscriptionRequestDto>(
                 await response.Content.ReadAsStreamAsync(), options);
     }
+
+    private HttpClient SubscriptionsServerApiClient()
+        => httpClientFactory.CreateClient(
+            ServerApiConfig.SubscriptionsServer.GetStringValue()!);
 }

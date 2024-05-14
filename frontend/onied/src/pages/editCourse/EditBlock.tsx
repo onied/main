@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { EditBlockDispathcer } from "../../components/editCourse/editBlocks";
 import api from "../../config/axios";
-import { BeatLoader } from "react-spinners";
 import { BlockInfo } from "../../types/course";
 import NotFound from "../../components/general/responses/notFound/notFound";
 import Forbid from "../../components/general/responses/forbid/forbid";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function EditBlock() {
   const { courseId, blockId } = useParams();
@@ -60,7 +60,7 @@ function EditBlock() {
 
   if (!found && block === null) return notFound;
 
-  if (block === undefined) return <BeatLoader color="var(--accent-color)" />;
+  if (block === undefined) return <CustomBeatLoader />;
 
   return (
     <>

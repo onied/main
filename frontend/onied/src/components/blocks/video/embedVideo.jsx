@@ -1,4 +1,3 @@
-import { useState } from "react";
 import classes from "./embedVideo.module.css";
 import YoutubeVideoProvider from "./youtubeVideoProvider";
 import VkVideoProvider from "./vkVideoProvider";

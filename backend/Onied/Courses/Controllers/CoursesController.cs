@@ -185,6 +185,9 @@ public class CoursesController : ControllerBase
                 .VerifyCreatingCoursesAsync(Guid.Parse(userId)))
             return TypedResults.Forbid();
 
+        var sub = (await _subscriptionManagementService
+            .GetSubscriptionAsync(Guid.Parse(userId)))!;
+
         var newCourse = await _courseRepository.AddCourseAsync(new Course
         {
             AuthorId = user.Id,
@@ -192,7 +195,9 @@ public class CoursesController : ControllerBase
             Description = "Без описания",
             PictureHref = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg",
             CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id,
-            CreatedDate = DateTime.UtcNow
+            CreatedDate = DateTime.UtcNow,
+            IsGlowing = sub.CoursesHighlightingEnabled,
+            HasCertificates = sub.CertificatesEnabled,
         });
         await _courseCreatedProducer.PublishAsync(newCourse);
         return TypedResults.Ok(new CreateCourseResponseDto
