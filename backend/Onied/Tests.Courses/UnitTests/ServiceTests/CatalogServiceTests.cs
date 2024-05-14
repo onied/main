@@ -1,40 +1,39 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Courses.Controllers;
-using Courses.Dtos;
+using Courses.Dtos.Catalog.Request;
+using Courses.Dtos.Catalog.Response;
 using Courses.Helpers;
 using Courses.Models;
 using Courses.Profiles;
 using Courses.Services.Abstractions;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using CatalogService = Courses.Services.CatalogService;
 using Task = System.Threading.Tasks.Task;
 
-namespace Tests.Courses.UnitTests.ControllerTests;
+namespace Tests.Courses.UnitTests.ServiceTests;
 
-public class CatalogControllerTests
+public class CatalogServiceTests
 {
-    private readonly CatalogController _controller;
+    private readonly CatalogService _service;
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Fixture _fixture = new();
     private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<IUserRepository> _userRepository = new();
-    private readonly Mock<ILogger<CatalogController>> _logger = new();
 
-    public CatalogControllerTests()
+    public CatalogServiceTests()
     {
-        _controller = new CatalogController(
-            _logger.Object,
-            _mapper,
+        _service = new CatalogService(
             _courseRepository.Object,
-            _userRepository.Object);
+            _userRepository.Object,
+            _mapper);
     }
 
     [Fact]
     public async Task Get_UsesCorrectOffsetAndLimit()
     {
         // Arrange
-        var pageQuery = new CatalogGetQueriesDto(); // Adjust as needed
+        var pageQuery = new CatalogGetQueriesRequest(); // Adjust as needed
 
         var courses = _fixture.Build<Course>()
             .CreateMany(3)
@@ -57,15 +56,15 @@ public class CatalogControllerTests
         }
 
         _courseRepository
-            .Setup(e => e.GetCoursesAsync(0, pageQuery.ElementsOnPage))
-            .Returns(Task.FromResult(courses));
+            .Setup(e => e.GetCoursesAsync(pageQuery))
+            .ReturnsAsync((courses, courses.Count));
 
         // Act
-        var result = await _controller.Get(pageQuery, Guid.NewGuid());
+        var httpResult = await _service.Get(pageQuery, Guid.NewGuid());
 
         // Assert
-        Assert.IsType<Page<CourseCardDto>>(result);
-        var page = result;
+        var result = Assert.IsType<Ok<Page<CourseCardResponse>>>(httpResult);
+        var page = result.Value;
         Assert.NotNull(page.Elements);
         Assert.NotEmpty(page.Elements);
         Assert.Equal(20, page.ElementsPerPage);

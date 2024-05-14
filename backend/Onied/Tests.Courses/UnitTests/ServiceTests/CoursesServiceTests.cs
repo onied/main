@@ -1,21 +1,20 @@
 using AutoFixture;
 using AutoMapper;
-using Courses.Controllers;
-using Courses.Dtos;
+using Courses.Dtos.Catalog.Response;
+using Courses.Dtos.Course.Response;
 using Courses.Models;
 using Courses.Profiles;
+using Courses.Services;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseCreatedProducer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Task = System.Threading.Tasks.Task;
 
-namespace Tests.Courses.UnitTests.ControllerTests;
+namespace Tests.Courses.UnitTests.ServiceTests;
 
-public class CoursesControllerTests
+public class CoursesServiceTests
 {
-    private readonly Mock<ILogger<CoursesController>> _logger = new();
     private readonly IMapper _mapper =
         new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
@@ -24,24 +23,23 @@ public class CoursesControllerTests
     private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
     private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
-    private readonly Mock<CourseCreatedProducer> _courseCreatedProducer = new();
+    private readonly Mock<ICourseCreatedProducer> _courseCreatedProducer = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
-    private readonly CoursesController _controller;
+    private readonly CourseService _service;
     private readonly Fixture _fixture = new();
 
-    public CoursesControllerTests()
+    public CoursesServiceTests()
     {
-        _controller = new CoursesController(
-            _logger.Object,
-            _mapper,
+        _service = new CourseService(
             _courseRepository.Object,
-            _blockRepository.Object,
-            _categoryRepository.Object,
-            _userRepository.Object,
             _userCourseInfoRepository.Object,
+            _courseManagementService.Object,
             _blockCompletedInfoRepository.Object,
+            _blockRepository.Object,
+            _userRepository.Object,
             _courseCreatedProducer.Object,
-            _courseManagementService.Object);
+            _categoryRepository.Object,
+            _mapper);
     }
 
     [Fact]
@@ -54,10 +52,10 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.GetCoursePreview(courseId, Guid.NewGuid());
+        var result = await _service.GetCoursePreview(courseId, Guid.NewGuid());
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -89,14 +87,14 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.GetCoursePreview(courseId, Guid.NewGuid());
+        var result = await _service.GetCoursePreview(courseId, Guid.NewGuid());
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
-        var value = Assert.IsAssignableFrom<PreviewDto>(
+        var actionResult = Assert.IsType<Ok<PreviewResponse>>(result);
+        var value = Assert.IsAssignableFrom<PreviewResponse>(
             actionResult.Value);
         Assert.Equal(courseId, value.Id);
-        Assert.Equivalent(_mapper.Map<AuthorDto>(course.Author), value.CourseAuthor, true);
+        Assert.Equivalent(_mapper.Map<AuthorResponse>(course.Author), value.CourseAuthor, true);
     }
 
     [Fact]
@@ -128,11 +126,11 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(course));
 
         // Act
-        var result = await _controller.GetCoursePreview(courseId, Guid.NewGuid());
+        var result = await _service.GetCoursePreview(courseId, Guid.NewGuid());
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<PreviewDto>>(result);
-        var value = Assert.IsAssignableFrom<PreviewDto>(
+        var actionResult = Assert.IsType<Ok<PreviewResponse>>(result);
+        var value = Assert.IsAssignableFrom<PreviewResponse>(
             actionResult.Value);
         Assert.Equal(courseId, value.Id);
         Assert.Equivalent(course.Modules.Select(module => module.Title), value.CourseProgram);
@@ -149,10 +147,10 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _controller.GetCourseHierarchy(courseId, userId);
+        var result = await _service.GetCourseHierarchy(courseId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -179,13 +177,15 @@ public class CoursesControllerTests
         _blockCompletedInfoRepository
             .Setup(r => r.GetAllCompletedCourseBlocksByUser(userId, courseId))
             .Returns(Task.FromResult<List<BlockCompletedInfo>>([]));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetCourseHierarchy(courseId, userId);
+        var result = await _service.GetCourseHierarchy(courseId, userId);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<CourseDto>>(result);
-        var value = Assert.IsAssignableFrom<CourseDto>(
+        var actionResult = Assert.IsType<Ok<CourseResponse>>(result);
+        var value = Assert.IsAssignableFrom<CourseResponse>(
             actionResult.Value);
         Assert.Equal(courseId, value.Id);
         Assert.Equal(course.Modules.Count, value.Modules.Count);
@@ -203,10 +203,10 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _service.GetSummaryBlock(courseId, blockId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<ForbidHttpResult>(result);
     }
 
     [Fact]
@@ -238,10 +238,10 @@ public class CoursesControllerTests
             .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _service.GetSummaryBlock(courseId, blockId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<ForbidHttpResult>(result);
     }
 
     [Fact]
@@ -270,13 +270,15 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(block));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _service.GetSummaryBlock(courseId, blockId, userId);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<SummaryBlockDto>>(result);
-        var value = Assert.IsAssignableFrom<SummaryBlockDto>(
+        var actionResult = Assert.IsType<Ok<SummaryBlockResponse>>(result);
+        var value = Assert.IsAssignableFrom<SummaryBlockResponse>(
             actionResult.Value);
 
         Assert.Equal(blockId, value.Id);
@@ -291,12 +293,14 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(null));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
+        var result = await _service.GetVideoBlock(courseId, blockId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -325,12 +329,14 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
             .Returns(Task.FromResult<VideoBlock?>(block));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
+        var result = await _service.GetVideoBlock(courseId, blockId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -360,13 +366,15 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
             .Returns(Task.FromResult<VideoBlock?>(block));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetVideoBlock(courseId, blockId, userId);
+        var result = await _service.GetVideoBlock(courseId, blockId, userId);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<VideoBlockDto>>(result);
-        var value = Assert.IsAssignableFrom<VideoBlockDto>(
+        var actionResult = Assert.IsType<Ok<VideoBlockResponse>>(result);
+        var value = Assert.IsAssignableFrom<VideoBlockResponse>(
             actionResult.Value);
         Assert.Equal(blockId, value.Id);
     }
@@ -381,12 +389,14 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(null));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
+        var result = await _service.GetTaskBlock(courseId, blockId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -416,12 +426,14 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
+        var result = await _service.GetTaskBlock(courseId, blockId, userId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
@@ -451,13 +463,15 @@ public class CoursesControllerTests
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.GetTaskBlock(courseId, blockId, userId);
+        var result = await _service.GetTaskBlock(courseId, blockId, userId);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult<TasksBlockDto>>(result);
-        var value = Assert.IsAssignableFrom<TasksBlockDto>(
+        var actionResult = Assert.IsType<Ok<TasksBlockResponse>>(result);
+        var value = Assert.IsAssignableFrom<TasksBlockResponse>(
             actionResult.Value);
         Assert.Equal(blockId, value.Id);
     }

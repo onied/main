@@ -141,6 +141,7 @@ function EditPreviewComponent() {
         const validPreview = handleNewPreview(response);
         requestForAccess(validPreview);
         setPreview(validPreview);
+        setCanAccess(true);
       })
       .catch((error) => {
         console.log(error);

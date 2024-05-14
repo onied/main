@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Courses.Dtos;
+using Courses.Dtos.CheckTasks.Request;
 using Courses.Models;
 using Courses.Services;
 using Courses.Services.Abstractions;
@@ -21,7 +22,7 @@ public class CheckTasksServiceTests
     public void CheckTask_NotIsDone()
     {
         // Arrange
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, false)
             .Create();
         var expected = new UserTaskPoints()
@@ -53,7 +54,7 @@ public class CheckTasksServiceTests
             .ToList();
         variants.ForEach(variant => task.Variants.Add(variant));
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.VariantsIds, new List<int> { variantId })
             .Create();
@@ -85,7 +86,7 @@ public class CheckTasksServiceTests
             }))
             .Create();
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.Answer, answer)
             .Create();

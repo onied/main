@@ -1,29 +1,26 @@
 using AutoFixture;
 using AutoMapper;
-using Courses.Controllers;
-using Courses.Dtos;
+using Courses.Dtos.Catalog.Response;
 using Courses.Models;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Task = System.Threading.Tasks.Task;
 
-namespace Tests.Courses.UnitTests.ControllerTests;
+namespace Tests.Courses.UnitTests.ServiceTests;
 
-public class AccountsControllerTests
+public class AccountsServiceTests
 {
     private readonly Fixture _fixture = new();
     private readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
     private readonly Mock<IUserRepository> _userRepository = new();
-    private readonly AccountsService _controller;
+    private readonly AccountsService _service;
 
-    public AccountsControllerTests()
+    public AccountsServiceTests()
     {
-        _controller = new AccountsService(_userRepository.Object, _mapper);
+        _service = new AccountsService(_userRepository.Object, _mapper);
     }
 
     [Fact]
@@ -33,7 +30,7 @@ public class AccountsControllerTests
         var userId = Guid.NewGuid();
 
         // Act
-        var result = await _controller.GetCourses(userId);
+        var result = await _service.GetCourses(userId);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -51,11 +48,11 @@ public class AccountsControllerTests
             .Returns(Task.FromResult(user)!);
 
         // Act
-        var result = await _controller.GetCourses(user.Id);
+        var result = await _service.GetCourses(user.Id);
 
         // Assert
-        var actionResult = Assert.IsType<Ok<List<CourseCardDto>>>(result);
-        var actualCourses = Assert.IsAssignableFrom<List<CourseCardDto>>(
+        var actionResult = Assert.IsType<Ok<List<CourseCardResponse>>>(result);
+        var actualCourses = Assert.IsAssignableFrom<List<CourseCardResponse>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
         Assert.Empty(actualCourses);
@@ -78,17 +75,17 @@ public class AccountsControllerTests
         foreach (var c in courses)
             user.Courses.Add(c);
 
-        var expectedCourses = _mapper.Map<List<CourseCardDto>>(courses);
+        var expectedCourses = _mapper.Map<List<CourseCardResponse>>(courses);
 
         _userRepository.Setup(a => a.GetUserWithCoursesAsync(user.Id))
             .Returns(Task.FromResult(user)!);
 
         // Act
-        var result = await _controller.GetCourses(user.Id);
+        var result = await _service.GetCourses(user.Id);
 
         // Assert
-        var actionResult = Assert.IsType<Ok<List<CourseCardDto>>>(result);
-        var actualCourses = Assert.IsAssignableFrom<List<CourseCardDto>>(
+        var actionResult = Assert.IsType<Ok<List<CourseCardResponse>>>(result);
+        var actualCourses = Assert.IsAssignableFrom<List<CourseCardResponse>>(
             actionResult.Value);
         Assert.NotNull(actualCourses);
         Assert.Equivalent(expectedCourses.Count, actualCourses.Count);

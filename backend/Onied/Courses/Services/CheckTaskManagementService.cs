@@ -150,7 +150,7 @@ public class CheckTaskManagementService(
             List<UserInputRequest> inputsDto)
     {
         if (!await courseManagementService.AllowVisitCourse(userId, courseId))
-            return TypedResults.Forbid();
+            return Results.Forbid();
 
         var responseGetTaskBlock = await TryGetTaskBlock(userId, courseId, blockId, true, true);
         if (responseGetTaskBlock is not Ok<TasksBlock> okGetTaskBlock)
