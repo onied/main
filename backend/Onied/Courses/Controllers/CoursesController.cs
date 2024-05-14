@@ -1,3 +1,4 @@
+using Courses.Filters;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
 
     [HttpGet]
     [Route("hierarchy")]
+    [AllowVisitCourseValidationFilter]
     public async Task<IResult> GetCourseHierarchy(int id, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
@@ -29,6 +31,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
 
     [HttpGet]
     [Route("summary/{blockId:int}")]
+    [AllowVisitCourseValidationFilter]
     public async Task<IResult> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
@@ -37,6 +40,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
 
     [HttpGet]
     [Route("video/{blockId:int}")]
+    [AllowVisitCourseValidationFilter]
     public async Task<IResult> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
@@ -45,6 +49,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
 
     [HttpGet]
     [Route("tasks/{blockId:int}/for-edit")]
+    [AllowVisitCourseValidationFilter]
     public async Task<IResult> GetEditTaskBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
@@ -53,6 +58,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
 
     [HttpGet]
     [Route("tasks/{blockId:int}")]
+    [AllowVisitCourseValidationFilter]
     public async Task<IResult> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {

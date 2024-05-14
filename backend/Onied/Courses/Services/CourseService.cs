@@ -58,8 +58,6 @@ public class CourseService(
         var course = await courseRepository.GetCourseWithBlocksAsync(id);
         if (course == null) return Results.NotFound();
 
-        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
-
         var dto = mapper.Map<CourseResponse>(course);
 
         var completed =
@@ -74,8 +72,6 @@ public class CourseService(
 
     public async Task<IResult> GetSummaryBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
-
         var summary = await blockRepository.GetSummaryBlock(blockId);
         if (summary == null || summary.Module.CourseId != id)
             return Results.NotFound();
@@ -89,8 +85,6 @@ public class CourseService(
 
     public async Task<IResult> GetVideoBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
-
         var block = await blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
@@ -104,8 +98,6 @@ public class CourseService(
 
     public async Task<IResult> GetEditTaskBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
-
         var block = await blockRepository.GetTasksBlock(blockId, true, true);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
@@ -114,8 +106,6 @@ public class CourseService(
 
     public async Task<IResult> GetTaskBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
-
         var block = await blockRepository.GetTasksBlock(blockId, true);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
