@@ -24,7 +24,7 @@ public class CoursesControllerTests
     private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
     private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
-    private readonly Mock<CourseCreatedProducer> _courseCreatedProducer = new();
+    private readonly Mock<ICourseCreatedProducer> _courseCreatedProducer = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
     private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly CoursesController _controller;

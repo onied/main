@@ -56,12 +56,18 @@ public class CatalogControllerTests
             course.CategoryId = category.Id;
         }
 
+        var userId = Guid.NewGuid();
+
         _courseRepository
-            .Setup(e => e.GetCoursesAsync(0, pageQuery.ElementsOnPage))
-            .Returns(Task.FromResult(courses));
+            .Setup(e => e.GetCoursesAsync(pageQuery))
+            .Returns(Task.FromResult((courses, courses.Count)));
+
+        _userRepository
+            .Setup(e => e.GetUserWithCoursesAsync(userId))
+            .Returns(Task.FromResult(new User() ?? null));
 
         // Act
-        var result = await _controller.Get(pageQuery, Guid.NewGuid());
+        var result = await _controller.Get(pageQuery, userId);
 
         // Assert
         Assert.IsType<Page<CourseCardDto>>(result);

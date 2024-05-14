@@ -24,9 +24,9 @@ public class EditCoursesControllerTests
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
     private readonly Mock<IModuleRepository> _moduleRepository = new();
-    private readonly Mock<UpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<IUpdateTasksBlockService> _updateTasksBlockService = new();
     private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
-    private readonly Mock<CourseUpdatedProducer> _courseUpdatedProducer = new();
+    private readonly Mock<ICourseUpdatedProducer> _courseUpdatedProducer = new();
     private readonly EditCoursesController _controller;
     private readonly Fixture _fixture = new();
 
