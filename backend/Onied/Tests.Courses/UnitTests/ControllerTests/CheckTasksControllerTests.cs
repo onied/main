@@ -4,8 +4,9 @@ using Courses.Controllers;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
-using Courses.Services;
 using Courses.Services.Abstractions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -20,7 +21,7 @@ public class CheckTasksControllerTests
     private readonly Mock<ICheckTasksService> _checkTasksService = new();
     private readonly Mock<IUserTaskPointsRepository> _userTaskPointsRepository = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
-    private readonly Mock<CheckTaskManagementService> _checkTaskManagementService = new();
+    private readonly Mock<ICheckTaskManagementService> _checkTaskManagementService = new();
     private readonly CheckTasksController _controller;
     private readonly Fixture _fixture = new();
     private readonly Mock<ILogger<CoursesController>> _logger = new();
@@ -52,7 +53,8 @@ public class CheckTasksControllerTests
         var result = await _controller.GetTaskPointsStored(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.Equivalent((Results<Ok<List<UserTaskPointsDto>>, NotFound, ForbidHttpResult>)TypedResults.Forbid(),
+            result);
     }
 
     [Fact]

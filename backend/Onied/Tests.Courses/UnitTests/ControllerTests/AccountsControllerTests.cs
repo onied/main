@@ -4,7 +4,6 @@ using Courses.Controllers;
 using Courses.Dtos;
 using Courses.Models;
 using Courses.Profiles;
-using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -77,6 +76,7 @@ public class AccountsControllerTests
             user.Courses.Add(c);
 
         var expectedCourses = _mapper.Map<List<CourseCardDto>>(courses);
+        expectedCourses.ForEach(course => { course.IsOwned = true; });
 
         _userRepository.Setup(a => a.GetUserWithCoursesAsync(user.Id))
             .Returns(Task.FromResult(user)!);
