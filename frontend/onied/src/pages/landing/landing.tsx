@@ -16,10 +16,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  tempPopularCourses,
-  tempRecommendedCourses,
-} from "../../components/landing/temporaryCoursesSource";
 import GeneralCourseCard from "../../components/catalog/courseCards/generalCourseCard";
 import CustomArrow from "../../components/landing/customArrow/customArrow";
 import { useProfile } from "../../hooks/profile/useProfile";
@@ -242,7 +238,7 @@ function Landing() {
           <h2>Ваши курсы</h2>
           <CustomBeatLoader />
         </>
-      ) : userCourses.length > 0 ? (
+      ) : (
         <>
           <h2>Ваши курсы</h2>
           <div className={classes.carouselWrapper}>
