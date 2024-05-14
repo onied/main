@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Notifications.Migrations
+namespace Notifications.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20240420214414_Initial")]
