@@ -9,6 +9,7 @@ using Users.Services.UsersService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json");
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddDbContextConfigured(builder.Configuration);
@@ -36,6 +37,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHealthChecks("/healthz");
 
 // We need this for Ocelot to work correctly;
 // Otherwise the middleware chain is in the wrong order.
