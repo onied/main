@@ -11,6 +11,7 @@ WORKDIR /src
 COPY ["Users/Users.csproj", "Users/"]
 COPY ["MassTransit.Data/MassTransit.Data.csproj", "MassTransit.Data/"]
 COPY ["Users.Data/Users.Data.csproj", "Users.Data/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "Users/Users.csproj"
 COPY . .
 RUN mv "Users/ocelot.Docker.json" "Users/ocelot.json"
