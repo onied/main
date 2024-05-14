@@ -1,19 +1,18 @@
-using Courses.Dtos;
-using Courses.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Courses.Data.Models;
+using Courses.Dtos.CheckTasks.Request;
 using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services.Abstractions;
 
 public interface ICheckTaskManagementService
 {
-    public Task<Results<Ok<TasksBlock>, NotFound, ForbidHttpResult>> TryGetTaskBlock(
+    public Task<IResult> TryGetTaskBlock(
         Guid userId, int courseId, int blockId,
         bool includeVariants = false,
         bool includeAnswers = false);
 
-    public Results<Ok<List<UserTaskPoints>>, NotFound<string>, BadRequest<string>> GetUserTaskPoints(
-        List<UserInputDto> inputsDto,
+    public IResult GetUserTaskPoints(
+        List<UserInputRequest> inputsDto,
         TasksBlock block,
         Guid userId);
 
@@ -23,4 +22,17 @@ public interface ICheckTaskManagementService
         int blockId);
 
     public Task ManageCourseCompleted(Guid userId, int courseId);
+
+    public Task<IResult> GetTaskPointsStored(
+        int courseId,
+        int blockId,
+        Guid userId,
+        string? role);
+
+    public Task<IResult> CheckTaskBlock(
+        int courseId,
+        int blockId,
+        Guid userId,
+        string? role,
+        List<UserInputRequest> inputsDto);
 }

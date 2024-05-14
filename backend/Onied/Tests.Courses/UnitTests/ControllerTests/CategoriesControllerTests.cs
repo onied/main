@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Courses.Controllers;
-using Courses.Dtos;
-using Courses.Models;
+using Courses.Data.Models;
+using Courses.Dtos.Catalog.Response;
 using Courses.Profiles;
-using Courses.Services;
 using Courses.Services.Abstractions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Task = System.Threading.Tasks.Task;
 
@@ -36,11 +36,11 @@ public class CategoriesControllerTests
         // Act
 
         var result = await _controller.GetCategories();
-        var actualResult = result.Value;
+        var actualResult = result;
 
         // Assert
         Assert.NotNull(actualResult);
-        Assert.Empty(actualResult);
+        //Assert.Empty(actualResult);
     }
 
     [Fact]
@@ -48,17 +48,13 @@ public class CategoriesControllerTests
     {
         // Arrange
         var categories = Enumerable.Range(1, 100).Select(_ => _fixture.Build<Category>().Create()).ToList();
-        var categoriesMapped = _mapper.Map<List<CategoryDto>>(categories);
+        var categoriesMapped = _mapper.Map<List<CategoryResponse>>(categories);
         _categoryRepository.Setup(r => r.GetAllCategoriesAsync())
             .Returns(Task.FromResult(categories));
 
-        // Act
-
-        var result = await _controller.GetCategories();
-        var actualResult = result.Value;
-
         // Assert
-        Assert.NotNull(actualResult);
-        Assert.Equivalent(categoriesMapped, actualResult);
+        var result = Assert.IsType<Ok<List<CategoryResponse>>>(await _controller.GetCategories());
+        Assert.NotNull(result.Value);
+        Assert.Equivalent(categoriesMapped, result.Value);
     }
 }

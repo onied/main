@@ -1,208 +1,75 @@
-using AutoMapper;
-using Courses.Dtos;
-using Courses.Models;
+using Courses.Filters;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseCreatedProducer;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{id:int}")]
-public class CoursesController : ControllerBase
+public class CoursesController(ICourseService courseService) : ControllerBase
 {
-    private readonly IBlockRepository _blockRepository;
-    private readonly ICourseRepository _courseRepository;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IBlockCompletedInfoRepository _blockCompletedInfoRepository;
-    private readonly IMapper _mapper;
-    private readonly IUserRepository _userRepository;
-    private readonly IUserCourseInfoRepository _userCourseInfoRepository;
-    private readonly ICourseCreatedProducer _courseCreatedProducer;
-    private readonly ICourseManagementService _courseManagementService;
-    private readonly ISubscriptionManagementService _subscriptionManagementService;
-
-    public CoursesController(
-        ILogger<CoursesController> logger,
-        IMapper mapper,
-        ICourseRepository courseRepository,
-        IBlockRepository blockRepository,
-        ICategoryRepository categoryRepository,
-        IUserRepository userRepository,
-        IUserCourseInfoRepository userCourseInfoRepository,
-        IBlockCompletedInfoRepository blockCompletedInfoRepository,
-        ICourseCreatedProducer courseCreatedProducer,
-        ICourseManagementService courseManagementService,
-        ISubscriptionManagementService subscriptionManagementService)
-    {
-        _mapper = mapper;
-        _courseRepository = courseRepository;
-        _blockRepository = blockRepository;
-        _userRepository = userRepository;
-        _blockCompletedInfoRepository = blockCompletedInfoRepository;
-        _categoryRepository = categoryRepository;
-        _courseCreatedProducer = courseCreatedProducer;
-        _courseManagementService = courseManagementService;
-        _subscriptionManagementService = subscriptionManagementService;
-        _userCourseInfoRepository = userCourseInfoRepository;
-    }
-
     [HttpGet]
-    public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id, [FromQuery] Guid? userId)
+    public async Task<IResult> GetCoursePreview(int id, [FromQuery] Guid? userId)
     {
-        var course = await _courseRepository.GetCourseAsync(id);
-        if (course == null)
-            return NotFound();
-
-        var userCourseInfo = userId is null
-            ? null
-            : await _userCourseInfoRepository.GetUserCourseInfoAsync(userId.Value, id);
-
-        var preview = _mapper.Map<PreviewDto>(course);
-        preview.IsOwned = userCourseInfo is not null;
-        return preview;
+        return await courseService.GetCoursePreview(id, userId);
     }
 
     [HttpPost("enter")]
-    public async Task<ActionResult> EnterFreeCourse(int id, [FromQuery] Guid userId)
+    public async Task<IResult> EnterFreeCourse(int id, [FromQuery] Guid userId)
     {
-        var course = await _courseRepository.GetCourseAsync(id);
-        if (course == null || course.PriceRubles > 0) return NotFound();
-
-        var maybeAlreadyEntered = await _userCourseInfoRepository
-            .GetUserCourseInfoAsync(userId, course.Id);
-        if (maybeAlreadyEntered is not null) return Forbid();
-        var userCourseInfo = new UserCourseInfo()
-        {
-            UserId = userId,
-            CourseId = course.Id
-        };
-        await _userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
-        return Ok();
+        return await courseService.EnterFreeCourse(id, userId);
     }
 
     [HttpGet]
     [Route("hierarchy")]
-    public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id, [FromQuery] Guid userId,
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetCourseHierarchy(int id, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
-        if (course == null) return NotFound();
-
-        if (!await _courseManagementService.AllowVisitCourse(userId, id, role)) return Forbid();
-
-        var dto = _mapper.Map<CourseDto>(course);
-
-        var completed =
-            await _blockCompletedInfoRepository
-                .GetAllCompletedCourseBlocksByUser(userId, id);
-        var blocksLink = dto.Modules.SelectMany(m => m.Blocks).ToList();
-        foreach (var cm in completed)
-            blocksLink.Single(b => b.Id == cm.BlockId).Completed = true;
-
-        return dto;
+        return await courseService.GetCourseHierarchy(id, userId, role);
     }
 
     [HttpGet]
     [Route("summary/{blockId:int}")]
-    public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId,
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        if (!await _courseManagementService.AllowVisitCourse(userId, id, role)) return Forbid();
-
-        var summary = await _blockRepository.GetSummaryBlock(blockId);
-        if (summary == null || summary.Module.CourseId != id)
-            return NotFound();
-
-        var dto = _mapper.Map<SummaryBlockDto>(summary);
-        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
-            await _blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
-        dto.IsCompleted = true;
-        return dto;
+        return await courseService.GetSummaryBlock(id, blockId, userId, role);
     }
 
     [HttpGet]
     [Route("video/{blockId:int}")]
-    public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId,
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        if (!await _courseManagementService.AllowVisitCourse(userId, id, role)) return Forbid();
-
-        var block = await _blockRepository.GetVideoBlock(blockId);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-
-        var dto = _mapper.Map<VideoBlockDto>(block);
-        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
-            await _blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
-        dto.IsCompleted = true;
-        return dto;
+        return await courseService.GetVideoBlock(id, blockId, userId, role);
     }
 
     [HttpGet]
     [Route("tasks/{blockId:int}/for-edit")]
-    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId, [FromQuery] Guid userId,
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetEditTaskBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        if (!await _courseManagementService.AllowVisitCourse(userId, id, role)) return Forbid();
-
-        var block = await _blockRepository.GetTasksBlock(blockId, true, true);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-        return _mapper.Map<EditTasksBlockDto>(block);
+        return await courseService.GetEditTaskBlock(id, blockId, userId, role);
     }
 
     [HttpGet]
     [Route("tasks/{blockId:int}")]
-    public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId,
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        if (!await _courseManagementService.AllowVisitCourse(userId, id, role)) return Forbid();
-
-        var block = await _blockRepository.GetTasksBlock(blockId, true);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-
-        var dto = _mapper.Map<TasksBlockDto>(block);
-        if (await _blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is not null)
-            dto.IsCompleted = true;
-        return dto;
+        return await courseService.GetTaskBlock(id, blockId, userId, role);
     }
 
     [HttpPost]
     [Route("/api/v1/[controller]/create")]
-    public async Task<Results<Ok<CreateCourseResponseDto>, ForbidHttpResult, UnauthorizedHttpResult>> CreateCourse(
+    public async Task<IResult> CreateCourse(
         [FromQuery] string? userId)
     {
-        if (userId == null || !Guid.TryParse(userId, out var authorId))
-            return TypedResults.Unauthorized();
-        var user = await _userRepository.GetUserAsync(authorId);
-        if (user == null)
-            return TypedResults.Unauthorized();
-
-        if (!await _subscriptionManagementService
-                .VerifyCreatingCoursesAsync(Guid.Parse(userId)))
-            return TypedResults.Forbid();
-
-        var sub = (await _subscriptionManagementService
-            .GetSubscriptionAsync(Guid.Parse(userId)))!;
-
-        var newCourse = await _courseRepository.AddCourseAsync(new Course
-        {
-            AuthorId = user.Id,
-            Title = "Без названия",
-            Description = "Без описания",
-            PictureHref = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg",
-            CategoryId = (await _categoryRepository.GetAllCategoriesAsync())[0].Id,
-            CreatedDate = DateTime.UtcNow,
-            IsGlowing = sub.CoursesHighlightingEnabled,
-            HasCertificates = sub.CertificatesEnabled,
-        });
-        await _courseCreatedProducer.PublishAsync(newCourse);
-        return TypedResults.Ok(new CreateCourseResponseDto
-        {
-            Id = newCourse.Id
-        });
+        return await courseService.CreateCourse(userId);
     }
 }

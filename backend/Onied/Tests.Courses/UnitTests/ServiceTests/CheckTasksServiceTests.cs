@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
-using Courses.Dtos;
-using Courses.Models;
+using Courses.Data.Models;
+using Courses.Dtos.CheckTasks.Request;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Task = Courses.Models.Task;
+using Task = Courses.Data.Models.Task;
 
 namespace Tests.Courses.UnitTests.ServiceTests;
 
@@ -21,7 +21,7 @@ public class CheckTasksServiceTests
     public void CheckTask_NotIsDone()
     {
         // Arrange
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, false)
             .Create();
         var expected = new UserTaskPoints
@@ -56,7 +56,7 @@ public class CheckTasksServiceTests
             .ToList();
         variants.ForEach(variant => task.Variants.Add(variant));
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.VariantsIds, new List<int> { variantId })
             .Create();
@@ -91,7 +91,7 @@ public class CheckTasksServiceTests
             }))
             .Create();
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.Answer, answer)
             .Create();
@@ -119,7 +119,7 @@ public class CheckTasksServiceTests
             .With(task1 => task1.TaskType, TaskType.ManualReview)
             .Create();
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.Text, "answer")
             .Create();

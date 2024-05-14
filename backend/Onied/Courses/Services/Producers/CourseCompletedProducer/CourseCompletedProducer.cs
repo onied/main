@@ -1,4 +1,3 @@
-using Courses.Models;
 using MassTransit;
 using MassTransit.Data.Messages;
 using Task = System.Threading.Tasks.Task;

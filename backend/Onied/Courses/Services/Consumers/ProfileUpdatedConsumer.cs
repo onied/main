@@ -1,5 +1,5 @@
 using AutoMapper;
-using Courses.Enums;
+using Courses.Data.Enums;
 using Courses.Services.Abstractions;
 using MassTransit;
 using MassTransit.Data.Messages;

@@ -1,13 +1,13 @@
-using Courses.Dtos;
-using Courses.Models;
+using Courses.Data.Models;
+using Courses.Dtos.CheckTasks.Request;
 using Courses.Services.Abstractions;
-using Task = Courses.Models.Task;
+using Task = Courses.Data.Models.Task;
 
 namespace Courses.Services;
 
 public class CheckTasksService : ICheckTasksService
 {
-    public UserTaskPoints CheckTask(Task task, UserInputDto input)
+    public UserTaskPoints CheckTask(Task task, UserInputRequest input)
     {
         if (!input.IsDone)
         {
@@ -35,7 +35,7 @@ public class CheckTasksService : ICheckTasksService
         };
     }
 
-    private UserTaskPoints CheckTask(VariantsTask task, UserInputDto input)
+    private UserTaskPoints CheckTask(VariantsTask task, UserInputRequest input)
     {
         return new UserTaskPoints()
         {
@@ -50,7 +50,7 @@ public class CheckTasksService : ICheckTasksService
         };
     }
 
-    private UserTaskPoints CheckTask(InputTask task, UserInputDto input)
+    private UserTaskPoints CheckTask(InputTask task, UserInputRequest input)
     {
         return new UserTaskPoints()
         {

@@ -1,8 +1,7 @@
 using AutoMapper;
 using Courses.Dtos;
-using Courses.Services;
+using Courses.Dtos.Catalog.Response;
 using Courses.Services.Abstractions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
@@ -12,8 +11,8 @@ namespace Courses.Controllers;
 public class CategoriesController(IMapper mapper, ICategoryRepository categoryRepository) : ControllerBase
 {
     [HttpGet]
-    public async Task<Ok<List<CategoryDto>>> GetCategories()
+    public async Task<IResult> GetCategories()
     {
-        return TypedResults.Ok(mapper.Map<List<CategoryDto>>(await categoryRepository.GetAllCategoriesAsync()));
+        return Results.Ok(mapper.Map<List<CategoryResponse>>(await categoryRepository.GetAllCategoriesAsync()));
     }
 }
