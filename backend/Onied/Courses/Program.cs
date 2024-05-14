@@ -1,8 +1,9 @@
 using Courses;
+using Courses.Extensions;
 using Courses.Profiles;
+using Courses.Profiles.Converters;
 using Courses.Services;
-using Courses.Services.Consumers;
-using MassTransit;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,32 +22,39 @@ builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>(
 builder.Services.AddCors();
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
     .AddNegotiate();
-builder.Services.AddMassTransit(x =>
+
+builder.Services.AddMassTransitConfigured();
+
+builder.Services.AddHttpClient("PurchasesServer", config =>
 {
-    x.AddConsumer<UserCreatedConsumer>();
-    x.AddConsumer<ProfileUpdatedConsumer>();
-    x.AddConsumer<ProfilePhotoUpdatedConsumer>();
-
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host(builder.Configuration["RabbitMQ:Host"], builder.Configuration["RabbitMQ:VHost"], h =>
-        {
-            h.Username(builder.Configuration["RabbitMQ:Username"]);
-            h.Password(builder.Configuration["RabbitMQ:Password"]);
-        });
-
-        cfg.ConfigureEndpoints(context);
-    });
+    config.BaseAddress = new Uri(builder.Configuration["PurchasesServerApi"]!);
+    config.Timeout = new TimeSpan(0, 0, 30);
+    config.DefaultRequestHeaders.Clear();
+});
+builder.Services.AddHttpClient("SubscriptionsServer", config =>
+{
+    config.BaseAddress = new Uri(builder.Configuration["SubscriptionsServerApi"]!);
+    config.Timeout = new TimeSpan(0, 0, 30);
+    config.DefaultRequestHeaders.Clear();
 });
 
 builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
 builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
+builder.Services.AddScoped<IUserTaskPointsRepository, UserTaskPointsRepository>();
 builder.Services.AddScoped<IUpdateTasksBlockService, UpdateTasksBlockService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IBlockRepository, BlockRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
+builder.Services.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
+builder.Services.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
+builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
+builder.Services.AddScoped<ISubscriptionManagementService, SubscriptionManagementService>();
+builder.Services.AddScoped<INotificationPreparerService, NotificationPreparerService>();
+builder.Services.AddTransient<UserAnswerToTasksListConverter>();
 
 var app = builder.Build();
 
@@ -65,5 +73,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<AppDbContext>();
+    if (context.Database.GetPendingMigrations().Any()) context.Database.Migrate();
+}
 
 app.Run();

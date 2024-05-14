@@ -16,6 +16,4 @@ public class Block
     public string Title { get; set; } = null!;
 
     public virtual BlockType BlockType { get; set; }
-
-    public bool IsCompleted { get; set; }
 }

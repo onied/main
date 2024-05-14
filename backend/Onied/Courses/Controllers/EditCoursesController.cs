@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
 using Courses.Models;
-using Courses.Services;
+using Courses.Services.Abstractions;
+using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,44 +18,69 @@ public class EditCoursesController(
     ICourseManagementService courseManagementService,
     ICategoryRepository categoryRepository,
     IModuleRepository moduleRepository,
-    IUpdateTasksBlockService updateTasksBlockService)
+    IUpdateTasksBlockService updateTasksBlockService,
+    ISubscriptionManagementService subscriptionManagementService,
+    ICourseUpdatedProducer courseUpdatedProducer)
 {
-
     [HttpPut]
-    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, UnauthorizedHttpResult>> EditCourse(int id,
-        [FromQuery] string? userId,
+    public async Task<Results<Ok<PreviewDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditCourse(int id,
+        [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] EditCourseDto editCourseDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    { "userId", ["userId queue parameter cannot be null"] }
+                });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course> ok)
             return (dynamic)response.Result;
 
-        var course = ((Ok<Course>)response.Result).Value!;
+        var course = ok.Value!;
         var category = await categoryRepository.GetCategoryById(editCourseDto.CategoryId);
         if (category == null)
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
             {
                 [nameof(editCourseDto.CategoryId)] = ["This category does not exist."]
             });
+
+
+        if (editCourseDto.HasCertificates &&
+            !await subscriptionManagementService
+                .VerifyGivingCertificatesAsync(Guid.Parse(userId)))
+            return TypedResults.Forbid();
+
         mapper.Map(editCourseDto, course);
         course.Category = category;
         course.CategoryId = category.Id;
         await courseRepository.UpdateCourseAsync(course);
+        await courseUpdatedProducer.PublishAsync(course);
         return TypedResults.Ok(mapper.Map<PreviewDto>(course));
     }
 
     [HttpPut]
     [Route("hierarchy")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditHierarchy(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditHierarchy(
         int id,
-        [FromQuery] string? userId,
+        [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] CourseDto courseDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course> ok)
             return (dynamic)response.Result;
 
-        var course = ((Ok<Course>)response.Result).Value!;
+        var course = ok.Value!;
         mapper.Map(courseDto, course);
         await courseRepository.UpdateCourseAsync(course);
 
@@ -63,12 +89,20 @@ public class EditCoursesController(
 
     [HttpPost]
     [Route("add-module")]
-    public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddModule(
+    public async Task<Results<Ok<int>, NotFound, ValidationProblem, ForbidHttpResult>> AddModule(
         int id,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var addedModuleId = await moduleRepository.AddModuleReturnIdAsync(new Module
@@ -82,13 +116,21 @@ public class EditCoursesController(
 
     [HttpDelete]
     [Route("delete-module")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> DeleteModule(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> DeleteModule(
         int id,
         [FromQuery] int moduleId,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await moduleRepository.DeleteModuleAsync(moduleId))
@@ -99,14 +141,22 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("rename-module")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> RenameModule(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> RenameModule(
         int id,
         [FromQuery] int moduleId,
         [FromQuery] string title,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await moduleRepository.RenameModuleAsync(moduleId, title))
@@ -117,14 +167,22 @@ public class EditCoursesController(
 
     [HttpPost]
     [Route("add-block/{moduleId:int}")]
-    public async Task<Results<Ok<int>, NotFound, ForbidHttpResult>> AddBlock(
+    public async Task<Results<Ok<int>, NotFound, ValidationProblem, ForbidHttpResult>> AddBlock(
         int id,
         int moduleId,
         [FromQuery] int blockType,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var module = await moduleRepository.GetModuleAsync(moduleId);
@@ -143,13 +201,21 @@ public class EditCoursesController(
 
     [HttpDelete]
     [Route("delete-block")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> DeleteBlock(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> DeleteBlock(
         int id,
         [FromQuery] int blockId,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await blockRepository.DeleteBlockAsync(blockId))
@@ -160,14 +226,22 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("rename-block")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> RenameBlock(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> RenameBlock(
         int id,
         [FromQuery] int blockId,
         [FromQuery] string title,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         if (!await blockRepository.RenameBlockAsync(blockId, title))
@@ -178,14 +252,22 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("video/{blockId:int}")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditVideoBlock(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditVideoBlock(
         int id,
         int blockId,
-        [FromQuery] string? userId,
+        [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] VideoBlockDto videoBlockDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var block = await blockRepository.GetVideoBlock(blockId);
@@ -199,14 +281,22 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("summary/{blockId:int}")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> EditSummaryBlock(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> EditSummaryBlock(
         int id,
         int blockId,
-        [FromQuery] string? userId,
+        [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] SummaryBlockDto summaryBlockDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var block = await blockRepository.GetSummaryBlock(blockId);
@@ -220,14 +310,22 @@ public class EditCoursesController(
 
     [HttpPut]
     [Route("tasks/{blockId:int}")]
-    public async Task<Results<Ok<EditTasksBlockDto>, NotFound, ForbidHttpResult>> EditTasksBlock(
+    public async Task<Results<Ok<EditTasksBlockDto>, NotFound, ValidationProblem, ForbidHttpResult>> EditTasksBlock(
         int id,
         int blockId,
-        [FromQuery] string? userId,
+        [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] EditTasksBlockDto tasksBlockDto)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         var block = await blockRepository.GetTasksBlock(blockId);
@@ -243,12 +341,20 @@ public class EditCoursesController(
 
     [HttpGet]
     [Route("check-edit-course")]
-    public async Task<Results<Ok, NotFound, ForbidHttpResult>> CheckEditCourse(
+    public async Task<Results<Ok, NotFound, ValidationProblem, ForbidHttpResult>> CheckEditCourse(
         int id,
-        [FromQuery] string? userId)
+        [FromQuery] string? userId, [FromQuery] string? role)
     {
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId);
-        if (response.Result.GetType() != typeof(Ok<Course>))
+        if (userId is null)
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "userId", ["userId queue parameter cannot be null"] }
+            });
+        if (!await courseManagementService.AllowVisitCourse(Guid.Parse(userId), id, role))
+            return TypedResults.Forbid();
+
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        if (response.Result is not Ok<Course>)
             return (dynamic)response.Result;
 
         return TypedResults.Ok();

@@ -9,6 +9,8 @@ import classes from "./index.module.css";
 import { TasksBlock } from "../../../../types/block";
 import TrashButton from "../../../general/trashButton";
 import Button from "../../../general/button/button";
+import NotFound from "../../../general/responses/notFound/notFound";
+import Forbid from "../../../general/responses/forbid/forbid";
 
 function EditTasksBlockComponent({
   courseId,
@@ -23,7 +25,9 @@ function EditTasksBlockComponent({
     TasksBlock | undefined | null
   >(undefined);
 
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс или блок не найден.</h1>;
+  const notFound = <NotFound>Курс или блок не найден.</NotFound>;
+  const [isForbid, setIsForbid] = useState(false);
+  const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
 
   useEffect(() => {
     const parsedCourseId = Number(courseId);
@@ -36,21 +40,30 @@ function EditTasksBlockComponent({
 
     setLoading(true);
     api
-      .get("courses/" + courseId + "/tasks/" + blockId + "/for-edit")
-      .then((response) => {
-        console.log(response.data);
-        setLoading(false);
-        setCurrentBlock(response.data);
+      .get("courses/" + courseId + "/edit/check-edit-course")
+      .then((_) => {
+        api
+          .get("courses/" + courseId + "/tasks/" + blockId + "/for-edit")
+          .then((response) => {
+            console.log(response.data);
+            setLoading(false);
+            setCurrentBlock(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+
+            if ("response" in error && error.response.status == 404) {
+              setLoading(false);
+              setCurrentBlock(null);
+            }
+          });
       })
       .catch((error) => {
-        console.log(error);
-
-        if ("response" in error && error.response.status == 404) {
-          setLoading(false);
-          setCurrentBlock(null);
-        }
+        if (error.response?.status === 403) setIsForbid(true);
       });
   }, []);
+
+  if (isForbid) return forbid;
 
   if (loading) return <BeatLoader />;
 

@@ -1,4 +1,6 @@
+using Courses.Dtos;
 using Courses.Models;
+using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
@@ -29,6 +31,55 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
         return await query.ToListAsync();
     }
 
+    public async Task<(List<Course> list, int count)> GetCoursesAsync(CatalogGetQueriesDto catalogGetQueriesDto)
+    {
+        var query = dbContext.Courses
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (catalogGetQueriesDto.Category != null)
+            query = query.Where(course => course.CategoryId == catalogGetQueriesDto.Category.Value);
+        if (catalogGetQueriesDto.PriceFrom != null)
+            query = query.Where(course => course.PriceRubles >= catalogGetQueriesDto.PriceFrom.Value);
+        if (catalogGetQueriesDto.PriceTo != null)
+            query = query.Where(course => course.PriceRubles <= catalogGetQueriesDto.PriceTo.Value);
+        if (catalogGetQueriesDto.TimeFrom != null)
+            query = query.Where(course => course.HoursCount >= catalogGetQueriesDto.TimeFrom.Value);
+        if (catalogGetQueriesDto.TimeTo != null)
+            query = query.Where(course => course.HoursCount <= catalogGetQueriesDto.TimeTo.Value);
+        if (catalogGetQueriesDto.CertificatesOnly)
+            query = query.Where(course => course.HasCertificates);
+        if (catalogGetQueriesDto.ActiveOnly)
+            query = query.Where(course => !course.IsArchived);
+        if (catalogGetQueriesDto.Q.Length > 0)
+            query = query.Where(course =>
+                course.Title.ToLower().Contains(catalogGetQueriesDto.Q.ToLower()) ||
+                course.Description.ToLower().Contains(catalogGetQueriesDto.Q.ToLower()));
+
+        catalogGetQueriesDto.Sort ??= "popular";
+
+        switch (catalogGetQueriesDto.Sort)
+        {
+            case "popular":
+                query = query.OrderByDescending(course => course.Users.Count);
+                break;
+            case "new":
+                query = query.OrderByDescending(course => course.CreatedDate);
+                break;
+            case "priceAsc":
+                query = query.OrderBy(course => course.PriceRubles);
+                break;
+            case "priceDesc":
+                query = query.OrderByDescending(course => course.PriceRubles);
+                break;
+        }
+
+        return (await query.Skip(catalogGetQueriesDto.Offset).Take(catalogGetQueriesDto.ElementsOnPage).ToListAsync(),
+            await query.CountAsync());
+    }
+
     public async Task<Course?> GetCourseAsync(int id)
     => await dbContext.Courses
         .Include(course => course.Modules)
@@ -46,15 +97,68 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
 
-    public async Task AddCourseAsync(Course course)
+    public async Task<Course?> GetCourseWithUsersAsync(int id)
+        => await dbContext.Courses
+            .Include(c => c.Users)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Course?> GetCourseWithModeratorsAsync(int id)
+        => await dbContext.Courses
+            .Include(c => c.Moderators)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Course?> GetCourseWithUsersAndModeratorsAsync(int id)
+        => await dbContext.Courses
+            .Include(c => c.Moderators)
+            .Include(c => c.Users)
+            .Include(c => c.Author)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Course> AddCourseAsync(Course course)
     {
-        await dbContext.Courses.AddAsync(course);
+        var newCourse = await dbContext.Courses.AddAsync(course);
         await dbContext.SaveChangesAsync();
+        return newCourse.Entity;
+    }
+
+    public async Task AddModeratorAsync(int courseId, Guid studentId)
+    {
+        var course = await dbContext.Courses
+            .Include(c => c.Moderators)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+        if (course is not null)
+        {
+            var moderator = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == studentId);
+            if (moderator is not null)
+            {
+                course.Moderators.Add(moderator);
+                await dbContext.SaveChangesAsync();
+            }
+        }
     }
 
     public async Task UpdateCourseAsync(Course course)
     {
         dbContext.Courses.Update(course);
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteModeratorAsync(int courseId, Guid studentId)
+    {
+        var course = await dbContext.Courses
+            .Include(c => c.Moderators)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+        if (course is not null)
+        {
+            var moderator = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == studentId);
+            if (moderator is not null)
+            {
+                course.Moderators.Remove(moderator);
+                await dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

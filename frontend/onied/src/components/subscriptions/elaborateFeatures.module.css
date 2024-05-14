@@ -1,0 +1,73 @@
+.outerGrid{
+    margin-top: 10vh;
+    display: grid;
+    grid-template-columns: 3fr repeat(3, 1fr);
+}
+
+.innerGrid{
+    display: grid;
+    grid-column: 1 / 4;
+    grid-template-columns: subgrid;
+}
+
+.gridItem,
+.gridItemLastColumn{
+    padding: 15px 0;
+}
+
+.gridItemLastColumn{
+    display: flex;
+    justify-content: center;
+}
+
+.gridItem:nth-child(3n + 2),
+.gridItem:nth-child(3n + 3)
+{
+    display: flex;
+    justify-content: center;
+}
+
+
+.lastColumnWrapper{
+    display: grid;
+    grid-column: 4 / 5;
+    grid-template-columns: subgrid;
+    background: linear-gradient(white, white) padding-box,
+    linear-gradient(180deg, #FFCC4D, #9715D3) border-box;
+    border: 4px solid transparent;
+    border-radius: 20px
+}
+
+.featureDescriptionsTitle{
+    font-size: 1.3rem;
+}
+
+
+.freeSubscriptionTitle,
+.defaultSubscriptionTitle,
+.fullSubscriptionTitle{
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+
+.freeSubscriptionTitle,
+.featureDescriptionsTitle {
+    font-weight: 600;
+}
+
+.defaultSubscriptionTitle,
+.fullSubscriptionTitle{
+    letter-spacing: .2rem;
+}
+
+
+.defaultSubscriptionTitle{
+    font-weight: 700;
+}
+
+.fullSubscriptionTitle{
+    font-weight: 800;
+    font-style: italic;
+}
+

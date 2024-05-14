@@ -5,8 +5,6 @@ namespace Courses.Dtos;
 
 public class UserInputDto : IValidatableObject
 {
-    public int UserId { get; set; } = -1;
-
     public int TaskId { get; set; }
     public bool IsDone { get; set; }
 

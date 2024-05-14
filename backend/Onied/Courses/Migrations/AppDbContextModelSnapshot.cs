@@ -22,25 +22,6 @@ namespace Courses.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CourseUser", b =>
-                {
-                    b.Property<int>("CoursesId")
-                        .HasColumnType("integer")
-                        .HasColumnName("courses_id");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("CoursesId", "UserId")
-                        .HasName("pk_course_user");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_course_user_user_id");
-
-                    b.ToTable("course_user", (string)null);
-                });
-
             modelBuilder.Entity("Courses.Models.Block", b =>
                 {
                     b.Property<int>("Id")
@@ -57,10 +38,6 @@ namespace Courses.Migrations
                     b.Property<int>("Index")
                         .HasColumnType("integer")
                         .HasColumnName("index");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_completed");
 
                     b.Property<int>("ModuleId")
                         .HasColumnType("integer")
@@ -82,6 +59,25 @@ namespace Courses.Migrations
                     b.HasDiscriminator<int>("BlockType").HasValue(0);
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Courses.Models.BlockCompletedInfo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("BlockId")
+                        .HasColumnType("integer")
+                        .HasColumnName("block_id");
+
+                    b.HasKey("UserId", "BlockId")
+                        .HasName("pk_block_completed_infos");
+
+                    b.HasIndex("BlockId")
+                        .HasDatabaseName("ix_block_completed_infos_block_id");
+
+                    b.ToTable("block_completed_infos", (string)null);
                 });
 
             modelBuilder.Entity("Courses.Models.Category", b =>
@@ -128,6 +124,10 @@ namespace Courses.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer")
                         .HasColumnName("category_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -188,6 +188,7 @@ namespace Courses.Migrations
                             Id = 1,
                             AuthorId = new Guid("e768e60f-fa76-46d9-a936-4dd5ecbbf326"),
                             CategoryId = 1,
+                            CreatedDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Описание курса. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas dui id ornare arcu. Nunc id cursus metus aliquam eleifend mi in nulla posuere. Luctus venenatis lectus magna fringilla urna porttitor. Lobortis elementum nibh tellus molestie. Curabitur gravida arcu ac tortor dignissim convallis aenean. Ut diam quam nulla porttitor massa. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Sagittis id consectetur purus ut faucibus pulvinar elementum integer. Malesuada bibendum arcu vitae elementum curabitur vitae nunc sed velit. Mattis nunc sed blandit libero volutpat sed. Urna neque viverra justo nec. Ullamcorper morbi tincidunt ornare massa. Bibendum est ultricies integer quis auctor elit sed vulputate. Scelerisque eu ultrices vitae auctor eu augue ut lectus. Lacus vel facilisis volutpat est velit. Vitae purus faucibus ornare suspendisse sed nisi lacus. Urna condimentum mattis pellentesque id nibh tortor id. Urna cursus eget nunc scelerisque. Massa id neque aliquam vestibulum morbi. Neque vitae tempus quam pellentesque nec nam aliquam sem et. Mauris pellentesque pulvinar pellentesque habitant morbi. Feugiat in ante metus dictum at. Consequat id porta nibh venenatis cras. Massa massa ultricies mi quis hendrerit dolor. Varius duis at consectetur lorem donec massa sapien faucibus et. Vestibulum sed arcu non odio euismod lacinia at quis risus. Molestie ac feugiat sed lectus vestibulum mattis. In tellus integer feugiat scelerisque varius morbi. Neque ornare aenean euismod elementum. Egestas erat imperdiet sed euismod nisi.",
                             HasCertificates = true,
                             HoursCount = 100,
@@ -472,21 +473,88 @@ namespace Courses.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Courses.Models.UserCourseInfo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer")
+                        .HasColumnName("course_id");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
+                    b.HasKey("UserId", "CourseId")
+                        .HasName("pk_course_user");
+
+                    b.HasIndex("CourseId")
+                        .HasDatabaseName("ix_course_user_course_id");
+
+                    b.ToTable("course_user", (string)null);
+                });
+
+            modelBuilder.Entity("Courses.Models.UserTaskPoints", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer")
+                        .HasColumnName("task_id");
+
+                    b.Property<bool>("Checked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("checked");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer")
+                        .HasColumnName("course_id");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)")
+                        .HasColumnName("discriminator");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("integer")
+                        .HasColumnName("points");
+
+                    b.HasKey("UserId", "TaskId")
+                        .HasName("pk_user_task_points");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("UserId", "CourseId");
+
+                    b.ToTable("user_task_points", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("UserTaskPoints");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("course_moderator", b =>
                 {
                     b.Property<int>("ModeratingCoursesId")
                         .HasColumnType("integer")
                         .HasColumnName("moderating_courses_id");
 
-                    b.Property<Guid>("User1Id")
+                    b.Property<Guid>("ModeratorsId")
                         .HasColumnType("uuid")
-                        .HasColumnName("user1id");
+                        .HasColumnName("moderators_id");
 
-                    b.HasKey("ModeratingCoursesId", "User1Id")
+                    b.HasKey("ModeratingCoursesId", "ModeratorsId")
                         .HasName("pk_course_moderator");
 
-                    b.HasIndex("User1Id")
-                        .HasDatabaseName("ix_course_moderator_user1id");
+                    b.HasIndex("ModeratorsId")
+                        .HasDatabaseName("ix_course_moderator_moderators_id");
 
                     b.ToTable("course_moderator", (string)null);
                 });
@@ -520,7 +588,6 @@ namespace Courses.Migrations
                             Id = 1,
                             BlockType = 0,
                             Index = 0,
-                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Титульник",
                             FileHref = "/assets/react.svg",
@@ -543,7 +610,6 @@ namespace Courses.Migrations
                             Id = 5,
                             BlockType = 0,
                             Index = 4,
-                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Заголовок блока с заданиями"
                         });
@@ -569,7 +635,6 @@ namespace Courses.Migrations
                             Id = 2,
                             BlockType = 0,
                             Index = 1,
-                            IsCompleted = true,
                             ModuleId = 1,
                             Title = "MAKIMA BEAN",
                             Url = "https://www.youtube.com/watch?v=YfBlwC44gDQ"
@@ -579,7 +644,6 @@ namespace Courses.Migrations
                             Id = 3,
                             BlockType = 0,
                             Index = 2,
-                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Техас покидает родную гавань",
                             Url = "https://vk.com/video-50883936_456243146"
@@ -589,7 +653,6 @@ namespace Courses.Migrations
                             Id = 4,
                             BlockType = 0,
                             Index = 3,
-                            IsCompleted = false,
                             ModuleId = 1,
                             Title = "Александр Асафов о предстоящих президентских выборах",
                             Url = "https://rutube.ru/video/1c69be7b3e28cb58368f69473f6c1d96/?r=wd"
@@ -600,7 +663,7 @@ namespace Courses.Migrations
                 {
                     b.HasBaseType("Courses.Models.Task");
 
-                    b.Property<int>("Accuracy")
+                    b.Property<int?>("Accuracy")
                         .HasColumnType("integer")
                         .HasColumnName("accuracy");
 
@@ -657,21 +720,27 @@ namespace Courses.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CourseUser", b =>
+            modelBuilder.Entity("Courses.Models.ManualReviewTaskUserAnswer", b =>
                 {
-                    b.HasOne("Courses.Models.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_course_user_courses_courses_id");
+                    b.HasBaseType("Courses.Models.UserTaskPoints");
 
-                    b.HasOne("Courses.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Property<string>("Content")
                         .IsRequired()
-                        .HasConstraintName("fk_course_user_users_user_id");
+                        .HasMaxLength(15000)
+                        .HasColumnType("character varying(15000)")
+                        .HasColumnName("content");
+
+                    b.Property<Guid>("ManualReviewTaskUserAnswerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("manual_review_task_user_answer_id");
+
+                    b.HasIndex("ManualReviewTaskUserAnswerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_task_points_manual_review_task_user_answer_id");
+
+                    b.ToTable("user_task_points", (string)null);
+
+                    b.HasDiscriminator().HasValue("ManualReviewTaskUserAnswer");
                 });
 
             modelBuilder.Entity("Courses.Models.Block", b =>
@@ -684,6 +753,27 @@ namespace Courses.Migrations
                         .HasConstraintName("fk_blocks_modules_module_id");
 
                     b.Navigation("Module");
+                });
+
+            modelBuilder.Entity("Courses.Models.BlockCompletedInfo", b =>
+                {
+                    b.HasOne("Courses.Models.Block", "Block")
+                        .WithMany()
+                        .HasForeignKey("BlockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_block_completed_infos_blocks_block_id");
+
+                    b.HasOne("Courses.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_block_completed_infos_users_user_id");
+
+                    b.Navigation("Block");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Courses.Models.Course", b =>
@@ -754,6 +844,66 @@ namespace Courses.Migrations
                     b.Navigation("Task");
                 });
 
+            modelBuilder.Entity("Courses.Models.UserCourseInfo", b =>
+                {
+                    b.HasOne("Courses.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_course_user_courses_course_id");
+
+                    b.HasOne("Courses.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_course_user_users_user_id");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Courses.Models.UserTaskPoints", b =>
+                {
+                    b.HasOne("Courses.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_task_points_courses_course_id");
+
+                    b.HasOne("Courses.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_task_points_tasks_task_id");
+
+                    b.HasOne("Courses.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_task_points_users_user_id");
+
+                    b.HasOne("Courses.Models.UserCourseInfo", "UserCourseInfo")
+                        .WithMany()
+                        .HasForeignKey("UserId", "CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_task_points_course_user_user_id_course_id");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserCourseInfo");
+                });
+
             modelBuilder.Entity("course_moderator", b =>
                 {
                     b.HasOne("Courses.Models.Course", null)
@@ -765,10 +915,10 @@ namespace Courses.Migrations
 
                     b.HasOne("Courses.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("User1Id")
+                        .HasForeignKey("ModeratorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_course_moderator_users_user1id");
+                        .HasConstraintName("fk_course_moderator_users_moderators_id");
                 });
 
             modelBuilder.Entity("Courses.Models.Category", b =>

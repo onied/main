@@ -1,37 +1,34 @@
 using AutoMapper;
 using Courses.Dtos;
 using Courses.Helpers;
-using Courses.Services;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class CatalogController : ControllerBase
+public class CatalogController(
+    ILogger<CatalogController> logger,
+    IMapper mapper,
+    ICourseRepository courseRepository,
+    IUserRepository userRepository)
+    : ControllerBase
 {
-    private readonly ICourseRepository _courseRepository;
-    private readonly ILogger<CatalogController> _logger;
-    private readonly IMapper _mapper;
-
-    public CatalogController(ILogger<CatalogController> logger, IMapper mapper, ICourseRepository courseRepository)
-    {
-        _logger = logger;
-        _mapper = mapper;
-        _courseRepository = courseRepository;
-    }
-
     [HttpGet]
-    public async Task<Page<CourseCardDto>> Get([FromQuery] PageQuery pageQuery)
+    public async Task<Page<CourseCardDto>> Get(
+        [FromQuery] CatalogGetQueriesDto catalogGetQueries,
+        [FromQuery] Guid? userId)
     {
-        var page = Page<CourseCardDto>.Prepare(
-            pageQuery,
-            await _courseRepository.CountAsync(),
-            out var offset);
-        var courses = await _courseRepository.GetCoursesAsync(
-            offset,
-            page.ElementsPerPage);
-        page.Elements = _mapper.Map<IEnumerable<CourseCardDto>>(courses);
-        return page;
+        var (courses, count) = await courseRepository.GetCoursesAsync(catalogGetQueries);
+        var courseDtos = mapper.Map<List<CourseCardDto>>(courses);
+
+        var userCourses = (userId is null
+                ? null
+                : await userRepository.GetUserWithCoursesAsync(userId.Value))?.Courses
+            .Select(x => x.Id).ToList() ?? [];
+        courseDtos.ForEach(x => x.IsOwned = userCourses.Contains(x.Id));
+
+        return Page<CourseCardDto>.Prepare(catalogGetQueries, count, courseDtos);
     }
 }

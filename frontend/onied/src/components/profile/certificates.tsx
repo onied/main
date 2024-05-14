@@ -1,13 +1,24 @@
 import classes from "./profile.module.css";
 import { useProfile } from "../../hooks/profile/useProfile";
 import CertificateContainer, { Certificate } from "./certificate/certificate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../../config/axios";
 
 function ProfileCertificates() {
   const [profile, _] = useProfile();
   const [certificateList, setCertificateList] = useState<
     Array<Certificate> | undefined
   >();
+
+  useEffect(() => {
+    api
+      .get("/certificates")
+      .then((response) => {
+        setCertificateList(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   if (profile == null) return <></>;
   return (
     <div className={classes.pageWrapper}>

@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 using Users.Dtos;
 using Users.Dtos.VkUserInfoResponseDtos;
 using Users.Services.UserCreatedProducer;
@@ -68,12 +69,13 @@ public class OauthController(IUserCreatedProducer userCreatedProducer)
             var result = await userManager.CreateAsync(user);
 
             if (!result.Succeeded) return Results.Unauthorized();
+            await userManager.AddToRoleAsync(user, Roles.Student);
+            await userCreatedProducer.PublishAsync(user);
         }
 
         signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
 
         await signInManager.SignInAsync(user, false);
-        await userCreatedProducer.PublishAsync(user);
         return Results.Empty;
     }
 }

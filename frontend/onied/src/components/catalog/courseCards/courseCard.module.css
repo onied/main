@@ -2,18 +2,20 @@
   display: flex;
   flex-direction: column;
   border-radius: 20px;
-  box-shadow:
-    5px 10px 10px rgba(0, 0, 0, 0.25),
-    -5px 0 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.25), -5px 0 10px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+  justify-content: space-between;
+}
+
+.courseCardPicture {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
 
 .highlightedCourseCard {
-  box-shadow:
-    -10px -10px 10px #faff1725,
-    10px -10px 10px #00a3ff25,
-    10px 10px 10px #af08ca25,
-    -10px 10px 10px #eb161625;
+  box-shadow: -10px -10px 10px #faff1725, 10px -10px 10px #00a3ff25,
+    10px 10px 10px #af08ca25, -10px 10px 10px #eb161625;
 }
 
 .courseCardInfo {

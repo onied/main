@@ -1,7 +1,13 @@
 import classes from "./inputform.module.css";
 
 function InputForm(props) {
-  return <input type="text" className={classes.inputform} {...props}></input>;
+  return (
+    <input
+      type="text"
+      {...props}
+      className={[props.className, classes.inputform].join(" ").trim()}
+    ></input>
+  );
 }
 
 export default InputForm;

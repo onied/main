@@ -1,4 +1,6 @@
+using System.Linq.Expressions;
 using Courses.Models;
+using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
@@ -6,6 +8,15 @@ namespace Courses.Services;
 
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
+    public async Task<List<User>> GetUsersWithConditionAsync(Expression<Func<User, bool>>? condition = null)
+    {
+        var query = dbContext.Users.AsNoTracking().AsQueryable();
+
+        if (condition is null) return await query.ToListAsync();
+
+        return await query.Where(condition).ToListAsync();
+    }
+
     public async Task<User?> GetUserAsync(Guid id)
         => await dbContext.Users
             .AsNoTracking()
@@ -43,5 +54,13 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     {
         dbContext.Update(user);
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<User?> GetUserWithModeratingAndTeachingCoursesAsync(Guid id)
+    {
+        return await dbContext.Users
+            .Include(u => u.TeachingCourses)
+            .Include(u => u.ModeratingCourses)
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 }

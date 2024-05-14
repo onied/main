@@ -1,0 +1,31 @@
+.rowPurchase {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 16pt;
+}
+
+.leftColumns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 40pt;
+}
+
+.name {
+  text-decoration: none;
+  color: inherit;
+  align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 25vw;
+}
+
+.nameColumn {
+  font-size: 24pt;
+}
+
+.columns {
+  border-bottom: 3px solid #ccc;
+}

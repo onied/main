@@ -18,6 +18,8 @@ function ProfileSidebar() {
     { title: "Мои данные", url: "" },
     { title: "Мои курсы", url: "courses" },
     { title: "Мои сертификаты", url: "certificates" },
+    { title: "Мои подписки", url: "subscriptions" },
+    { title: "Мои покупки", url: "purchases" },
   ];
   const renderBlock = (tab: Tab, index: number) => {
     if (currentTabUrl == tab.url)
