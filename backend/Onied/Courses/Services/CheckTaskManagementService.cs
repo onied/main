@@ -1,5 +1,6 @@
 using AutoMapper;
-using Courses.Dtos;
+using Courses.Dtos.CheckTasks.Request;
+using Courses.Dtos.CheckTasks.Response;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseCompletedProducer;
@@ -40,7 +41,7 @@ public class CheckTaskManagementService(
     }
 
     public IResult GetUserTaskPoints(
-        List<UserInputDto> inputsDto,
+        List<UserInputRequest> inputsDto,
         TasksBlock block,
         Guid userId)
     {
@@ -125,12 +126,12 @@ public class CheckTaskManagementService(
             {
                 var points = storedPoints.SingleOrDefault(tp => tp.TaskId == task.Id);
                 if (points == null)
-                    return new UserTaskPointsDto
+                    return new UserTaskPointsResponse
                     {
                         TaskId = task.Id,
                         Points = null
                     };
-                var dto = mapper.Map<UserTaskPointsDto>(points);
+                var dto = mapper.Map<UserTaskPointsResponse>(points);
                 if (!points.Checked)
                     dto.Points = null;
                 if (points is ManualReviewTaskUserAnswer manualReviewTaskUserAnswer)
@@ -146,7 +147,7 @@ public class CheckTaskManagementService(
             int courseId,
             int blockId,
             Guid userId,
-            List<UserInputDto> inputsDto)
+            List<UserInputRequest> inputsDto)
     {
         if (!await courseManagementService.AllowVisitCourse(userId, courseId))
             return TypedResults.Forbid();
@@ -174,12 +175,12 @@ public class CheckTaskManagementService(
             {
                 var points = pointsInfo.SingleOrDefault(tp => tp.TaskId == task.Id);
                 if (points == null)
-                    return new UserTaskPointsDto
+                    return new UserTaskPointsResponse
                     {
                         TaskId = task.Id,
                         Points = null
                     };
-                var dto = mapper.Map<UserTaskPointsDto>(points);
+                var dto = mapper.Map<UserTaskPointsResponse>(points);
                 if (!points.Checked)
                     dto.Points = null;
                 if (points is ManualReviewTaskUserAnswer manualReviewTaskUserAnswer)
