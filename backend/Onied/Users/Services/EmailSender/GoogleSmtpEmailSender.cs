@@ -2,6 +2,7 @@ using System.Web;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Http.Extensions;
 using MimeKit;
+using Users.Data.Entities;
 
 namespace Users.Services.EmailSender;
 
@@ -18,7 +19,7 @@ public class GoogleSmtpEmailSender(ILogger<GoogleSmtpEmailSender> logger, IConfi
             $"Для подтверждения почты перейдите по этой ссылке: <a href='{confirmationLink}'>подтвердить</a>";
 
         await SendEmailMessage(email, "Подтверждение почты", messageToSend);
-        
+
         logger.LogInformation("Confirmation link for {FirstName} {LastName} sent to {email}: {confirmationLink}",
             user.FirstName, user.LastName, email, confirmationLink);
     }
@@ -28,7 +29,7 @@ public class GoogleSmtpEmailSender(ILogger<GoogleSmtpEmailSender> logger, IConfi
         resetLink = HttpUtility.HtmlDecode(resetLink);
         var messageToSend = $"Для сброса пароля перейдите по этой ссылке: <a href='{resetLink}'>сбросить</a>";
         await SendEmailMessage(email, "Сброс пароля для OniEd", messageToSend);
-        
+
         logger.LogInformation("Password reset link for {FirstName} {LastName} sent to {email}: {resetLink}",
             user.FirstName, user.LastName, email, resetLink);
     }
@@ -46,7 +47,7 @@ public class GoogleSmtpEmailSender(ILogger<GoogleSmtpEmailSender> logger, IConfi
         };
         var messageToSend = $"Для сброса пароля перейдите по этой ссылке: <a href='{frontUrl}'>сбросить</a>";
         await SendEmailMessage(email, "Сброс пароля для OniEd", messageToSend);
-        
+
         logger.LogInformation("Password reset code link for {FirstName} {LastName} sent to {email}: {frontUrl}",
             user.FirstName, user.LastName, email, frontUrl.ToString());
     }
@@ -54,7 +55,7 @@ public class GoogleSmtpEmailSender(ILogger<GoogleSmtpEmailSender> logger, IConfi
     public async Task SendEmailMessage(string email, string subject, string message)
     {
         using var emailMessage = new MimeMessage();
-        
+
         emailMessage.From.Add(new MailboxAddress(configuration["MailSettings:SenderName"],
             configuration["MailSettings:Address"]));
         emailMessage.To.Add(new MailboxAddress("", email));
@@ -65,13 +66,13 @@ public class GoogleSmtpEmailSender(ILogger<GoogleSmtpEmailSender> logger, IConfi
         };
 
         using var client = new SmtpClient();
-        
+
         await client.ConnectAsync(configuration["MailSettings:Host"],
             int.Parse(configuration["MailSettings:Port"]!), true);
         await client.AuthenticateAsync(configuration["MailSettings:Address"],
             configuration["MailSettings:ApplicationPassword"]);
         await client.SendAsync(emailMessage);
- 
+
         await client.DisconnectAsync(true);
     }
 }

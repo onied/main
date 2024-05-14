@@ -54,6 +54,7 @@ builder.Services.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTa
 builder.Services.AddScoped<IManualReviewService, ManualReviewService>();
 builder.Services.AddScoped<ISubscriptionManagementService, SubscriptionManagementService>();
 builder.Services.AddScoped<INotificationPreparerService, NotificationPreparerService>();
+builder.Services.AddScoped<ILandingPageContentService, LandingPageContentService>();
 builder.Services.AddTransient<UserAnswerToTasksListConverter>();
 
 var app = builder.Build();
