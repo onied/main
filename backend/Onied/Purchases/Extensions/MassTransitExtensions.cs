@@ -10,6 +10,7 @@ public static class MassTransitExtensions
     public static IServiceCollection AddMassTransitConfigured(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IPurchaseCreatedProducer, PurchaseCreatedProducer>();
+        serviceCollection.AddScoped<ISubscriptionChangedProducer, SubscriptionChangedProducer>();
 
         serviceCollection.AddMassTransit(x =>
         {

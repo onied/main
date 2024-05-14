@@ -13,6 +13,7 @@ using Courses.Extensions;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseUpdatedProducer;
+using Shared;
 
 namespace Courses.Services;
 
@@ -25,16 +26,20 @@ public class CourseManagementService(
     IModuleRepository moduleRepository,
     ICategoryRepository categoryRepository,
     ICourseUpdatedProducer courseUpdatedProducer,
+    ISubscriptionManagementService subscriptionManagementService,
     IMapper mapper) : ICourseManagementService
 {
     public HttpClient PurchasesServerApiClient
         => httpClientFactory.CreateClient(ServerApiConfig.PurchasesServer.GetStringValue()!);
 
-    public async Task<IResult> CheckCourseAuthorAsync(int courseId, string? userId)
+    public async Task<IResult> CheckCourseAuthorAsync(int courseId,
+        string? userId, string? role)
     {
         var course = await courseRepository.GetCourseAsync(courseId);
         if (course == null)
             return Results.NotFound();
+        if (role != Roles.Admin && (userId == null || course.Author?.Id.ToString() != userId))
+            return TypedResults.Forbid();
 
         var options = new JsonSerializerOptions
         {
@@ -46,8 +51,10 @@ public class CourseManagementService(
         return Results.Ok(jsonCourse);
     }
 
-    public async Task<bool> AllowVisitCourse(Guid userId, int courseId)
+    public async Task<bool> AllowVisitCourse(Guid userId, int courseId, string? role = null)
     {
+        if (role == Roles.Admin)
+            return true;
         var userCourseInfo = await userCourseInfoRepository.GetUserCourseInfoAsync(userId, courseId, true);
         if (userCourseInfo is null) return false;
         if (userCourseInfo.Course.PriceRubles == 0) return true;
@@ -108,7 +115,6 @@ public class CourseManagementService(
     public async Task<IResult> EditTasksBlock(
         int id,
         int blockId,
-        string? userId,
         EditTasksBlockRequest tasksBlockRequest)
     {
         var block = await blockRepository.GetTasksBlock(blockId);
@@ -124,7 +130,6 @@ public class CourseManagementService(
     public async Task<IResult> EditSummaryBlock(
         int id,
         int blockId,
-        string? userId,
         SummaryBlockResponse summaryBlockResponse)
     {
         var block = await blockRepository.GetSummaryBlock(blockId);
@@ -139,7 +144,6 @@ public class CourseManagementService(
     public async Task<IResult> EditVideoBlock(
         int id,
         int blockId,
-        string? userId,
         VideoBlockResponse videoBlockResponse)
     {
         var block = await blockRepository.GetVideoBlock(blockId);
@@ -153,8 +157,7 @@ public class CourseManagementService(
 
     public async Task<IResult> RenameBlock(
         int id,
-        RenameBlockRequest renameBlockRequest,
-        string? userId)
+        RenameBlockRequest renameBlockRequest)
     {
 
         if (!await blockRepository.RenameBlockAsync(
@@ -166,8 +169,7 @@ public class CourseManagementService(
 
     public async Task<IResult> DeleteBlock(
         int id,
-        int blockId,
-        string? userId)
+        int blockId)
     {
         if (!await blockRepository.DeleteBlockAsync(blockId))
             return Results.NotFound();
@@ -178,8 +180,7 @@ public class CourseManagementService(
     public async Task<IResult> AddBlock(
         int id,
         int moduleId,
-        int blockType,
-        string? userId)
+        int blockType)
     {
         var module = await moduleRepository.GetModuleAsync(moduleId);
         if (module == null)
@@ -197,7 +198,6 @@ public class CourseManagementService(
 
     public async Task<IResult> RenameModule(
         int id,
-        string? userId,
         RenameModuleRequest renameModuleRequest)
     {
         if (!await moduleRepository.RenameModuleAsync(
@@ -209,8 +209,7 @@ public class CourseManagementService(
 
     public async Task<IResult> DeleteModule(
         int id,
-        int moduleId,
-        string? userId)
+        int moduleId)
     {
         if (!await moduleRepository.DeleteModuleAsync(moduleId))
             return Results.NotFound();
@@ -218,9 +217,7 @@ public class CourseManagementService(
         return Results.Ok();
     }
 
-    public async Task<IResult> AddModule(
-        int id,
-        string? userId)
+    public async Task<IResult> AddModule(int id)
     {
         var addedModuleId = await moduleRepository.AddModuleReturnIdAsync(new Module
         {
@@ -233,7 +230,6 @@ public class CourseManagementService(
 
     public async Task<IResult> EditHierarchy(
         int id,
-        string? userId,
         CourseResponse courseResponse)
     {
         var course = await courseRepository.GetCourseAsync(id);
@@ -247,8 +243,7 @@ public class CourseManagementService(
     }
 
     public async Task<IResult> EditCourse(int id,
-        string? userId,
-        EditCourseRequest editCourseRequest)
+        EditCourseRequest editCourseRequest, string userId)
     {
         var course = await courseRepository.GetCourseAsync(id);
         if (course == null)
@@ -260,6 +255,11 @@ public class CourseManagementService(
             {
                 [nameof(editCourseRequest.CategoryId)] = ["This category does not exist."]
             });
+
+        if (editCourseRequest.HasCertificates &&
+            !await subscriptionManagementService
+                .VerifyGivingCertificatesAsync(Guid.Parse(userId)))
+            return TypedResults.Forbid();
 
         mapper.Map(editCourseRequest, course);
         course.Category = category;

@@ -1,6 +1,17 @@
 {
   "Routes": [
     {
+      "UpstreamPathTemplate": "/api/v1/landing/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5135
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/landing/{everything}"
+    },
+    {
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Identity.Bearer",
         "AllowedScopes": []
@@ -93,7 +104,8 @@
       ],
       "UpstreamPathTemplate": "/api/v1/{everything}",
       "AddQueriesToRequest": {
-        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value",
+        "role": "Claims[http://schemas.microsoft.com/ws/2008/06/identity/claims/role] > value"
       }
     }
   ],

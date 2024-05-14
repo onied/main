@@ -18,6 +18,8 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped<IAccountsService, AccountsService>();
         serviceCollection.AddScoped<ICatalogService, CatalogService>();
         serviceCollection.AddScoped<ICourseService, CourseService>();
+        serviceCollection.AddScoped<ISubscriptionManagementService, SubscriptionManagementService>();
+        serviceCollection.AddScoped<ILandingPageContentService, LandingPageContentService>();
         return serviceCollection.AddScoped<ITeachingService, TeachingService>();
     }
 

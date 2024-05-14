@@ -21,6 +21,15 @@ public class AuthorValidationFilterAttribute : ActionFilterAttribute
             return;
         }
 
+        if (!context.ActionArguments.TryGetValue("role", out object? role))
+        {
+            context.Result = new BadRequestObjectResult(new ValidationProblemDetails
+            {
+                Errors = { { "userId", new[] { "userId query parameter cannot be null" } } }
+            });
+            return;
+        }
+
         if (!Guid.TryParse((string)userIdObject, out Guid userId))
         {
             context.Result = new BadRequestResult();
@@ -40,7 +49,7 @@ public class AuthorValidationFilterAttribute : ActionFilterAttribute
             return;
         }
 
-        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId.ToString());
+        var response = await courseManagementService.CheckCourseAuthorAsync(id, userId.ToString(), (string?)role);
         if (response is not Ok<string>)
         {
             context.Result = (IActionResult)response;

@@ -25,6 +25,7 @@ public class CoursesServiceTests
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
     private readonly Mock<ICourseCreatedProducer> _courseCreatedProducer = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
+    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly CourseService _service;
     private readonly Fixture _fixture = new();
 
@@ -39,6 +40,7 @@ public class CoursesServiceTests
             _userRepository.Object,
             _courseCreatedProducer.Object,
             _categoryRepository.Object,
+            _subscriptionManagementService.Object,
             _mapper);
     }
 
@@ -147,7 +149,7 @@ public class CoursesServiceTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _service.GetCourseHierarchy(courseId, userId);
+        var result = await _service.GetCourseHierarchy(courseId, userId, null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -177,11 +179,11 @@ public class CoursesServiceTests
         _blockCompletedInfoRepository
             .Setup(r => r.GetAllCompletedCourseBlocksByUser(userId, courseId))
             .Returns(Task.FromResult<List<BlockCompletedInfo>>([]));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetCourseHierarchy(courseId, userId);
+        var result = await _service.GetCourseHierarchy(courseId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<CourseResponse>>(result);
@@ -203,7 +205,7 @@ public class CoursesServiceTests
             .Returns(Task.FromResult<SummaryBlock?>(null));
 
         // Act
-        var result = await _service.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _service.GetSummaryBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<ForbidHttpResult>(result);
@@ -238,7 +240,7 @@ public class CoursesServiceTests
             .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _service.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _service.GetSummaryBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<ForbidHttpResult>(result);
@@ -270,11 +272,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetSummaryBlock(courseId, blockId, userId);
+        var result = await _service.GetSummaryBlock(courseId, blockId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<SummaryBlockResponse>>(result);
@@ -293,11 +295,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
             .Returns(Task.FromResult<SummaryBlock?>(null));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetVideoBlock(courseId, blockId, userId);
+        var result = await _service.GetVideoBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -329,11 +331,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
             .Returns(Task.FromResult<VideoBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetVideoBlock(courseId, blockId, userId);
+        var result = await _service.GetVideoBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -366,11 +368,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
             .Returns(Task.FromResult<VideoBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetVideoBlock(courseId, blockId, userId);
+        var result = await _service.GetVideoBlock(courseId, blockId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<VideoBlockResponse>>(result);
@@ -389,11 +391,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(null));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetTaskBlock(courseId, blockId, userId);
+        var result = await _service.GetTaskBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -426,11 +428,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetTaskBlock(courseId, blockId, userId);
+        var result = await _service.GetTaskBlock(courseId, blockId, userId, null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -463,11 +465,11 @@ public class CoursesServiceTests
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
             .Returns(Task.FromResult<TasksBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>()))
+        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetTaskBlock(courseId, blockId, userId);
+        var result = await _service.GetTaskBlock(courseId, blockId, userId, null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<TasksBlockResponse>>(result);

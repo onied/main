@@ -1,6 +1,17 @@
 {
   "Routes": [
     {
+      "UpstreamPathTemplate": "/api/v1/landing/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "courses",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/landing/{everything}"
+    },
+    {
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Identity.Bearer",
         "AllowedScopes": []

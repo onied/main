@@ -15,6 +15,8 @@ public interface ICourseRepository
     public Task<Course?> GetCourseWithUsersAsync(int id);
     public Task<Course?> GetCourseWithModeratorsAsync(int id);
     public Task<Course?> GetCourseWithUsersAndModeratorsAsync(int id);
+    public Task<List<Course>> GetMostPopularCourses(int amount);
+    public Task<List<Course>> GetRecommendedCourses(int amount);
     public Task<Course> AddCourseAsync(Course course);
     public Task AddModeratorAsync(int courseId, Guid studentId);
     public Task UpdateCourseAsync(Course course);

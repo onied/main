@@ -109,7 +109,8 @@ public class CheckTaskManagementService(
     public async Task<IResult> GetTaskPointsStored(
         int courseId,
         int blockId,
-        Guid userId)
+        Guid userId,
+        string? role)
     {
         if (!await courseManagementService.AllowVisitCourse(userId, courseId))
             return Results.Forbid();
@@ -147,6 +148,7 @@ public class CheckTaskManagementService(
             int courseId,
             int blockId,
             Guid userId,
+            string? role,
             List<UserInputRequest> inputsDto)
     {
         if (!await courseManagementService.AllowVisitCourse(userId, courseId))

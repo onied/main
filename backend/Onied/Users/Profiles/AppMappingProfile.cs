@@ -1,6 +1,7 @@
 using AutoMapper;
 using MassTransit.Data.Messages;
-using Users.Dtos;
+using Users.Data.Entities;
+using Users.Dtos.Users.Response;
 
 namespace Users.Profiles;
 
@@ -8,7 +9,7 @@ public class AppMappingProfile : Profile
 {
     public AppMappingProfile()
     {
-        CreateMap<AppUser, UserProfileDto>();
+        CreateMap<AppUser, UserProfileResponse>();
 
         // MassTransit
         CreateMap<AppUser, UserCreated>()

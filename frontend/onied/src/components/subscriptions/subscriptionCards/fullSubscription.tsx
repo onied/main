@@ -9,7 +9,8 @@ function FullSubscription(props: { subscriptionInfo: SubscriptionInfo }) {
   return (
     <div className={classes.fullSubscriptionCard}>
       <SubscriptionHeader
-        subscriptionType={props.subscriptionInfo.subscriptionType}
+        isHighlighted={props.subscriptionInfo.isHighlighted}
+        title={props.subscriptionInfo.title}
         price={props.subscriptionInfo.price}
         durationPolicy={props.subscriptionInfo.durationPolicy}
       />

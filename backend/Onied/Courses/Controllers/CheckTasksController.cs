@@ -16,9 +16,9 @@ public class CheckTasksController(
     public async Task<IResult> GetTaskPointsStored(
         int courseId,
         int blockId,
-        [FromQuery] Guid userId)
+        [FromQuery] Guid userId, [FromQuery] string? role)
     {
-        return await checkTaskManagementService.GetTaskPointsStored(courseId, blockId, userId);
+        return await checkTaskManagementService.GetTaskPointsStored(courseId, blockId, userId, role);
     }
 
     [HttpPost]
@@ -27,8 +27,9 @@ public class CheckTasksController(
             int courseId,
             int blockId,
             [FromQuery] Guid userId,
+            [FromQuery] string? role,
             [FromBody] List<UserInputRequest> inputsDto)
     {
-        return await checkTaskManagementService.CheckTaskBlock(courseId, blockId, userId, inputsDto);
+        return await checkTaskManagementService.CheckTaskBlock(courseId, blockId, userId, role, inputsDto);
     }
 }

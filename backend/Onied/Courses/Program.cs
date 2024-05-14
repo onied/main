@@ -26,6 +26,18 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 
 builder.Services.AddMassTransitConfigured();
 
+builder.Services.AddHttpClient("PurchasesServer", config =>
+{
+    config.BaseAddress = new Uri(builder.Configuration["PurchasesServerApi"]!);
+    config.Timeout = new TimeSpan(0, 0, 30);
+    config.DefaultRequestHeaders.Clear();
+});
+builder.Services.AddHttpClient("SubscriptionsServer", config =>
+{
+    config.BaseAddress = new Uri(builder.Configuration["SubscriptionsServerApi"]!);
+    config.Timeout = new TimeSpan(0, 0, 30);
+    config.DefaultRequestHeaders.Clear();
+});
 builder.Services.AddHttpClient(builder.Configuration);
 
 // Added business logic services

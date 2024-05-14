@@ -25,6 +25,7 @@ public class CourseManagementServiceTests
     private readonly Mock<IModuleRepository> _moduleRepository = new();
     private readonly Mock<IUpdateTasksBlockService> _updateTasksBlockService = new();
     private readonly Mock<ICourseUpdatedProducer> _courseUpdatedProducer = new();
+    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly CourseManagementService _service;
     private readonly Fixture _fixture = new();
 
@@ -39,6 +40,7 @@ public class CourseManagementServiceTests
             _moduleRepository.Object,
             _categoryRepository.Object,
             _courseUpdatedProducer.Object,
+            _subscriptionManagementService.Object,
             _mapper);
     }
 
@@ -54,7 +56,7 @@ public class CourseManagementServiceTests
             .Returns(Task.FromResult<Course?>(null));
 
         // Act
-        var result = await _service.EditCourse(courseId, userId, editCourseDto);
+        var result = await _service.EditCourse(courseId, editCourseDto, userId);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -77,7 +79,7 @@ public class CourseManagementServiceTests
         editCourseDto.CategoryId = 0;
 
         // Act
-        var result = await _service.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _service.EditCourse(course.Id, editCourseDto, user.Id.ToString());
 
         // Assert
         Assert.IsType<ProblemHttpResult>(result);
@@ -103,7 +105,7 @@ public class CourseManagementServiceTests
             .Returns(Task.FromResult<Category?>(category));
 
         // Act
-        var result = await _service.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _service.EditCourse(course.Id, editCourseDto, user.Id.ToString());
 
         // Assert
         Assert.IsType<Ok<PreviewResponse>>(result);
@@ -143,7 +145,7 @@ public class CourseManagementServiceTests
             .Returns(Task.FromResult<Category?>(category));
 
         // Act
-        var result = await _service.EditCourse(course.Id, user.Id.ToString(), editCourseDto);
+        var result = await _service.EditCourse(course.Id, editCourseDto, user.Id.ToString());
 
         // Assert
         Assert.IsType<Ok<PreviewResponse>>(result);

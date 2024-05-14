@@ -17,6 +17,7 @@ public class CourseService(
     IUserRepository userRepository,
     ICourseCreatedProducer courseCreatedProducer,
     ICategoryRepository categoryRepository,
+    ISubscriptionManagementService subscriptionManagementService,
     IMapper mapper
     ) : ICourseService
 {
@@ -53,12 +54,12 @@ public class CourseService(
         return Results.Ok();
     }
 
-    public async Task<IResult> GetCourseHierarchy(int id, Guid userId)
+    public async Task<IResult> GetCourseHierarchy(int id, Guid userId, string? role)
     {
         var course = await courseRepository.GetCourseWithBlocksAsync(id);
         if (course == null) return Results.NotFound();
 
-        if (!await courseManagementService.AllowVisitCourse(userId, id)) return Results.Forbid();
+        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
 
         var dto = mapper.Map<CourseResponse>(course);
 
@@ -72,9 +73,9 @@ public class CourseService(
         return Results.Ok(dto);
     }
 
-    public async Task<IResult> GetSummaryBlock(int id, int blockId, Guid userId)
+    public async Task<IResult> GetSummaryBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id)) return Results.Forbid();
+        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
 
         var summary = await blockRepository.GetSummaryBlock(blockId);
         if (summary == null || summary.Module.CourseId != id)
@@ -87,9 +88,9 @@ public class CourseService(
         return Results.Ok(dto);
     }
 
-    public async Task<IResult> GetVideoBlock(int id, int blockId, Guid userId)
+    public async Task<IResult> GetVideoBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id)) return Results.Forbid();
+        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
 
         var block = await blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
@@ -102,9 +103,9 @@ public class CourseService(
         return Results.Ok(dto);
     }
 
-    public async Task<IResult> GetEditTaskBlock(int id, int blockId, Guid userId)
+    public async Task<IResult> GetEditTaskBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id)) return Results.Forbid();
+        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
 
         var block = await blockRepository.GetTasksBlock(blockId, true, true);
         if (block == null || block.Module.CourseId != id)
@@ -112,9 +113,9 @@ public class CourseService(
         return Results.Ok(mapper.Map<EditTasksBlockRequest>(block));
     }
 
-    public async Task<IResult> GetTaskBlock(int id, int blockId, Guid userId)
+    public async Task<IResult> GetTaskBlock(int id, int blockId, Guid userId, string? role)
     {
-        if (!await courseManagementService.AllowVisitCourse(userId, id)) return Results.Forbid();
+        if (!await courseManagementService.AllowVisitCourse(userId, id, role)) return Results.Forbid();
 
         var block = await blockRepository.GetTasksBlock(blockId, true);
         if (block == null || block.Module.CourseId != id)
@@ -133,6 +134,10 @@ public class CourseService(
         var user = await userRepository.GetUserAsync(authorId);
         if (user == null)
             return Results.Unauthorized();
+        if (!await subscriptionManagementService
+                .VerifyCreatingCoursesAsync(Guid.Parse(userId)))
+            return Results.Forbid();
+
         var newCourse = await courseRepository.AddCourseAsync(new Course
         {
             AuthorId = user.Id,

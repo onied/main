@@ -9,6 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Courses/Courses.csproj", "Courses/"]
 COPY ["MassTransit.Data/MassTransit.Data.csproj", "MassTransit.Data/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "Courses/Courses.csproj"
 COPY . .
 WORKDIR "/src/Courses"
