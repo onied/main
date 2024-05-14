@@ -6,9 +6,9 @@ import Button from "../../../components/general/button/button";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
 import NotFound from "../../general/responses/notFound/notFound";
 import NoAccess from "../../general/responses/noAccess/noAccess";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 type CourseInfo = {
   title: string;
@@ -102,8 +102,7 @@ function CheckTaskComponent() {
       });
   }, [taskCheckId]);
 
-  if (loadStatus === 0)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (loadStatus === 0) return <CustomBeatLoader />;
   if (loadStatus === 401) return <Navigate to="/login"></Navigate>;
   if (loadStatus === 404) return notFound;
   if (loadStatus === 403) return noAccess;
