@@ -1,0 +1,31 @@
+@media (width: 1024px), screen {
+  .sliderItem {
+    max-width: 23vw;
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 4rem;
+}
+
+.carouselWrapper {
+  padding: 2rem 2rem 3rem 2rem;
+  background-color: #efefef75;
+  border-radius: 10px;
+}
+
+.sliderWrapper {
+  position: relative;
+}
+
+.sliderItem {
+  padding: 1rem 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+.sliderItem > * {
+  height: 100%;
+}

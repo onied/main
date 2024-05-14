@@ -4,6 +4,7 @@
 .idea
 *.http
 appsettings.Development.json
+docker-compose.override.yml
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and

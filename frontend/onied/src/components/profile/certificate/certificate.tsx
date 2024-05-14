@@ -13,7 +13,9 @@ function CertificateContainer({ certificate }: { certificate: Certificate }) {
     <div className={classes.container}>
       <img src={CertificateImage}></img>
       <p className={classes.title}>{certificate.courseTitle}</p>
-      <Button>получить</Button>
+      <Link to={"/certificates/" + certificate.courseId}>
+        <Button>получить</Button>
+      </Link>
     </div>
   );
 }

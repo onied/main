@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { useParams, Link } from "react-router-dom";
-import classes from "../editPreview/editPreview.module.css";
+import classes from "./editPreview.module.css";
 import imagePlaceholder from "../../../assets/imagePlaceholder.svg";
 import Button from "../../general/button/button";
 import InputForm from "../../general/inputform/inputform";
@@ -14,9 +14,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import PreviewModal from "./previewModal";
-import BeatLoader from "react-spinners/BeatLoader";
 import { AxiosResponse } from "axios";
 import { mapPreviewToEditPreview, PreviewDto } from "./mapPreviewDtos";
+import NotFound from "../../general/responses/notFound/notFound";
+import NoAccess from "../../general/responses/noAccess/noAccess";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function EditPreviewComponent() {
   const { courseId } = useParams();
@@ -40,10 +42,8 @@ function EditPreviewComponent() {
   const [isNewPreviewInfoSaved, setIsNewPreviewInfoSaved] =
     useState<boolean>(false);
   const [canAccess, setCanAccess] = useState<boolean | undefined>();
-  const noAccess = (
-    <h1 style={{ margin: "3rem" }}>У вас нет доступа к этой странице</h1>
-  );
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const noAccess = <NoAccess>У вас нет доступа к этой странице</NoAccess>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
@@ -58,7 +58,10 @@ function EditPreviewComponent() {
     });
     setIsNewPreviewInfoSaved(false);
     api
-      .put("courses/" + courseId, mapPreviewToEditPreview(previewInfo!))
+      .put(
+        "courses/" + courseId + "/edit",
+        mapPreviewToEditPreview(previewInfo!)
+      )
       .then((response) => {
         setIsNewPreviewInfoSaved(true);
         setPreview(handleNewPreview(response));
@@ -102,10 +105,13 @@ function EditPreviewComponent() {
 
   const requestForAccess = (validPreview: PreviewDto) => {
     api
-      .put("courses/" + courseId, mapPreviewToEditPreview(validPreview))
+      .put(
+        "courses/" + courseId + "/edit",
+        mapPreviewToEditPreview(validPreview)
+      )
       .then((_) => setCanAccess(true))
       .catch((error) => {
-        if (error.response.status == 401) setCanAccess(false);
+        if (error.response.status == 403) setCanAccess(false);
       });
   };
 
@@ -135,6 +141,7 @@ function EditPreviewComponent() {
         const validPreview = handleNewPreview(response);
         requestForAccess(validPreview);
         setPreview(validPreview);
+        setCanAccess(true);
       })
       .catch((error) => {
         console.log(error);
@@ -158,13 +165,14 @@ function EditPreviewComponent() {
   }, []);
 
   if (
+    found === undefined ||
     previewInfo == undefined ||
     categories == undefined ||
     canAccess == undefined
   )
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+    return <CustomBeatLoader />;
 
-  if (!canAccess) return noAccess;
+  if (canAccess !== undefined && !canAccess) return noAccess;
 
   if (!found) return notFound;
 

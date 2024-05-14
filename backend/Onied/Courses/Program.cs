@@ -1,8 +1,6 @@
-using Courses;
+using Courses.Data;
+using Courses.Extensions;
 using Courses.Profiles;
-using Courses.Services;
-using Courses.Services.Consumers;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,42 +9,45 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
-    optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("CoursesDatabase"))
-        .UseSnakeCaseNamingConvention());
+
+// Added context database
+builder.Services.AddDbContext(builder.Configuration);
+
+// Added profiles for mapper
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+
 builder.Services.AddCors();
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
     .AddNegotiate();
-builder.Services.AddMassTransit(x =>
+
+builder.Services.AddMassTransitConfigured();
+
+builder.Services.AddHttpClient("PurchasesServer", config =>
 {
-    x.AddConsumer<UserCreatedConsumer>();
-    x.AddConsumer<ProfileUpdatedConsumer>();
-    x.AddConsumer<ProfilePhotoUpdatedConsumer>();
-
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host(builder.Configuration["RabbitMQ:Host"], builder.Configuration["RabbitMQ:VHost"], h =>
-        {
-            h.Username(builder.Configuration["RabbitMQ:Username"]);
-            h.Password(builder.Configuration["RabbitMQ:Password"]);
-        });
-
-        cfg.ConfigureEndpoints(context);
-    });
+    config.BaseAddress = new Uri(builder.Configuration["PurchasesServerApi"]!);
+    config.Timeout = new TimeSpan(0, 0, 30);
+    config.DefaultRequestHeaders.Clear();
 });
+builder.Services.AddHttpClient("SubscriptionsServer", config =>
+{
+    config.BaseAddress = new Uri(builder.Configuration["SubscriptionsServerApi"]!);
+    config.Timeout = new TimeSpan(0, 0, 30);
+    config.DefaultRequestHeaders.Clear();
+});
+builder.Services.AddHttpClient(builder.Configuration);
 
-builder.Services.AddScoped<ICourseManagementService, CourseManagementService>();
-builder.Services.AddScoped<ICheckTasksService, CheckTasksService>();
-builder.Services.AddScoped<IUpdateTasksBlockService, UpdateTasksBlockService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-builder.Services.AddScoped<IBlockRepository, BlockRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+// Added business logic services
+builder.Services.AddServices();
+
+// Added all repositories
+builder.Services.AddRepositories();
+
+// Added converters
+builder.Services.AddConverters();
 
 var app = builder.Build();
 
@@ -65,5 +66,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<AppDbContext>();
+    if (context.Database.GetPendingMigrations().Any()) context.Database.Migrate();
+}
 
 app.Run();

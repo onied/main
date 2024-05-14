@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/axios";
 import classes from "./editHierarchy.module.css";
 import Button from "../../../components/general/button/button";
-import { BeatLoader } from "react-spinners";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -22,6 +21,9 @@ import {
 import type { DropResult, DragStart } from "@hello-pangea/dnd";
 import { Menu, MenuItem } from "@mui/material";
 import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack";
+import NotFound from "../../../components/general/responses/notFound/notFound";
+import Forbid from "../../../components/general/responses/forbid/forbid";
+import CustomBeatLoader from "../../../components/general/customBeatLoader";
 
 type Block = {
   id: number;
@@ -52,11 +54,9 @@ function EditCourseHierarchy() {
   const [expandedModules, setExpandedModules] = useState<Array<number>>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openedMenus, setOpenedMenus] = useState<Array<number>>([]);
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
-  const forbid = (
-    <h1 style={{ margin: "3rem" }}>Вы не можете редактировать данный курс.</h1>
-  );
+  const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
   const id = Number(courseId);
   const blockTypes = [<></>, "summary", "video", "tasks"];
   const blockIcons = [
@@ -130,14 +130,9 @@ function EditCourseHierarchy() {
     const newArray = Array.from(hierarchy!.modules);
     const moduleIndex = newArray.findIndex((module) => module.id == moduleId);
     api
-      .post(
-        "courses/" +
-          courseId +
-          "/edit/add-block/" +
-          moduleId +
-          "?blockType=" +
-          blockType
-      )
+      .post("courses/" + courseId + "/edit/add-block/" + moduleId, {
+        blockType,
+      })
       .then((response) => {
         newArray[moduleIndex].blocks.push({
           id: response.data,
@@ -168,14 +163,10 @@ function EditCourseHierarchy() {
 
   const sendNameBlock = (blockId: number, value: string) => {
     api
-      .put(
-        "courses/" +
-          courseId +
-          "/edit/rename-block?blockId=" +
-          blockId +
-          "&title=" +
-          value
-      )
+      .put("courses/" + courseId + "/edit/rename-block", {
+        blockId: blockId,
+        title: value,
+      })
       .catch((error) => handleErrors(error));
   };
 
@@ -189,14 +180,10 @@ function EditCourseHierarchy() {
 
   const sendNameModule = (moduleId: number, value: string) => {
     api
-      .put(
-        "courses/" +
-          courseId +
-          "/edit/rename-module?moduleId=" +
-          moduleId +
-          "&title=" +
-          value
-      )
+      .put("courses/" + courseId + "/edit/rename-module", {
+        moduleId: moduleId,
+        title: value,
+      })
       .catch((error) => handleErrors(error));
   };
 
@@ -474,24 +461,33 @@ function EditCourseHierarchy() {
       return;
     }
     api
-      .get("courses/" + id + "/hierarchy/")
-      .then((response) => {
-        console.log(response.data);
-        if ("modules" in response.data) {
-          response.data.modules.sort((a, b) => (a.index > b.index ? 1 : -1));
-          response.data.modules.forEach((module) => {
-            if ("blocks" in module)
-              module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
+      .get("courses/" + courseId + "/edit/check-edit-course")
+      .then((_) => {
+        api
+          .get("courses/" + id + "/hierarchy/")
+          .then((response) => {
+            console.log(response.data);
+            if ("modules" in response.data) {
+              response.data.modules.sort((a, b) =>
+                a.index > b.index ? 1 : -1
+              );
+              response.data.modules.forEach((module) => {
+                if ("blocks" in module)
+                  module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
+              });
+            }
+            setHierarchy(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+
+            if ("response" in error && error.response.status == 404) {
+              setHierarchy(null);
+            }
           });
-        }
-        setHierarchy(response.data);
       })
       .catch((error) => {
-        console.log(error);
-
-        if ("response" in error && error.response.status == 404) {
-          setHierarchy(null);
-        }
+        if (error.response?.status === 403) setIsForbid(true);
       });
   }, [id]);
 
@@ -503,13 +499,7 @@ function EditCourseHierarchy() {
 
   if (isForbid) return forbid;
 
-  if (hierarchy === undefined)
-    return (
-      <BeatLoader
-        color="var(--accent-color)"
-        style={{ margin: "3rem" }}
-      ></BeatLoader>
-    );
+  if (hierarchy === undefined) return <CustomBeatLoader />;
   if (hierarchy === null) return notFound;
 
   return (

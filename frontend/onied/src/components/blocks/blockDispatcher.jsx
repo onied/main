@@ -3,8 +3,9 @@ import Summary from "./summary/summary";
 import Tasks from "./tasks/tasks";
 import Video from "./video/video";
 import { useEffect } from "react";
-import BeatLoader from "react-spinners/BeatLoader";
 import classes from "./blocks.module.css";
+import NotFound from "../general/responses/notFound/notFound";
+import CustomBeatLoader from "../general/customBeatLoader";
 
 function BlockDispatcher({ hierarchy, setCurrentBlock }) {
   const { blockId } = useParams();
@@ -24,16 +25,12 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }) {
     isNaN(Number(blockId)) ||
     (blocks != null && !Object.keys(blocks).includes(blockId))
   )
-    return <h1 style={{ margin: "3rem" }}>Блок не найден.</h1>;
+    return <NotFound>Блок не найден.</NotFound>;
   useEffect(() => setCurrentBlock(Number(blockId)));
 
   return (
     <div className={classes.blockWrapper}>
-      {blocks ? (
-        blockTypes[blocks[blockId].blockType]
-      ) : (
-        <BeatLoader color="var(--accent-color)"></BeatLoader>
-      )}
+      {blocks ? blockTypes[blocks[blockId].blockType] : <CustomBeatLoader />}
     </div>
   );
 }

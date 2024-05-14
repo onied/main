@@ -1,0 +1,105 @@
+﻿include:
+  - postgres/docker-compose.yml
+  - rabbitmq/docker-compose.yml
+
+services:
+  courses:
+    image: courses
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__CoursesDatabase=Host=db;Username=postgres;Password=postgres;Database=courses_database
+      - RabbitMQ__Host=rabbitmq
+      - PurchasesServerApi=http://purchases:8080/api/v1/purchases/verify
+    ports:
+      - 5135:8080
+    build:
+      context: Onied
+      dockerfile: Courses/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+
+  notifications:
+    image: notifications
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__NotificationsDatabase=Host=db;Username=postgres;Password=postgres;Database=notifications_database
+      - RabbitMQ__Host=rabbitmq
+    ports:
+      - 5298:8080
+    build:
+      context: Onied
+      dockerfile: Notifications/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+
+  users:
+    image: users
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__UsersDatabase=Host=db;Username=postgres;Password=postgres;Database=users_database
+      - RabbitMQ__Host=rabbitmq
+    ports:
+      - 5288:8080
+    build:
+      context: Onied
+      dockerfile: Users/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  purchases:
+    image: purchases
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PurchasesDatabase=Host=db;Username=postgres;Password=postgres;Database=purchases_database
+      - RabbitMQ__Host=rabbitmq
+    ports:
+      - 5036:8080
+    build:
+      context: Onied
+      dockerfile: Purchases/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+
+  certificates:
+    image: certificates
+    ports:
+      - 5508:5508
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASS=postgres
+      - DATABASE_NAME=certificates_database
+      - MAPBOX_API_KEY=
+      - MAPBOX_API_URL=https://api.mapbox.com/search/geocode/v6/forward
+      - PURCHASES_API_URL=http://purchases:8080/api/v1/purchases/verify
+      - RABBITMQ_CONNECTION_STRING=amqp://guest:guest@rabbitmq:5672
+    build:
+      context: certificates
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+      purchases:
+        condition: service_started
+      users:
+        condition: service_healthy

@@ -1,4 +1,6 @@
-.checkbox {
+@import url("../../../../node_modules/font-awesome/css/font-awesome.min.css");
+
+.regular {
   --checkbox-color: var(--accent-color);
   appearance: none;
   border: 0.2rem solid var(--checkbox-color);
@@ -8,12 +10,13 @@
   cursor: pointer;
   transition: ease-in-out 100ms;
   position: relative;
+  background-color: white;
 }
-.checkbox:checked {
+.regular:checked {
   background-color: var(--checkbox-color);
 }
 
-.checkbox::after {
+.regular::after {
   content: url("data:image/svg+xml,%3Csvg class='svg-icon' style='width: 1em;height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M664.377948 511.42322l326.997958 326.997959a108.146166 108.146166 0 0 1-152.954727 152.954727l-326.997959-326.997958-326.997958 326.997958a108.146166 108.146166 0 0 1-152.954728-152.954727l326.997959-326.997959L31.470534 184.425262A108.146166 108.146166 0 0 1 184.425262 31.470534l326.997958 326.997959L838.421179 31.470534a108.146166 108.146166 0 0 1 152.954727 152.954728z' /%3E%3C/svg%3E ");
   filter: invert(100%) sepia(1%) saturate(2%) hue-rotate(255deg)
     brightness(105%) contrast(100%);
@@ -24,4 +27,37 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.formal {
+  --checkbox-color: #dbdbdb;
+  appearance: none;
+  border: 1px solid var(--checkbox-color);
+  border-radius: 3px;
+  width: fit-content;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  transition: ease-in-out 100ms;
+  position: relative;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formal::after {
+  content: "\f00c";
+  font-family: "FontAwesome";
+  display: block;
+  color: #686868;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: ease-in-out 100ms;
+  margin: 2px;
+}
+
+.formal:checked::after {
+  opacity: 1;
 }

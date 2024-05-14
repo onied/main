@@ -22,6 +22,14 @@ import TeachingPage from "./pages/teaching/teaching";
 import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
 import EditBlock from "./pages/editCourse/EditBlock";
 import EditPreview from "./pages/editCourse/editPreview/editPreview";
+import CheckTask from "./pages/checkTasks/checkTask/checkTask";
+import CreateCourse from "./pages/createCourse/createCourse";
+import PurchasePage from "./pages/purchase/purchase";
+import OrderCertificatePage from "./pages/certificates/orderCertificate";
+import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
+import ManageModerators from "./pages/manageModerators/manageModerators";
+import Landing from "./pages/landing/landing";
+import CustomBeatLoader from "./components/general/customBeatLoader";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -35,6 +43,9 @@ function App() {
     else if (LoginService.checkLoggedIn()) ProfileService.fetchProfile();
     else setLoading(false);
   }, [refreshingTokens]);
+
+  if (loading) return <CustomBeatLoader />;
+
   return (
     <>
       <ProfileContext.Provider value={profile}>
@@ -42,6 +53,8 @@ function App() {
           <Header></Header>
           <main>
             <Routes>
+              <Route path="/" element={<Landing />}></Route>
+              <Route path="/course/create" element={<CreateCourse />}></Route>
               <Route
                 path="/course/:courseId/learn/*"
                 element={<Course />}
@@ -56,7 +69,15 @@ function App() {
               ></Route>
               <Route path="/course/:courseId/edit" element={<EditPreview />} />
               <Route path="/course/:courseId" element={<Preview />}></Route>
+              <Route
+                path="/course/:courseId/manageModerators"
+                element={<ManageModerators />}
+              />
               <Route path="/catalog" element={<Catalog />}></Route>
+              <Route
+                path="/subscriptions"
+                element={<SubscriptionsPreview />}
+              ></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route path="/login/2fa" element={<TwoFactor />}></Route>
@@ -68,7 +89,16 @@ function App() {
               <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
               <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
               <Route path="/profile/*" element={<ProfilePage />}></Route>
+              <Route
+                path="/teaching/check/:taskCheckId"
+                element={<CheckTask />}
+              ></Route>
               <Route path="/teaching/*" element={<TeachingPage />}></Route>
+              <Route path="/purchases/*" element={<PurchasePage />}></Route>
+              <Route
+                path="/certificates/:courseId"
+                element={<OrderCertificatePage />}
+              ></Route>
             </Routes>
           </main>
         </LoadingContext.Provider>

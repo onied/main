@@ -1,11 +1,14 @@
 import Button from "../../general/button/button";
 import GeneralTask from "./generalTask";
 import classes from "./tasks.module.css";
-import BeatLoader from "react-spinners/BeatLoader";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
+import { useAppSelector } from "../../../hooks";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function Tasks({ courseId, blockId }) {
+  const hierarchyState = useAppSelector((state) => state.hierarchy);
+
   const [tasks, setTasks] = useState();
   const [found, setFound] = useState();
   const [taskInputs, setTaskInputs] = useState();
@@ -60,8 +63,7 @@ function Tasks({ courseId, blockId }) {
       });
   }, [courseId, blockId, reloadNeeded]);
 
-  if (found == null || taskPointsSequence == null)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (found == null || taskPointsSequence == null) return <CustomBeatLoader />;
   if (!found) return <></>;
 
   return (
@@ -91,9 +93,24 @@ function Tasks({ courseId, blockId }) {
               taskInputs
             )
             .then((response) => {
+              const newTaskPoints = response.data;
               console.log(response.data);
-              setTaskPointsSequence(response.data);
+              setTaskPointsSequence(newTaskPoints);
               setReloadNeeded(reloadNeeded + 1);
+
+              if (
+                tasks.tasks.every(
+                  (t, index) => t.maxPoints == newTaskPoints[index]?.points
+                )
+              ) {
+                const moduleId = hierarchyState.hierarchy.modules.find(
+                  (module) => module.blocks.some((b) => b.id == blockId)
+                ).id;
+                const block =
+                  hierarchyState.hierarchy.modules[moduleId].blocks[blockId];
+                block.completed = true;
+                console.log(hierarchyState.hierarchy);
+              }
             })
             .catch((error) => console.log(error));
         }}

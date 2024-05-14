@@ -1,8 +1,9 @@
 ﻿using AutoFixture;
-using Courses.Dtos;
-using Courses.Models;
+using Courses.Data.Models;
+using Courses.Dtos.CheckTasks.Request;
 using Courses.Services;
-using Task = Courses.Models.Task;
+using Courses.Services.Abstractions;
+using Task = Courses.Data.Models.Task;
 
 namespace Tests.Courses.UnitTests.ServiceTests;
 
@@ -20,21 +21,23 @@ public class CheckTasksServiceTests
     public void CheckTask_NotIsDone()
     {
         // Arrange
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, false)
             .Create();
-        var expected = new UserTaskPoints()
+        var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
-            Points = 0
+            Points = 0,
+            Checked = true
         };
 
         // Act
         var actual = _checkTasksService.CheckTask(new Task(), input);
 
         // Assert
-        Assert.Equivalent(expected, actual, true);
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
     }
 
     [Theory]
@@ -53,22 +56,24 @@ public class CheckTasksServiceTests
             .ToList();
         variants.ForEach(variant => task.Variants.Add(variant));
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.VariantsIds, new List<int> { variantId })
             .Create();
         var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
-            Points = isMaxPoints ? task.MaxPoints : 0
+            Points = isMaxPoints ? task.MaxPoints : 0,
+            Checked = true
         };
 
         // Act
         var actual = _checkTasksService.CheckTask(task, input);
 
         // Assert
-        Assert.Equivalent(expected, actual, true);
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
     }
 
     [Theory]
@@ -86,21 +91,51 @@ public class CheckTasksServiceTests
             }))
             .Create();
 
-        var input = _fixture.Build<UserInputDto>()
+        var input = _fixture.Build<UserInputRequest>()
             .With(input1 => input1.IsDone, true)
             .With(input1 => input1.Answer, answer)
             .Create();
         var expected = new UserTaskPoints
         {
-            UserId = input.UserId,
             TaskId = input.TaskId,
-            Points = task.MaxPoints
+            Points = task.MaxPoints,
+            Checked = true
         };
 
         // Act
         var actual = _checkTasksService.CheckTask(task, input);
 
         // Assert
-        Assert.Equivalent(expected, actual, true);
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
+    }
+
+    [Fact]
+    public void CheckTask_ManualReview()
+    {
+        // Arrange
+        var task = _fixture.Build<InputTask>()
+            .With(task1 => task1.TaskType, TaskType.ManualReview)
+            .Create();
+
+        var input = _fixture.Build<UserInputRequest>()
+            .With(input1 => input1.IsDone, true)
+            .With(input1 => input1.Text, "answer")
+            .Create();
+        var expected = new UserTaskPoints
+        {
+            TaskId = input.TaskId,
+            Points = 0,
+            Checked = false
+        };
+
+        // Act
+        var actual = _checkTasksService.CheckTask(task, input);
+
+        // Assert
+        Assert.Equal(expected.TaskId, actual.TaskId);
+        Assert.Equal(expected.Points, actual.Points);
+        Assert.Equal(expected.Checked, actual.Checked);
     }
 }

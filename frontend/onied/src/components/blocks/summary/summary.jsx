@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import classes from "./summary.module.css";
-import BeatLoader from "react-spinners/BeatLoader";
 import FileLink from "./fileLink";
 import api from "../../../config/axios";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function SummaryDto(title, markdownText, fileName, fileHref) {
   this.title = title;
@@ -43,8 +43,7 @@ function Summary({ courseId, blockId }) {
       });
   }, []);
 
-  if (found == null)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (found == null) return <CustomBeatLoader />;
   if (!found) return <></>;
   return (
     <>

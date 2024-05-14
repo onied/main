@@ -11,4 +11,6 @@ public class PageQuery
     }
 
     public int Page { get; set; } = 1;
+
+    public int Offset => (Page - 1) * ElementsOnPage;
 }

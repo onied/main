@@ -7,9 +7,10 @@ import PreviewPicture from "../../components/preview/previewPicture/previewPictu
 import CourseProgram from "../../components/preview/courseProgram/courseProgram";
 import Button from "../../components/general/button/button";
 import AuthorBlock from "../../components/preview/authorBlock/authorBlock";
-import { Link, useParams } from "react-router-dom";
-import BeatLoader from "react-spinners/BeatLoader";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../config/axios";
+import NotFound from "../../components/general/responses/notFound/notFound";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 type PreviewDto = {
   title: string;
@@ -28,13 +29,15 @@ type PreviewDto = {
   isArchived: boolean;
   hasCertificates: boolean;
   courseProgram: Array<string> | undefined;
+  isOwned: boolean;
 };
 
 function Preview(): ReactNode {
+  const navigate = useNavigate();
   const { courseId } = useParams();
   const [dto, setDto] = useState<PreviewDto | undefined>();
   const [found, setFound] = useState<boolean | undefined>();
-  const notFound = <h1 style={{ margin: "3rem" }}>Курс не найден.</h1>;
+  const notFound = <NotFound>Курс не найден.</NotFound>;
 
   const id = Number(courseId);
   if (isNaN(id)) return notFound;
@@ -57,8 +60,7 @@ function Preview(): ReactNode {
       });
   }, [courseId]);
 
-  if (found == undefined || dto == undefined)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (found == undefined || dto == undefined) return <CustomBeatLoader />;
   if (!found) return notFound;
   return (
     <div className={classes.previewContainer}>
@@ -82,14 +84,38 @@ function Preview(): ReactNode {
       </div>
       <div className={classes.previewRightBlock}>
         <PreviewPicture href={dto.pictureHref} isArchived={dto.isArchived} />
-        <h2 className={classes.price}>{dto.price}</h2>
-        <Link to="learn">
+        {dto.price > 0 && <h2 className={classes.price}>{dto.price}</h2>}
+        {dto.isOwned ? (
+          <Link to={"/course/" + courseId + "/learn"}>
+            <Button
+              className={[classes.previewButton, classes.continueCourse].join(
+                " "
+              )}
+            >
+              продолжить
+            </Button>
+          </Link>
+        ) : dto.price > 0 ? (
+          <Link to={"/purchases/course/" + courseId}>
+            <Button className={classes.previewButton}>купить</Button>
+          </Link>
+        ) : (
           <Button
-            style={{ width: "100%", fontSize: "20pt", textDecorations: "none" }}
+            className={[classes.previewButton, classes.freeCourse].join(" ")}
+            onClick={() => {
+              if (dto.isOwned) navigate("/course/" + courseId + "/learn");
+              api
+                .post("courses/" + courseId + "/enter")
+                .then(() => {
+                  navigate("/course/" + courseId + "/learn");
+                })
+                .catch((response) => console.log(response));
+            }}
           >
-            купить
+            начать
           </Button>
-        </Link>
+        )}
+
         <AuthorBlock
           authorName={dto.courseAuthor.name}
           authorAvatarHref={dto.courseAuthor.avatarHref}

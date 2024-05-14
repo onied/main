@@ -1,0 +1,114 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/v1/landing/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "courses",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/landing/{everything}"
+    },
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/api/v1/account/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "courses",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/accounts/{userId}/{everything}",
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/api/v1/teaching/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "courses",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/v1/teaching/{userId}/{everything}",
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/certificates/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "certificates",
+          "Port": 5508
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/certificates/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/purchases/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "purchases",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/purchases/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "DownstreamPathTemplate": "/api/v1/notifications/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "notifications",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/notifications/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "courses",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://users:8080"
+  }
+}

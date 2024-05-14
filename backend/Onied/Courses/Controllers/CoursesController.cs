@@ -1,156 +1,75 @@
-using AutoMapper;
-using Courses.Dtos;
-using Courses.Models;
-using Courses.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Courses.Filters;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{id:int}")]
-public class CoursesController : ControllerBase
+public class CoursesController(ICourseService courseService) : ControllerBase
 {
-    private readonly IBlockRepository _blockRepository;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ICheckTasksService _checkTasksService;
-    private readonly ICourseRepository _courseRepository;
-    private readonly IModuleRepository _moduleRepository;
-    private readonly ILogger<CoursesController> _logger;
-    private readonly IMapper _mapper;
-
-    public CoursesController(
-        ILogger<CoursesController> logger,
-        IMapper mapper,
-        ICourseRepository courseRepository,
-        IBlockRepository blockRepository,
-        ICheckTasksService checkTasksService,
-        ICategoryRepository categoryRepository,
-        IModuleRepository moduleRepository)
+    [HttpGet]
+    public async Task<IResult> GetCoursePreview(int id, [FromQuery] Guid? userId)
     {
-        _logger = logger;
-        _mapper = mapper;
-        _courseRepository = courseRepository;
-        _blockRepository = blockRepository;
-        _checkTasksService = checkTasksService;
-        _categoryRepository = categoryRepository;
-        _moduleRepository = moduleRepository;
+        return await courseService.GetCoursePreview(id, userId);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<PreviewDto>> GetCoursePreview(int id)
+    [HttpPost("enter")]
+    public async Task<IResult> EnterFreeCourse(int id, [FromQuery] Guid userId)
     {
-        var course = await _courseRepository.GetCourseAsync(id);
-        if (course == null)
-            return NotFound();
-        return _mapper.Map<PreviewDto>(course);
+        return await courseService.EnterFreeCourse(id, userId);
     }
 
     [HttpGet]
     [Route("hierarchy")]
-    public async Task<ActionResult<CourseDto>> GetCourseHierarchy(int id)
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetCourseHierarchy(int id, [FromQuery] Guid userId,
+        [FromQuery] string? role)
     {
-        var course = await _courseRepository.GetCourseWithBlocksAsync(id);
-        if (course == null)
-            return NotFound();
-        return _mapper.Map<CourseDto>(course);
+        return await courseService.GetCourseHierarchy(id, userId, role);
     }
 
     [HttpGet]
     [Route("summary/{blockId:int}")]
-    public async Task<ActionResult<SummaryBlockDto>> GetSummaryBlock(int id, int blockId)
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId,
+        [FromQuery] string? role)
     {
-        var summary = await _blockRepository.GetSummaryBlock(blockId);
-        if (summary == null || summary.Module.CourseId != id)
-            return NotFound();
-        return _mapper.Map<SummaryBlockDto>(summary);
+        return await courseService.GetSummaryBlock(id, blockId, userId, role);
     }
 
     [HttpGet]
     [Route("video/{blockId:int}")]
-    public async Task<ActionResult<VideoBlockDto>> GetVideoBlock(int id, int blockId)
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId,
+        [FromQuery] string? role)
     {
-        var block = await _blockRepository.GetVideoBlock(blockId);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-        return _mapper.Map<VideoBlockDto>(block);
-    }
-
-    [HttpGet]
-    [Route("tasks/{blockId:int}")]
-    public async Task<ActionResult<TasksBlockDto>> GetTaskBlock(int id, int blockId)
-    {
-        var block = await _blockRepository.GetTasksBlock(blockId, true);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-        return _mapper.Map<TasksBlockDto>(block);
+        return await courseService.GetVideoBlock(id, blockId, userId, role);
     }
 
     [HttpGet]
     [Route("tasks/{blockId:int}/for-edit")]
-    public async Task<ActionResult<EditTasksBlockDto>> GetEditTaskBlock(int id, int blockId)
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetEditTaskBlock(int id, int blockId, [FromQuery] Guid userId,
+        [FromQuery] string? role)
     {
-        var block = await _blockRepository.GetTasksBlock(blockId, true, true);
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-        return _mapper.Map<EditTasksBlockDto>(block);
+        return await courseService.GetEditTaskBlock(id, blockId, userId, role);
     }
 
     [HttpGet]
-    [Route("tasks/{blockId:int}/points")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> GetTaskPointsStored(int id, int blockId)
+    [Route("tasks/{blockId:int}")]
+    [AllowVisitCourseValidationFilter]
+    public async Task<IResult> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId,
+        [FromQuery] string? role)
     {
-        var block = await _blockRepository.GetTasksBlock(blockId, true);
-
-        if (block == null || block.Module.CourseId != id)
-            return NotFound();
-
-        var points = block.Tasks.Select(
-            task => task.TaskType is TaskType.ManualReview
-                ? null
-                : new UserTaskPoints
-                {
-                    TaskId = task.Id,
-                    Points = 0
-                });
-        // Заменить на нормальное обращение к базе
-        // с нулевыми баллами для автомат. пров. заданий по умолчанию
-
-        return _mapper.Map<List<UserTaskPointsDto>>(points);
+        return await courseService.GetTaskBlock(id, blockId, userId, role);
     }
 
     [HttpPost]
-    [Route("tasks/{blockId:int}/check")]
-    public async Task<ActionResult<List<UserTaskPointsDto>>> CheckTaskBlock(
-        int id,
-        int blockId,
-        [FromBody] List<UserInputDto> inputsDto)
+    [Route("/api/v1/[controller]/create")]
+    public async Task<IResult> CreateCourse(
+        [FromQuery] string? userId)
     {
-        if (inputsDto.Any(inputDto => inputDto is null))
-            return BadRequest();
-
-        var block = await _blockRepository.GetTasksBlock(
-            blockId,
-            true,
-            true);
-
-        if (block is null || block.Module.CourseId != id)
-            return NotFound();
-
-        var points = new List<UserTaskPoints?>();
-        foreach (var inputDto in inputsDto)
-        {
-            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
-
-            if (task is null)
-                return NotFound($"Task with id={inputDto.TaskId} not found.");
-
-            if (task.TaskType != inputDto.TaskType)
-                return BadRequest($"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
-
-            points.Add(_checkTasksService.CheckTask(task, inputDto));
-        }
-
-        return _mapper.Map<List<UserTaskPointsDto>>(points);
+        return await courseService.CreateCourse(userId);
     }
 }

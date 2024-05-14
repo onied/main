@@ -1,7 +1,8 @@
-﻿using Courses.Dtos;
-using Courses.Models;
-using Microsoft.EntityFrameworkCore;
-using Task = Courses.Models.Task;
+﻿using Courses.Data;
+using Courses.Data.Models;
+using Courses.Dtos.EditCourse.Request;
+using Courses.Services.Abstractions;
+using Task = Courses.Data.Models.Task;
 
 namespace Courses.Services;
 
@@ -10,15 +11,15 @@ public class UpdateTasksBlockService(
     IBlockRepository blockRepository
     ) : IUpdateTasksBlockService
 {
-    public async Task<TasksBlock> UpdateTasksBlock(EditTasksBlockDto tasksBlockDto)
+    public async Task<TasksBlock> UpdateTasksBlock(EditTasksBlockRequest tasksBlockRequest)
     {
-        dbContext.Tasks.RemoveRange(dbContext.Tasks.Where(t => t.TasksBlockId == tasksBlockDto.Id));
+        dbContext.Tasks.RemoveRange(dbContext.Tasks.Where(t => t.TasksBlockId == tasksBlockRequest.Id));
         await dbContext.SaveChangesAsync();
-        foreach (var updatedTask in tasksBlockDto.Tasks)
+        foreach (var updatedTask in tasksBlockRequest.Tasks)
         {
             var task = new Task
             {
-                TasksBlockId = tasksBlockDto.Id,
+                TasksBlockId = tasksBlockRequest.Id,
                 TaskType = updatedTask.TaskType,
                 Title = updatedTask.Title,
                 MaxPoints = updatedTask.MaxPoints
@@ -95,6 +96,6 @@ public class UpdateTasksBlockService(
         }
         await dbContext.SaveChangesAsync();
 
-        return await blockRepository.GetTasksBlock(tasksBlockDto.Id, true, true);
+        return await blockRepository.GetTasksBlock(tasksBlockRequest.Id, true, true);
     }
 }

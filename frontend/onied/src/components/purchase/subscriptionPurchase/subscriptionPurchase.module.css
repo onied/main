@@ -1,0 +1,36 @@
+.pageTitle {
+  width: 100%;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  text-align: start;
+}
+
+.subscriptionPurchaseContainer {
+  margin: 40px auto;
+  padding: 30px 30px;
+  width: 40%;
+  min-width: min-content;
+  height: fit-content;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.purchaseFooter {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.purchaseFooter button {
+  margin-block-start: 0;
+}
+
+.error {
+  font-size: 10pt;
+  font-weight: 600;
+  color: #ed4956;
+  text-align: center;
+}

@@ -1,32 +1,50 @@
-﻿using AutoMapper;
-using Courses.Dtos;
-using Courses.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Courses.Dtos.ManualReview.Request;
+using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]/{id:guid}")]
-public class TeachingController(IUserRepository userRepository, IMapper mapper) : ControllerBase
+[Route("api/v1/[controller]/{userId:guid}")]
+public class TeachingController(IManualReviewService manualReviewService, ITeachingService teachingService)
+    : ControllerBase
 {
     [HttpGet]
     [Route("authored")]
-    public async Task<Results<Ok<List<CourseCardDto>>, NotFound>> GetAuthoredCourses(Guid id)
+    public async Task<IResult> GetAuthoredCourses(Guid userId)
     {
-        var user = await userRepository.GetUserWithTeachingCoursesAsync(id);
-        if (user is null) return TypedResults.NotFound();
-
-        return TypedResults.Ok(mapper.Map<List<CourseCardDto>>(user.TeachingCourses));
+        return await teachingService.GetAuthoredCourses(userId);
     }
 
     [HttpGet]
     [Route("moderated")]
-    public async Task<Results<Ok<List<CourseCardDto>>, NotFound>> GetModeratedCourses(Guid id)
+    public async Task<IResult> GetModeratedCourses(Guid userId)
     {
-        var user = await userRepository.GetUserWithModeratingCoursesAsync(id);
-        if (user is null) return TypedResults.NotFound();
+        return await teachingService.GetModeratedCourses(userId);
+    }
 
-        return TypedResults.Ok(mapper.Map<List<CourseCardDto>>(user.ModeratingCourses));
+    [HttpGet]
+    [Route("tasks-to-check-list")]
+    public async Task<IResult> GetTasksToCheckList(Guid userId)
+    {
+        return await manualReviewService.GetTasksToCheckForTeacher(userId);
+    }
+
+    [HttpGet]
+    [Route("check/{userAnswerId:guid}")]
+    public async Task<IResult> GetTaskToCheck(
+        Guid userId,
+        Guid userAnswerId)
+    {
+        return await manualReviewService.GetManualReviewTaskUserAnswer(userId, userAnswerId);
+    }
+
+    [HttpPut]
+    [Route("check/{userAnswerId:guid}")]
+    public async Task<IResult> CheckTask(
+        Guid userId,
+        Guid userAnswerId, [FromBody] ReviewTaskRequest reviewTaskRequest)
+    {
+        return await manualReviewService.ReviewUserAnswer(userId, userAnswerId, reviewTaskRequest);
     }
 }

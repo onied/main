@@ -1,3 +1,4 @@
+import Avatar from "react-avatar";
 import classes from "./authorBlock.module.css";
 
 type AuthorBlockProps = {
@@ -8,9 +9,12 @@ type AuthorBlockProps = {
 function AuthorBlock(props: AuthorBlockProps) {
   return (
     <div className={classes.authorBlock}>
-      <div className={classes.authorAvatarContainer}>
-        <img className={classes.authorAvatar} src={props.authorAvatarHref} />
-      </div>
+      <Avatar
+        name={props.authorName}
+        size="50"
+        className={classes.authorAvatarContainer}
+        src={props.authorAvatarHref ? props.authorAvatarHref : undefined}
+      ></Avatar>
       <span className={classes.authorName}>{props.authorName}</span>
     </div>
   );
