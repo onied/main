@@ -163,16 +163,17 @@ function EditPreviewComponent() {
       });
   }, []);
 
-  if (canAccess !== undefined && !canAccess) return noAccess;
-
-  if (found !== undefined && !found) return notFound;
-
   if (
+    found === undefined ||
     previewInfo == undefined ||
     categories == undefined ||
     canAccess == undefined
   )
     return <CustomBeatLoader />;
+
+  if (canAccess !== undefined && !canAccess) return noAccess;
+
+  if (!found) return notFound;
 
   return (
     <>
