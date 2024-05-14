@@ -10,8 +10,7 @@ public static class DbContextExtension
         var configuration = serviceCollection.BuildServiceProvider().GetService<IConfiguration>()!;
 
         serviceCollection.AddDbContext<AppDbContext>(optionsBuilder =>
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("NotificationsDatabase"),
-                    b => b.MigrationsAssembly("Notifications"))
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("NotificationsDatabase"))
                 .UseSnakeCaseNamingConvention());
 
         return serviceCollection;

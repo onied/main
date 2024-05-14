@@ -7,19 +7,12 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{id:guid}")]
-public class AccountsController(IUserRepository userRepository, IMapper mapper) : ControllerBase
+public class AccountsController(IAccountsService accountsService) : ControllerBase
 {
     [HttpGet]
     [Route("courses")]
-    public async Task<ActionResult<List<CourseCardDto>>> GetCourses(Guid id)
+    public async Task<IResult> GetCourses(Guid id)
     {
-        var user = await userRepository.GetUserWithCoursesAsync(id);
-        if (user is null) return NotFound();
-
-        var courses = mapper.Map<List<CourseCardDto>>(user.Courses);
-        foreach (var course in courses)
-            course.IsOwned = true;
-
-        return courses;
+        return await accountsService.GetCourses(id);
     }
 }

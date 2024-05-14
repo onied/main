@@ -1,5 +1,6 @@
-using Courses.Dtos;
-using Courses.Models;
+using Courses.Data;
+using Courses.Data.Models;
+using Courses.Dtos.Catalog.Request;
 using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
@@ -31,7 +32,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
         return await query.ToListAsync();
     }
 
-    public async Task<(List<Course> list, int count)> GetCoursesAsync(CatalogGetQueriesDto catalogGetQueriesDto)
+    public async Task<(List<Course> list, int count)> GetCoursesAsync(CatalogGetQueriesRequest catalogGetQueriesRequest)
     {
         var query = dbContext.Courses
             .Include(course => course.Author)
@@ -39,28 +40,28 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .AsNoTracking()
             .AsQueryable();
 
-        if (catalogGetQueriesDto.Category != null)
-            query = query.Where(course => course.CategoryId == catalogGetQueriesDto.Category.Value);
-        if (catalogGetQueriesDto.PriceFrom != null)
-            query = query.Where(course => course.PriceRubles >= catalogGetQueriesDto.PriceFrom.Value);
-        if (catalogGetQueriesDto.PriceTo != null)
-            query = query.Where(course => course.PriceRubles <= catalogGetQueriesDto.PriceTo.Value);
-        if (catalogGetQueriesDto.TimeFrom != null)
-            query = query.Where(course => course.HoursCount >= catalogGetQueriesDto.TimeFrom.Value);
-        if (catalogGetQueriesDto.TimeTo != null)
-            query = query.Where(course => course.HoursCount <= catalogGetQueriesDto.TimeTo.Value);
-        if (catalogGetQueriesDto.CertificatesOnly)
+        if (catalogGetQueriesRequest.Category != null)
+            query = query.Where(course => course.CategoryId == catalogGetQueriesRequest.Category.Value);
+        if (catalogGetQueriesRequest.PriceFrom != null)
+            query = query.Where(course => course.PriceRubles >= catalogGetQueriesRequest.PriceFrom.Value);
+        if (catalogGetQueriesRequest.PriceTo != null)
+            query = query.Where(course => course.PriceRubles <= catalogGetQueriesRequest.PriceTo.Value);
+        if (catalogGetQueriesRequest.TimeFrom != null)
+            query = query.Where(course => course.HoursCount >= catalogGetQueriesRequest.TimeFrom.Value);
+        if (catalogGetQueriesRequest.TimeTo != null)
+            query = query.Where(course => course.HoursCount <= catalogGetQueriesRequest.TimeTo.Value);
+        if (catalogGetQueriesRequest.CertificatesOnly)
             query = query.Where(course => course.HasCertificates);
-        if (catalogGetQueriesDto.ActiveOnly)
+        if (catalogGetQueriesRequest.ActiveOnly)
             query = query.Where(course => !course.IsArchived);
-        if (catalogGetQueriesDto.Q.Length > 0)
+        if (catalogGetQueriesRequest.Q.Length > 0)
             query = query.Where(course =>
-                course.Title.ToLower().Contains(catalogGetQueriesDto.Q.ToLower()) ||
-                course.Description.ToLower().Contains(catalogGetQueriesDto.Q.ToLower()));
+                course.Title.ToLower().Contains(catalogGetQueriesRequest.Q.ToLower()) ||
+                course.Description.ToLower().Contains(catalogGetQueriesRequest.Q.ToLower()));
 
-        catalogGetQueriesDto.Sort ??= "popular";
+        catalogGetQueriesRequest.Sort ??= "popular";
 
-        switch (catalogGetQueriesDto.Sort)
+        switch (catalogGetQueriesRequest.Sort)
         {
             case "popular":
                 query = query.OrderByDescending(course => course.Users.Count);
@@ -76,7 +77,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
                 break;
         }
 
-        return (await query.Skip(catalogGetQueriesDto.Offset).Take(catalogGetQueriesDto.ElementsOnPage).ToListAsync(),
+        return (await query.Skip(catalogGetQueriesRequest.Offset).Take(catalogGetQueriesRequest.ElementsOnPage).ToListAsync(),
             await query.CountAsync());
     }
 
@@ -136,7 +137,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             .OrderByDescending(course => course.Id)
             .Take(amount)
             .ToListAsync();
-    
+
 
     public async Task<Course> AddCourseAsync(Course course)
     {

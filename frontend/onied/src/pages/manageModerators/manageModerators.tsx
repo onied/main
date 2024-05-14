@@ -71,9 +71,7 @@ function ManageModerators() {
       return s;
     });
     api
-      .patch("courses/" + id + "/moderators/add", null, {
-        params: { studentId: studentId },
-      })
+      .patch("courses/" + id + "/moderators/add", { studentId: studentId })
       .catch((error) => {
         if (error.statusCode) {
           switch (Number(error.statusCode)) {
@@ -100,9 +98,7 @@ function ManageModerators() {
       return s;
     });
     api
-      .patch("courses/" + id + "/moderators/delete", null, {
-        params: { studentId: studentId },
-      })
+      .patch("courses/" + id + "/moderators/delete", { studentId: studentId })
       .catch((error) => {
         if (error.statusCode) {
           switch (Number(error.statusCode)) {

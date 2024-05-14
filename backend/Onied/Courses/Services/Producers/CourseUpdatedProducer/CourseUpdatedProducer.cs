@@ -1,5 +1,5 @@
 using AutoMapper;
-using Courses.Models;
+using Courses.Data.Models;
 using MassTransit;
 using MassTransit.Data.Messages;
 using Task = System.Threading.Tasks.Task;

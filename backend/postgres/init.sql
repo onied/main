@@ -1,0 +1,1 @@
+CREATE DATABASE certificates_database;
