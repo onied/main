@@ -223,7 +223,7 @@ function Landing() {
           <h2>Ваши курсы</h2>
           <CustomBeatLoader />
         </>
-      ) : (
+      ) : userCourses.length > 0 ? (
         <>
           <h2>Ваши курсы</h2>
           <div className={classes.carouselWrapper}>
@@ -253,7 +253,7 @@ function Landing() {
             </div>
           </div>
         </>
-      )}
+      ) : null}
       <h2>Самые популярные курсы</h2>
       <div className={classes.carouselWrapper}>
         {mostPopularCourses === undefined ? (
