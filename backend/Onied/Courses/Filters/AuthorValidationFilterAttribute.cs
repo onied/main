@@ -1,5 +1,4 @@
-﻿using Courses.Services;
-using Courses.Services.Abstractions;
+﻿using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -24,7 +23,7 @@ public class AuthorValidationFilterAttribute : ActionFilterAttribute
         {
             context.Result = new BadRequestObjectResult(new ValidationProblemDetails
             {
-                Errors = { { "userId", new[] { "userId query parameter cannot be null" } } }
+                Errors = { { "role", new[] { "role query parameter cannot be null" } } }
             });
             return;
         }
@@ -42,7 +41,7 @@ public class AuthorValidationFilterAttribute : ActionFilterAttribute
         if (courseManagementService == null)
             throw new NullReferenceException($"No service added {nameof(ICourseManagementService)}");
 
-        if (!await courseManagementService.AllowVisitCourse(userId, id))
+        if (!await courseManagementService.AllowVisitCourse(userId, id, (string?)role))
         {
             context.Result = new ForbidResult();
             return;
