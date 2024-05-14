@@ -1,4 +1,4 @@
-﻿using Courses.Dtos.ManualReviewDtos.Request;
+﻿using Courses.Dtos.ManualReview.Request;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,8 +44,8 @@ public class TeachingController(
     [Route("check/{userAnswerId:guid}")]
     public async Task<IResult> CheckTask(
         Guid userId,
-        Guid userAnswerId, [FromBody] ReviewTaskDto reviewTaskDto)
+        Guid userAnswerId, [FromBody] ReviewTaskRequest reviewTaskRequest)
     {
-        return await manualReviewService.ReviewUserAnswer(userId, userAnswerId, reviewTaskDto);
+        return await manualReviewService.ReviewUserAnswer(userId, userAnswerId, reviewTaskRequest);
     }
 }

@@ -1,4 +1,4 @@
-using Courses.Dtos.ManualReviewDtos.Request;
+using Courses.Dtos.ManualReview.Request;
 using Courses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -11,5 +11,5 @@ public interface IManualReviewTaskUserAnswerRepository
     public Task<List<ManualReviewTaskUserAnswer>> GetCheckedTasksToReview(User teacher);
     public Task<ManualReviewTaskUserAnswer?> GetById(Guid userAnswerId);
     public bool CanReviewAnswer(User teacher, ManualReviewTaskUserAnswer answer);
-    public Task<ValidationProblem?> ReviewAnswer(ReviewTaskDto reviewTaskDto, ManualReviewTaskUserAnswer answer);
+    public Task<ValidationProblem?> ReviewAnswer(ReviewTaskRequest reviewTaskRequest, ManualReviewTaskUserAnswer answer);
 }

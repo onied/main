@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Catalog.Request;
+using Courses.Dtos.Catalog.Response;
 using Courses.Helpers;
 using Courses.Services.Abstractions;
 
@@ -11,11 +13,11 @@ public class CatalogService(
     IMapper mapper) : ICatalogService
 {
     public async Task<IResult> Get(
-        CatalogGetQueriesDto catalogGetQueries,
+        CatalogGetQueriesRequest catalogGetQueries,
         Guid? userId)
     {
         var (courses, count) = await courseRepository.GetCoursesAsync(catalogGetQueries);
-        var courseDtos = mapper.Map<List<CourseCardDto>>(courses);
+        var courseDtos = mapper.Map<List<CourseCardResponse>>(courses);
 
         var userCourses = (userId is null
                 ? null
@@ -23,6 +25,6 @@ public class CatalogService(
             .Select(x => x.Id).ToList() ?? [];
         courseDtos.ForEach(x => x.IsOwned = userCourses.Contains(x.Id));
 
-        return Results.Ok(Page<CourseCardDto>.Prepare(catalogGetQueries, count, courseDtos));
+        return Results.Ok(Page<CourseCardResponse>.Prepare(catalogGetQueries, count, courseDtos));
     }
 }

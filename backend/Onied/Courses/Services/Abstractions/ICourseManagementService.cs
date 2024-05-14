@@ -1,5 +1,6 @@
 ﻿using Courses.Dtos;
-using Courses.Dtos.ModeratorDtos.Response;
+using Courses.Dtos.Course.Response;
+using Courses.Dtos.EditCourse.Request;
 using Courses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -17,23 +18,23 @@ public interface ICourseManagementService
         int id,
         int blockId,
         string? userId,
-        EditTasksBlockDto tasksBlockDto);
+        EditTasksBlockRequest tasksBlockRequest);
 
     public Task<IResult> EditSummaryBlock(
         int id,
         int blockId,
         string? userId,
-        SummaryBlockDto summaryBlockDto);
+        SummaryBlockResponse summaryBlockResponse);
 
     public Task<IResult> EditVideoBlock(
         int id,
         int blockId,
         string? userId,
-        VideoBlockDto videoBlockDto);
+        VideoBlockResponse videoBlockResponse);
 
     public Task<IResult> RenameBlock(
         int id,
-        RenameBlockDto renameBlockDto,
+        RenameBlockRequest renameBlockRequest,
         string? userId);
 
     public Task<IResult> DeleteBlock(
@@ -50,7 +51,7 @@ public interface ICourseManagementService
     public Task<IResult> RenameModule(
         int id,
         string? userId,
-        RenameModuleDto renameModuleDto);
+        RenameModuleRequest renameModuleRequest);
 
     public Task<IResult> DeleteModule(
         int id,
@@ -64,11 +65,11 @@ public interface ICourseManagementService
     public Task<IResult> EditHierarchy(
         int id,
         string? userId,
-        CourseDto courseDto);
+        CourseResponse courseResponse);
 
     public Task<IResult> EditCourse(int id,
         string? userId,
-        EditCourseDto editCourseDto);
+        EditCourseRequest editCourseRequest);
 
 
 }

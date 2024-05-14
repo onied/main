@@ -1,4 +1,5 @@
 using Courses.Dtos;
+using Courses.Dtos.CheckTasks.Request;
 using Courses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Task = System.Threading.Tasks.Task;
@@ -13,7 +14,7 @@ public interface ICheckTaskManagementService
         bool includeAnswers = false);
 
     public IResult GetUserTaskPoints(
-        List<UserInputDto> inputsDto,
+        List<UserInputRequest> inputsDto,
         TasksBlock block,
         Guid userId);
 
@@ -33,5 +34,5 @@ public interface ICheckTaskManagementService
         int courseId,
         int blockId,
         Guid userId,
-        List<UserInputDto> inputsDto);
+        List<UserInputRequest> inputsDto);
 }

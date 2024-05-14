@@ -1,4 +1,5 @@
 using Courses.Dtos;
+using Courses.Dtos.CheckTasks.Request;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ public class CheckTasksController(
             int courseId,
             int blockId,
             [FromQuery] Guid userId,
-            [FromBody] List<UserInputDto> inputsDto)
+            [FromBody] List<UserInputRequest> inputsDto)
     {
         return await checkTaskManagementService.CheckTaskBlock(courseId, blockId, userId, inputsDto);
     }

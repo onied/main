@@ -1,5 +1,4 @@
-using Courses.Dtos.ManualReviewDtos.Request;
-using Courses.Dtos.ManualReviewDtos.Response;
+using Courses.Dtos.ManualReview.Request;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Courses.Services.Abstractions;
@@ -12,7 +11,7 @@ public interface IManualReviewService
 
     public Task<IResult> ReviewUserAnswer(
         Guid userId,
-        Guid manualReviewTaskUserAnswerId, ReviewTaskDto reviewTaskDto);
+        Guid manualReviewTaskUserAnswerId, ReviewTaskRequest reviewTaskRequest);
 
     public Task<IResult> GetUncheckedForTeacher(
         Guid teacherId);

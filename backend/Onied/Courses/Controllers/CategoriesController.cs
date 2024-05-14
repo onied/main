@@ -1,5 +1,6 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Catalog.Response;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,6 @@ public class CategoriesController(IMapper mapper, ICategoryRepository categoryRe
     [HttpGet]
     public async Task<IResult> GetCategories()
     {
-        return Results.Ok(mapper.Map<List<CategoryDto>>(await categoryRepository.GetAllCategoriesAsync()));
+        return Results.Ok(mapper.Map<List<CategoryResponse>>(await categoryRepository.GetAllCategoriesAsync()));
     }
 }

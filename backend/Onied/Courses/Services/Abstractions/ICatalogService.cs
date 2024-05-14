@@ -1,10 +1,11 @@
 ﻿using Courses.Dtos;
+using Courses.Dtos.Catalog.Request;
 
 namespace Courses.Services.Abstractions;
 
 public interface ICatalogService
 {
     public Task<IResult> Get(
-        CatalogGetQueriesDto catalogGetQueries,
+        CatalogGetQueriesRequest catalogGetQueries,
         Guid? userId);
 }

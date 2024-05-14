@@ -1,4 +1,6 @@
 ﻿using Courses.Dtos;
+using Courses.Dtos.Course.Response;
+using Courses.Dtos.EditCourse.Request;
 using Courses.Filters;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +17,9 @@ public class EditCoursesController(
     [AuthorValidationFilter]
     public async Task<IResult> EditCourse(int id,
         [FromQuery] string? userId,
-        [FromBody] EditCourseDto editCourseDto)
+        [FromBody] EditCourseRequest editCourseRequest)
     {
-        return await courseManagementService.EditCourse(id, userId, editCourseDto);
+        return await courseManagementService.EditCourse(id, userId, editCourseRequest);
     }
 
     [HttpPut]
@@ -26,9 +28,9 @@ public class EditCoursesController(
     public async Task<IResult> EditHierarchy(
         int id,
         [FromQuery] string? userId,
-        [FromBody] CourseDto courseDto)
+        [FromBody] CourseResponse courseResponse)
     {
-        return await courseManagementService.EditHierarchy(id, userId, courseDto);
+        return await courseManagementService.EditHierarchy(id, userId, courseResponse);
     }
 
     [HttpPost]
@@ -58,9 +60,9 @@ public class EditCoursesController(
     public async Task<IResult> RenameModule(
         int id,
         [FromQuery] string? userId,
-        [FromBody] RenameModuleDto renameModuleDto)
+        [FromBody] RenameModuleRequest renameModuleRequest)
     {
-        return await courseManagementService.RenameModule(id, userId, renameModuleDto);
+        return await courseManagementService.RenameModule(id, userId, renameModuleRequest);
     }
 
     [HttpPost]
@@ -70,10 +72,10 @@ public class EditCoursesController(
         int id,
         int moduleId,
         [FromQuery] string? userId,
-        [FromBody] AddBlockDto addBlockDto)
+        [FromBody] AddBlockRequest addBlockRequest)
     {
         return await courseManagementService.AddBlock(
-            id, moduleId, addBlockDto.BlockType, userId);
+            id, moduleId, addBlockRequest.BlockType, userId);
     }
 
     [HttpDelete]
@@ -93,9 +95,9 @@ public class EditCoursesController(
     public async Task<IResult> RenameBlock(
         int id,
         [FromQuery] string? userId,
-        [FromBody] RenameBlockDto renameBlockDto)
+        [FromBody] RenameBlockRequest renameBlockRequest)
     {
-        return await courseManagementService.RenameBlock(id, renameBlockDto, userId);
+        return await courseManagementService.RenameBlock(id, renameBlockRequest, userId);
     }
 
     [HttpPut]
@@ -105,9 +107,9 @@ public class EditCoursesController(
         int id,
         int blockId,
         [FromQuery] string? userId,
-        [FromBody] VideoBlockDto videoBlockDto)
+        [FromBody] VideoBlockResponse videoBlockResponse)
     {
-        return await courseManagementService.EditVideoBlock(id, blockId, userId, videoBlockDto);
+        return await courseManagementService.EditVideoBlock(id, blockId, userId, videoBlockResponse);
     }
 
     [HttpPut]
@@ -117,9 +119,9 @@ public class EditCoursesController(
         int id,
         int blockId,
         [FromQuery] string? userId,
-        [FromBody] SummaryBlockDto summaryBlockDto)
+        [FromBody] SummaryBlockResponse summaryBlockResponse)
     {
-        return await courseManagementService.EditSummaryBlock(id, blockId, userId, summaryBlockDto);
+        return await courseManagementService.EditSummaryBlock(id, blockId, userId, summaryBlockResponse);
     }
 
     [HttpPut]
@@ -129,9 +131,9 @@ public class EditCoursesController(
         int id,
         int blockId,
         [FromQuery] string? userId,
-        [FromBody] EditTasksBlockDto tasksBlockDto)
+        [FromBody] EditTasksBlockRequest tasksBlockRequest)
     {
-        return await courseManagementService.EditTasksBlock(id, blockId, userId, tasksBlockDto);
+        return await courseManagementService.EditTasksBlock(id, blockId, userId, tasksBlockRequest);
     }
 
     [HttpGet]

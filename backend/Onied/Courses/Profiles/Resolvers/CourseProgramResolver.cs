@@ -1,12 +1,13 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Course.Response;
 using Courses.Models;
 
 namespace Courses.Profiles.Resolvers;
 
-public class CourseProgramResolver : IValueResolver<Course, PreviewDto, List<string>?>
+public class CourseProgramResolver : IValueResolver<Course, PreviewResponse, List<string>?>
 {
-    public List<string>? Resolve(Course source, PreviewDto destination, List<string>? destMember,
+    public List<string>? Resolve(Course source, PreviewResponse destination, List<string>? destMember,
         ResolutionContext context)
     {
         return source.IsProgramVisible

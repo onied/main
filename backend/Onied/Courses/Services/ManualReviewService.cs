@@ -1,6 +1,6 @@
 using AutoMapper;
-using Courses.Dtos.ManualReviewDtos.Request;
-using Courses.Dtos.ManualReviewDtos.Response;
+using Courses.Dtos.ManualReview.Request;
+using Courses.Dtos.ManualReview.Response;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.NotificationSentProducer;
@@ -44,17 +44,17 @@ public class ManualReviewService(
         if (result is not Ok<ManualReviewTaskUserAnswer> ok)
             return result;
 
-        return Results.Ok(mapper.Map<ManualReviewTaskUserAnswerDto>(ok.Value));
+        return Results.Ok(mapper.Map<ManualReviewTaskUserAnswerResponse>(ok.Value));
     }
 
     public async Task<IResult>
-        ReviewUserAnswer(Guid userId, Guid manualReviewTaskUserAnswerId, ReviewTaskDto reviewTaskDto)
+        ReviewUserAnswer(Guid userId, Guid manualReviewTaskUserAnswerId, ReviewTaskRequest reviewTaskRequest)
     {
         var result = await GetByTeacherAndId(userId, manualReviewTaskUserAnswerId);
         if (result is not Ok<ManualReviewTaskUserAnswer> ok)
             return result;
         var answer = ok.Value!;
-        var problem = await manualReviewTaskUserAnswerRepository.ReviewAnswer(reviewTaskDto, answer);
+        var problem = await manualReviewTaskUserAnswerRepository.ReviewAnswer(reviewTaskRequest, answer);
         if (problem != null)
             return problem;
         var pointsInfo = (await userTaskPointsRepository
@@ -81,7 +81,7 @@ public class ManualReviewService(
         if (user == null)
             return Results.Unauthorized();
         var result = await manualReviewTaskUserAnswerRepository.GetUncheckedTasksToReview(user);
-        return Results.Ok(mapper.Map<List<ManualReviewTaskUserAnswerDto>>(result));
+        return Results.Ok(mapper.Map<List<ManualReviewTaskUserAnswerResponse>>(result));
     }
 
     public async Task<IResult> GetCheckedForTeacher(Guid teacherId)
@@ -90,7 +90,7 @@ public class ManualReviewService(
         if (user == null)
             return Results.Unauthorized();
         var result = await manualReviewTaskUserAnswerRepository.GetCheckedTasksToReview(user);
-        return Results.Ok(mapper.Map<List<ManualReviewTaskUserAnswerDto>>(result));
+        return Results.Ok(mapper.Map<List<ManualReviewTaskUserAnswerResponse>>(result));
     }
 
     public async Task<IResult> GetTasksToCheckForTeacher(Guid teacherId)
@@ -99,6 +99,6 @@ public class ManualReviewService(
         if (user == null)
             return Results.Unauthorized();
         var result = await manualReviewTaskUserAnswerRepository.GetUncheckedTasksToReview(user);
-        return Results.Ok(mapper.Map<List<CourseWithManualReviewTasksDto>>(result));
+        return Results.Ok(mapper.Map<List<CourseWithManualReviewTasksResponse>>(result));
     }
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Catalog.Request;
 using Courses.Helpers;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ public class CatalogController(
 {
     [HttpGet]
     public async Task<IResult> Get(
-        [FromQuery] CatalogGetQueriesDto catalogGetQueries,
+        [FromQuery] CatalogGetQueriesRequest catalogGetQueries,
         [FromQuery] Guid? userId)
     {
         return await catalogService.Get(catalogGetQueries, userId);

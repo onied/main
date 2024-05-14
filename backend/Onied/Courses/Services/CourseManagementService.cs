@@ -4,7 +4,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Courses.Dtos;
 using AutoMapper;
-using Courses.Dtos.ModeratorDtos.Response;
+using Courses.Dtos.Course.Request;
+using Courses.Dtos.Course.Response;
+using Courses.Dtos.EditCourse.Request;
+using Courses.Dtos.Moderator.Response;
 using Courses.Enums;
 using Courses.Extensions;
 using Courses.Models;
@@ -38,7 +41,7 @@ public class CourseManagementService(
             ReferenceHandler = ReferenceHandler.Preserve
         };
 
-        string jsonCourse = JsonSerializer.Serialize(course, options);
+        var jsonCourse = JsonSerializer.Serialize(course, options);
 
         return Results.Ok(jsonCourse);
     }
@@ -49,7 +52,7 @@ public class CourseManagementService(
         if (userCourseInfo is null) return false;
         if (userCourseInfo.Course.PriceRubles == 0) return true;
 
-        var requestString = JsonSerializer.Serialize(new VerifyTokenRequestDto(userCourseInfo.Token!));
+        var requestString = JsonSerializer.Serialize(new VerifyTokenRequest(userCourseInfo.Token!));
         var response =
             await PurchasesServerApiClient.PostAsync(
                 string.Empty,
@@ -66,7 +69,7 @@ public class CourseManagementService(
         if (course.Author?.Id != authorId)
             return Results.Forbid();
 
-        var courseDto = mapper.Map<CourseStudentsDto>(course);
+        var courseDto = mapper.Map<CourseStudentsResponse>(course);
         courseDto.Students.ForEach(s => s.IsModerator = course.Moderators.Any(x => x.Id == s.StudentId));
 
         return Results.Ok(courseDto);
@@ -106,14 +109,14 @@ public class CourseManagementService(
         int id,
         int blockId,
         string? userId,
-        EditTasksBlockDto tasksBlockDto)
+        EditTasksBlockRequest tasksBlockRequest)
     {
         var block = await blockRepository.GetTasksBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
 
-        var updatedBlock = await updateTasksBlockService.UpdateTasksBlock(tasksBlockDto);
-        var updatedBlockDto = mapper.Map<EditTasksBlockDto>(updatedBlock);
+        var updatedBlock = await updateTasksBlockService.UpdateTasksBlock(tasksBlockRequest);
+        var updatedBlockDto = mapper.Map<EditTasksBlockRequest>(updatedBlock);
 
         return Results.Ok(updatedBlockDto);
     }
@@ -122,13 +125,13 @@ public class CourseManagementService(
         int id,
         int blockId,
         string? userId,
-        SummaryBlockDto summaryBlockDto)
+        SummaryBlockResponse summaryBlockResponse)
     {
         var block = await blockRepository.GetSummaryBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
 
-        mapper.Map(summaryBlockDto, block);
+        mapper.Map(summaryBlockResponse, block);
         await blockRepository.UpdateSummaryBlock(block);
         return Results.Ok();
     }
@@ -137,25 +140,25 @@ public class CourseManagementService(
         int id,
         int blockId,
         string? userId,
-        VideoBlockDto videoBlockDto)
+        VideoBlockResponse videoBlockResponse)
     {
         var block = await blockRepository.GetVideoBlock(blockId);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
 
-        mapper.Map(videoBlockDto, block);
+        mapper.Map(videoBlockResponse, block);
         await blockRepository.UpdateVideoBlock(block);
         return Results.Ok();
     }
 
     public async Task<IResult> RenameBlock(
         int id,
-        RenameBlockDto renameBlockDto,
+        RenameBlockRequest renameBlockRequest,
         string? userId)
     {
 
         if (!await blockRepository.RenameBlockAsync(
-                renameBlockDto.BlockId, renameBlockDto.Title))
+                renameBlockRequest.BlockId, renameBlockRequest.Title))
             return Results.NotFound();
 
         return Results.Ok();
@@ -195,10 +198,10 @@ public class CourseManagementService(
     public async Task<IResult> RenameModule(
         int id,
         string? userId,
-        RenameModuleDto renameModuleDto)
+        RenameModuleRequest renameModuleRequest)
     {
         if (!await moduleRepository.RenameModuleAsync(
-                renameModuleDto.ModuleId, renameModuleDto.Title))
+                renameModuleRequest.ModuleId, renameModuleRequest.Title))
             return Results.NotFound();
 
         return Results.Ok();
@@ -231,13 +234,13 @@ public class CourseManagementService(
     public async Task<IResult> EditHierarchy(
         int id,
         string? userId,
-        CourseDto courseDto)
+        CourseResponse courseResponse)
     {
         var course = await courseRepository.GetCourseAsync(id);
         if (course == null)
             return Results.NotFound();
 
-        mapper.Map(courseDto, course);
+        mapper.Map(courseResponse, course);
         await courseRepository.UpdateCourseAsync(course);
 
         return Results.Ok();
@@ -245,25 +248,25 @@ public class CourseManagementService(
 
     public async Task<IResult> EditCourse(int id,
         string? userId,
-        EditCourseDto editCourseDto)
+        EditCourseRequest editCourseRequest)
     {
         var course = await courseRepository.GetCourseAsync(id);
         if (course == null)
             return Results.NotFound();
 
-        var category = await categoryRepository.GetCategoryById(editCourseDto.CategoryId);
+        var category = await categoryRepository.GetCategoryById(editCourseRequest.CategoryId);
         if (category == null)
             return Results.ValidationProblem(new Dictionary<string, string[]>
             {
-                [nameof(editCourseDto.CategoryId)] = ["This category does not exist."]
+                [nameof(editCourseRequest.CategoryId)] = ["This category does not exist."]
             });
 
-        mapper.Map(editCourseDto, course);
+        mapper.Map(editCourseRequest, course);
         course.Category = category;
         course.CategoryId = category.Id;
         await courseRepository.UpdateCourseAsync(course);
         await courseUpdatedProducer.PublishAsync(course);
-        return Results.Ok(mapper.Map<PreviewDto>(course));
+        return Results.Ok(mapper.Map<PreviewResponse>(course));
     }
 
 }

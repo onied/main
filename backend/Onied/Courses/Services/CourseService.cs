@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Courses.Dtos;
+using Courses.Dtos.Course.Response;
+using Courses.Dtos.EditCourse.Request;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseCreatedProducer;
@@ -28,7 +30,7 @@ public class CourseService(
             ? null
             : await userCourseInfoRepository.GetUserCourseInfoAsync(userId.Value, id);
 
-        var preview = mapper.Map<PreviewDto>(course);
+        var preview = mapper.Map<PreviewResponse>(course);
         preview.IsOwned = userCourseInfo is not null;
         return Results.Ok(preview);
     }
@@ -58,7 +60,7 @@ public class CourseService(
 
         if (!await courseManagementService.AllowVisitCourse(userId, id)) return Results.Forbid();
 
-        var dto = mapper.Map<CourseDto>(course);
+        var dto = mapper.Map<CourseResponse>(course);
 
         var completed =
             await blockCompletedInfoRepository
@@ -78,7 +80,7 @@ public class CourseService(
         if (summary == null || summary.Module.CourseId != id)
             return Results.NotFound();
 
-        var dto = mapper.Map<SummaryBlockDto>(summary);
+        var dto = mapper.Map<SummaryBlockResponse>(summary);
         if (await blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
             await blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
         dto.IsCompleted = true;
@@ -93,7 +95,7 @@ public class CourseService(
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
 
-        var dto = mapper.Map<VideoBlockDto>(block);
+        var dto = mapper.Map<VideoBlockResponse>(block);
         if (await blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is null)
             await blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
         dto.IsCompleted = true;
@@ -107,7 +109,7 @@ public class CourseService(
         var block = await blockRepository.GetTasksBlock(blockId, true, true);
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
-        return Results.Ok(mapper.Map<EditTasksBlockDto>(block));
+        return Results.Ok(mapper.Map<EditTasksBlockRequest>(block));
     }
 
     public async Task<IResult> GetTaskBlock(int id, int blockId, Guid userId)
@@ -118,7 +120,7 @@ public class CourseService(
         if (block == null || block.Module.CourseId != id)
             return Results.NotFound();
 
-        var dto = mapper.Map<TasksBlockDto>(block);
+        var dto = mapper.Map<TasksBlockResponse>(block);
         if (await blockCompletedInfoRepository.GetCompletedCourseBlockAsync(userId, blockId) is not null)
             dto.IsCompleted = true;
         return Results.Ok(dto);
@@ -141,7 +143,7 @@ public class CourseService(
             CreatedDate = DateTime.UtcNow
         });
         await courseCreatedProducer.PublishAsync(newCourse);
-        return Results.Ok(new CreateCourseResponseDto
+        return Results.Ok(new CreateCourseResponse
         {
             Id = newCourse.Id
         });

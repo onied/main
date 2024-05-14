@@ -1,4 +1,4 @@
-using Courses.Dtos.ManualReviewDtos.Request;
+using Courses.Dtos.ManualReview.Request;
 using Courses.Models;
 using Courses.Services.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -64,20 +64,20 @@ public class ManualReviewTaskUserAnswerRepository(AppDbContext context) : IManua
         return teachingCourse != null || moderatingCourse != null;
     }
 
-    public async Task<ValidationProblem?> ReviewAnswer(ReviewTaskDto reviewTaskDto, ManualReviewTaskUserAnswer answer)
+    public async Task<ValidationProblem?> ReviewAnswer(ReviewTaskRequest reviewTaskRequest, ManualReviewTaskUserAnswer answer)
     {
-        if (reviewTaskDto.Points > answer.Task.MaxPoints)
+        if (reviewTaskRequest.Points > answer.Task.MaxPoints)
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
             {
-                [nameof(reviewTaskDto.Points)] = ["Points cannot exceed task max points"]
+                [nameof(reviewTaskRequest.Points)] = ["Points cannot exceed task max points"]
             });
-        if (reviewTaskDto.Points < 0)
+        if (reviewTaskRequest.Points < 0)
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
             {
-                [nameof(reviewTaskDto.Points)] = ["Points cannot be negative"]
+                [nameof(reviewTaskRequest.Points)] = ["Points cannot be negative"]
             });
         answer.Checked = true;
-        answer.Points = reviewTaskDto.Points;
+        answer.Points = reviewTaskRequest.Points;
         context.Update(answer);
         await context.SaveChangesAsync();
         return null;
