@@ -10,7 +10,7 @@ services:
       - "5672:5672"
       - "15672:15672"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -21,7 +21,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__CoursesDatabase=Host=db;Username=postgres;Password=postgres;Database=courses_database
       - RabbitMQ__Host=rabbitmq
-      - PurchasesServerApi=http://purchases:5036/api/v1/purchases/verify
+      - PurchasesServerApi=http://purchases:8080/api/v1/purchases/verify
     ports:
       - 5135:8080
     build:
