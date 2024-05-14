@@ -1,10 +1,10 @@
 import Button from "../../general/button/button";
 import GeneralTask from "./generalTask";
 import classes from "./tasks.module.css";
-import BeatLoader from "react-spinners/BeatLoader";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
 import { useAppSelector } from "../../../hooks";
+import CustomBeatLoader from "../../general/customBeatLoader";
 
 function Tasks({ courseId, blockId }) {
   const hierarchyState = useAppSelector((state) => state.hierarchy);
@@ -63,8 +63,7 @@ function Tasks({ courseId, blockId }) {
       });
   }, [courseId, blockId, reloadNeeded]);
 
-  if (found == null || taskPointsSequence == null)
-    return <BeatLoader color="var(--accent-color)"></BeatLoader>;
+  if (found == null || taskPointsSequence == null) return <CustomBeatLoader />;
   if (!found) return <></>;
 
   return (

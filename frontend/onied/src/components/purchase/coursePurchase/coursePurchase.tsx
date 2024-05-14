@@ -6,7 +6,6 @@ import PurchaseInfo from "../purchaseInfo/purchaseInfo";
 import classes from "./coursePurchase.module.css";
 import {
   CardInfo,
-  Purchase,
   PurchaseInfoData,
   PurchaseType,
 } from "../../../types/purchase";

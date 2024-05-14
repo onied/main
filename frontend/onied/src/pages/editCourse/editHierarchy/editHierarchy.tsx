@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/axios";
 import classes from "./editHierarchy.module.css";
 import Button from "../../../components/general/button/button";
-import { BeatLoader } from "react-spinners";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -24,6 +23,7 @@ import { Menu, MenuItem } from "@mui/material";
 import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack";
 import NotFound from "../../../components/general/responses/notFound/notFound";
 import Forbid from "../../../components/general/responses/forbid/forbid";
+import CustomBeatLoader from "../../../components/general/customBeatLoader";
 
 type Block = {
   id: number;
@@ -512,13 +512,7 @@ function EditCourseHierarchy() {
 
   if (isForbid) return forbid;
 
-  if (hierarchy === undefined)
-    return (
-      <BeatLoader
-        color="var(--accent-color)"
-        style={{ margin: "3rem" }}
-      ></BeatLoader>
-    );
+  if (hierarchy === undefined) return <CustomBeatLoader />;
   if (hierarchy === null) return notFound;
 
   return (

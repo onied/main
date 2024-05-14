@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { CompletedIcon } from "./completedIcon";
 import classes from "./sidebar.module.css";
 import BarLoader from "react-spinners/BarLoader";
 import { Link, useLocation } from "react-router-dom";

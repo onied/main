@@ -3,7 +3,7 @@ import { useProfile } from "../../hooks/profile/useProfile";
 import CourseCardsContainer from "../catalog/courseCardsContainer";
 import { useEffect, useState } from "react";
 import api from "../../config/axios";
-import { BeatLoader } from "react-spinners";
+import CustomBeatLoader from "../general/customBeatLoader";
 
 type CourseAuthor = {
   name: string;
@@ -45,7 +45,7 @@ function TeachingModerated() {
   return (
     <div className={classes.pageWrapper}>
       {coursesList === undefined ? (
-        <BeatLoader color="var(--accent-color)"></BeatLoader>
+        <CustomBeatLoader />
       ) : coursesList.length > 0 ? (
         <CourseCardsContainer
           coursesList={coursesList}

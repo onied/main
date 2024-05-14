@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import api from "../../config/axios";
-import { BeatLoader } from "react-spinners";
 import LoginService from "../../services/loginService";
 import ProfileService from "../../services/profileService";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function OauthRedirect() {
   const [loginResult, setLoginResult] = useState<Boolean | undefined>();
@@ -33,11 +33,7 @@ function OauthRedirect() {
   }, [code]);
   if (code == null) return <Navigate to={"/login"}></Navigate>;
   if (loginResult != undefined) return <Navigate to="/"></Navigate>;
-  return (
-    <>
-      <BeatLoader color="var(--accent-color)"></BeatLoader>
-    </>
-  );
+  return <CustomBeatLoader />;
 }
 
 export default OauthRedirect;

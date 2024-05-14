@@ -2,7 +2,6 @@ import DefaultSubscription from "../../components/subscriptions/subscriptionCard
 import FullSubscription from "../../components/subscriptions/subscriptionCards/fullSubscription";
 import classes from "./subscriptionsPreview.module.css";
 import { useEffect, useState } from "react";
-import BeatLoader from "react-spinners/BeatLoader";
 import ElaborateFeaturesList from "../../components/subscriptions/elaborateFeaturesList";
 import api from "../../config/axios";
 import {
@@ -10,6 +9,7 @@ import {
   mapSubscriptionInfo,
   SubscriptionInfoDto,
 } from "./mapSubscriptionInfo";
+import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function SubscriptionsPreview() {
   const [defaultSubscriptionInfo, setDefaultSubscriptionInfo] = useState<
@@ -48,12 +48,7 @@ function SubscriptionsPreview() {
     elaborateFeatureDescriptions == undefined ||
     subscriptionTitles == undefined
   )
-    return (
-      <BeatLoader
-        cssOverride={{ margin: "30px 30px" }}
-        color="var(--accent-color)"
-      ></BeatLoader>
-    );
+    return <CustomBeatLoader />;
 
   return (
     <div className={classes.pageWrapper}>
