@@ -81,7 +81,7 @@ jobs:
             node-version: ${{ env.node-version }}
         - name: Install Frontend dependencies
           if: matrix.project == 'backend-nest'
-          run: npm install --prefix ${{ eenv.backend-nest-path }}
+          run: npm install --prefix ${{ env.backend-nest-path }}
         - name: Run ESLint (Nest.JS)
           if: matrix.project == 'backend-nest'
           run: npm run lint --prefix ${{ env.backend-nest-path }}
