@@ -37,7 +37,7 @@ jobs:
           uses: actions/upload-artifact@v3
           with:
             name: backend-dotnet-artifacts
-            path: ${{ env.backend-dotnet-path }}/bin/Release/net8.0/**
+            path: ${{ env.backend-dotnet-path }}/**/bin/Release/net8.0/**
 
         - name: Install Node.js (Nest.JS)
           if: matrix.project == 'backend-nest'
