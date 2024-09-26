@@ -1,0 +1,106 @@
+name: CI
+
+on: [push]
+
+env:
+  dotnet-version: '8.0.x'
+  node-version: '20.x'
+  backend-dotnet-path: './backend/Onied/Onied.sln'
+  backend-nest-path: './backend/certificates'
+  frontend-path: './frontend/onied'
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          project: ['backend-dotnet', 'backend-nest', 'frontend']
+          dotnet-version: [ '8.0.x' ]
+          node-version: [ '20.x' ]
+      
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Setup .NET
+          if: matrix.project == 'backend-dotnet'
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: ${{ env.dotnet-version }}
+        - name: Install .NET dependencies
+          if: matrix.project == 'backend-dotnet'
+          run: dotnet restore ${{ env.backend-dotnet-path }}
+        - name: Build .NET
+          if: matrix.project == 'backend-dotnet'
+          run: dotnet build ${{ env.backend-dotnet-path }}
+
+        - name: Install Node.js (Nest.JS)
+          if: matrix.project == 'backend-nest'
+          uses: actions/setup-node@v2
+          with:
+            node-version: ${{ env.node-version }}
+        - name: Install Nest.JS dependencies
+          if: matrix.project == 'backend-nest'
+          run: npm install --prefix ${{ env.backend-nest-path }}
+        - name: Build Nest.JS project
+          if: matrix.project == 'backend-nest'
+          run: npm run build --prefix ${{ env.backend-nest-path }}
+          
+        - name: Install Node.js (Frontend)
+          if: matrix.project == 'frontend'
+          uses: actions/setup-node@v2
+          with:
+            node-version: ${{ env.node-version }}
+        - name: Install Frontend dependencies
+          if: matrix.project == 'frontend'
+          run: npm install --prefix ${{ env.frontend-path }}
+        - name: Build Frontend project
+          if: matrix.project == 'frontend'
+          run: npm run build --prefix ${{ env.frontend-path }}
+
+  static_analysis:
+      runs-on: ubuntu-latest
+      needs: build
+      strategy:
+        matrix:
+          project: ['backend-dotnet', 'backend-nest', 'frontend']
+      
+      steps:
+        - uses: actions/checkout@v4
+        
+        - name: Run .NET Code Analysis
+          if: matrix.project == 'backend-dotnet'
+          uses: dotnet/code-analysis@v1
+          id: code-analysis
+          with:
+            solution: ${{ env.backend-dotnet-path }}
+            build-breaking: true
+
+        - name: Run ESLint (Nest.JS)
+          if: matrix.project == 'backend-nest'
+          run: npm run lint --prefix ${{ env.backend-nest-path }}
+
+        - name: Run ESLint (Frontend)
+          if: matrix.project == 'frontend'
+          run: npm run lint --prefix ${{ env.frontend-path }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: static_analysis
+    strategy:
+      matrix:
+        project: ['backend-dotnet', 'backend-nest', 'frontend']
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests for .NET
+        if: matrix.project == 'backend-dotnet'
+        run: dotnet test ${{ env.backend-dotnet-path }}
+
+      - name: Run tests for Nest.JS
+        if: matrix.project == 'backend-nest'
+        run: npm test --prefix ${{ env.backend-nest-path }}
+
+      - name: Run tests for Frontend
+        if: matrix.project == 'frontend'
+        run: npm test --prefix ${{ env.frontend-path }}
