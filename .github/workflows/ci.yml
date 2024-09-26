@@ -31,7 +31,7 @@ jobs:
           run: dotnet restore ${{ env.backend-dotnet-path }}/Onied.sln
         - name: Build .NET
           if: matrix.project == 'backend-dotnet'
-          run: dotnet build ${{ env.backend-dotnet-path }}/Onied.sln
+          run: dotnet build ${{ env.backend-dotnet-path }}/Onied.sln --configuration Release
         - name: Upload .NET build artifacts
           if: matrix.project == 'backend-dotnet'
           uses: actions/upload-artifact@v3
@@ -90,7 +90,7 @@ jobs:
   #         run: dotnet restore ${{ env.backend-dotnet-path }}/Onied.sln
   #       - name: Run .NET Code Analysis
   #         if: matrix.project == 'backend-dotnet'
-  #         run: dotnet build ${{ env.backend-dotnet-path }}/Onied.sln --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true
+  #         run: dotnet build ${{ env.backend-dotnet-path }}/Onied.sln --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true --configuration Release
 
   #       - name: Install Node.js (Nest.JS)
   #         if: matrix.project == 'frontend'
