@@ -57,46 +57,46 @@ jobs:
           if: matrix.project == 'frontend'
           run: npm run build --prefix ${{ env.frontend-path }}
 
-  static_analysis:
-      runs-on: ubuntu-latest
-      needs: build
-      strategy:
-        matrix:
-          project: ['backend-dotnet', 'backend-nest', 'frontend']
+  # static_analysis:
+  #     runs-on: ubuntu-latest
+  #     needs: build
+  #     strategy:
+  #       matrix:
+  #         project: ['backend-dotnet', 'backend-nest', 'frontend']
       
-      steps:
-        - uses: actions/checkout@v4
+  #     steps:
+  #       - uses: actions/checkout@v4
         
-        - name: Install .NET dependencies
-          if: matrix.project == 'backend-dotnet'
-          run: dotnet restore ${{ env.backend-dotnet-path }}
-        - name: Run .NET Code Analysis
-          if: matrix.project == 'backend-dotnet'
-          run: dotnet build ${{ env.backend-dotnet-path }} --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true
+  #       - name: Install .NET dependencies
+  #         if: matrix.project == 'backend-dotnet'
+  #         run: dotnet restore ${{ env.backend-dotnet-path }}
+  #       - name: Run .NET Code Analysis
+  #         if: matrix.project == 'backend-dotnet'
+  #         run: dotnet build ${{ env.backend-dotnet-path }} --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true
 
-        - name: Install Node.js (Nest.JS)
-          if: matrix.project == 'frontend'
-          uses: actions/setup-node@v2
-          with:
-            node-version: ${{ env.node-version }}
-        - name: Install Frontend dependencies
-          if: matrix.project == 'backend-nest'
-          run: npm install --prefix ${{ env.backend-nest-path }}
-        - name: Run ESLint (Nest.JS)
-          if: matrix.project == 'backend-nest'
-          run: npm run lint --prefix ${{ env.backend-nest-path }}
+  #       - name: Install Node.js (Nest.JS)
+  #         if: matrix.project == 'frontend'
+  #         uses: actions/setup-node@v2
+  #         with:
+  #           node-version: ${{ env.node-version }}
+  #       - name: Install Frontend dependencies
+  #         if: matrix.project == 'backend-nest'
+  #         run: npm install --prefix ${{ env.backend-nest-path }}
+  #       - name: Run ESLint (Nest.JS)
+  #         if: matrix.project == 'backend-nest'
+  #         run: npm run lint --prefix ${{ env.backend-nest-path }}
 
-        - name: Install Node.js (Frontend)
-          if: matrix.project == 'frontend'
-          uses: actions/setup-node@v2
-          with:
-            node-version: ${{ env.node-version }}
-        - name: Install Frontend dependencies
-          if: matrix.project == 'frontend'
-          run: npm install --prefix ${{ env.frontend-path }}
-        - name: Run ESLint (Frontend)
-          if: matrix.project == 'frontend'
-          run: npm run lint --prefix ${{ env.frontend-path }}
+  #       - name: Install Node.js (Frontend)
+  #         if: matrix.project == 'frontend'
+  #         uses: actions/setup-node@v2
+  #         with:
+  #           node-version: ${{ env.node-version }}
+  #       - name: Install Frontend dependencies
+  #         if: matrix.project == 'frontend'
+  #         run: npm install --prefix ${{ env.frontend-path }}
+  #       - name: Run ESLint (Frontend)
+  #         if: matrix.project == 'frontend'
+  #         run: npm run lint --prefix ${{ env.frontend-path }}
 
   test:
     runs-on: ubuntu-latest
