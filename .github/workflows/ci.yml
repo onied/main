@@ -100,7 +100,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: static_analysis
+    needs: build
+    # needs: static_analysis
     strategy:
       matrix:
         project: ['backend-dotnet', 'backend-nest', 'frontend']
