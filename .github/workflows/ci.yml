@@ -69,11 +69,7 @@ jobs:
         
         - name: Run .NET Code Analysis
           if: matrix.project == 'backend-dotnet'
-          uses: dotnet/code-analysis@v1
-          id: code-analysis
-          with:
-            solution: ${{ env.backend-dotnet-path }}
-            build-breaking: true
+          run: dotnet build ${{ env.backend-dotnet-path }} --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true
 
         - name: Run ESLint (Nest.JS)
           if: matrix.project == 'backend-nest'
