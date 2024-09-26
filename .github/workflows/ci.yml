@@ -73,7 +73,7 @@ jobs:
           uses: actions/upload-artifact@v3
           with:
             name: frontend-artifacts
-            path: ${{ env.frontend-path }}/build/**
+            path: ${{ env.frontend-path }}/dist/**
 
   # static_analysis:
   #     runs-on: ubuntu-latest
