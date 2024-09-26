@@ -5,7 +5,7 @@ on: [push]
 env:
   dotnet-version: '8.0.x'
   node-version: '20.x'
-  backend-dotnet-path: './backend/Onied/Onied.sln'
+  backend-dotnet-path: './backend/Onied'
   backend-nest-path: './backend/certificates'
   frontend-path: './frontend/onied'
 
@@ -28,10 +28,16 @@ jobs:
             dotnet-version: ${{ env.dotnet-version }}
         - name: Install .NET dependencies
           if: matrix.project == 'backend-dotnet'
-          run: dotnet restore ${{ env.backend-dotnet-path }}
+          run: dotnet restore ${{ env.backend-dotnet-path }}/Onied.sln
         - name: Build .NET
           if: matrix.project == 'backend-dotnet'
-          run: dotnet build ${{ env.backend-dotnet-path }}
+          run: dotnet build ${{ env.backend-dotnet-path }}/Onied.sln
+        - name: Upload .NET build artifacts
+          if: matrix.project == 'backend-dotnet'
+          uses: actions/upload-artifact@v3
+          with:
+            name: backend-dotnet-artifacts
+            path: ${{ env.backend-dotnet-path }}/bin/Release/net8.0/**
 
         - name: Install Node.js (Nest.JS)
           if: matrix.project == 'backend-nest'
@@ -44,6 +50,12 @@ jobs:
         - name: Build Nest.JS project
           if: matrix.project == 'backend-nest'
           run: npm run build --prefix ${{ env.backend-nest-path }}
+        - name: Upload Nest.JS build artifacts
+          if: matrix.project == 'backend-nest'
+          uses: actions/upload-artifact@v3
+          with:
+            name: backend-nest-artifacts
+            path: ${{ env.backend-nest-path }}/dist/**
           
         - name: Install Node.js (Frontend)
           if: matrix.project == 'frontend'
@@ -56,6 +68,12 @@ jobs:
         - name: Build Frontend project
           if: matrix.project == 'frontend'
           run: npm run build --prefix ${{ env.frontend-path }}
+        - name: Upload Frontend build artifacts
+          if: matrix.project == 'frontend'
+          uses: actions/upload-artifact@v3
+          with:
+            name: frontend-artifacts
+            path: ${{ env.frontend-path }}/build/**
 
   # static_analysis:
   #     runs-on: ubuntu-latest
@@ -69,10 +87,10 @@ jobs:
         
   #       - name: Install .NET dependencies
   #         if: matrix.project == 'backend-dotnet'
-  #         run: dotnet restore ${{ env.backend-dotnet-path }}
+  #         run: dotnet restore ${{ env.backend-dotnet-path }}/Onied.sln
   #       - name: Run .NET Code Analysis
   #         if: matrix.project == 'backend-dotnet'
-  #         run: dotnet build ${{ env.backend-dotnet-path }} --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true
+  #         run: dotnet build ${{ env.backend-dotnet-path }}/Onied.sln --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true
 
   #       - name: Install Node.js (Nest.JS)
   #         if: matrix.project == 'frontend'
@@ -109,14 +127,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download .NET artifacts
+        if: matrix.project == 'backend-dotnet'
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-dotnet-artifacts
       - name: Run tests for .NET
         if: matrix.project == 'backend-dotnet'
-        run: dotnet test ${{ env.backend-dotnet-path }}
+        run: dotnet test ${{ env.backend-dotnet-path }}/Onied.sln
 
+      - name: Download Nest.JS artifacts
+        if: matrix.project == 'backend-nest'
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-nest-artifacts
       - name: Run tests for Nest.JS
         if: matrix.project == 'backend-nest'
         run: npm test --prefix ${{ env.backend-nest-path }}
 
+      - name: Download Frontend artifacts
+        if: matrix.project == 'frontend'
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-artifacts
       - name: Run tests for Frontend
         if: matrix.project == 'frontend'
         run: npm test --prefix ${{ env.frontend-path }}
