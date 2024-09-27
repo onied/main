@@ -141,6 +141,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: backend-nest-artifacts
+      - name: Install Nest.JS dependencies
+        if: matrix.project == 'backend-nest'
+        run: npm install --prefix ${{ env.backend-nest-path }}
       - name: Run tests for Nest.JS
         if: matrix.project == 'backend-nest'
         run: npm test --prefix ${{ env.backend-nest-path }}
@@ -150,6 +153,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: frontend-artifacts
+      - name: Install Frontend dependencies
+        if: matrix.project == 'frontend'
+        run: npm install --prefix ${{ env.frontend-path }}
       - name: Run tests for Frontend
         if: matrix.project == 'frontend'
         run: npm test --prefix ${{ env.frontend-path }}
