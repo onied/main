@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 function Catalog() {
   const navigate = useNavigate();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(1);
   const [coursesList, setCoursesList] = useState();

@@ -16,6 +16,6 @@ export default class VideoProvider {
   // getIFrameLink: функция, которая конвертирует ссылку в ссылку для iframe.
   // regex должен содержать именованные группы, содержащиеся в convertHrefToIFrameSrc.
   getLink(href) {
-    throw new Error("Method 'getLink()' must be implemented.");
+    throw new Error(`Method 'getLink(href=${href})' must be implemented.`);
   }
 }
