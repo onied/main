@@ -7,7 +7,6 @@ namespace Courses.Services.Consumers;
 
 public class ProfilePhotoUpdatedConsumer(
     ILogger<ProfilePhotoUpdatedConsumer> logger,
-    IMapper mapper,
     IUserRepository userRepository) : IConsumer<ProfilePhotoUpdated>
 {
 

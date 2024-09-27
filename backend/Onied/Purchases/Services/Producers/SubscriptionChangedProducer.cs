@@ -7,7 +7,7 @@ using Purchases.Services.Abstractions;
 namespace Purchases.Services.Producers;
 
 public class SubscriptionChangedProducer(
-    ILogger<PurchaseCreatedProducer> logger,
+    // ILogger<PurchaseCreatedProducer> logger,
     IMapper mapper,
     IPublishEndpoint publishEndpoint) : ISubscriptionChangedProducer
 {

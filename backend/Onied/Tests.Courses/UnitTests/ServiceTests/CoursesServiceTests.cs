@@ -34,7 +34,6 @@ public class CoursesServiceTests
         _service = new CourseService(
             _courseRepository.Object,
             _userCourseInfoRepository.Object,
-            _courseManagementService.Object,
             _blockCompletedInfoRepository.Object,
             _blockRepository.Object,
             _userRepository.Object,
