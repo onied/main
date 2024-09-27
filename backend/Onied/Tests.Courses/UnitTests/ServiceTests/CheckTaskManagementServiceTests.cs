@@ -319,7 +319,7 @@ public class CheckTaskManagementServiceTests
             .ReturnsAsync(new List<UserTaskPoints>());
 
         var inputsDto = _fixture.Build<UserInputRequest>()
-            .FromFactory(() => null)
+            .FromFactory(() => null!)
             .CreateMany(1)
             .ToList();
 

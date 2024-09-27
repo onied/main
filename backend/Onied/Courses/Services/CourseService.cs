@@ -10,7 +10,6 @@ namespace Courses.Services;
 public class CourseService(
     ICourseRepository courseRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
-    ICourseManagementService courseManagementService,
     IBlockCompletedInfoRepository blockCompletedInfoRepository,
     IBlockRepository blockRepository,
     IUserRepository userRepository,
