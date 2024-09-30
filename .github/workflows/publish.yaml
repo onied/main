@@ -1,6 +1,8 @@
 name: Publish Docker Images
 
-on: [release]
+on:
+  release:
+    types: [published]
 
 env:
     REGISTRY: ghcr.io
@@ -12,7 +14,7 @@ env:
     DATABASE_USER: postgres
     DATABASE_PASS: postgres
     DATABASE_NAME: certificates_database
-    MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}  # Используйте секреты для чувствительных данных
+    MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
     MAPBOX_API_URL: https://api.mapbox.com/search/geocode/v6/forward
     PURCHASES_API_URL: http://localhost:5036/api/v1/purchases/verify
     RABBITMQ_CONNECTION_STRING: amqp://guest:guest@localhost:5672
@@ -29,19 +31,12 @@ jobs:
               with:
                 username: ${{ secrets.DOCKERHUB_USER }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-            # - name: Log in to the Container registry
-            #   uses: docker/login-action@v3
-            #   with:
-            #     registry: ${{ env.REGISTRY }}
-            #     username: ${{ github.actor }}
-            #     password: ${{ secrets.PAT }}
             
-            - name: Build Docker images
-              run: docker compose build
+            # - name: Build Docker images
+            #   run: docker compose build
 
-            - name: Push Docker images
-              run: docker compose push
+            # - name: Push Docker images
+            #   run: docker compose push
 
             - name: Create a tarball of the docker-compose directory
               run: tar -czf ${{ env.PROJECT_NAME }}.tar.gz ./*
@@ -64,22 +59,7 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_CD_KEY }}
                 script: |
-                  # if [ ! -d ~/${{ env.PROJECT_NAME }} ]; then
-                  #   mkdir ~/${{ env.PROJECT_NAME }}
-                  # fi
                   cd ~/${{ env.PROJECT_NAME }}
-                  # tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
-                  # docker compose build
+                  tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
                   docker compose pull
                   docker compose up -d
-
-            # - name: Publish Docker images
-            #   run: docker compose push
-            # - name: Docker-Compose Remote Deployment
-            #   uses: matiasnu/github-action-ssh-docker-compose@master
-            #   with:
-            #     docker_compose_filename: docker-compose.yml
-            #     ssh_host: ${{ secrets.SSH_HOST }}
-            #     ssh_port: ${{ secrets.SSH_PORT }}
-            #     ssh_user: ${{ secrets.SSH_USER }}
-            #     ssh_private_key: ${{ secrets.SSH_CD_KEY }}
