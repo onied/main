@@ -4,7 +4,9 @@ on: [push]
 
 env:
     REGISTRY: ghcr.io
+    
     IMAGE_NAME: ${{ github.repository }}
+    PROJECT_NAME: onied
     DATABASE_HOST: localhost
     DATABASE_PORT: 5432
     DATABASE_USER: postgres
@@ -39,15 +41,15 @@ jobs:
             #   run: docker compose build
 
             - name: Create a tarball of the docker-compose directory
-              run: tar -czf ${{ github.repository }}.tar.gz .
+              run: tar -czf ${{ env.PROJECT_NAME }}.tar.gz .
 
             - name: Copy tarball to remote server
               uses: appleboy/scp-action@master
               with:
                 host: ${{ secrets.REMOTE_HOST }}
                 username: ${{ secrets.REMOTE_USER }}
-                source: ${{ github.repository }}.tar.gz
-                target: ~/${{ github.repository }}.tar.gz
+                source: ${{ env.PROJECT_NAME }}.tar.gz
+                target: ~/${{ env.PROJECT_NAME }}.tar.gz
 
             - name: SSH to remote server and deploy with Docker Compose
               uses: appleboy/ssh-action@master
@@ -56,9 +58,9 @@ jobs:
                 username: ${{ secrets.REMOTE_USER }}
                 key: ${{ secrets.REMOTE_SSH_KEY }}
                 script: |
-                  mkdir ~/${{ github.repository }}
-                  cd ~/${{ github.repository }}
-                  tar -xzf ~/${{ github.repository }}.tar.gz
+                  mkdir ~/${{ env.PROJECT_NAME }}
+                  cd ~/${{ env.PROJECT_NAME }}
+                  tar -xzf ~/${{ env.PROJECT_NAME }}.tar.gz
                   docker compose build
                   docker compose up -d
 
