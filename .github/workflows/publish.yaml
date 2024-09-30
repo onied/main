@@ -65,7 +65,7 @@ jobs:
                   #   mkdir ~/${{ env.PROJECT_NAME }}
                   # fi
                   cd ~/${{ env.PROJECT_NAME }}
-                  tar -xzf ~/${{ env.PROJECT_NAME }}.tar.gz
+                  tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
                   docker compose build
                   docker compose up -d
 
