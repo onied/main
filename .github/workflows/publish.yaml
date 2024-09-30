@@ -59,6 +59,11 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_CD_KEY }}
                 script: |
+                  if [ $(docker container ls -q --filter name='misergeeevkpfu*' | wc -l) -gt 0 ]; then
+                      docker stop $(docker container ls -q --filter name='misergeeevkpfu*');
+                  else
+                      echo 'No matching containers to stop.';
+                  fi
                   cd ~/${{ env.PROJECT_NAME }}
                   tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
                   docker compose pull
