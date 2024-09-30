@@ -39,6 +39,6 @@ jobs:
               with:
                 ssh_host: ${{ secrets.SSH_HOST }}
                 ssh_port: ${{ secrets.SSH_PORT }}
+                ssh_user: ${{ secrets.SSH_USER }}
                 ssh_private_key: ${{ secrets.SSH_CD_KEY }}
-                ssh_user: ${{ secrets.EXAMPLE_COM_SSH_USER }}
                 docker_compose_prefix: onied
