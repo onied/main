@@ -1,6 +1,6 @@
 name: Publish Docker Images
 
-on: [push]
+on: [release]
 
 env:
     REGISTRY: ghcr.io
@@ -67,7 +67,7 @@ jobs:
                   # if [ ! -d ~/${{ env.PROJECT_NAME }} ]; then
                   #   mkdir ~/${{ env.PROJECT_NAME }}
                   # fi
-                  # cd ~/${{ env.PROJECT_NAME }}
+                  cd ~/${{ env.PROJECT_NAME }}
                   # tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
                   # docker compose build
                   docker compose pull
