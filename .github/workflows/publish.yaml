@@ -19,6 +19,10 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
+        permissions:
+          contents: read
+          packages: write
+
         steps:
             - uses: actions/checkout@v4
 
@@ -28,15 +32,9 @@ jobs:
                 registry: ${{ env.REGISTRY }}
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
-      
-            - name: Extract metadata (tags, labels) for Docker
-              id: meta
-              uses: docker/metadata-action@v5
-              with:
-                images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             
-            - name: Build docker image
-              run: docker compose build --pull
+            - name: Build Docker image
+              run: docker compose build
 
-            - name: Build docker image
+            - name: Build Docker image
               run: docker compose push
