@@ -51,7 +51,7 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_CD_KEY }}
                 source: ${{ env.PROJECT_NAME }}.tar.gz
-                target: ~/${{ env.PROJECT_NAME }}.tar.gz
+                target: ~/onied
 
             - name: SSH to remote server and deploy with Docker Compose
               uses: appleboy/ssh-action@master
@@ -61,7 +61,9 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_CD_KEY }}
                 script: |
-                  mkdir ~/${{ env.PROJECT_NAME }}
+                  # if [ ! -d ~/${{ env.PROJECT_NAME }} ]; then
+                  #   mkdir ~/${{ env.PROJECT_NAME }}
+                  # fi
                   cd ~/${{ env.PROJECT_NAME }}
                   tar -xzf ~/${{ env.PROJECT_NAME }}.tar.gz
                   docker compose build
