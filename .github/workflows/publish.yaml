@@ -35,7 +35,7 @@ jobs:
             # - name: Publish Docker images
             #   run: docker compose push
             - name: Docker-Compose Remote Deployment
-              uses: alex-ac/github-action-ssh-docker-compose@master
+              uses: matiasnu/github-action-ssh-docker-compose@master
               with:
                 docker_compose_filename: docker-compose.yml
                 ssh_host: ${{ secrets.SSH_HOST }}
