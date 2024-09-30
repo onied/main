@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: misergeevkpfu/postgres
     build:
       context: .
     environment:
