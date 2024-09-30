@@ -14,9 +14,7 @@ env:
     MAPBOX_API_URL: https://api.mapbox.com/search/geocode/v6/forward
     PURCHASES_API_URL: http://localhost:5036/api/v1/purchases/verify
     RABBITMQ_CONNECTION_STRING: amqp://guest:guest@localhost:5672
-
-permissions: write-all
-                
+  
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -29,7 +27,7 @@ jobs:
               with:
                 registry: ${{ env.REGISTRY }}
                 username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
+                password: ${{ secrets.PAT }}
             
             - name: Build Docker images
               run: docker compose build
