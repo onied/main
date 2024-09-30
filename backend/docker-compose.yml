@@ -4,7 +4,7 @@
 
 services:
   courses:
-    image: courses
+    image: misergeevkpfu/courses
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__CoursesDatabase=Host=db;Username=postgres;Password=postgres;Database=courses_database
@@ -22,7 +22,7 @@ services:
         condition: service_started
 
   notifications:
-    image: notifications
+    image: misergeevkpfu/notifications
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__NotificationsDatabase=Host=db;Username=postgres;Password=postgres;Database=notifications_database
@@ -39,7 +39,7 @@ services:
         condition: service_started
 
   users:
-    image: users
+    image: misergeevkpfu/users
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__UsersDatabase=Host=db;Username=postgres;Password=postgres;Database=users_database
@@ -61,7 +61,7 @@ services:
       retries: 3
 
   purchases:
-    image: purchases
+    image: misergeevkpfu/purchases
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__PurchasesDatabase=Host=db;Username=postgres;Password=postgres;Database=purchases_database
@@ -78,7 +78,7 @@ services:
         condition: service_started
 
   certificates:
-    image: certificates
+    image: misergeevkpfu/certificates
     ports:
       - 5508:5508
     environment:
