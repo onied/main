@@ -22,6 +22,12 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            # - name: Log in to Docker Hub
+            #   uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+            #   with:
+            #     username: ${{ secrets.DOCKERHUB_USER }}
+            #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
             # - name: Log in to the Container registry
             #   uses: docker/login-action@v3
             #   with:
@@ -32,13 +38,37 @@ jobs:
             # - name: Build Docker images
             #   run: docker compose build
 
+            - name: Create a tarball of the docker-compose directory
+              run: tar -czf ${{ github.repository }}.tar.gz .
+
+            - name: Copy tarball to remote server
+              uses: appleboy/scp-action@master
+              with:
+                host: ${{ secrets.REMOTE_HOST }}
+                username: ${{ secrets.REMOTE_USER }}
+                source: ${{ github.repository }}.tar.gz
+                target: ~/${{ github.repository }}.tar.gz
+
+            - name: SSH to remote server and deploy with Docker Compose
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.REMOTE_HOST }}
+                username: ${{ secrets.REMOTE_USER }}
+                key: ${{ secrets.REMOTE_SSH_KEY }}
+                script: |
+                  mkdir ~/${{ github.repository }}
+                  cd ~/${{ github.repository }}
+                  tar -xzf ~/${{ github.repository }}.tar.gz
+                  docker compose build
+                  docker compose up -d
+
             # - name: Publish Docker images
             #   run: docker compose push
-            - name: Docker-Compose Remote Deployment
-              uses: matiasnu/github-action-ssh-docker-compose@master
-              with:
-                docker_compose_filename: docker-compose.yml
-                ssh_host: ${{ secrets.SSH_HOST }}
-                ssh_port: ${{ secrets.SSH_PORT }}
-                ssh_user: ${{ secrets.SSH_USER }}
-                ssh_private_key: ${{ secrets.SSH_CD_KEY }}
+            # - name: Docker-Compose Remote Deployment
+            #   uses: matiasnu/github-action-ssh-docker-compose@master
+            #   with:
+            #     docker_compose_filename: docker-compose.yml
+            #     ssh_host: ${{ secrets.SSH_HOST }}
+            #     ssh_port: ${{ secrets.SSH_PORT }}
+            #     ssh_user: ${{ secrets.SSH_USER }}
+            #     ssh_private_key: ${{ secrets.SSH_CD_KEY }}
