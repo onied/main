@@ -1,0 +1,874 @@
+{
+  "configuration" : { },
+  "description" : "Description",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedAgent" : "structurizr-ui",
+  "lastModifiedDate" : "2024-10-01T08:23:28Z",
+  "model" : {
+    "people" : [ {
+      "description" : "Typically a self-learner who wants to receive an online education on some of the topics",
+      "id" : "1",
+      "location" : "Unspecified",
+      "name" : "User",
+      "properties" : {
+        "structurizr.dsl.identifier" : "u"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "23",
+        "properties" : {
+          "structurizr.dsl.identifier" : "c318bfd7-5260-4778-b7be-d113e94e5304"
+        },
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "2",
+        "id" : "24",
+        "linkedRelationshipId" : "23",
+        "sourceId" : "1"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "containers" : [ {
+        "description" : "Implements UI for all the user-facing features in the LMS",
+        "documentation" : { },
+        "id" : "3",
+        "name" : "Single-Page Application",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.frontend"
+        },
+        "relationships" : [ {
+          "description" : "Makes API calls to",
+          "destinationId" : "4",
+          "id" : "25",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ce5b28fb-cc68-4f36-a561-36b22e4844fc"
+          },
+          "sourceId" : "3",
+          "tags" : "Relationship,Http",
+          "technology" : "JSON/HTTP"
+        } ],
+        "tags" : "Element,Container,Frontend",
+        "technology" : "JS/TS, React"
+      }, {
+        "description" : "Users authentication and authorization service /\n API Gateway",
+        "documentation" : { },
+        "group" : "Users Service",
+        "id" : "4",
+        "name" : "Users",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.users"
+        },
+        "relationships" : [ {
+          "description" : "Routes API requests to",
+          "destinationId" : "6",
+          "id" : "26",
+          "properties" : {
+            "structurizr.dsl.identifier" : "db85fa39-61ab-4071-b2bf-aae5053e53ba"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Http",
+          "technology" : "JSON/HTTP"
+        }, {
+          "description" : "Routes API requests to",
+          "destinationId" : "8",
+          "id" : "27",
+          "properties" : {
+            "structurizr.dsl.identifier" : "4a753f88-d004-4108-85cb-4bba651e324a"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Http",
+          "technology" : "JSON/HTTP"
+        }, {
+          "description" : "Routes API requests to",
+          "destinationId" : "10",
+          "id" : "28",
+          "properties" : {
+            "structurizr.dsl.identifier" : "122af61d-42af-4484-a634-3e5fd45575d9"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Http",
+          "technology" : "JSON/HTTP"
+        }, {
+          "description" : "Routes API requests to",
+          "destinationId" : "12",
+          "id" : "29",
+          "properties" : {
+            "structurizr.dsl.identifier" : "8cc4dcc7-73d5-41d0-8dde-b8f7dd06a0ac"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Http",
+          "technology" : "JSON/HTTP"
+        }, {
+          "description" : "Reads from and writes to",
+          "destinationId" : "5",
+          "id" : "30",
+          "properties" : {
+            "structurizr.dsl.identifier" : "c6dc71e7-e40b-4445-9345-48701f806d5b"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "18",
+          "id" : "45",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fd953e72-7cfa-4cc4-9d72-cd5dee03f6f7"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Topic in"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "19",
+          "id" : "48",
+          "properties" : {
+            "structurizr.dsl.identifier" : "213f73b7-7417-4fa3-bd7d-6800356f985c"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Topic in"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "22",
+          "id" : "56",
+          "properties" : {
+            "structurizr.dsl.identifier" : "21dc7383-9377-46e2-9743-4d1fe3bac16f"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship,Topic in"
+        } ],
+        "tags" : "Element,Container,Service,Users",
+        "technology" : "C#, ASP.NET Core"
+      }, {
+        "description" : "Stores data related to users",
+        "documentation" : { },
+        "group" : "Users Service",
+        "id" : "5",
+        "name" : "Users Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.users_db"
+        },
+        "tags" : "Element,Container,Database,Users",
+        "technology" : "PostgreSQL"
+      }, {
+        "description" : "Implements business logic for courses and their content (including learning materials)",
+        "documentation" : { },
+        "group" : "Courses Service",
+        "id" : "6",
+        "name" : "Courses",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.courses"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "7",
+          "id" : "31",
+          "properties" : {
+            "structurizr.dsl.identifier" : "9fbfaaa5-9fbb-47c7-a3ee-4ed33ff7540b"
+          },
+          "sourceId" : "6",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "14",
+          "id" : "35",
+          "properties" : {
+            "structurizr.dsl.identifier" : "4dee960f-4719-4a36-b717-17d56ff37255"
+          },
+          "sourceId" : "6",
+          "tags" : "Relationship,Topic in"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "15",
+          "id" : "37",
+          "properties" : {
+            "structurizr.dsl.identifier" : "9fb73daf-784d-485f-8e50-c329d4612cd0"
+          },
+          "sourceId" : "6",
+          "tags" : "Relationship,Topic in"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "16",
+          "id" : "40",
+          "properties" : {
+            "structurizr.dsl.identifier" : "70603fab-2639-4227-bf5e-b5dc948f262d"
+          },
+          "sourceId" : "6",
+          "tags" : "Relationship,Topic in"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "17",
+          "id" : "43",
+          "properties" : {
+            "structurizr.dsl.identifier" : "7ba86db2-9388-46b9-8a12-934649dba679"
+          },
+          "sourceId" : "6",
+          "tags" : "Relationship,Topic in"
+        } ],
+        "tags" : "Element,Container,Service,Courses",
+        "technology" : "C#, ASP.NET Core"
+      }, {
+        "description" : "Stores courses and their content",
+        "documentation" : { },
+        "group" : "Courses Service",
+        "id" : "7",
+        "name" : "Courses Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.courses_db"
+        },
+        "tags" : "Element,Container,Database,Courses",
+        "technology" : "PostgreSQL"
+      }, {
+        "description" : "Implements business logic for purchases and subsciption handling",
+        "documentation" : { },
+        "group" : "Purchases Service",
+        "id" : "8",
+        "name" : "Purchases",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.purchases"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "9",
+          "id" : "32",
+          "properties" : {
+            "structurizr.dsl.identifier" : "bf13537f-a2e8-41a6-9179-5947fa020f2c"
+          },
+          "sourceId" : "8",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "20",
+          "id" : "51",
+          "properties" : {
+            "structurizr.dsl.identifier" : "294e0850-3a9e-48c8-a7c8-fbe2fdf4c4c4"
+          },
+          "sourceId" : "8",
+          "tags" : "Relationship,Topic in"
+        }, {
+          "description" : "Publishes messages to",
+          "destinationId" : "21",
+          "id" : "54",
+          "properties" : {
+            "structurizr.dsl.identifier" : "8f3cfd8e-bb16-47e7-b758-810ac08986a4"
+          },
+          "sourceId" : "8",
+          "tags" : "Relationship,Topic in"
+        } ],
+        "tags" : "Element,Container,Service,Purchases",
+        "technology" : "C#, ASP.NET Core"
+      }, {
+        "description" : "Stores purchases",
+        "documentation" : { },
+        "group" : "Purchases Service",
+        "id" : "9",
+        "name" : "Purchases Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.purchases_db"
+        },
+        "tags" : "Element,Container,Database,Purchases",
+        "technology" : "PostgreSQL"
+      }, {
+        "description" : "Implements business logic for ordering certificates upon course completion",
+        "documentation" : { },
+        "group" : "Certificates Service",
+        "id" : "10",
+        "name" : "Certificates",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.certificates"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "11",
+          "id" : "33",
+          "properties" : {
+            "structurizr.dsl.identifier" : "d1374c5f-742c-472f-ba0b-6aa193cdd19f"
+          },
+          "sourceId" : "10",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container,Service,Certificates",
+        "technology" : "JS, Node.js"
+      }, {
+        "description" : "Stores orders and data required to generate certificates",
+        "documentation" : { },
+        "group" : "Certificates Service",
+        "id" : "11",
+        "name" : "Certificates Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.certificates_db"
+        },
+        "tags" : "Element,Container,Database,Certificates",
+        "technology" : "PostgreSQL"
+      }, {
+        "description" : "Implements business logic for sending notifications to users",
+        "documentation" : { },
+        "group" : "Notifications Service",
+        "id" : "12",
+        "name" : "Notifications",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.notifications"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "13",
+          "id" : "34",
+          "properties" : {
+            "structurizr.dsl.identifier" : "00ee17f6-bb8b-4aef-a070-22c6c9fb8491"
+          },
+          "sourceId" : "12",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container,Service,Notifications",
+        "technology" : "C#, ASP.NET Core"
+      }, {
+        "description" : "Stores sent notifications",
+        "documentation" : { },
+        "group" : "Notifications Service",
+        "id" : "13",
+        "name" : "Notifications Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.notifications_db"
+        },
+        "tags" : "Element,Container,Database,Notifications",
+        "technology" : "PostgreSQL"
+      }, {
+        "description" : "Signals that a user has completed a course",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "14",
+        "name" : "CourseCompleted Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.coursecompleted"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "8",
+          "id" : "36",
+          "properties" : {
+            "structurizr.dsl.identifier" : "0d588460-8ea1-4af3-b566-ee1ef48a4de4"
+          },
+          "sourceId" : "14",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a course was created",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "15",
+        "name" : "CourseCreated Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.coursecreated"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "8",
+          "id" : "38",
+          "properties" : {
+            "structurizr.dsl.identifier" : "5052c05b-5b05-4bdd-9f3b-62c9830ce9e2"
+          },
+          "sourceId" : "15",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "10",
+          "id" : "39",
+          "properties" : {
+            "structurizr.dsl.identifier" : "35c55813-7b3e-4518-b5f7-aafbb14cd5ae"
+          },
+          "sourceId" : "15",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a course was updated",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "16",
+        "name" : "CourseUpdated Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.courseupdated"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "8",
+          "id" : "41",
+          "properties" : {
+            "structurizr.dsl.identifier" : "539e498e-4a57-4689-83e5-8e835ea73805"
+          },
+          "sourceId" : "16",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "10",
+          "id" : "42",
+          "properties" : {
+            "structurizr.dsl.identifier" : "b9bee7ed-757d-401f-91d4-dfff095e97a3"
+          },
+          "sourceId" : "16",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a notification needs to be sent",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "17",
+        "name" : "NotificationSent Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.notificationsent"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "12",
+          "id" : "44",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fa1e3307-e7c2-4f6b-bdcb-65a1658a4fa5"
+          },
+          "sourceId" : "17",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a user has updated their profile photo",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "18",
+        "name" : "ProfilePhotoUpdated Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.profilephotoupdated"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "6",
+          "id" : "46",
+          "properties" : {
+            "structurizr.dsl.identifier" : "c175b032-b656-431d-bfc0-83432b7d8bbd"
+          },
+          "sourceId" : "18",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "10",
+          "id" : "47",
+          "properties" : {
+            "structurizr.dsl.identifier" : "f15d41cd-3ecb-4d12-b438-30f34176b860"
+          },
+          "sourceId" : "18",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a user has updated their profile info",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "19",
+        "name" : "ProfileUpdated Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.profileupdated"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "6",
+          "id" : "49",
+          "properties" : {
+            "structurizr.dsl.identifier" : "6f6f6fa1-fb4e-43b7-877d-3d2a47201ebb"
+          },
+          "sourceId" : "19",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "10",
+          "id" : "50",
+          "properties" : {
+            "structurizr.dsl.identifier" : "87a5d236-48d9-43cf-9bf0-bcf087bb70dc"
+          },
+          "sourceId" : "19",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a user has purchased something",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "20",
+        "name" : "PurchaseCreated Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.purchasecreated"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "6",
+          "id" : "52",
+          "properties" : {
+            "structurizr.dsl.identifier" : "82663d5e-9a16-4c96-9f57-fdcaac417f2d"
+          },
+          "sourceId" : "20",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "10",
+          "id" : "53",
+          "properties" : {
+            "structurizr.dsl.identifier" : "189e4e14-7542-4983-a9b8-44a5298f0ba6"
+          },
+          "sourceId" : "20",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that user's subscription has changed",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "21",
+        "name" : "SubscriptionChanged Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.subscriptionchanged"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "6",
+          "id" : "55",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fa9ae174-37f5-45fa-9519-613063b8a594"
+          },
+          "sourceId" : "21",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      }, {
+        "description" : "Signals that a new user was created",
+        "documentation" : { },
+        "group" : "Topics",
+        "id" : "22",
+        "name" : "UserCreated Topic",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.usercreated"
+        },
+        "relationships" : [ {
+          "description" : "Sends messages to",
+          "destinationId" : "6",
+          "id" : "57",
+          "properties" : {
+            "structurizr.dsl.identifier" : "dd004ebf-547f-4329-a9e5-a3cad0f95d1c"
+          },
+          "sourceId" : "22",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "8",
+          "id" : "58",
+          "properties" : {
+            "structurizr.dsl.identifier" : "c43df0a7-c0b7-4774-b86f-f386c3cb4d9e"
+          },
+          "sourceId" : "22",
+          "tags" : "Relationship,Topic out"
+        }, {
+          "description" : "Sends messages to",
+          "destinationId" : "10",
+          "id" : "59",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fde18287-8a34-4bf4-be3e-c375f0218ed3"
+          },
+          "sourceId" : "22",
+          "tags" : "Relationship,Topic out"
+        } ],
+        "tags" : "Element,Container,Topic",
+        "technology" : "MassTransit, RabbitMQ"
+      } ],
+      "description" : "Learning Management System",
+      "documentation" : { },
+      "id" : "2",
+      "location" : "Unspecified",
+      "name" : "Onied",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ss"
+      },
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Onied",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJPbmllZCIgewoKICAgICFpZGVudGlmaWVycyBoaWVyYXJjaGljYWwKCiAgICBtb2RlbCB7CiAgICAgICAgdSA9IHBlcnNvbiAiVXNlciIgIlR5cGljYWxseSBhIHNlbGYtbGVhcm5lciB3aG8gd2FudHMgdG8gcmVjZWl2ZSBhbiBvbmxpbmUgZWR1Y2F0aW9uIG9uIHNvbWUgb2YgdGhlIHRvcGljcyIKICAgICAgICBzcyA9IHNvZnR3YXJlU3lzdGVtICJPbmllZCIgIkxlYXJuaW5nIE1hbmFnZW1lbnQgU3lzdGVtIiB7CiAgICAgICAgICAgIGZyb250ZW5kID0gY29udGFpbmVyICJTaW5nbGUtUGFnZSBBcHBsaWNhdGlvbiIgIkltcGxlbWVudHMgVUkgZm9yIGFsbCB0aGUgdXNlci1mYWNpbmcgZmVhdHVyZXMgaW4gdGhlIExNUyIgIkpTL1RTLCBSZWFjdCIgewogICAgICAgICAgICAgICAgdGFncyAiRnJvbnRlbmQiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZ3JvdXAgIlVzZXJzIFNlcnZpY2UiIHsKICAgICAgICAgICAgICAgIHVzZXJzID0gY29udGFpbmVyICJVc2VycyIgIlVzZXJzIGF1dGhlbnRpY2F0aW9uIGFuZCBhdXRob3JpemF0aW9uIHNlcnZpY2UgL1xuIEFQSSBHYXRld2F5IiAiQyMsIEFTUC5ORVQgQ29yZSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNlcnZpY2UiICJVc2VycyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHVzZXJzX2RiID0gY29udGFpbmVyICJVc2VycyBEYXRhYmFzZSIgIlN0b3JlcyBkYXRhIHJlbGF0ZWQgdG8gdXNlcnMiICJQb3N0Z3JlU1FMIiAgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIiAiVXNlcnMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZ3JvdXAgIkNvdXJzZXMgU2VydmljZSIgewogICAgICAgICAgICAgICAgY291cnNlcyA9IGNvbnRhaW5lciAiQ291cnNlcyIgIkltcGxlbWVudHMgYnVzaW5lc3MgbG9naWMgZm9yIGNvdXJzZXMgYW5kIHRoZWlyIGNvbnRlbnQgKGluY2x1ZGluZyBsZWFybmluZyBtYXRlcmlhbHMpIiAiQyMsIEFTUC5ORVQgQ29yZSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNlcnZpY2UiICJDb3Vyc2VzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgY291cnNlc19kYiA9IGNvbnRhaW5lciAiQ291cnNlcyBEYXRhYmFzZSIgIlN0b3JlcyBjb3Vyc2VzIGFuZCB0aGVpciBjb250ZW50IiAiUG9zdGdyZVNRTCIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIiAiQ291cnNlcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgICBncm91cCAiUHVyY2hhc2VzIFNlcnZpY2UiIHsKICAgICAgICAgICAgICAgIHB1cmNoYXNlcyA9IGNvbnRhaW5lciAiUHVyY2hhc2VzIiAiSW1wbGVtZW50cyBidXNpbmVzcyBsb2dpYyBmb3IgcHVyY2hhc2VzIGFuZCBzdWJzY2lwdGlvbiBoYW5kbGluZyIgIkMjLCBBU1AuTkVUIENvcmUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIiAiUHVyY2hhc2VzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcHVyY2hhc2VzX2RiID0gY29udGFpbmVyICJQdXJjaGFzZXMgRGF0YWJhc2UiICJTdG9yZXMgcHVyY2hhc2VzIiAiUG9zdGdyZVNRTCIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIiAiUHVyY2hhc2VzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIGdyb3VwICJDZXJ0aWZpY2F0ZXMgU2VydmljZSIgewogICAgICAgICAgICAgICAgY2VydGlmaWNhdGVzID0gY29udGFpbmVyICJDZXJ0aWZpY2F0ZXMiICJJbXBsZW1lbnRzIGJ1c2luZXNzIGxvZ2ljIGZvciBvcmRlcmluZyBjZXJ0aWZpY2F0ZXMgdXBvbiBjb3Vyc2UgY29tcGxldGlvbiIgIkpTLCBOb2RlLmpzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiU2VydmljZSIgIkNlcnRpZmljYXRlcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGNlcnRpZmljYXRlc19kYiA9IGNvbnRhaW5lciAiQ2VydGlmaWNhdGVzIERhdGFiYXNlIiAiU3RvcmVzIG9yZGVycyBhbmQgZGF0YSByZXF1aXJlZCB0byBnZW5lcmF0ZSBjZXJ0aWZpY2F0ZXMiICJQb3N0Z3JlU1FMIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiRGF0YWJhc2UiICJDZXJ0aWZpY2F0ZXMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZ3JvdXAgIk5vdGlmaWNhdGlvbnMgU2VydmljZSIgewogICAgICAgICAgICAgICAgbm90aWZpY2F0aW9ucyA9IGNvbnRhaW5lciAiTm90aWZpY2F0aW9ucyIgIkltcGxlbWVudHMgYnVzaW5lc3MgbG9naWMgZm9yIHNlbmRpbmcgbm90aWZpY2F0aW9ucyB0byB1c2VycyIgIkMjLCBBU1AuTkVUIENvcmUiICB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiU2VydmljZSIgIk5vdGlmaWNhdGlvbnMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBub3RpZmljYXRpb25zX2RiID0gY29udGFpbmVyICJOb3RpZmljYXRpb25zIERhdGFiYXNlIiAiU3RvcmVzIHNlbnQgbm90aWZpY2F0aW9ucyIgIlBvc3RncmVTUUwiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJEYXRhYmFzZSIgIk5vdGlmaWNhdGlvbnMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGdyb3VwICJUb3BpY3MiIHsKICAgICAgICAgICAgICAgIGNvdXJzZUNvbXBsZXRlZCA9IGNvbnRhaW5lciAiQ291cnNlQ29tcGxldGVkIFRvcGljIiAiU2lnbmFscyB0aGF0IGEgdXNlciBoYXMgY29tcGxldGVkIGEgY291cnNlIiAiTWFzc1RyYW5zaXQsIFJhYmJpdE1RIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiVG9waWMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBjb3Vyc2VDcmVhdGVkID0gY29udGFpbmVyICJDb3Vyc2VDcmVhdGVkIFRvcGljIiAiU2lnbmFscyB0aGF0IGEgY291cnNlIHdhcyBjcmVhdGVkIiAiTWFzc1RyYW5zaXQsIFJhYmJpdE1RIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiVG9waWMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBjb3Vyc2VVcGRhdGVkID0gY29udGFpbmVyICJDb3Vyc2VVcGRhdGVkIFRvcGljIiAiU2lnbmFscyB0aGF0IGEgY291cnNlIHdhcyB1cGRhdGVkIiAiTWFzc1RyYW5zaXQsIFJhYmJpdE1RIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiVG9waWMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBub3RpZmljYXRpb25TZW50ID0gY29udGFpbmVyICJOb3RpZmljYXRpb25TZW50IFRvcGljIiAiU2lnbmFscyB0aGF0IGEgbm90aWZpY2F0aW9uIG5lZWRzIHRvIGJlIHNlbnQiICJNYXNzVHJhbnNpdCwgUmFiYml0TVEiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJUb3BpYyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHByb2ZpbGVQaG90b1VwZGF0ZWQgPSBjb250YWluZXIgIlByb2ZpbGVQaG90b1VwZGF0ZWQgVG9waWMiICJTaWduYWxzIHRoYXQgYSB1c2VyIGhhcyB1cGRhdGVkIHRoZWlyIHByb2ZpbGUgcGhvdG8iICJNYXNzVHJhbnNpdCwgUmFiYml0TVEiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJUb3BpYyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHByb2ZpbGVVcGRhdGVkID0gY29udGFpbmVyICJQcm9maWxlVXBkYXRlZCBUb3BpYyIgIlNpZ25hbHMgdGhhdCBhIHVzZXIgaGFzIHVwZGF0ZWQgdGhlaXIgcHJvZmlsZSBpbmZvIiAiTWFzc1RyYW5zaXQsIFJhYmJpdE1RIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiVG9waWMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBwdXJjaGFzZUNyZWF0ZWQgPSBjb250YWluZXIgIlB1cmNoYXNlQ3JlYXRlZCBUb3BpYyIgIlNpZ25hbHMgdGhhdCBhIHVzZXIgaGFzIHB1cmNoYXNlZCBzb21ldGhpbmciICJNYXNzVHJhbnNpdCwgUmFiYml0TVEiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJUb3BpYyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHN1YnNjcmlwdGlvbkNoYW5nZWQgPSBjb250YWluZXIgIlN1YnNjcmlwdGlvbkNoYW5nZWQgVG9waWMiICJTaWduYWxzIHRoYXQgdXNlcidzIHN1YnNjcmlwdGlvbiBoYXMgY2hhbmdlZCIgIk1hc3NUcmFuc2l0LCBSYWJiaXRNUSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlRvcGljIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgdXNlckNyZWF0ZWQgPSBjb250YWluZXIgIlVzZXJDcmVhdGVkIFRvcGljIiAiU2lnbmFscyB0aGF0IGEgbmV3IHVzZXIgd2FzIGNyZWF0ZWQiICJNYXNzVHJhbnNpdCwgUmFiYml0TVEiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJUb3BpYyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgdSAtPiBzcy5mcm9udGVuZCAiVXNlcyIgCiAgICAgICAgc3MuZnJvbnRlbmQgLT4gc3MudXNlcnMgIk1ha2VzIEFQSSBjYWxscyB0byIgIkpTT04vSFRUUCIgIkh0dHAiCiAgICAgICAgc3MudXNlcnMgLT4gc3MuY291cnNlcyAiUm91dGVzIEFQSSByZXF1ZXN0cyB0byIgIkpTT04vSFRUUCIgIkh0dHAiCiAgICAgICAgc3MudXNlcnMgLT4gc3MucHVyY2hhc2VzICJSb3V0ZXMgQVBJIHJlcXVlc3RzIHRvIiAiSlNPTi9IVFRQIiAiSHR0cCIKICAgICAgICBzcy51c2VycyAtPiBzcy5jZXJ0aWZpY2F0ZXMgIlJvdXRlcyBBUEkgcmVxdWVzdHMgdG8iICJKU09OL0hUVFAiICJIdHRwIgogICAgICAgIHNzLnVzZXJzIC0+IHNzLm5vdGlmaWNhdGlvbnMgIlJvdXRlcyBBUEkgcmVxdWVzdHMgdG8iICJKU09OL0hUVFAiICJIdHRwIgogICAgICAgIHNzLnVzZXJzIC0+IHNzLnVzZXJzX2RiICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iCiAgICAgICAgc3MuY291cnNlcyAtPiBzcy5jb3Vyc2VzX2RiICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iCiAgICAgICAgc3MucHVyY2hhc2VzIC0+IHNzLnB1cmNoYXNlc19kYiAiUmVhZHMgZnJvbSBhbmQgd3JpdGVzIHRvIgogICAgICAgIHNzLmNlcnRpZmljYXRlcyAtPiBzcy5jZXJ0aWZpY2F0ZXNfZGIgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIKICAgICAgICBzcy5ub3RpZmljYXRpb25zIC0+IHNzLm5vdGlmaWNhdGlvbnNfZGIgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIKCiAgICAgICAgc3MuY291cnNlcyAtPiBzcy5jb3Vyc2VDb21wbGV0ZWQgIlB1Ymxpc2hlcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIGluIgogICAgICAgIHNzLmNvdXJzZUNvbXBsZXRlZCAtPiBzcy5wdXJjaGFzZXMgIlNlbmRzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgb3V0IgoKICAgICAgICBzcy5jb3Vyc2VzIC0+IHNzLmNvdXJzZUNyZWF0ZWQgIlB1Ymxpc2hlcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIGluIgogICAgICAgIHNzLmNvdXJzZUNyZWF0ZWQgLT4gc3MucHVyY2hhc2VzICJTZW5kcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIG91dCIKICAgICAgICBzcy5jb3Vyc2VDcmVhdGVkIC0+IHNzLmNlcnRpZmljYXRlcyAiU2VuZHMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBvdXQiCgogICAgICAgIHNzLmNvdXJzZXMgLT4gc3MuY291cnNlVXBkYXRlZCAiUHVibGlzaGVzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgaW4iCiAgICAgICAgc3MuY291cnNlVXBkYXRlZCAtPiBzcy5wdXJjaGFzZXMgIlNlbmRzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgb3V0IgogICAgICAgIHNzLmNvdXJzZVVwZGF0ZWQgLT4gc3MuY2VydGlmaWNhdGVzICJTZW5kcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIG91dCIKCiAgICAgICAgc3MuY291cnNlcyAtPiBzcy5ub3RpZmljYXRpb25TZW50ICJQdWJsaXNoZXMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBpbiIKICAgICAgICBzcy5ub3RpZmljYXRpb25TZW50IC0+IHNzLm5vdGlmaWNhdGlvbnMgIlNlbmRzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgb3V0IgoKICAgICAgICBzcy51c2VycyAtPiBzcy5wcm9maWxlUGhvdG9VcGRhdGVkICJQdWJsaXNoZXMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBpbiIKICAgICAgICBzcy5wcm9maWxlUGhvdG9VcGRhdGVkIC0+IHNzLmNvdXJzZXMgIlNlbmRzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgb3V0IgogICAgICAgIHNzLnByb2ZpbGVQaG90b1VwZGF0ZWQgLT4gc3MuY2VydGlmaWNhdGVzICJTZW5kcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIG91dCIKCiAgICAgICAgc3MudXNlcnMgLT4gc3MucHJvZmlsZVVwZGF0ZWQgIlB1Ymxpc2hlcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIGluIgogICAgICAgIHNzLnByb2ZpbGVVcGRhdGVkIC0+IHNzLmNvdXJzZXMgIlNlbmRzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgb3V0IgogICAgICAgIHNzLnByb2ZpbGVVcGRhdGVkIC0+IHNzLmNlcnRpZmljYXRlcyAiU2VuZHMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBvdXQiCgogICAgICAgIHNzLnB1cmNoYXNlcyAtPiBzcy5wdXJjaGFzZUNyZWF0ZWQgIlB1Ymxpc2hlcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIGluIgogICAgICAgIHNzLnB1cmNoYXNlQ3JlYXRlZCAtPiBzcy5jb3Vyc2VzICJTZW5kcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIG91dCIKICAgICAgICBzcy5wdXJjaGFzZUNyZWF0ZWQgLT4gc3MuY2VydGlmaWNhdGVzICJTZW5kcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIG91dCIKCiAgICAgICAgc3MucHVyY2hhc2VzIC0+IHNzLnN1YnNjcmlwdGlvbkNoYW5nZWQgIlB1Ymxpc2hlcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIGluIgogICAgICAgIHNzLnN1YnNjcmlwdGlvbkNoYW5nZWQgLT4gc3MuY291cnNlcyAiU2VuZHMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBvdXQiCgogICAgICAgIHNzLnVzZXJzIC0+IHNzLnVzZXJDcmVhdGVkICJQdWJsaXNoZXMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBpbiIKICAgICAgICBzcy51c2VyQ3JlYXRlZCAtPiBzcy5jb3Vyc2VzICJTZW5kcyBtZXNzYWdlcyB0byIgIiIgIlRvcGljIG91dCIKICAgICAgICBzcy51c2VyQ3JlYXRlZCAtPiBzcy5wdXJjaGFzZXMgIlNlbmRzIG1lc3NhZ2VzIHRvIiAiIiAiVG9waWMgb3V0IgogICAgICAgIHNzLnVzZXJDcmVhdGVkIC0+IHNzLmNlcnRpZmljYXRlcyAiU2VuZHMgbWVzc2FnZXMgdG8iICIiICJUb3BpYyBvdXQiCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgc3MgIkRpYWdyYW0xIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBjb250YWluZXIgc3MgIkRpYWdyYW0yIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgc3R5bGVzIHsKICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzY0QkZCQQogICAgICAgICAgICAgICAgY29sb3Igd2hpdGUKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJGcm9udGVuZCIgewogICAgICAgICAgICAgICAgc2hhcGUgd2ViYnJvd3NlcgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjOTcxNUQzCiAgICAgICAgICAgICAgICBjb2xvciB3aGl0ZQogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIlNlcnZpY2UiIHsKICAgICAgICAgICAgICAgIHNoYXBlIGhleGFnb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJUb3BpYyIgewogICAgICAgICAgICAgICAgc2hhcGUgcGlwZQogICAgICAgICAgICAgICAgY29sb3IgI2ZmNjYwMAogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjRjhGOEY4CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAgICAgc2hhcGUgcm91bmRlZGJveAogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMjgyODI4CiAgICAgICAgICAgICAgICBjb2xvciB3aGl0ZQogICAgICAgICAgICB9CgogICAgICAgICAgICBlbGVtZW50ICJVc2VycyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjQTAwNDFFCiAgICAgICAgICAgICAgICBjb2xvciB3aGl0ZQogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkNvdXJzZXMiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI0REMkU0NAogICAgICAgICAgICAgICAgY29sb3Igd2hpdGUKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJQdXJjaGFzZXMiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI0Y0OTAwQwogICAgICAgICAgICAgICAgY29sb3Igd2hpdGUKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJDZXJ0aWZpY2F0ZXMiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzU1QUNFRQogICAgICAgICAgICAgICAgY29sb3Igd2hpdGUKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJOb3RpZmljYXRpb25zIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM1NTU1NTUKICAgICAgICAgICAgICAgIGNvbG9yIHdoaXRlCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHJlbGF0aW9uc2hpcCAiSHR0cCIgewogICAgICAgICAgICAgICAgY29sb3IgYmxhY2sKICAgICAgICAgICAgfQoKICAgICAgICAgICAgcmVsYXRpb25zaGlwICJUb3BpYyBpbiIgewogICAgICAgICAgICAgICAgc3R5bGUgZG90dGVkCiAgICAgICAgICAgICAgICAvLyBjb2xvciAjRkZDQzRECiAgICAgICAgICAgICAgICBjb2xvciAjMzM5OTMzCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHJlbGF0aW9uc2hpcCAiVG9waWMgb3V0IiB7CiAgICAgICAgICAgICAgICBzdHlsZSBkb3R0ZWQKICAgICAgICAgICAgICAgIGNvbG9yICNmZjY2MDAKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="
+  },
+  "views" : {
+    "configuration" : {
+      "branding" : { },
+      "lastSavedView" : "Diagram2",
+      "metadataSymbols" : "SquareBrackets",
+      "styles" : {
+        "elements" : [ {
+          "background" : "#64bfba",
+          "color" : "#ffffff",
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "background" : "#9715d3",
+          "color" : "#ffffff",
+          "shape" : "WebBrowser",
+          "tag" : "Frontend"
+        }, {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "shape" : "Hexagon",
+          "tag" : "Service"
+        }, {
+          "background" : "#f8f8f8",
+          "color" : "#ff6600",
+          "shape" : "Pipe",
+          "tag" : "Topic"
+        }, {
+          "background" : "#282828",
+          "color" : "#ffffff",
+          "shape" : "RoundedBox",
+          "tag" : "Software System"
+        }, {
+          "background" : "#a0041e",
+          "color" : "#ffffff",
+          "tag" : "Users"
+        }, {
+          "background" : "#dd2e44",
+          "color" : "#ffffff",
+          "tag" : "Courses"
+        }, {
+          "background" : "#f4900c",
+          "color" : "#ffffff",
+          "tag" : "Purchases"
+        }, {
+          "background" : "#55acee",
+          "color" : "#ffffff",
+          "tag" : "Certificates"
+        }, {
+          "background" : "#555555",
+          "color" : "#ffffff",
+          "tag" : "Notifications"
+        } ],
+        "relationships" : [ {
+          "color" : "#000000",
+          "tag" : "Http"
+        }, {
+          "color" : "#339933",
+          "style" : "Dotted",
+          "tag" : "Topic in"
+        }, {
+          "color" : "#ff6600",
+          "style" : "Dotted",
+          "tag" : "Topic out"
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "dimensions" : {
+        "height" : 4170,
+        "width" : 6916
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 3246,
+        "y" : 290
+      }, {
+        "id" : "3",
+        "x" : 3225,
+        "y" : 860
+      }, {
+        "id" : "4",
+        "x" : 3225,
+        "y" : 1330
+      }, {
+        "id" : "5",
+        "x" : 2520,
+        "y" : 1360
+      }, {
+        "id" : "6",
+        "x" : 3230,
+        "y" : 2355
+      }, {
+        "id" : "7",
+        "x" : 3985,
+        "y" : 2395
+      }, {
+        "id" : "8",
+        "x" : 4725,
+        "y" : 2365
+      }, {
+        "id" : "9",
+        "x" : 5490,
+        "y" : 2410
+      }, {
+        "id" : "10",
+        "x" : 990,
+        "y" : 2350
+      }, {
+        "id" : "11",
+        "x" : 245,
+        "y" : 2385
+      }, {
+        "id" : "12",
+        "x" : 6220,
+        "y" : 2375
+      }, {
+        "id" : "13",
+        "x" : 6220,
+        "y" : 1935
+      }, {
+        "id" : "14",
+        "x" : 5489,
+        "y" : 3505
+      }, {
+        "id" : "15",
+        "x" : 3239,
+        "y" : 3505
+      }, {
+        "id" : "16",
+        "x" : 2489,
+        "y" : 3505
+      }, {
+        "id" : "17",
+        "x" : 6225,
+        "y" : 3500
+      }, {
+        "id" : "18",
+        "x" : 989,
+        "y" : 3505
+      }, {
+        "id" : "19",
+        "x" : 239,
+        "y" : 3505
+      }, {
+        "id" : "20",
+        "x" : 3989,
+        "y" : 3505
+      }, {
+        "id" : "21",
+        "x" : 4739,
+        "y" : 3505
+      }, {
+        "id" : "22",
+        "x" : 1739,
+        "y" : 3505
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Diagram2",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "23"
+      }, {
+        "id" : "25"
+      }, {
+        "id" : "26"
+      }, {
+        "id" : "27"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "29"
+      }, {
+        "id" : "30"
+      }, {
+        "id" : "31"
+      }, {
+        "id" : "32"
+      }, {
+        "id" : "33"
+      }, {
+        "id" : "34"
+      }, {
+        "id" : "35"
+      }, {
+        "id" : "36"
+      }, {
+        "id" : "37"
+      }, {
+        "id" : "38"
+      }, {
+        "id" : "39"
+      }, {
+        "id" : "40"
+      }, {
+        "id" : "41"
+      }, {
+        "id" : "42"
+      }, {
+        "id" : "43"
+      }, {
+        "id" : "44"
+      }, {
+        "id" : "45"
+      }, {
+        "id" : "46"
+      }, {
+        "id" : "47"
+      }, {
+        "id" : "48"
+      }, {
+        "id" : "49"
+      }, {
+        "id" : "50"
+      }, {
+        "id" : "51"
+      }, {
+        "id" : "52"
+      }, {
+        "id" : "53"
+      }, {
+        "id" : "54"
+      }, {
+        "id" : "55"
+      }, {
+        "id" : "56"
+      }, {
+        "id" : "57"
+      }, {
+        "id" : "58"
+      }, {
+        "id" : "59"
+      } ],
+      "softwareSystemId" : "2"
+    } ],
+    "systemContextViews" : [ {
+      "automaticLayout" : {
+        "applied" : true,
+        "edgeSeparation" : 0,
+        "implementation" : "Graphviz",
+        "nodeSeparation" : 300,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "vertices" : false
+      },
+      "dimensions" : {
+        "height" : 800,
+        "width" : 1550
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 200,
+        "y" : 199
+      }, {
+        "id" : "2",
+        "x" : 900,
+        "y" : 249
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "Diagram1",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "24"
+      } ],
+      "softwareSystemId" : "2"
+    } ]
+  }
+}
