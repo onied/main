@@ -11,9 +11,9 @@ services:
       dockerfile: Dockerfile
       args:
         - VITE_MAPBOX_API_KEY=
-        - VITE_API_URL=http://localhost:8080/api/v1/
-        - VITE_VK_CLIENT_ID=51882579
-        - VITE_REDIRECT_URL=https://onied.com/oauth-redirect
+        - VITE_API_URL=
+        - VITE_VK_CLIENT_ID=
+        - VITE_REDIRECT_URL=
         - VITE_VK_AUTH_URL=https://oauth.vk.com/authorize
     depends_on:
       - users
