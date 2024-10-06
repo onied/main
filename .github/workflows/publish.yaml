@@ -31,12 +31,41 @@ jobs:
               with:
                 username: ${{ secrets.DOCKERHUB_USER }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
-            
-            # - name: Build Docker images
-            #   run: docker compose build
 
-            # - name: Push Docker images
-            #   run: docker compose push
+            - name: Setting environmental variables
+              run: | 
+                echo "services:
+                frontend:
+                  restart: unless-stopped
+                  build:
+                    args:
+                      - VITE_MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}
+                      - VITE_API_URL=http://localhost:8080/api/v1/
+                      - VITE_VK_CLIENT_ID=${{ secrets.VK_CLIENT_ID }}
+                      - VITE_REDIRECT_URL=https://onied.com/oauth-redirect
+                      - VITE_VK_AUTH_URL=https://oauth.vk.com/authorize
+                
+                users:
+                  restart: unless-stopped
+                  environment:
+                    - Authentication__VK__ClientId=${{ secrets.VK_CLIENT_ID }}
+                    - Authentication__VK__ClientSecret=${{ secrets.VK_CLIENT_SECRET }}
+                courses:
+                  restart: unless-stopped
+                notifications:
+                  restart: unless-stopped
+                purchases:
+                  restart: unless-stopped
+                certificates:
+                  restart: unless-stopped
+                  environment:
+                    - MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}" >> docker-compose.override.yml
+            
+            - name: Build Docker images
+              run: docker compose build
+
+            - name: Push Docker images
+              run: docker compose push
 
             - name: Create a tarball of the docker-compose directory
               run: tar -czf ${{ env.PROJECT_NAME }}.tar.gz ./*
