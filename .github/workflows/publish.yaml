@@ -50,7 +50,7 @@ jobs:
                 echo "      - MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}" >> docker-compose.override.yml
             
             - name: Build Docker images
-              run: docker compose build
+              run: docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build
 
             - name: Push Docker images
               run: docker compose push
@@ -84,4 +84,4 @@ jobs:
                   cd ~/${{ env.PROJECT_NAME }}
                   tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
                   docker compose pull
-                  docker compose up -d
+                  docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d
