@@ -22,32 +22,41 @@ jobs:
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Setting environmental variables
-              run: | 
-                echo "services:" > docker-compose.override.yml
-                echo "  frontend:" >> docker-compose.override.yml
-                echo "    restart: unless-stopped" >> docker-compose.override.yml
-                echo "    build:" >> docker-compose.override.yml
-                echo "      args:" >> docker-compose.override.yml
-                echo "        VITE_MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}" >> docker-compose.override.yml
-                echo "        VITE_API_URL=${{ env.SITE }}/api/v1/" >> docker-compose.override.yml
-                echo "        VITE_VK_CLIENT_ID=${{ secrets.VK_CLIENT_ID }}" >> docker-compose.override.yml
-                echo "        VITE_REDIRECT_URL=${{ env.SITE }}/oauth-redirect" >> docker-compose.override.yml
-                echo "        VITE_VK_AUTH_URL=https://oauth.vk.com/authorize" >> docker-compose.override.yml
-                echo "  users:" >> docker-compose.override.yml
-                echo "    restart: unless-stopped" >> docker-compose.override.yml
-                echo "    environment:" >> docker-compose.override.yml
-                echo "      - Authentication__VK__ClientId=${{ secrets.VK_CLIENT_ID }}" >> docker-compose.override.yml
-                echo "      - Authentication__VK__ClientSecret=${{ secrets.VK_CLIENT_SECRET }}" >> docker-compose.override.yml
-                echo "  courses:" >> docker-compose.override.yml
-                echo "    restart: unless-stopped" >> docker-compose.override.yml
-                echo "  notifications:" >> docker-compose.override.yml
-                echo "    restart: unless-stopped" >> docker-compose.override.yml
-                echo "  purchases:" >> docker-compose.override.yml
-                echo "    restart: unless-stopped" >> docker-compose.override.yml
-                echo "  certificates:" >> docker-compose.override.yml
-                echo "    restart: unless-stopped" >> docker-compose.override.yml
-                echo "    environment:" >> docker-compose.override.yml
-                echo "      - MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}" >> docker-compose.override.yml
+              run: |
+                cat <<EOF > docker-compose.override.yml 
+                services:
+                  frontend:
+                    restart: unless-stopped
+                    build:
+                      args:
+                        VITE_MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}
+                        VITE_API_URL=${{ env.SITE }}/api/v1/
+                        VITE_VK_CLIENT_ID=${{ secrets.VK_CLIENT_ID }}
+                        VITE_REDIRECT_URL=${{ env.SITE }}/oauth-redirect
+                        VITE_VK_AUTH_URL=https://oauth.vk.com/authorize
+                  users:
+                    restart: unless-stopped
+                    environment:
+                      - ASPNETCORE_ENVIRONMENT=Production
+                      - Authentication__VK__ClientId=${{ secrets.VK_CLIENT_ID }}
+                      - Authentication__VK__ClientSecret=${{ secrets.VK_CLIENT_SECRET }}
+                  courses:
+                    restart: unless-stopped
+                    environment:
+                      - ASPNETCORE_ENVIRONMENT=Production
+                  notifications:
+                    restart: unless-stopped
+                    environment:
+                      - ASPNETCORE_ENVIRONMENT=Production
+                  purchases:
+                    restart: unless-stopped
+                    environment:
+                      - ASPNETCORE_ENVIRONMENT=Production
+                  certificates:
+                    restart: unless-stopped
+                    environment:
+                      - MAPBOX_API_KEY=${{ secrets.MAPBOX_API_KEY }}
+                EOF
             
             - name: Build Docker images
               run: docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build
