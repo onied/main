@@ -71,7 +71,7 @@ public class CatalogServiceTests
         // Assert
         var result = Assert.IsType<Ok<Page<CourseCardResponse>>>(httpResult);
         var page = result.Value;
-        Assert.NotNull(page.Elements);
+        Assert.NotNull(page!.Elements);
         Assert.NotEmpty(page.Elements);
         Assert.Equal(20, page.ElementsPerPage);
     }

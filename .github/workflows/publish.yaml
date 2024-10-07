@@ -1,0 +1,97 @@
+name: Publish Docker Images
+
+on:
+  release:
+    types: [published]
+
+env:
+    PROJECT_NAME: onied
+    SITE: https://debian-vds.freemyip.com
+  
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                username: ${{ secrets.DOCKERHUB_USER }}
+                password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Setting environmental variables
+              run: |
+                cat <<EOF > docker-compose.override.yml 
+                services:
+                  frontend:
+                    restart: unless-stopped
+                    build:
+                      args:
+                        VITE_MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
+                        VITE_API_URL: ${{ env.SITE }}/api/v1/
+                        VITE_VK_CLIENT_ID: ${{ secrets.VK_CLIENT_ID }}
+                        VITE_REDIRECT_URL: ${{ env.SITE }}/oauth-redirect
+                        VITE_VK_AUTH_URL: https://oauth.vk.com/authorize
+                  users:
+                    restart: unless-stopped
+                    environment:
+                      ASPNETCORE_ENVIRONMENT: Production
+                      Authentication__VK__ClientId: ${{ secrets.VK_CLIENT_ID }}
+                      Authentication__VK__ClientSecret: ${{ secrets.VK_CLIENT_SECRET }}
+                  courses:
+                    restart: unless-stopped
+                    environment:
+                      ASPNETCORE_ENVIRONMENT: Production
+                  notifications:
+                    restart: unless-stopped
+                    environment:
+                      ASPNETCORE_ENVIRONMENT: Production
+                  purchases:
+                    restart: unless-stopped
+                    environment:
+                      ASPNETCORE_ENVIRONMENT: Production
+                  certificates:
+                    restart: unless-stopped
+                    environment:
+                      MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
+                EOF
+            
+            - name: Build Docker images
+              run: docker compose -f docker-compose.yml -f docker-compose.override.yml build --no-cache
+
+            - name: Push Docker images
+              run: docker compose -f docker-compose.yml -f docker-compose.override.yml push
+
+            - name: Create a tarball of the docker-compose directory
+              run: tar -czf ${{ env.PROJECT_NAME }}.tar.gz ./*
+
+            - name: Copy tarball to remote server
+              uses: appleboy/scp-action@master
+              with:
+                host: ${{ secrets.SSH_HOST }}
+                port: ${{ secrets.SSH_PORT }}
+                username: ${{ secrets.SSH_USER }}
+                key: ${{ secrets.SSH_CD_KEY }}
+                source: ${{ env.PROJECT_NAME }}.tar.gz
+                target: ~/onied
+
+            - name: SSH to remote server and deploy with Docker Compose
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.SSH_HOST }}
+                port: ${{ secrets.SSH_PORT }}
+                username: ${{ secrets.SSH_USER }}
+                key: ${{ secrets.SSH_CD_KEY }}
+                script: |
+                  # if [ $(docker container ls -q --filter name='misergeeevkpfu*' | wc -l) -gt 0 ]; then
+                  #     docker stop $(docker container ls -q --filter name='misergeeevkpfu*');
+                  # else
+                  #     echo 'No matching containers to stop.';
+                  # fi
+                  cd ~/${{ env.PROJECT_NAME }}
+                  tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
+                  docker compose -f docker-compose.yml -f docker-compose.override.yml down --rmi all
+                  docker compose -f docker-compose.yml -f docker-compose.override.yml pull
+                  docker compose -f docker-compose.yml -f docker-compose.override.yml up -d

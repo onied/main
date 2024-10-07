@@ -36,7 +36,7 @@ public class UpdateTasksBlockService(
                     };
                     await dbContext.VariantsTasks.AddAsync(variantsTask1);
                     await dbContext.SaveChangesAsync();
-                    foreach (var addedVariant in updatedTask.Variants)
+                    foreach (var addedVariant in updatedTask.Variants!)
                     {
                         await dbContext.TaskVariants.AddAsync(new TaskVariant
                         {
@@ -56,7 +56,7 @@ public class UpdateTasksBlockService(
                     };
                     await dbContext.VariantsTasks.AddAsync(variantsTask2);
                     await dbContext.SaveChangesAsync();
-                    foreach (var addedVariant in updatedTask.Variants)
+                    foreach (var addedVariant in updatedTask.Variants!)
                     {
                         await dbContext.TaskVariants.AddAsync(new TaskVariant
                         {
@@ -79,7 +79,7 @@ public class UpdateTasksBlockService(
                     };
                     await dbContext.InputTasks.AddAsync(answersTask);
                     await dbContext.SaveChangesAsync();
-                    foreach (var addedAnswer in updatedTask.Answers)
+                    foreach (var addedAnswer in updatedTask.Answers!)
                     {
                         await dbContext.TaskTextInputAnswers.AddAsync(new TaskTextInputAnswer
                         {
@@ -96,6 +96,6 @@ public class UpdateTasksBlockService(
         }
         await dbContext.SaveChangesAsync();
 
-        return await blockRepository.GetTasksBlock(tasksBlockRequest.Id, true, true);
+        return (await blockRepository.GetTasksBlock(tasksBlockRequest.Id, true, true))!;
     }
 }
