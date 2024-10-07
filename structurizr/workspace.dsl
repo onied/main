@@ -4,51 +4,68 @@ workspace "Onied" {
 
     model {
         u = person "User" "Typically a self-learner who wants to receive an online education on some of the topics"
+        vk = softwareSystem "VK" "vk.com" {
+             tags "External"
+        }
+        gmail = softwareSystem "Gmail" {
+             tags "External"
+        }
+        mb = softwareSystem "Mapbox" {
+             tags "External"
+        }
         ss = softwareSystem "Onied" "Learning Management System" {
             frontend = container "Single-Page Application" "Implements UI for all the user-facing features in the LMS" "JS/TS, React" {
                 tags "Frontend"
 
-                component "ConfirmEmail"
-                component "ForgotPassword"
-                component "Login"
-                component "Register"
-                component "ResetPassword"
-                component "TwoFactorAuth"
+                confirmEmail = component "ConfirmEmail"
+                forgotPassword = component "ForgotPassword"
+                login = component "Login"
+                register = component "Register"
+                resetPassword = component "ResetPassword"
+                twoFactorAuth = component "TwoFactorAuth"
 
-                component "Catalog"
-                component "Certificates"
-                component "CheckTasks"
-                component "Course"
-                component "CreateCourse"
-                component "EditCourse"
-                component "Landing"
-                component "ManageModerators"
-                component "OauthRedirect"
-                component "Preview"
-                component "Profile"
-                component "Purchase"
-                component "Subscriptions"
-                component "Teaching"
+                catalog = component "Catalog"
+                certificates = component "Certificates"
+                checkTasks = component "CheckTasks"
+                course = component "Course"
+                createCourse = component "CreateCourse"
+                editCourse = component "EditCourse"
+                landing = component "Landing"
+                manageModerators = component "ManageModerators"
+                oauthRedirect = component "OauthRedirect"
+                preview = component "Preview"
+                profile = component "Profile"
+                purchase = component "Purchase"
+                subscriptions = component "Subscriptions"
+                teaching = component "Teaching"
             }
             group "Users Service" {
                 users = container "Users" "Users authentication and authorization service /\n API Gateway" "C#, ASP.NET Core" {
                     tags "Service" "Users"
 
                     group "Controllers" {
-                        component "UsersController"
-                        component "ProfileController"
+                        usersController = component "UsersController"
+                        profileController = component "ProfileController"
                     }
 
                     group "Producers" {
-                        component "ProfileProducer"
-                        component "UserCreatedProducer"
+                        profileProducer = component "ProfileProducer"
+                        userCreatedProducer = component "UserCreatedProducer"
                     }
 
                     group "Services" {
-                        component "EmailSender"
-                        component "ProfileService"
-                        component "UsersService"
+                        emailSender = component "EmailSender"
+                        profileService = component "ProfileService"
+                        usersService = component "UsersService"
                     }
+
+                    usersController -> usersService "Passes requests to"
+                    profileController -> profileService "Passes requests to"
+
+                    usersService -> emailSender "Uses to send confirmation emails"
+                    usersService -> userCreatedProducer "Uses to notify other services of a new user"
+
+                    profileService -> profileProducer "Uses to notify other services when user's profile changes"
                 }
                 users_db = container "Users Database" "Stores data related to users" "PostgreSQL"  {
                     tags "Database" "Users"
@@ -59,57 +76,57 @@ workspace "Onied" {
                     tags "Service" "Courses"
 
                     group "Controllers" {
-                        component "AccountsController"
-                        component "CatalogController"
-                        component "CategoriesController"
-                        component "CheckTasksController"
-                        component "CoursesController"
-                        component "EditCoursesController"
-                        component "LandingController"
-                        component "ModeratorsCourseController"
-                        component "TeachingController"
+                        accountsController = component "AccountsController"
+                        catalogController = component "CatalogController"
+                        categoriesController = component "CategoriesController"
+                        checkTasksController = component "CheckTasksController"
+                        coursesController = component "CoursesController"
+                        editCoursesController = component "EditCoursesController"
+                        landingController = component "LandingController"
+                        moderatorsCourseController = component "ModeratorsCourseController"
+                        teachingController = component "TeachingController"
                     }
 
                     group "Services" {
-                        component "AccountsService"
-                        component "CatalogService"
-                        component "CheckTaskManagementService"
-                        component "CheckTasksService"
-                        component "CourseManagementService"
-                        component "CourseService"
-                        component "LandingPageContentService"
-                        component "ManualReviewService"
-                        component "NotificationPreparerService"
-                        component "SubscriptionManagementService"
-                        component "TeachingService"
-                        component "UpdateTasksBlockService"
+                        accountsService = component "AccountsService"
+                        catalogService = component "CatalogService"
+                        checkTaskManagementService = component "CheckTaskManagementService"
+                        checkTasksService = component "CheckTasksService"
+                        courseManagementService = component "CourseManagementService"
+                        courseService = component "CourseService"
+                        landingPageContentService = component "LandingPageContentService"
+                        manualReviewService = component "ManualReviewService"
+                        notificationPreparerService = component "NotificationPreparerService"
+                        subscriptionManagementService = component "SubscriptionManagementService"
+                        teachingService = component "TeachingService"
+                        updateTasksBlockService = component "UpdateTasksBlockService"
                     }
 
                     group "Repositories" {
-                        component "UserCourseInfoRepository"
-                        component "UserRepository"
-                        component "UserTaskPointsRepository"
-                        component "BlockCompletedInfoRepository"
-                        component "BlockRepository"
-                        component "CategoryRepository"
-                        component "CourseRepository"
-                        component "ManualReviewTaskUserAnswerRepository"
-                        component "ModuleRepository"
+                        userCourseInfoRepository = component "UserCourseInfoRepository"
+                        userRepository = component "UserRepository"
+                        userTaskPointsRepository = component "UserTaskPointsRepository"
+                        blockCompletedInfoRepository = component "BlockCompletedInfoRepository"
+                        blockRepository = component "BlockRepository"
+                        categoryRepository = component "CategoryRepository"
+                        courseRepository = component "CourseRepository"
+                        manualReviewTaskUserAnswerRepository = component "ManualReviewTaskUserAnswerRepository"
+                        moduleRepository = component "ModuleRepository"
                     }
 
                     group "Consumers" {
-                        component "ProfilePhotoUpdatedConsumer"
-                        component "ProfileUpdatedConsumer"
-                        component "PurchaseCreatedConsumer"
-                        component "SubscriptionChangedConsumer"
-                        component "UserCreatedConsumer"
+                        profilePhotoUpdatedConsumer = component "ProfilePhotoUpdatedConsumer"
+                        profileUpdatedConsumer = component "ProfileUpdatedConsumer"
+                        purchaseCreatedConsumer = component "PurchaseCreatedConsumer"
+                        subscriptionChangedConsumer = component "SubscriptionChangedConsumer"
+                        userCreatedConsumer = component "UserCreatedConsumer"
                     }
 
                     group "Producers" {
-                        component "CourseCompletedProducer"
-                        component "CourseCreatedProducer"
-                        component "CourseUpdatedProducer"
-                        component "NotificationSentProducer"
+                        courseCompletedProducer = component "CourseCompletedProducer"
+                        courseCreatedProducer = component "CourseCreatedProducer"
+                        courseUpdatedProducer = component "CourseUpdatedProducer"
+                        notificationSentProducer = component "NotificationSentProducer"
                     }
 
                 }
@@ -122,30 +139,30 @@ workspace "Onied" {
                     tags "Service" "Purchases"
 
                     group "Controllers" {
-                        component "PurchasesController"
-                        component "PurchasesMakingController"
-                        component "SubscriptionsController"
+                        purchasesController = component "PurchasesController"
+                        purchasesMakingController = component "PurchasesMakingController"
+                        subscriptionsController = component "SubscriptionsController"
                     }
 
                     group "Services" {
-                        component "JwtTokenService"
-                        component "PurchaseMakingService"
-                        component "PurchaseService"
-                        component "PurchaseTokenService"
-                        component "SubscriptionManagementService"
-                        component "ValidatePurchaseService"
+                        jwtTokenService = component "JwtTokenService"
+                        purchaseMakingService = component "PurchaseMakingService"
+                        purchaseService = component "PurchaseService"
+                        purchaseTokenService = component "PurchaseTokenService"
+                        subscriptionManagementService = component "SubscriptionManagementService"
+                        validatePurchaseService = component "ValidatePurchaseService"
                     }
 
                     group "Consumers" {
-                        component "CourseCompletedConsumer"
-                        component "CourseCreatedConsumer"
-                        component "CourseUpdatedConsumer"
-                        component "UserCreatedConsumer"
+                        courseCompletedConsumer = component "CourseCompletedConsumer"
+                        courseCreatedConsumer = component "CourseCreatedConsumer"
+                        courseUpdatedConsumer = component "CourseUpdatedConsumer"
+                        userCreatedConsumer = component "UserCreatedConsumer"
                     }
 
                     group "Producers" {
-                        component "PurchaseCreatedProducer"
-                        component "SubscriptionChangedProducer"
+                        purchaseCreatedProducer = component "PurchaseCreatedProducer"
+                        subscriptionChangedProducer = component "SubscriptionChangedProducer"
                     }
 
                 }
@@ -157,25 +174,33 @@ workspace "Onied" {
                 certificates = container "Certificates" "Implements business logic for ordering certificates upon course completion" "JS, Node.js" {
                     tags "Service" "Certificates"
 
-                    group "Modules" {
-                        component "AppModule"
-                        component "CertificateModule"
-                        component "CourseModule"
-                        component "OrderModule"
-                        component "UserModule"
+                    group "CertificateModule" {
+                        certificateController = component "CertificateController"
+                        certificateService = component "CertificateService"
                     }
 
-                    group "Controllers" {
-                        component "CertificateController"
-                        component "OrderController"
+                    group "OrderModule" {
+                        orderController = component "OrderController"
+                        orderService = component "OrderService"
                     }
 
-                    group "Services" {
-                        component "CertificateService"
-                        component "CourseService"
-                        component "OrderService"
-                        component "UserService"
+                    group "CourseModule" {
+                        courseService = component "CourseService"
                     }
+
+                    group "UserModule" {
+                        userService = component "UserService"
+                    }
+
+                    group "UserCourseInfoModule" {
+                        userCourseInfoService = component "UserCourseInfoService"
+                    }
+
+                    certificateController -> certificateService "Passes request to"
+                    certificateService -> userService "Uses to find users"
+                    certificateService -> courseService "Uses to find courses"
+                    certificateService -> userCourseInfoService "Uses to check if user can buy certificate for course"
+                    // TODO: certificateService is not done yet
                 }
                 certificates_db = container "Certificates Database" "Stores orders and data required to generate certificates" "PostgreSQL" {
                     tags "Database" "Certificates"
@@ -186,20 +211,20 @@ workspace "Onied" {
                     tags "Service" "Notifications"
 
                     group "Controllers" {
-                        component "NotificationsController"
+                        notificationsController = component "NotificationsController"
                     }
 
                     group "Hubs" {
-                        component "NotificationsHub"
+                        notificationsHub = component "NotificationsHub"
                     }
 
                     group "Services" {
-                        component "UserIdProvider"
-                        component "NotificationSenderService"
+                        userIdProvider = component "UserIdProvider"
+                        notificationSenderService = component "NotificationSenderService"
                     }
 
                     group "Consumers" {
-                        component "NotificationSentConsumer"
+                        notificationSentConsumer = component "NotificationSentConsumer"
                     }
                 }
                 notifications_db = container "Notifications Database" "Stores sent notifications" "PostgreSQL" {
@@ -238,7 +263,7 @@ workspace "Onied" {
             }
         }
 
-        u -> ss.frontend "Uses" 
+        u -> ss.frontend "Uses"
         ss.frontend -> ss.users "Makes API calls to" "JSON/HTTP" "Http"
         ss.users -> ss.courses "Routes API requests to" "JSON/HTTP" "Http"
         ss.users -> ss.purchases "Routes API requests to" "JSON/HTTP" "Http"
@@ -283,6 +308,13 @@ workspace "Onied" {
         ss.userCreated -> ss.courses "Sends messages to" "" "Topic out"
         ss.userCreated -> ss.purchases "Sends messages to" "" "Topic out"
         ss.userCreated -> ss.certificates "Sends messages to" "" "Topic out"
+
+        ss.users.emailSender -> gmail "Sends emails to user via"
+        ss.users.usersService -> vk "Optionally authorizes user via"
+        ss.certificates.certificateService -> mb "Verifies user address using"
+        ss.frontend -> mb "Displays user address using"
+        ss -> mb "Uses to display map and verify order address"
+        ss -> gmail "Uses for sending emails to users"
     }
 
     views {
@@ -352,6 +384,12 @@ workspace "Onied" {
                 shape roundedbox
                 background #282828
                 color white
+            }
+
+            element "External" {
+                shape roundedbox
+                background #DEDEDE
+                color black
             }
 
             element "Users" {
