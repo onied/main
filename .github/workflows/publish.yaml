@@ -59,10 +59,10 @@ jobs:
                 EOF
             
             - name: Build Docker images
-              run: docker compose build
+              run: docker compose -f docker-compose.yml -f docker-compose.override.yml build
 
             - name: Push Docker images
-              run: docker compose push
+              run: docker compose -f docker-compose.yml -f docker-compose.override.yml push
 
             - name: Create a tarball of the docker-compose directory
               run: tar -czf ${{ env.PROJECT_NAME }}.tar.gz ./*
@@ -92,6 +92,6 @@ jobs:
                   # fi
                   cd ~/${{ env.PROJECT_NAME }}
                   tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
-                  docker compose down --rmi all
-                  docker compose pull
-                  docker compose up -d
+                  docker compose -f docker-compose.yml -f docker-compose.override.yml down --rmi all
+                  docker compose -f docker-compose.yml -f docker-compose.override.yml pull
+                  docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
