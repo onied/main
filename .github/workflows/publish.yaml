@@ -59,7 +59,7 @@ jobs:
                 EOF
             
             - name: Build Docker images
-              run: docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build
+              run: docker compose build
 
             - name: Push Docker images
               run: docker compose push
@@ -85,12 +85,13 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_CD_KEY }}
                 script: |
-                  if [ $(docker container ls -q --filter name='misergeeevkpfu*' | wc -l) -gt 0 ]; then
-                      docker stop $(docker container ls -q --filter name='misergeeevkpfu*');
-                  else
-                      echo 'No matching containers to stop.';
-                  fi
+                  # if [ $(docker container ls -q --filter name='misergeeevkpfu*' | wc -l) -gt 0 ]; then
+                  #     docker stop $(docker container ls -q --filter name='misergeeevkpfu*');
+                  # else
+                  #     echo 'No matching containers to stop.';
+                  # fi
                   cd ~/${{ env.PROJECT_NAME }}
                   tar -xzf ${{ env.PROJECT_NAME }}.tar.gz
+                  docker compose down --rmi all
                   docker compose pull
-                  docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d
+                  docker compose up -d
