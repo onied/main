@@ -62,7 +62,7 @@ export class UserCourseInfoService {
     queue: "purchase-created-certificates",
   })
   public async userCreatedHandler(msg: MassTransitWrapper<PurchaseCreated>) {
-    if (msg.message.purchaseType !== PurchaseType.Certificate) return;
+    if (msg.message.purchaseType !== PurchaseType.Course) return;
     await this.userCourseInfoRepository.save(msg.message as UserCourseInfo);
   }
 }

@@ -11,9 +11,13 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }) {
   const { blockId } = useParams();
   const blockTypes = [
     <></>,
-    <Summary courseId={hierarchy?.id} blockId={Number(blockId)} />,
-    <Video courseId={hierarchy?.id} blockId={Number(blockId)} />,
-    <Tasks courseId={hierarchy?.id} blockId={Number(blockId)} />,
+    <Summary
+      courseId={hierarchy?.id}
+      blockId={Number(blockId)}
+      key={blockId}
+    />,
+    <Video courseId={hierarchy?.id} blockId={Number(blockId)} key={blockId} />,
+    <Tasks courseId={hierarchy?.id} blockId={Number(blockId)} key={blockId} />,
   ];
   const blocks =
     hierarchy != null && "modules" in hierarchy
@@ -21,12 +25,12 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }) {
           .flatMap((module) => module.blocks)
           .reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {})
       : undefined;
+  useEffect(() => setCurrentBlock(Number(blockId)));
   if (
     isNaN(Number(blockId)) ||
     (blocks != null && !Object.keys(blocks).includes(blockId))
   )
     return <NotFound>Блок не найден.</NotFound>;
-  useEffect(() => setCurrentBlock(Number(blockId)));
 
   return (
     <div className={classes.blockWrapper}>

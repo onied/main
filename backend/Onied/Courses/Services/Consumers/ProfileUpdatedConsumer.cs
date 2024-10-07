@@ -8,7 +8,6 @@ namespace Courses.Services.Consumers;
 
 public class ProfileUpdatedConsumer(
     ILogger<ProfileUpdatedConsumer> logger,
-    IMapper mapper,
     IUserRepository userRepository) : IConsumer<ProfileUpdated>
 {
 
