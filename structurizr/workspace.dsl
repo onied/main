@@ -7,10 +7,48 @@ workspace "Onied" {
         ss = softwareSystem "Onied" "Learning Management System" {
             frontend = container "Single-Page Application" "Implements UI for all the user-facing features in the LMS" "JS/TS, React" {
                 tags "Frontend"
+
+                component "ConfirmEmail"
+                component "ForgotPassword"
+                component "Login"
+                component "Register"
+                component "ResetPassword"
+                component "TwoFactorAuth"
+
+                component "Catalog"
+                component "Certificates"
+                component "CheckTasks"
+                component "Course"
+                component "CreateCourse"
+                component "EditCourse"
+                component "Landing"
+                component "ManageModerators"
+                component "OauthRedirect"
+                component "Preview"
+                component "Profile"
+                component "Purchase"
+                component "Subscriptions"
+                component "Teaching"
             }
             group "Users Service" {
                 users = container "Users" "Users authentication and authorization service /\n API Gateway" "C#, ASP.NET Core" {
                     tags "Service" "Users"
+
+                    group "Controllers" {
+                        component "UsersController"
+                        component "ProfileController"
+                    }
+
+                    group "Producers" {
+                        component "ProfileProducer"
+                        component "UserCreatedProducer"
+                    }
+
+                    group "Services" {
+                        component "EmailSender"
+                        component "ProfileService"
+                        component "UsersService"
+                    }
                 }
                 users_db = container "Users Database" "Stores data related to users" "PostgreSQL"  {
                     tags "Database" "Users"
@@ -19,6 +57,61 @@ workspace "Onied" {
             group "Courses Service" {
                 courses = container "Courses" "Implements business logic for courses and their content (including learning materials)" "C#, ASP.NET Core" {
                     tags "Service" "Courses"
+
+                    group "Controllers" {
+                        component "AccountsController"
+                        component "CatalogController"
+                        component "CategoriesController"
+                        component "CheckTasksController"
+                        component "CoursesController"
+                        component "EditCoursesController"
+                        component "LandingController"
+                        component "ModeratorsCourseController"
+                        component "TeachingController"
+                    }
+
+                    group "Services" {
+                        component "AccountsService"
+                        component "CatalogService"
+                        component "CheckTaskManagementService"
+                        component "CheckTasksService"
+                        component "CourseManagementService"
+                        component "CourseService"
+                        component "LandingPageContentService"
+                        component "ManualReviewService"
+                        component "NotificationPreparerService"
+                        component "SubscriptionManagementService"
+                        component "TeachingService"
+                        component "UpdateTasksBlockService"
+                    }
+
+                    group "Repositories" {
+                        component "UserCourseInfoRepository"
+                        component "UserRepository"
+                        component "UserTaskPointsRepository"
+                        component "BlockCompletedInfoRepository"
+                        component "BlockRepository"
+                        component "CategoryRepository"
+                        component "CourseRepository"
+                        component "ManualReviewTaskUserAnswerRepository"
+                        component "ModuleRepository"
+                    }
+
+                    group "Consumers" {
+                        component "ProfilePhotoUpdatedConsumer"
+                        component "ProfileUpdatedConsumer"
+                        component "PurchaseCreatedConsumer"
+                        component "SubscriptionChangedConsumer"
+                        component "UserCreatedConsumer"
+                    }
+
+                    group "Producers" {
+                        component "CourseCompletedProducer"
+                        component "CourseCreatedProducer"
+                        component "CourseUpdatedProducer"
+                        component "NotificationSentProducer"
+                    }
+
                 }
                 courses_db = container "Courses Database" "Stores courses and their content" "PostgreSQL" {
                     tags "Database" "Courses"
@@ -27,6 +120,34 @@ workspace "Onied" {
             group "Purchases Service" {
                 purchases = container "Purchases" "Implements business logic for purchases and subsciption handling" "C#, ASP.NET Core" {
                     tags "Service" "Purchases"
+
+                    group "Controllers" {
+                        component "PurchasesController"
+                        component "PurchasesMakingController"
+                        component "SubscriptionsController"
+                    }
+
+                    group "Services" {
+                        component "JwtTokenService"
+                        component "PurchaseMakingService"
+                        component "PurchaseService"
+                        component "PurchaseTokenService"
+                        component "SubscriptionManagementService"
+                        component "ValidatePurchaseService"
+                    }
+
+                    group "Consumers" {
+                        component "CourseCompletedConsumer"
+                        component "CourseCreatedConsumer"
+                        component "CourseUpdatedConsumer"
+                        component "UserCreatedConsumer"
+                    }
+
+                    group "Producers" {
+                        component "PurchaseCreatedProducer"
+                        component "SubscriptionChangedProducer"
+                    }
+
                 }
                 purchases_db = container "Purchases Database" "Stores purchases" "PostgreSQL" {
                     tags "Database" "Purchases"
@@ -35,6 +156,26 @@ workspace "Onied" {
             group "Certificates Service" {
                 certificates = container "Certificates" "Implements business logic for ordering certificates upon course completion" "JS, Node.js" {
                     tags "Service" "Certificates"
+
+                    group "Modules" {
+                        component "AppModule"
+                        component "CertificateModule"
+                        component "CourseModule"
+                        component "OrderModule"
+                        component "UserModule"
+                    }
+
+                    group "Controllers" {
+                        component "CertificateController"
+                        component "OrderController"
+                    }
+
+                    group "Services" {
+                        component "CertificateService"
+                        component "CourseService"
+                        component "OrderService"
+                        component "UserService"
+                    }
                 }
                 certificates_db = container "Certificates Database" "Stores orders and data required to generate certificates" "PostgreSQL" {
                     tags "Database" "Certificates"
@@ -43,6 +184,23 @@ workspace "Onied" {
             group "Notifications Service" {
                 notifications = container "Notifications" "Implements business logic for sending notifications to users" "C#, ASP.NET Core"  {
                     tags "Service" "Notifications"
+
+                    group "Controllers" {
+                        component "NotificationsController"
+                    }
+
+                    group "Hubs" {
+                        component "NotificationsHub"
+                    }
+
+                    group "Services" {
+                        component "UserIdProvider"
+                        component "NotificationSenderService"
+                    }
+
+                    group "Consumers" {
+                        component "NotificationSentConsumer"
+                    }
                 }
                 notifications_db = container "Notifications Database" "Stores sent notifications" "PostgreSQL" {
                     tags "Database" "Notifications"
@@ -135,6 +293,36 @@ workspace "Onied" {
 
         container ss "Diagram2" {
             include *
+        }
+
+        component ss.frontend "Diagram3_frontend" {
+            include *
+            autolayout lr
+        }
+
+        component ss.users "Diagram3_users" {
+            include *
+            autolayout lr
+        }
+
+        component ss.courses "Diagram3_courses" {
+            include *
+            autolayout lr
+        }
+
+        component ss.purchases "Diagram3_purchases" {
+            include *
+            autolayout lr
+        }
+
+        component ss.certificates "Diagram3_certificates" {
+            include *
+            autolayout lr
+        }
+
+        component ss.notifications "Diagram3_notifications" {
+            include *
+            autolayout lr
         }
 
         styles {
