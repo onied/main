@@ -59,6 +59,10 @@ workspace "Onied" {
                         usersService = component "UsersService"
                     }
 
+                    group "API Gateway" {
+                        ocelot = component "Ocelot"
+                    }
+
                     usersController -> usersService "Passes requests to"
                     profileController -> profileService "Passes requests to"
 
@@ -129,6 +133,62 @@ workspace "Onied" {
                         notificationSentProducer = component "NotificationSentProducer"
                     }
 
+                    accountsController -> accountsService "Passes requests to"
+                    catalogController -> catalogService "Passes requests to"
+                    categoriesController -> categoryRepository "Gets all categories from"
+                    checkTasksController -> checkTaskManagementService "Passes requests to"
+                    coursesController -> courseService "Passes requests to"
+                    editCoursesController -> courseManagementService "Passes requests to"
+                    landingController -> landingPageContentService "Gets content from"
+                    moderatorsCourseController -> courseManagementService "Passes requests to"
+                    teachingController -> manualReviewService "Passes requests to"
+                    teachingController -> teachingService "Gets data from"
+
+                    accountsService -> userRepository "Uses to find user with courses"
+                    catalogService -> courseRepository "Uses to find courses"
+                    catalogService -> userRepository "Uses to find user with courses"
+                    checkTaskManagementService -> courseRepository "Uses to find course with blocks"
+                    checkTaskManagementService -> blockRepository "Uses to find task block"
+                    checkTaskManagementService -> blockCompletedInfoRepository "Uses to manage completed blocks"
+                    checkTaskManagementService -> userCourseInfoRepository "Uses to find if user has a course"
+                    checkTaskManagementService -> checkTasksService "Uses to check tasks"
+                    checkTaskManagementService -> courseCompletedProducer "Uses to notify other services that user has completed a course"
+                    checkTaskManagementService -> courseManagementService "Uses to determine if user is allowed on the course"
+                    checkTaskManagementService -> userTaskPointsRepository "Uses to manage task points"
+                    checkTaskManagementService -> notificationSentProducer "Uses to notify a user of a finished course"
+                    courseManagementService -> courseRepository "Uses to manage courses and moderators"
+                    courseManagementService -> userCourseInfoRepository "Uses to find if user has a course"
+                    courseManagementService -> blockRepository "Uses to manage blocks"
+                    courseManagementService -> updateTasksBlockService "Uses to update tasks block"
+                    courseManagementService -> moduleRepository "Uses to manage modules"
+                    courseManagementService -> categoryRepository "Uses to find categories"
+                    courseManagementService -> courseUpdatedProducer "Uses to notify other services of updated course"
+                    courseManagementService -> subscriptionManagementService "Uses to verify user's subsciption privileges"
+                    courseService -> courseRepository "Uses to find and create courses"
+                    courseService -> userCourseInfoRepository "Uses to check and add courses to users"
+                    courseService -> blockCompletedInfoRepository "Uses to check and mark blocks as completed"
+                    courseService -> blockRepository "Uses to find blocks"
+                    courseService -> userRepository "Uses to find users"
+                    courseService -> courseCreatedProducer "Uses to notify other services of a new course"
+                    courseService -> categoryRepository "Uses to get all categories"
+                    courseService -> subscriptionManagementService "Uses to verify user's subscription privileges"
+                    landingPageContentService -> courseRepository "Gets popular and recommended courses from"
+                    manualReviewService -> userRepository "Uses to find users"
+                    manualReviewService -> manualReviewTaskUserAnswerRepository "Uses to manage answer reviews"
+                    manualReviewService -> checkTaskManagementService "Uses to check answer tasks as completed"
+                    manualReviewService -> userTaskPointsRepository "Uses to get task points"
+                    manualReviewService -> notificationSentProducer "Uses to notify a user of a reviewed task"
+                    subscriptionManagementService -> userRepository "Uses to find users"
+                    subscriptionManagementService -> courseRepository "Uses to update courses after getting new privileges"
+                    subscriptionManagementService -> courseUpdatedProducer "Uses to notify other services of updated course"
+                    teachingService -> userRepository "Uses to find users"
+                    updateTasksBlockService -> blockRepository "Uses to get updated tasks block"
+
+                    profilePhotoUpdatedConsumer -> userRepository "Updates profile photo using"
+                    profileUpdatedConsumer -> userRepository "Updates profile using"
+                    purchaseCreatedConsumer -> userCourseInfoRepository "Adds course to user after purchase using"
+                    subscriptionChangedConsumer -> subscriptionManagementService "Updates courses after subscription change using"
+                    userCreatedConsumer -> userRepository "Adds user to known users using"
                 }
                 courses_db = container "Courses Database" "Stores courses and their content" "PostgreSQL" {
                     tags "Database" "Courses"
@@ -145,12 +205,19 @@ workspace "Onied" {
                     }
 
                     group "Services" {
-                        jwtTokenService = component "JwtTokenService"
                         purchaseMakingService = component "PurchaseMakingService"
                         purchaseService = component "PurchaseService"
                         purchaseTokenService = component "PurchaseTokenService"
                         subscriptionManagementService = component "SubscriptionManagementService"
                         validatePurchaseService = component "ValidatePurchaseService"
+                    }
+
+                    group "Repositories" {
+                        courseRepository = component "CourseRepository"
+                        purchaseRepository = component "PurchaseRepository"
+                        subscriptionRepository = component "SubscriptionRepository"
+                        userCourseInfoRepository = component "UserCourseInfoRepository"
+                        userRepository = component "UserRepository"
                     }
 
                     group "Consumers" {
@@ -165,6 +232,38 @@ workspace "Onied" {
                         subscriptionChangedProducer = component "SubscriptionChangedProducer"
                     }
 
+                    purchasesController -> purchaseService "Passes requests to"
+                    purchasesMakingController -> purchaseMakingService "Passes requests to"
+                    subscriptionsController -> subscriptionManagementService "Passes requests to"
+
+                    purchaseMakingService -> validatePurchaseService "Validates purchases using"
+                    purchaseMakingService -> userRepository "Finds users and updates their subscription using"
+                    purchaseMakingService -> courseRepository "Uses to find courses"
+                    purchaseMakingService -> subscriptionRepository "Uses to find subscriptions"
+                    purchaseMakingService -> purchaseRepository "Uses to store purchases"
+                    purchaseMakingService -> purchaseTokenService "Uses to generate purchase token"
+                    purchaseMakingService -> purchaseCreatedProducer "Uses to notify other services of a new purchase"
+                    purchaseMakingService -> subscriptionChangedProducer "Uses to notify other services of a changed subscription of a user"
+                    purchaseService -> userRepository "Uses to find users"
+                    purchaseService -> purchaseRepository "Uses to find purchases"
+                    purchaseService -> purchaseTokenService "Uses to decompose claims from tokens"
+                    subscriptionManagementService -> userRepository "Uses to find users"
+                    subscriptionManagementService -> purchaseRepository "Updates auto-renewal using"
+                    subscriptionManagementService -> subscriptionRepository "Gets all subscriptions using"
+                    validatePurchaseService -> userRepository "Uses to find users"
+                    validatePurchaseService -> courseRepository "Uses to find courses"
+                    validatePurchaseService -> subscriptionRepository "Uses to find subscriptions"
+                    validatePurchaseService -> userCourseInfoRepository "Uses to find if user has course"
+
+                    courseCompletedConsumer -> userRepository "Uses to find users"
+                    courseCompletedConsumer -> courseRepository "Uses to find courses"
+                    courseCompletedConsumer -> userCourseInfoRepository "Saves information about a user with a course using"
+                    courseCreatedConsumer -> courseRepository "Saves a course using"
+                    courseCreatedConsumer -> purchaseRepository "Adds a bogus purchase for course author using"
+                    courseCreatedConsumer -> purchaseTokenService "Generates new token using"
+                    courseCreatedConsumer -> purchaseCreatedProducer "Uses to notify other services of a new (bogus) purchase"
+                    courseUpdatedConsumer -> courseRepository "Updates a course using"
+                    userCreatedConsumer -> userRepository "Saves a new user ID using"
                 }
                 purchases_db = container "Purchases Database" "Stores purchases" "PostgreSQL" {
                     tags "Database" "Purchases"
@@ -200,7 +299,12 @@ workspace "Onied" {
                     certificateService -> userService "Uses to find users"
                     certificateService -> courseService "Uses to find courses"
                     certificateService -> userCourseInfoService "Uses to check if user can buy certificate for course"
-                    // TODO: certificateService is not done yet
+                    certificateService -> orderService "Uses to create orders and check existing orders"
+
+                    orderController -> orderService "Uses to find orders"
+                    orderController -> userService "Uses to find users"
+
+                    userCourseInfoService -> orderService "Uses to find available certificates"
                 }
                 certificates_db = container "Certificates Database" "Stores orders and data required to generate certificates" "PostgreSQL" {
                     tags "Database" "Certificates"
@@ -219,13 +323,21 @@ workspace "Onied" {
                     }
 
                     group "Services" {
-                        userIdProvider = component "UserIdProvider"
                         notificationSenderService = component "NotificationSenderService"
+                    }
+
+                    group "Repositories" {
+                        notificationRepository = component "NotificationRepository"
                     }
 
                     group "Consumers" {
                         notificationSentConsumer = component "NotificationSentConsumer"
                     }
+
+                    notificationsController -> notificationRepository "Gets notification history from"
+                    notificationsHub -> notificationRepository "Uses to mark notifications as read"
+                    notificationSentConsumer -> notificationSenderService "Sends notifications using"
+                    notificationSenderService -> notificationRepository "Adds notification to history using"
                 }
                 notifications_db = container "Notifications Database" "Stores sent notifications" "PostgreSQL" {
                     tags "Database" "Notifications"
@@ -265,10 +377,10 @@ workspace "Onied" {
 
         u -> ss.frontend "Uses"
         ss.frontend -> ss.users "Makes API calls to" "JSON/HTTP" "Http"
-        ss.users -> ss.courses "Routes API requests to" "JSON/HTTP" "Http"
-        ss.users -> ss.purchases "Routes API requests to" "JSON/HTTP" "Http"
-        ss.users -> ss.certificates "Routes API requests to" "JSON/HTTP" "Http"
-        ss.users -> ss.notifications "Routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses "Routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.purchases "Routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.certificates "Routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.notifications "Routes API requests to" "JSON/HTTP" "Http"
         ss.users -> ss.users_db "Reads from and writes to"
         ss.courses -> ss.courses_db "Reads from and writes to"
         ss.purchases -> ss.purchases_db "Reads from and writes to"
