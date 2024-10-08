@@ -375,58 +375,85 @@ workspace "Onied" {
             }
         }
 
+        ss -> mb "Uses to display map and verify order address"
+        ss -> gmail "Uses for sending emails to users"
+
         u -> ss.frontend "Uses"
+        // TODO: Write out all the pages user uses.
+
         ss.frontend -> ss.users "Makes API calls to" "JSON/HTTP" "Http"
+        ss.frontend.confirmEmail -> ss.users.usersController "Confirms email and sets up 2FA auth using"
+        // ss.frontend.forgotPassword
+        // ss.frontend.login
+        // ss.frontend.register
+        // ss.frontend.resetPassword
+        // ss.frontend.twoFactorAuth
+        // ss.frontend.catalog
+        // ss.frontend.certificates
+        // ss.frontend.checkTasks
+        // ss.frontend.course
+        // ss.frontend.createCourse
+        // ss.frontend.editCourse
+        // ss.frontend.landing
+        // ss.frontend.manageModerators
+        // ss.frontend.oauthRedirect
+        // ss.frontend.preview
+        // ss.frontend.profile
+        // ss.frontend.purchase
+        // ss.frontend.subscriptions
+        // ss.frontend.teaching
+
         ss.users.ocelot -> ss.courses "Routes API requests to" "JSON/HTTP" "Http"
         ss.users.ocelot -> ss.purchases "Routes API requests to" "JSON/HTTP" "Http"
         ss.users.ocelot -> ss.certificates "Routes API requests to" "JSON/HTTP" "Http"
         ss.users.ocelot -> ss.notifications "Routes API requests to" "JSON/HTTP" "Http"
+        // TODO: Route all controllers
+
         ss.users -> ss.users_db "Reads from and writes to"
         ss.courses -> ss.courses_db "Reads from and writes to"
         ss.purchases -> ss.purchases_db "Reads from and writes to"
         ss.certificates -> ss.certificates_db "Reads from and writes to"
         ss.notifications -> ss.notifications_db "Reads from and writes to"
+        // TODO: Describe all repositories
 
-        ss.courses -> ss.courseCompleted "Publishes messages to" "" "Topic in"
-        ss.courseCompleted -> ss.purchases "Sends messages to" "" "Topic out"
+        ss.courses.courseCompletedProducer -> ss.courseCompleted "Publishes messages to" "" "Topic in"
+        ss.courseCompleted -> ss.purchases.courseCompletedConsumer "Sends messages to" "" "Topic out"
 
-        ss.courses -> ss.courseCreated "Publishes messages to" "" "Topic in"
-        ss.courseCreated -> ss.purchases "Sends messages to" "" "Topic out"
-        ss.courseCreated -> ss.certificates "Sends messages to" "" "Topic out"
+        ss.courses.courseCreatedProducer -> ss.courseCreated "Publishes messages to" "" "Topic in"
+        ss.courseCreated -> ss.purchases.courseCreatedConsumer "Sends messages to" "" "Topic out"
+        ss.courseCreated -> ss.certificates.courseService "Sends messages to" "" "Topic out"
 
-        ss.courses -> ss.courseUpdated "Publishes messages to" "" "Topic in"
-        ss.courseUpdated -> ss.purchases "Sends messages to" "" "Topic out"
-        ss.courseUpdated -> ss.certificates "Sends messages to" "" "Topic out"
+        ss.courses.courseUpdatedProducer -> ss.courseUpdated "Publishes messages to" "" "Topic in"
+        ss.courseUpdated -> ss.purchases.courseUpdatedConsumer "Sends messages to" "" "Topic out"
+        ss.courseUpdated -> ss.certificates.courseService "Sends messages to" "" "Topic out"
 
-        ss.courses -> ss.notificationSent "Publishes messages to" "" "Topic in"
-        ss.notificationSent -> ss.notifications "Sends messages to" "" "Topic out"
+        ss.courses.notificationSentProducer -> ss.notificationSent "Publishes messages to" "" "Topic in"
+        ss.notificationSent -> ss.notifications.notificationSentConsumer "Sends messages to" "" "Topic out"
 
-        ss.users -> ss.profilePhotoUpdated "Publishes messages to" "" "Topic in"
-        ss.profilePhotoUpdated -> ss.courses "Sends messages to" "" "Topic out"
-        ss.profilePhotoUpdated -> ss.certificates "Sends messages to" "" "Topic out"
+        ss.users.profileProducer -> ss.profilePhotoUpdated "Publishes messages to" "" "Topic in"
+        ss.profilePhotoUpdated -> ss.courses.profilePhotoUpdatedConsumer "Sends messages to" "" "Topic out"
+        ss.profilePhotoUpdated -> ss.certificates.userService "Sends messages to" "" "Topic out"
 
-        ss.users -> ss.profileUpdated "Publishes messages to" "" "Topic in"
-        ss.profileUpdated -> ss.courses "Sends messages to" "" "Topic out"
-        ss.profileUpdated -> ss.certificates "Sends messages to" "" "Topic out"
+        ss.users.profileProducer -> ss.profileUpdated "Publishes messages to" "" "Topic in"
+        ss.profileUpdated -> ss.courses.profileUpdatedConsumer "Sends messages to" "" "Topic out"
+        ss.profileUpdated -> ss.certificates.userService "Sends messages to" "" "Topic out"
 
-        ss.purchases -> ss.purchaseCreated "Publishes messages to" "" "Topic in"
-        ss.purchaseCreated -> ss.courses "Sends messages to" "" "Topic out"
-        ss.purchaseCreated -> ss.certificates "Sends messages to" "" "Topic out"
+        ss.purchases.purchaseCreatedProducer -> ss.purchaseCreated "Publishes messages to" "" "Topic in"
+        ss.purchaseCreated -> ss.courses.purchaseCreatedConsumer "Sends messages to" "" "Topic out"
+        ss.purchaseCreated -> ss.certificates.userCourseInfoService "Sends messages to" "" "Topic out"
 
-        ss.purchases -> ss.subscriptionChanged "Publishes messages to" "" "Topic in"
-        ss.subscriptionChanged -> ss.courses "Sends messages to" "" "Topic out"
+        ss.purchases.subscriptionChangedProducer -> ss.subscriptionChanged "Publishes messages to" "" "Topic in"
+        ss.subscriptionChanged -> ss.courses.subscriptionChangedConsumer "Sends messages to" "" "Topic out"
 
-        ss.users -> ss.userCreated "Publishes messages to" "" "Topic in"
-        ss.userCreated -> ss.courses "Sends messages to" "" "Topic out"
-        ss.userCreated -> ss.purchases "Sends messages to" "" "Topic out"
-        ss.userCreated -> ss.certificates "Sends messages to" "" "Topic out"
+        ss.users.userCreatedProducer -> ss.userCreated "Publishes messages to" "" "Topic in"
+        ss.userCreated -> ss.courses.userCreatedConsumer "Sends messages to" "" "Topic out"
+        ss.userCreated -> ss.purchases.userCreatedConsumer "Sends messages to" "" "Topic out"
+        ss.userCreated -> ss.certificates.userService "Sends messages to" "" "Topic out"
 
         ss.users.emailSender -> gmail "Sends emails to user via"
         ss.users.usersService -> vk "Optionally authorizes user via"
         ss.certificates.certificateService -> mb "Verifies user address using"
-        ss.frontend -> mb "Displays user address using"
-        ss -> mb "Uses to display map and verify order address"
-        ss -> gmail "Uses for sending emails to users"
+        ss.frontend.certificates -> mb "Displays user address using"
     }
 
     views {
