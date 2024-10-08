@@ -17,50 +17,52 @@ workspace "Onied" {
             frontend = container "Single-Page Application" "Implements UI for all the user-facing features in the LMS" "JS/TS, React" {
                 tags "Frontend"
 
-                confirmEmail = component "ConfirmEmail"
-                forgotPassword = component "ForgotPassword"
-                login = component "Login"
-                register = component "Register"
-                resetPassword = component "ResetPassword"
-                twoFactorAuth = component "TwoFactorAuth"
+                confirmEmail = component "ConfirmEmail" "" "" "Frontend"
+                forgotPassword = component "ForgotPassword" "" "" "Frontend"
+                login = component "Login" "" "" "Frontend"
+                register = component "Register" "" "" "Frontend"
+                resetPassword = component "ResetPassword" "" "" "Frontend"
+                twoFactorAuth = component "TwoFactorAuth" "" "" "Frontend"
 
-                catalog = component "Catalog"
-                certificates = component "Certificates"
-                checkTasks = component "CheckTasks"
-                course = component "Course"
-                createCourse = component "CreateCourse"
-                editCourse = component "EditCourse"
-                landing = component "Landing"
-                manageModerators = component "ManageModerators"
-                oauthRedirect = component "OauthRedirect"
-                preview = component "Preview"
-                profile = component "Profile"
-                purchase = component "Purchase"
-                subscriptions = component "Subscriptions"
-                teaching = component "Teaching"
+                catalog = component "Catalog" "" "" "Frontend"
+                certificates = component "Certificates" "" "" "Frontend"
+                checkTasks = component "CheckTasks" "" "" "Frontend"
+                course = component "Course" "" "" "Frontend"
+                createCourse = component "CreateCourse" "" "" "Frontend"
+                editCourse = component "EditCourse" "" "" "Frontend"
+                landing = component "Landing" "" "" "Frontend"
+                manageModerators = component "ManageModerators" "" "" "Frontend"
+                oauthRedirect = component "OauthRedirect" "" "" "Frontend"
+                preview = component "Preview" "" "" "Frontend"
+                profile = component "Profile" "" "" "Frontend"
+                purchase = component "Purchase" "" "" "Frontend"
+                subscriptions = component "Subscriptions" "" "" "Frontend"
+                teaching = component "Teaching" "" "" "Frontend"
+
+                notifications = component "Notifications" "" "" "Frontend"
             }
             group "Users Service" {
                 users = container "Users" "Users authentication and authorization service /\n API Gateway" "C#, ASP.NET Core" {
                     tags "Service" "Users"
 
                     group "Controllers" {
-                        usersController = component "UsersController"
-                        profileController = component "ProfileController"
+                        usersController = component "UsersController" "" "" "Users"
+                        profileController = component "ProfileController" "" "" "Users"
                     }
 
                     group "Producers" {
-                        profileProducer = component "ProfileProducer"
-                        userCreatedProducer = component "UserCreatedProducer"
+                        profileProducer = component "ProfileProducer" "" "" "Users"
+                        userCreatedProducer = component "UserCreatedProducer" "" "" "Users"
                     }
 
                     group "Services" {
-                        emailSender = component "EmailSender"
-                        profileService = component "ProfileService"
-                        usersService = component "UsersService"
+                        emailSender = component "EmailSender" "" "" "Users"
+                        profileService = component "ProfileService" "" "" "Users"
+                        usersService = component "UsersService" "" "" "Users"
                     }
 
                     group "API Gateway" {
-                        ocelot = component "Ocelot"
+                        ocelot = component "Ocelot" "" "" "Users"
                     }
 
                     usersController -> usersService "Passes requests to"
@@ -80,57 +82,57 @@ workspace "Onied" {
                     tags "Service" "Courses"
 
                     group "Controllers" {
-                        accountsController = component "AccountsController"
-                        catalogController = component "CatalogController"
-                        categoriesController = component "CategoriesController"
-                        checkTasksController = component "CheckTasksController"
-                        coursesController = component "CoursesController"
-                        editCoursesController = component "EditCoursesController"
-                        landingController = component "LandingController"
-                        moderatorsCourseController = component "ModeratorsCourseController"
-                        teachingController = component "TeachingController"
+                        accountsController = component "AccountsController" "" "" "Courses"
+                        catalogController = component "CatalogController" "" "" "Courses"
+                        categoriesController = component "CategoriesController" "" "" "Courses"
+                        checkTasksController = component "CheckTasksController" "" "" "Courses"
+                        coursesController = component "CoursesController" "" "" "Courses"
+                        editCoursesController = component "EditCoursesController" "" "" "Courses"
+                        landingController = component "LandingController" "" "" "Courses"
+                        moderatorsCourseController = component "ModeratorsCourseController" "" "" "Courses"
+                        teachingController = component "TeachingController" "" "" "Courses"
                     }
 
                     group "Services" {
-                        accountsService = component "AccountsService"
-                        catalogService = component "CatalogService"
-                        checkTaskManagementService = component "CheckTaskManagementService"
-                        checkTasksService = component "CheckTasksService"
-                        courseManagementService = component "CourseManagementService"
-                        courseService = component "CourseService"
-                        landingPageContentService = component "LandingPageContentService"
-                        manualReviewService = component "ManualReviewService"
-                        notificationPreparerService = component "NotificationPreparerService"
-                        subscriptionManagementService = component "SubscriptionManagementService"
-                        teachingService = component "TeachingService"
-                        updateTasksBlockService = component "UpdateTasksBlockService"
+                        accountsService = component "AccountsService" "" "" "Courses"
+                        catalogService = component "CatalogService" "" "" "Courses"
+                        checkTaskManagementService = component "CheckTaskManagementService" "" "" "Courses"
+                        checkTasksService = component "CheckTasksService" "" "" "Courses"
+                        courseManagementService = component "CourseManagementService" "" "" "Courses"
+                        courseService = component "CourseService" "" "" "Courses"
+                        landingPageContentService = component "LandingPageContentService" "" "" "Courses"
+                        manualReviewService = component "ManualReviewService" "" "" "Courses"
+                        notificationPreparerService = component "NotificationPreparerService" "" "" "Courses"
+                        subscriptionManagementService = component "SubscriptionManagementService" "" "" "Courses"
+                        teachingService = component "TeachingService" "" "" "Courses"
+                        updateTasksBlockService = component "UpdateTasksBlockService" "" "" "Courses"
                     }
 
                     group "Repositories" {
-                        userCourseInfoRepository = component "UserCourseInfoRepository"
-                        userRepository = component "UserRepository"
-                        userTaskPointsRepository = component "UserTaskPointsRepository"
-                        blockCompletedInfoRepository = component "BlockCompletedInfoRepository"
-                        blockRepository = component "BlockRepository"
-                        categoryRepository = component "CategoryRepository"
-                        courseRepository = component "CourseRepository"
-                        manualReviewTaskUserAnswerRepository = component "ManualReviewTaskUserAnswerRepository"
-                        moduleRepository = component "ModuleRepository"
+                        userCourseInfoRepository = component "UserCourseInfoRepository" "" "" "Courses"
+                        userRepository = component "UserRepository" "" "" "Courses"
+                        userTaskPointsRepository = component "UserTaskPointsRepository" "" "" "Courses"
+                        blockCompletedInfoRepository = component "BlockCompletedInfoRepository" "" "" "Courses"
+                        blockRepository = component "BlockRepository" "" "" "Courses"
+                        categoryRepository = component "CategoryRepository" "" "" "Courses"
+                        courseRepository = component "CourseRepository" "" "" "Courses"
+                        manualReviewTaskUserAnswerRepository = component "ManualReviewTaskUserAnswerRepository" "" "" "Courses"
+                        moduleRepository = component "ModuleRepository" "" "" "Courses"
                     }
 
                     group "Consumers" {
-                        profilePhotoUpdatedConsumer = component "ProfilePhotoUpdatedConsumer"
-                        profileUpdatedConsumer = component "ProfileUpdatedConsumer"
-                        purchaseCreatedConsumer = component "PurchaseCreatedConsumer"
-                        subscriptionChangedConsumer = component "SubscriptionChangedConsumer"
-                        userCreatedConsumer = component "UserCreatedConsumer"
+                        profilePhotoUpdatedConsumer = component "ProfilePhotoUpdatedConsumer" "" "" "Courses"
+                        profileUpdatedConsumer = component "ProfileUpdatedConsumer" "" "" "Courses"
+                        purchaseCreatedConsumer = component "PurchaseCreatedConsumer" "" "" "Courses"
+                        subscriptionChangedConsumer = component "SubscriptionChangedConsumer" "" "" "Courses"
+                        userCreatedConsumer = component "UserCreatedConsumer" "" "" "Courses"
                     }
 
                     group "Producers" {
-                        courseCompletedProducer = component "CourseCompletedProducer"
-                        courseCreatedProducer = component "CourseCreatedProducer"
-                        courseUpdatedProducer = component "CourseUpdatedProducer"
-                        notificationSentProducer = component "NotificationSentProducer"
+                        courseCompletedProducer = component "CourseCompletedProducer" "" "" "Courses"
+                        courseCreatedProducer = component "CourseCreatedProducer" "" "" "Courses"
+                        courseUpdatedProducer = component "CourseUpdatedProducer" "" "" "Courses"
+                        notificationSentProducer = component "NotificationSentProducer" "" "" "Courses"
                     }
 
                     accountsController -> accountsService "Passes requests to"
@@ -199,37 +201,37 @@ workspace "Onied" {
                     tags "Service" "Purchases"
 
                     group "Controllers" {
-                        purchasesController = component "PurchasesController"
-                        purchasesMakingController = component "PurchasesMakingController"
-                        subscriptionsController = component "SubscriptionsController"
+                        purchasesController = component "PurchasesController" "" "" "Purchases"
+                        purchasesMakingController = component "PurchasesMakingController" "" "" "Purchases"
+                        subscriptionsController = component "SubscriptionsController" "" "" "Purchases"
                     }
 
                     group "Services" {
-                        purchaseMakingService = component "PurchaseMakingService"
-                        purchaseService = component "PurchaseService"
-                        purchaseTokenService = component "PurchaseTokenService"
-                        subscriptionManagementService = component "SubscriptionManagementService"
-                        validatePurchaseService = component "ValidatePurchaseService"
+                        purchaseMakingService = component "PurchaseMakingService" "" "" "Purchases"
+                        purchaseService = component "PurchaseService" "" "" "Purchases"
+                        purchaseTokenService = component "PurchaseTokenService" "" "" "Purchases"
+                        subscriptionManagementService = component "SubscriptionManagementService" "" "" "Purchases"
+                        validatePurchaseService = component "ValidatePurchaseService" "" "" "Purchases"
                     }
 
                     group "Repositories" {
-                        courseRepository = component "CourseRepository"
-                        purchaseRepository = component "PurchaseRepository"
-                        subscriptionRepository = component "SubscriptionRepository"
-                        userCourseInfoRepository = component "UserCourseInfoRepository"
-                        userRepository = component "UserRepository"
+                        courseRepository = component "CourseRepository" "" "" "Purchases"
+                        purchaseRepository = component "PurchaseRepository" "" "" "Purchases"
+                        subscriptionRepository = component "SubscriptionRepository" "" "" "Purchases"
+                        userCourseInfoRepository = component "UserCourseInfoRepository" "" "" "Purchases"
+                        userRepository = component "UserRepository" "" "" "Purchases"
                     }
 
                     group "Consumers" {
-                        courseCompletedConsumer = component "CourseCompletedConsumer"
-                        courseCreatedConsumer = component "CourseCreatedConsumer"
-                        courseUpdatedConsumer = component "CourseUpdatedConsumer"
-                        userCreatedConsumer = component "UserCreatedConsumer"
+                        courseCompletedConsumer = component "CourseCompletedConsumer" "" "" "Purchases"
+                        courseCreatedConsumer = component "CourseCreatedConsumer" "" "" "Purchases"
+                        courseUpdatedConsumer = component "CourseUpdatedConsumer" "" "" "Purchases"
+                        userCreatedConsumer = component "UserCreatedConsumer" "" "" "Purchases"
                     }
 
                     group "Producers" {
-                        purchaseCreatedProducer = component "PurchaseCreatedProducer"
-                        subscriptionChangedProducer = component "SubscriptionChangedProducer"
+                        purchaseCreatedProducer = component "PurchaseCreatedProducer" "" "" "Purchases"
+                        subscriptionChangedProducer = component "SubscriptionChangedProducer" "" "" "Purchases"
                     }
 
                     purchasesController -> purchaseService "Passes requests to"
@@ -274,25 +276,25 @@ workspace "Onied" {
                     tags "Service" "Certificates"
 
                     group "CertificateModule" {
-                        certificateController = component "CertificateController"
-                        certificateService = component "CertificateService"
+                        certificateController = component "CertificateController" "" "" "Certificates"
+                        certificateService = component "CertificateService" "" "" "Certificates"
                     }
 
                     group "OrderModule" {
-                        orderController = component "OrderController"
-                        orderService = component "OrderService"
+                        orderController = component "OrderController" "" "" "Certificates"
+                        orderService = component "OrderService" "" "" "Certificates"
                     }
 
                     group "CourseModule" {
-                        courseService = component "CourseService"
+                        courseService = component "CourseService" "" "" "Certificates"
                     }
 
                     group "UserModule" {
-                        userService = component "UserService"
+                        userService = component "UserService" "" "" "Certificates"
                     }
 
                     group "UserCourseInfoModule" {
-                        userCourseInfoService = component "UserCourseInfoService"
+                        userCourseInfoService = component "UserCourseInfoService" "" "" "Certificates"
                     }
 
                     certificateController -> certificateService "Passes request to"
@@ -315,23 +317,23 @@ workspace "Onied" {
                     tags "Service" "Notifications"
 
                     group "Controllers" {
-                        notificationsController = component "NotificationsController"
+                        notificationsController = component "NotificationsController" "" "" "Notifications"
                     }
 
                     group "Hubs" {
-                        notificationsHub = component "NotificationsHub"
+                        notificationsHub = component "NotificationsHub" "" "" "Notifications"
                     }
 
                     group "Services" {
-                        notificationSenderService = component "NotificationSenderService"
+                        notificationSenderService = component "NotificationSenderService" "" "" "Notifications"
                     }
 
                     group "Repositories" {
-                        notificationRepository = component "NotificationRepository"
+                        notificationRepository = component "NotificationRepository" "" "" "Notifications"
                     }
 
                     group "Consumers" {
-                        notificationSentConsumer = component "NotificationSentConsumer"
+                        notificationSentConsumer = component "NotificationSentConsumer" "" "" "Notifications"
                     }
 
                     notificationsController -> notificationRepository "Gets notification history from"
@@ -375,46 +377,106 @@ workspace "Onied" {
             }
         }
 
+        u -> vk "Has an account on"
+        gmail -> u "Sends emails to"
+
         ss -> mb "Uses to display map and verify order address"
         ss -> gmail "Uses for sending emails to users"
+        ss.users.emailSender -> gmail "Sends emails to user via"
+        ss.users.usersService -> vk "Optionally authorizes user via"
+        ss.certificates.certificateService -> mb "Verifies user address using"
+        ss.frontend.certificates -> mb "Displays user address using"
+        vk -> ss.frontend.oauthRedirect "Redirects with authorization info to"
+        ss.frontend.login -> vk "Links to"
 
         u -> ss.frontend "Uses"
-        // TODO: Write out all the pages user uses.
+        u -> ss.frontend.confirmEmail "Confirms email from link and sets up 2fa using"
+        u -> ss.frontend.forgotPassword "Requests password reset using"
+        u -> ss.frontend.login "Logs in on"
+        u -> ss.frontend.register "Registers on"
+        u -> ss.frontend.resetPassword "Enters new password on link sent to email"
+        u -> ss.frontend.twoFactorAuth "Enters two-factor code for login on"
+        u -> ss.frontend.catalog "Browses courses on"
+        u -> ss.frontend.certificates "Orders certificate to their physical address on"
+        u -> ss.frontend.checkTasks "Checks their student's tasks on"
+        u -> ss.frontend.course "Learns and completes tasks on"
+        u -> ss.frontend.createCourse "Requests a new course on"
+        u -> ss.frontend.editCourse "Edits their course on"
+        u -> ss.frontend.landing "Browses their started courses when logged in, and browses popular ones when logged out"
+        u -> ss.frontend.manageModerators "Assigns moderators for their course on"
+        u -> ss.frontend.oauthRedirect "Redirected by vk on"
+        u -> ss.frontend.preview "Explores a specific course on"
+        u -> ss.frontend.profile "Views or edits their profile info on, and check their started and completed courses on"
+        u -> ss.frontend.purchase "Purchases courses, subscriptions or certificates on"
+        u -> ss.frontend.subscriptions "Previews subscription plans on"
+        u -> ss.frontend.teaching "Views or edits their created courses on"
+        u -> ss.frontend.notifications "Receives notifications from"
 
         ss.frontend -> ss.users "Makes API calls to" "JSON/HTTP" "Http"
         ss.frontend.confirmEmail -> ss.users.usersController "Confirms email and sets up 2FA auth using"
-        // ss.frontend.forgotPassword
-        // ss.frontend.login
-        // ss.frontend.register
-        // ss.frontend.resetPassword
-        // ss.frontend.twoFactorAuth
-        // ss.frontend.catalog
-        // ss.frontend.certificates
-        // ss.frontend.checkTasks
-        // ss.frontend.course
-        // ss.frontend.createCourse
-        // ss.frontend.editCourse
-        // ss.frontend.landing
-        // ss.frontend.manageModerators
-        // ss.frontend.oauthRedirect
-        // ss.frontend.preview
-        // ss.frontend.profile
-        // ss.frontend.purchase
-        // ss.frontend.subscriptions
-        // ss.frontend.teaching
+        ss.frontend.forgotPassword -> ss.users.usersController "Changes password using"
+        ss.frontend.login -> ss.users.usersController "Gets 2fa info from and logins in using"
+        ss.frontend.register -> ss.users.usersController "Registers using"
+        ss.frontend.resetPassword -> ss.users.usersController "Resets password using"
+        ss.frontend.twoFactorAuth -> ss.users.usersController "Verifies 2fa and logs in via"
+        ss.frontend.catalog -> ss.users.ocelot "Requests catalog from"
+        ss.frontend.certificates -> ss.users.ocelot "Requests certificate info from"
+        ss.frontend.checkTasks -> ss.users.ocelot "Gets points from and sends new points to"
+        ss.frontend.course -> ss.users.ocelot "Gets course info from"
+        ss.frontend.createCourse -> ss.users.ocelot "Sends a request to create course to"
+        ss.frontend.editCourse -> ss.users.ocelot "Sends edited course to"
+        ss.frontend.landing -> ss.users.ocelot "Requests info about courses from"
+        ss.frontend.manageModerators -> ss.users.ocelot "Send requests to update moderators to"
+        ss.frontend.oauthRedirect -> ss.users.usersController "Accepts info from VK and saves it using"
+        ss.frontend.preview -> ss.users.ocelot "Gets course preview from"
+        ss.frontend.profile -> ss.users.profileController "Gets profile info from"
+        ss.frontend.purchase -> ss.users.ocelot "Sends purchase requests to"
+        ss.frontend.subscriptions -> ss.users.ocelot "Gets subscriptions info from"
+        ss.frontend.teaching -> ss.users.ocelot "Gets info about authored and moderated courses from"
+        ss.frontend.notifications -> ss.users.ocelot "Gets notifications from and requests to mark them as read on"
 
-        ss.users.ocelot -> ss.courses "Routes API requests to" "JSON/HTTP" "Http"
-        ss.users.ocelot -> ss.purchases "Routes API requests to" "JSON/HTTP" "Http"
-        ss.users.ocelot -> ss.certificates "Routes API requests to" "JSON/HTTP" "Http"
-        ss.users.ocelot -> ss.notifications "Routes API requests to" "JSON/HTTP" "Http"
-        // TODO: Route all controllers
+        ss.users.ocelot -> ss.courses.accountsController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.catalogController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.categoriesController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.checkTasksController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.coursesController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.editCoursesController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.landingController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.moderatorsCourseController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.courses.teachingController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
 
-        ss.users -> ss.users_db "Reads from and writes to"
-        ss.courses -> ss.courses_db "Reads from and writes to"
-        ss.purchases -> ss.purchases_db "Reads from and writes to"
-        ss.certificates -> ss.certificates_db "Reads from and writes to"
-        ss.notifications -> ss.notifications_db "Reads from and writes to"
-        // TODO: Describe all repositories
+        ss.users.ocelot -> ss.purchases.purchasesController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.purchases.purchasesMakingController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.purchases.subscriptionsController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+
+        ss.users.ocelot -> ss.certificates.certificateController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.certificates.orderController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+
+        ss.users.ocelot -> ss.notifications.notificationsController "Authorizes and routes API requests to" "JSON/HTTP" "Http"
+        ss.users.ocelot -> ss.notifications.notificationsHub "Authorizes and routes API requests to" "HTTP" "Http"
+
+        ss.users.profileService -> ss.users_db "Reads from and writes to"
+        ss.users.usersService -> ss.users_db "Reads from and writes to"
+        ss.courses.userCourseInfoRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.userRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.userTaskPointsRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.blockCompletedInfoRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.blockRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.categoryRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.courseRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.manualReviewTaskUserAnswerRepository -> ss.courses_db "Reads from and writes to"
+        ss.courses.moduleRepository -> ss.courses_db "Reads from and writes to"
+        ss.purchases.courseRepository -> ss.purchases_db "Reads from and writes to"
+        ss.purchases.purchaseRepository -> ss.purchases_db "Reads from and writes to"
+        ss.purchases.subscriptionRepository -> ss.purchases_db "Reads from and writes to"
+        ss.purchases.userCourseInfoRepository -> ss.purchases_db "Reads from and writes to"
+        ss.purchases.userRepository -> ss.purchases_db "Reads from and writes to"
+        ss.certificates.certificateService -> ss.certificates_db "Reads from and writes to"
+        ss.certificates.orderService -> ss.certificates_db "Reads from and writes to"
+        ss.certificates.courseService -> ss.certificates_db "Reads from and writes to"
+        ss.certificates.userService -> ss.certificates_db "Reads from and writes to"
+        ss.certificates.userCourseInfoService -> ss.certificates_db "Reads from and writes to"
+        ss.notifications.notificationRepository -> ss.notifications_db "Reads from and writes to"
 
         ss.courses.courseCompletedProducer -> ss.courseCompleted "Publishes messages to" "" "Topic in"
         ss.courseCompleted -> ss.purchases.courseCompletedConsumer "Sends messages to" "" "Topic out"
@@ -449,11 +511,6 @@ workspace "Onied" {
         ss.userCreated -> ss.courses.userCreatedConsumer "Sends messages to" "" "Topic out"
         ss.userCreated -> ss.purchases.userCreatedConsumer "Sends messages to" "" "Topic out"
         ss.userCreated -> ss.certificates.userService "Sends messages to" "" "Topic out"
-
-        ss.users.emailSender -> gmail "Sends emails to user via"
-        ss.users.usersService -> vk "Optionally authorizes user via"
-        ss.certificates.certificateService -> mb "Verifies user address using"
-        ss.frontend.certificates -> mb "Displays user address using"
     }
 
     views {
@@ -468,7 +525,7 @@ workspace "Onied" {
 
         component ss.frontend "Diagram3_frontend" {
             include *
-            autolayout lr
+            autolayout tb
         }
 
         component ss.users "Diagram3_users" {
@@ -497,6 +554,9 @@ workspace "Onied" {
         }
 
         styles {
+            element "Component" {
+                shape roundedbox
+            }
             element "Person" {
                 shape person
                 background #64BFBA
