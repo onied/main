@@ -191,6 +191,9 @@ workspace "Onied" {
                     purchaseCreatedConsumer -> userCourseInfoRepository "Adds course to user after purchase using"
                     subscriptionChangedConsumer -> subscriptionManagementService "Updates courses after subscription change using"
                     userCreatedConsumer -> userRepository "Adds user to known users using"
+
+                    notificationSentProducer -> notificationPreparerService "Prepares notifications using"
+                    notificationSentProducer -> userRepository "Uses to prepare notifications for all users"
                 }
                 courses_db = container "Courses Database" "Stores courses and their content" "PostgreSQL" {
                     tags "Database" "Courses"
@@ -386,7 +389,7 @@ workspace "Onied" {
         ss.users.usersService -> vk "Optionally authorizes user via"
         ss.certificates.certificateService -> mb "Verifies user address using"
         ss.frontend.certificates -> mb "Displays user address using"
-        vk -> ss.frontend.oauthRedirect "Redirects with authorization info to"
+        vkStrikesBack = vk -> ss.frontend.oauthRedirect "Redirects with authorization info to"
         ss.frontend.login -> vk "Links to"
 
         u -> ss.frontend "Uses"
@@ -516,41 +519,36 @@ workspace "Onied" {
     views {
         systemContext ss "Diagram1" {
             include *
-            autolayout lr
+            exclude vkStrikesBack
+            autolayout tb
         }
 
         container ss "Diagram2" {
             include *
         }
 
-        component ss.frontend "Diagram3_frontend" {
+        component ss.frontend "Diagram3-1_frontend" {
             include *
-            autolayout tb
         }
 
-        component ss.users "Diagram3_users" {
+        component ss.users "Diagram3-2_users" {
             include *
-            autolayout lr
         }
 
-        component ss.courses "Diagram3_courses" {
+        component ss.courses "Diagram3-3_courses" {
             include *
-            autolayout lr
         }
 
-        component ss.purchases "Diagram3_purchases" {
+        component ss.purchases "Diagram3-4_purchases" {
             include *
-            autolayout lr
         }
 
-        component ss.certificates "Diagram3_certificates" {
+        component ss.certificates "Diagram3-5_certificates" {
             include *
-            autolayout lr
         }
 
-        component ss.notifications "Diagram3_notifications" {
+        component ss.notifications "Diagram3-6_notifications" {
             include *
-            autolayout lr
         }
 
         styles {
