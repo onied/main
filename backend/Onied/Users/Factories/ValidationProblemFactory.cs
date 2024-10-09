@@ -16,8 +16,7 @@ public class ValidationProblemFactory
 
     public static ValidationProblem CreateValidationProblem(IdentityResult result)
     {
-        // We expect a single error code and description in the normal case.
-        // This could be golfed with GroupBy and ToDictionary, but perf! :P
+        // Copied from Identity source code
         Debug.Assert(!result.Succeeded);
         var errorDictionary = new Dictionary<string, string[]>(1);
 
