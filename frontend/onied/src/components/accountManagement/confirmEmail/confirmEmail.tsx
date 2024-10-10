@@ -56,13 +56,13 @@ function ConfirmEmailComponent() {
             );
           })
           .catch((reason) => {
-            if (reason.response.status === 404) {
+            if (reason.response?.status === 404) {
               navigator(`/login?redirect=${encodeURIComponent(currentUrl)}`);
             }
           });
       })
       .catch((reason) => {
-        if (reason.response.status === 401) {
+        if (reason.response?.status === 401) {
           setIsValidLink(false);
         }
       });
