@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -49,6 +50,8 @@
     "typescript": "^5.4.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
     "@vitejs/plugin-react": "^4.2.1",
@@ -56,6 +59,9 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "vite": "^5.1.4"
+    "jsdom": "^25.0.1",
+    "msw": "^2.4.9",
+    "vite": "^5.1.4",
+    "vitest": "^2.1.2"
   }
 }

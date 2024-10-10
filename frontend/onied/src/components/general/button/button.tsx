@@ -1,10 +1,10 @@
 import classes from "./button.module.css";
 
-function Button({ className, ...props }) {
+function Button({ ...props }) {
   return (
     <>
       <button
-        className={[classes.button, className].join(" ")}
+        className={[classes.button, props.className ?? ""].join(" ")}
         {...props}
       ></button>
     </>
