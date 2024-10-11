@@ -63,8 +63,14 @@ function LoginForm() {
         );
         ProfileService.fetchProfile();
         const redirect = searchParams.get("redirect");
-        if (redirect) navigator(decodeURIComponent(redirect));
-        else navigator("/");
+        if (redirect) {
+          const decoded = decodeURIComponent(redirect);
+          if (decoded.startsWith("/")) {
+            navigator(decoded);
+            return;
+          }
+        }
+        navigator("/");
       })
       .catch((_) => {
         setErrorMessage("Неверные имя пользователя или пароль");
