@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ConfirmEmailComponent from "./confirmEmail";
 import { MemoryRouter } from "react-router-dom";
@@ -10,10 +10,6 @@ import { server } from "../../../../test/mocks/server";
 import { describe, it, expect, vitest } from "vitest";
 import mockedNavigate from "../../../../test/mocks/useNavigate";
 import backend from "../../../../test/helpers/backend";
-
-server.events.on("request:start", ({ request }) => {
-  console.log("Outgoing:", request.method, request.url);
-});
 
 describe("ConfirmEmailComponent", () => {
   it("loads and reports expired link when confirmEmail returns 401", async () => {
