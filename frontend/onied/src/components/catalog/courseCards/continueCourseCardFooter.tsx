@@ -1,4 +1,4 @@
-import Button from "../../general/button/button.jsx";
+import Button from "../../general/button/button";
 import classes from "./courseCard.module.css";
 import { Link } from "react-router-dom";
 
