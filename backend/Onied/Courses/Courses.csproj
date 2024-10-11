@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Common.Validation\Common.Validation.csproj" />
         <ProjectReference Include="..\Courses.Data\Courses.Data.csproj"/>
       <ProjectReference Include="..\MassTransit.Data\MassTransit.Data.csproj" />
         <ProjectReference Include="..\Shared\Shared.csproj"/>
