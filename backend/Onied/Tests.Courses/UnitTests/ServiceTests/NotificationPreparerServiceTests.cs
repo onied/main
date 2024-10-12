@@ -11,7 +11,7 @@ public class NotificationPreparerServiceTests
     private readonly NotificationPreparerService _service = new();
 
     [Fact]
-    public async Task PrepareNotification_ValidMessage_NoChanges()
+    public void PrepareNotification_ValidMessage_NoChanges()
     {
         // Arrange
         var notification =
@@ -28,7 +28,7 @@ public class NotificationPreparerServiceTests
     }
 
     [Fact]
-    public async Task PrepareNotification_TitleOvercome_TextChanged()
+    public void PrepareNotification_TitleOvercome_TextChanged()
     {
         // Arrange
         var notification =
@@ -46,7 +46,7 @@ public class NotificationPreparerServiceTests
     }
 
     [Fact]
-    public async Task PrepareNotification_MessageOvercome_TextChanged()
+    public void PrepareNotification_MessageOvercome_TextChanged()
     {
         // Arrange
         var notification =
