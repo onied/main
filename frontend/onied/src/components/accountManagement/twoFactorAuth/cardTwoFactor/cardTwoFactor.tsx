@@ -1,7 +1,7 @@
 import classes from "./cardTwoFactor.module.css";
-import Card from "../../../general/card/card.jsx";
+import Card from "../../../general/card/card";
 import TwoFactorImg from "../../../../assets/twoFactor.svg";
-import Button from "../../../general/button/button.tsx";
+import Button from "../../../general/button/button";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SixDigitsInput from "../../sixDigitsInput/sixDigitsInput";
