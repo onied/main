@@ -142,6 +142,7 @@ function EditTasksBlockComponent({
         <div key={task.id} className={classes.containerItem}>
           <span className={classes.taskNumber}>{index + 1}.</span>
           <TrashButton
+            data-testid="trash"
             onClick={(event: any) => {
               event.preventDefault();
               removeTask(task.id);
