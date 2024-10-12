@@ -8,7 +8,6 @@ import { server } from "../../../../test/mocks/server";
 import { describe, it, expect } from "vitest";
 import backend from "../../../../test/helpers/backend";
 import imagePlaceholder from "../../../assets/imagePlaceholder.svg";
-import { Description } from "@mui/icons-material";
 
 describe("EditPreviewComponent", () => {
   it("renders correctly", async () => {
