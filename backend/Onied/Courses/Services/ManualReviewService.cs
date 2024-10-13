@@ -12,7 +12,7 @@ namespace Courses.Services;
 public class ManualReviewService(
     IUserRepository userRepository,
     IManualReviewTaskUserAnswerRepository manualReviewTaskUserAnswerRepository,
-    ICheckTaskManagementService checkTaskManagementService,
+    ITaskCompletionService taskCompletionService,
     IUserTaskPointsRepository userTaskPointsRepository,
     INotificationSentProducer notificationSentProducer,
     IMapper mapper) : IManualReviewService
@@ -70,8 +70,8 @@ public class ManualReviewService(
             course.PictureHref);
         await notificationSentProducer.PublishForOne(notificationSent);
 
-        await checkTaskManagementService.ManageTaskBlockCompleted(pointsInfo, answer.UserId, answer.Task.TasksBlockId);
-        await checkTaskManagementService.ManageCourseCompleted(answer.UserId, answer.CourseId);
+        await taskCompletionService.ManageTaskBlockCompleted(pointsInfo, answer.UserId, answer.Task.TasksBlockId);
+        await taskCompletionService.ManageCourseCompleted(answer.UserId, answer.CourseId);
         return Results.Ok();
     }
 
