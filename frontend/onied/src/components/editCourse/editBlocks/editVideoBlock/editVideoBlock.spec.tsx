@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event";
 import EditVideoBlockComponent from "./editVideoBlock";
 import { MemoryRouter } from "react-router-dom";
 import { http, HttpResponse } from "msw";
-import { server } from "../../../../../test/mocks/server";
+import { server } from "@onied/tests/mocks/server";
 import { describe, it, expect } from "vitest";
-import backend from "../../../../../test/helpers/backend";
+import backend from "@onied/tests//helpers/backend";
 
 describe("EditVideoBlockComponent", () => {
   it("renders correctly", async () => {

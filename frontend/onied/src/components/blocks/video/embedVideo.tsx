@@ -1,9 +1,10 @@
 import classes from "./embedVideo.module.css";
+import VideoProvider from "./providers/videoProvider";
 import YoutubeVideoProvider from "./providers/youtubeVideoProvider";
-import VkVideoProvider from "./providers/youtubeVideoProvider";
-import RutubeVideoProvider from "./providers/youtubeVideoProvider";
+import VkVideoProvider from "./providers/vkVideoProvider";
+import RutubeVideoProvider from "./providers/rutubeVideoProvider"; 
 
-const embedElements = [
+const embedElements: VideoProvider[] = [
   new YoutubeVideoProvider(),
   new VkVideoProvider(),
   new RutubeVideoProvider(),
@@ -17,6 +18,7 @@ function videoLinkToIFrame(href: string) {
 
   return (
     <iframe
+      data-testid="iframe-video"
       src={iframeLink}
       className={classes.embedIFrame}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -47,7 +47,7 @@
 
     "paths": { 
       "@onied/*": ["./src/*"],
-      "@onied/types/*": ["./src/types/*"]
+      "@onied/tests/*": ["./test/*"]
     } // локальные псевдонимы для импортов
   },
 
