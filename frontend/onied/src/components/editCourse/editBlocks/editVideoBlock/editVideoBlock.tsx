@@ -1,17 +1,18 @@
 import classes from "./editVideoBlock.module.css";
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
-import EmbedVideo from "../../../blocks/video/embedVideo";
 import InputForm from "../../../general/inputform/inputform";
 import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../../general/button/button";
 import { useNavigate } from "react-router-dom";
 import api from "../../../../config/axios";
-import YoutubeVideoProvider from "../../../blocks/video/youtubeVideoProvider";
-import VkVideoProvider from "../../../blocks/video/vkVideoProvider";
-import RutubeVideoProvider from "../../../blocks/video/rutubeVideoProvider";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../../general/responses/forbid/forbid";
+
+import EmbedVideo from "@onied/components/blocks/video/embedVideo";
+import YoutubeVideoProvider from "@onied/components/blocks/video/providers/youtubeVideoProvider";
+import VkVideoProvider from "@onied/components/blocks/video/providers/vkVideoProvider";
+import RutubeVideoProvider from "@onied/components/blocks/video/providers/rutubeVideoProvider";
 
 type VideoBlock = {
   id: string;

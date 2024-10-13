@@ -17,3 +17,7 @@ export type Block = {
 export type TasksBlock = Block & {
   tasks: Task[];
 };
+
+export type VideoBlock = Block & {
+  href: string;
+};

@@ -1,7 +1,7 @@
 import classes from "./embedVideo.module.css";
-import YoutubeVideoProvider from "./youtubeVideoProvider";
-import VkVideoProvider from "./vkVideoProvider";
-import RutubeVideoProvider from "./rutubeVideoProvider";
+import YoutubeVideoProvider from "./providers/youtubeVideoProvider";
+import VkVideoProvider from "./providers/youtubeVideoProvider";
+import RutubeVideoProvider from "./providers/youtubeVideoProvider";
 
 const embedElements = [
   new YoutubeVideoProvider(),
@@ -9,7 +9,7 @@ const embedElements = [
   new RutubeVideoProvider(),
 ];
 
-function videoLinkToIFrame(href) {
+function videoLinkToIFrame(href: string) {
   const embedRegex = embedElements.filter((item) => item.regex.test(href));
 
   const iframeLink = embedRegex[0].getLink(href);
@@ -25,7 +25,7 @@ function videoLinkToIFrame(href) {
   );
 }
 
-function EmbedVideo({ href }) {
+function EmbedVideo({ href }: { href: string }) {
   const videoProvider = videoLinkToIFrame(href);
 
   return <div className={classes.embedVideo}>{videoProvider}</div>;

@@ -10,9 +10,9 @@ export default class RutubeVideoProvider extends VideoProvider {
   regex =
     /^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)?(\/[\S]+)?$/;
 
-  getLink(href) {
+  getLink(href: string) {
     const matches = href.match(this.regex);
 
-    return `https://rutube.ru/play/embed/${matches.groups.videoId}`;
+    return `https://rutube.ru/play/embed/${matches?.groups?.videoId}`;
   }
 }

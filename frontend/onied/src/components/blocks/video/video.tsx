@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import EmbedVideo from "./embedVideo";
+import EmbedVideo from "@onied/components/blocks/video/embedVideo";
 import api from "../../../config/axios";
 import CustomBeatLoader from "../../general/customBeatLoader";
+import { VideoBlock } from "@onied/types/block";
 
-function Video({ courseId, blockId }) {
-  const [videoBlock, setVideoBlock] = useState();
-  const [found, setFound] = useState();
+type props = {
+  courseId: number;
+  blockId: number;
+}
+
+function Video({ courseId, blockId }: props) {
+  const [videoBlock, setVideoBlock] = useState<VideoBlock>();
+  const [found, setFound] = useState<boolean>();
 
   useEffect(() => {
-    setFound(undefined);
     api
       .get("courses/" + courseId + "/video/" + blockId)
       .then((response) => {
@@ -24,12 +29,13 @@ function Video({ courseId, blockId }) {
         }
       });
   }, [courseId, blockId]);
-  if (found == null) return <CustomBeatLoader />;
+  
+  if (found === undefined) return <CustomBeatLoader />;
   if (!found) return <></>;
   return (
     <>
-      <h2>{videoBlock.title}</h2>
-      <EmbedVideo href={videoBlock.href}></EmbedVideo>
+      <h2>{videoBlock!.title}</h2>
+      <EmbedVideo href={videoBlock!.href}></EmbedVideo>
     </>
   );
 }
