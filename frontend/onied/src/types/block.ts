@@ -9,9 +9,10 @@ export enum BlockType {
 
 export type Block = {
   id: number;
+  index: number;
   title: string;
   blockType: BlockType;
-  isCompleted: boolean;
+  completed: boolean;
 };
 
 export type TasksBlock = Block & {
