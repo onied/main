@@ -2,7 +2,7 @@ import classes from "./embedVideo.module.css";
 import VideoProvider from "./providers/videoProvider";
 import YoutubeVideoProvider from "./providers/youtubeVideoProvider";
 import VkVideoProvider from "./providers/vkVideoProvider";
-import RutubeVideoProvider from "./providers/rutubeVideoProvider"; 
+import RutubeVideoProvider from "./providers/rutubeVideoProvider";
 
 const embedElements: VideoProvider[] = [
   new YoutubeVideoProvider(),
@@ -12,9 +12,12 @@ const embedElements: VideoProvider[] = [
 
 function videoLinkToIFrame(href: string) {
   const embedRegex = embedElements.filter((item) => item.regex.test(href));
-
+  if (embedRegex.length == 0)
+    return (
+      <div className={classes.embedVideo}>
+        Неверный формат ссылки на видео
+      </div>);
   const iframeLink = embedRegex[0].getLink(href);
-  if (embedRegex.length == 0) throw Error("Неверный формат ссылки на видео");
 
   return (
     <iframe
