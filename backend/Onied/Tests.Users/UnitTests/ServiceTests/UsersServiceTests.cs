@@ -1068,8 +1068,6 @@ public class UsersServiceTests
         var user = _fixture.Create<AppUser>();
         _userManager.Setup(manager => manager.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
         _userManager.Setup(manager => manager.GetEmailAsync(user)).ReturnsAsync(user.Email);
-        _userManager.Setup(manager => manager.GenerateChangeEmailTokenAsync(user, request.NewEmail))
-            .ReturnsAsync("code");
         var emailSent = false;
         var passwordChanged = false;
         _emailSender
