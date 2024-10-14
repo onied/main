@@ -11,9 +11,19 @@ export type Block = {
   id: number;
   title: string;
   blockType: BlockType;
-  isCompleted: boolean;
+  completed: boolean;
+};
+
+export type SummaryBlock = Block & {
+  markdownText?: string;
+  fileName?: string;
+  fileHref?: string;
 };
 
 export type TasksBlock = Block & {
   tasks: Task[];
+};
+
+export type VideoBlock = Block & {
+  href: string;
 };

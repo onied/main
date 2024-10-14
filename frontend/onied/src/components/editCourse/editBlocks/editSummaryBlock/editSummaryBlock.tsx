@@ -180,7 +180,11 @@ function EditSummaryBlockComponent({
                 fileHref={currentBlock!.fileHref}
               />
               <div>
-                <img src={RecycleBinIcon} onClick={deleteCurrentFile} />
+                <img
+                  src={RecycleBinIcon}
+                  onClick={deleteCurrentFile}
+                  alt="убрать файл"
+                />
               </div>
             </div>
           ) : (
@@ -215,6 +219,7 @@ function EditSummaryBlockComponent({
             }
             style={{ margin: "1rem" }}
             type="text"
+            placeholder="имя файла"
           ></InputForm>
           <DialogContentText>Введите ссылку на файл</DialogContentText>
 
@@ -225,6 +230,7 @@ function EditSummaryBlockComponent({
             }
             style={{ margin: "1rem" }}
             type="url"
+            placeholder="ссылка на файл"
           ></InputForm>
           {newFileHrefError ? <div>{newFileHrefError}</div> : <></>}
         </DialogContent>

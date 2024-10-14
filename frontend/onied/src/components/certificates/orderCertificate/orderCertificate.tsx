@@ -64,11 +64,13 @@ function OrderCertificate() {
             (feature: any) => feature.properties.feature_type === "address"
           );
           if (features.length === 0) setError("Адрес не найден.");
-          const main = features[0];
-          setAddress(main.properties.full_address);
-          navigate("/purchases/certificate/" + courseId, {
-            state: { address: main.properties.full_address },
-          });
+          else {
+            const main = features[0];
+            setAddress(main.properties.full_address);
+            navigate("/purchases/certificate/" + courseId, {
+              state: { address: main.properties.full_address },
+            });
+          }
         }
       });
   };

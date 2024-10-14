@@ -1,6 +1,6 @@
 import InputForm from "../../../general/inputform/inputform.jsx";
 import Radio from "../../../general/radio/radio.jsx";
-import Button from "../../../general/button/button.jsx";
+import Button from "../../../general/button/button.tsx";
 import classes from "./registrationForm.module.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -63,10 +63,10 @@ function RegistrationForm() {
     }
 
     if (isFormValid) {
-      let firstName = form.firstName.value;
-      let lastName = form.lastName.value;
-      let email = form.email.value;
-      let password = form.password.value;
+      let firstName = fields.firstName.value;
+      let lastName = fields.lastName.value;
+      let email = fields.email.value;
+      let password = fields.password.value;
 
       api
         .post("register", {
@@ -113,7 +113,9 @@ function RegistrationForm() {
           <div className={classes.variants}>
             {Object.keys(genders).map((key) => (
               <div className={classes.gender} key={key}>
-                <label className={classes.labelGenders}>{key}</label>
+                <label className={classes.labelGenders} htmlFor={genders[key]}>
+                  {key}
+                </label>
                 <Radio
                   id={genders[key]}
                   name={key}

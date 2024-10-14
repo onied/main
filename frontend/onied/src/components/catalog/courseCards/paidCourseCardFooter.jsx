@@ -1,4 +1,4 @@
-import Button from "../../general/button/button.jsx";
+import Button from "../../general/button/button.tsx";
 import classes from "./courseCard.module.css";
 import { numberWithSpaces } from "../utils.js";
 import { Link } from "react-router-dom";

@@ -48,8 +48,8 @@ function CoursePurchase() {
     <div className={classes.coursePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
-        title={purchaseInfo.title}
-        price={purchaseInfo.price}
+        title={purchaseInfo!.title}
+        price={purchaseInfo!.price}
         purchaseType={PurchaseType.Course}
       />
       {error != null && <div className={classes.error}>{error}</div>}

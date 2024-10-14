@@ -44,12 +44,12 @@ function ProfileInfo() {
   const saveInfo = (e: any) => {
     e.preventDefault();
     setProfileInfoSaved(false);
-    setErrors({
+    let newErrors: Errors = {
       firstName: null,
       lastName: null,
       gender: null,
       avatar: null,
-    });
+    };
     api
       .put("/profile", {
         firstName: profile.firstName,
@@ -63,12 +63,16 @@ function ProfileInfo() {
       .catch((error) => {
         if (error.response.status == 400) {
           if (error.response.data.errors.Gender)
-            setErrors({ ...errors, gender: "Неверное значение поля" });
+            newErrors = { ...newErrors, gender: "Неверное значение поля" };
           if (error.response.data.errors.FirstName)
-            setErrors({ ...errors, lastName: "Введите правильное имя" });
+            newErrors = { ...newErrors, firstName: "Введите правильное имя" };
           if (error.response.data.errors.LastName)
-            setErrors({ ...errors, gender: "Введите правильную фамилию" });
+            newErrors = {
+              ...newErrors,
+              lastName: "Введите правильную фамилию",
+            };
         }
+        setErrors(newErrors);
       });
   };
   const saveAvatar = (e: any) => {
@@ -147,7 +151,7 @@ function ProfileInfo() {
             </label>
             <div className={classes.profileInfoInputWrapper}>
               <InputForm
-                id="profile_last_name"
+                id="profile_first_name"
                 value={profile.firstName}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setProfile({ ...profile, firstName: e.target.value })
@@ -333,6 +337,7 @@ function ProfileInfo() {
               setNewAvatar(e.target.value)
             }
             style={{ margin: "1rem" }}
+            placeholder="ссылка на новый аватар"
             type="url"
           ></InputForm>
           {errors.avatar ? (
@@ -343,7 +348,7 @@ function ProfileInfo() {
         </DialogContent>
         <DialogActions>
           <button type="submit" className={classes.avatarChangeDialogButton}>
-            сохранить
+            сохранить аватар
           </button>
         </DialogActions>
       </Dialog>

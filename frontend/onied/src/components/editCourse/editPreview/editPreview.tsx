@@ -164,6 +164,8 @@ function EditPreviewComponent() {
       });
   }, []);
 
+  if (found !== undefined && !found) return notFound;
+
   if (
     found === undefined ||
     previewInfo == undefined ||
@@ -173,8 +175,6 @@ function EditPreviewComponent() {
     return <CustomBeatLoader />;
 
   if (canAccess !== undefined && !canAccess) return noAccess;
-
-  if (!found) return notFound;
 
   return (
     <>
@@ -462,7 +462,7 @@ function EditPreviewComponent() {
         <DialogTitle>Загрузить файл</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Введите сслыку на ваше изображение
+            Введите ссылку на ваше изображение
           </DialogContentText>
           <InputForm
             value={newImageHref}
@@ -470,6 +470,7 @@ function EditPreviewComponent() {
               setNewImageHref(e.target.value)
             }
             style={{ margin: "1rem" }}
+            placeholder="ссылка на ваше изображение"
             type="url"
           ></InputForm>
         </DialogContent>
