@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using AutoFixture;
+using Courses.Data.Models;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.NotificationSentProducer;
 using MassTransit;
@@ -32,7 +33,7 @@ public class NotificationSentProducerTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(property => property.Title, Common.RandomUtils.Utils.GetRandomString(6))
+            .With(n => n.Title, Common.RandomUtils.Utils.GetRandomString(6))
             .Create();
 
         Queue<NotificationSent> queue = new();
@@ -67,7 +68,7 @@ public class NotificationSentProducerTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(u => u.UserId, Guid.Empty)
+            .With(n => n.UserId, Guid.Empty)
             .Create();
 
         _notificationPreparerService
@@ -80,5 +81,97 @@ public class NotificationSentProducerTests
         // Act & Assert
         await Assert.ThrowsAsync<ValidationException>(
             async () => await producer.PublishForOne(notification));
+    }
+    
+    [Fact]
+    public async Task PublishForAll_NoUsers_NoMessages()
+    {
+        // Arrange
+        var notification = _fixture
+            .Build<NotificationSent>()
+            .With(n => n.UserId, Guid.Empty)
+            .With(n => n.Title, Common.RandomUtils.Utils.GetRandomString(6))
+            .Create();
+
+        Queue<NotificationSent> queue = new();
+
+        _userRepository
+            .Setup(repo => repo.GetUsersWithConditionAsync(null))
+            .ReturnsAsync([]);
+
+        _notificationPreparerService
+            .Setup(preparerService => preparerService.PrepareNotification(It.IsAny<NotificationSent>()))
+            .Returns((NotificationSent n) => n);
+
+        _publishEndpoint
+            .Setup(pe => pe.Publish(It.IsAny<NotificationSent>(), It.IsAny<CancellationToken>()))
+            .Callback((NotificationSent notificationSent, CancellationToken _) => queue.Enqueue(notificationSent));
+        
+        var producer = GetProducer();
+        
+        // Act
+        await producer.PublishForAll(notification);
+        
+        // Assert
+        _publishEndpoint.Verify(
+            mr => mr.Publish(
+                It.IsAny<NotificationSent>(), 
+                It.IsAny<CancellationToken>()), 
+            Times.Never());
+
+        Assert.Empty(queue);
+    }
+    
+    [Fact]
+    public async Task PublishForAll_ValidMessage_Success()
+    {
+        // Arrange
+        const int expectedCount = 30;
+        
+        var notification = _fixture
+            .Build<NotificationSent>()
+            .With(n => n.Title, Common.RandomUtils.Utils.GetRandomString(6))
+            .Create();
+        
+        var users = _fixture
+            .Build<User>()
+            .With(u => u.Id, Guid.NewGuid())
+            .CreateMany(expectedCount)
+            .ToList();
+
+        Queue<NotificationSent> queue = new();
+
+        _userRepository
+            .Setup(repo => repo.GetUsersWithConditionAsync(null))
+            .ReturnsAsync(users);
+
+        _notificationPreparerService
+            .Setup(preparerService => preparerService.PrepareNotification(It.IsAny<NotificationSent>()))
+            .Returns((NotificationSent n) => n);
+
+        _publishEndpoint
+            .Setup(pe => pe.Publish(It.IsAny<NotificationSent>(), It.IsAny<CancellationToken>()))
+            .Callback((NotificationSent notificationSent, CancellationToken _) => queue.Enqueue(notificationSent));
+        
+        var producer = GetProducer();
+        
+        // Act
+        await producer.PublishForAll(notification);
+        
+        // Assert
+        _publishEndpoint.Verify(
+            mr => mr.Publish(
+                It.IsAny<NotificationSent>(), 
+                It.IsAny<CancellationToken>()), 
+            Times.Exactly(expectedCount));
+        
+        Assert.Equal(expectedCount, queue.Count);
+        Assert.All(queue,
+            actual => Assert.True(
+                actual.Title == notification.Title 
+                && actual.Message == notification.Message
+                && actual.Image == notification.Image));
+        Assert.Equal(queue.Select(n => n.UserId), users.Select(u => u.Id));
+        
     }
 }
