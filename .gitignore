@@ -1,6 +1,7 @@
 structurizr/.structurizr
 
 .idea
+.vscode
 *.http
 appsettings.Development.json
 docker-compose.override.yml
