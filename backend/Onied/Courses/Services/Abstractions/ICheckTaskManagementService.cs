@@ -11,18 +11,6 @@ public interface ICheckTaskManagementService
         bool includeVariants = false,
         bool includeAnswers = false);
 
-    public IResult GetUserTaskPoints(
-        List<UserInputRequest> inputsDto,
-        TasksBlock block,
-        Guid userId);
-
-    public Task ManageTaskBlockCompleted(
-        List<UserTaskPoints> pointsInfo,
-        Guid userId,
-        int blockId);
-
-    public Task ManageCourseCompleted(Guid userId, int courseId);
-
     public Task<IResult> GetTaskPointsStored(
         int courseId,
         int blockId,

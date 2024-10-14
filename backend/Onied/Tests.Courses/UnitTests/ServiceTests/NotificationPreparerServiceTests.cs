@@ -1,4 +1,5 @@
 using AutoFixture;
+using Common.RandomUtils;
 using Courses.Services;
 using MassTransit.Data.Messages;
 
@@ -16,7 +17,7 @@ public class NotificationPreparerServiceTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(notification => notification.Title, GetRandomString(6))
+            .With(notification => notification.Title, Utils.GetRandomString(6))
             .Create();
 
         // Act
@@ -32,7 +33,7 @@ public class NotificationPreparerServiceTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(notification => notification.Title, GetRandomString(101))
+            .With(notification => notification.Title, Utils.GetRandomString(101))
             .Create();
 
         // Act
@@ -49,7 +50,7 @@ public class NotificationPreparerServiceTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(notification => notification.Message, GetRandomString(351))
+            .With(notification => notification.Message, Utils.GetRandomString(351))
             .Create();
 
         // Act
@@ -66,8 +67,8 @@ public class NotificationPreparerServiceTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(notification => notification.Title, GetRandomString(101))
-            .With(notification => notification.Message, GetRandomString(351))
+            .With(notification => notification.Title, Utils.GetRandomString(101))
+            .With(notification => notification.Message, Utils.GetRandomString(351))
             .Create();
 
         // Act
@@ -78,12 +79,5 @@ public class NotificationPreparerServiceTests
         Assert.Equal(100, actualNotification.Title.Length);
         Assert.EndsWith("...", actualNotification.Message);
         Assert.Equal(350, actualNotification.Message.Length);
-    }
-
-    private string GetRandomString(int length)
-    {
-        var bytes = new byte[length];
-        Random.Shared.NextBytes(bytes);
-        return Convert.ToBase64String(bytes);
     }
 }

@@ -3,24 +3,16 @@ using Courses.Data.Models;
 using Courses.Dtos.CheckTasks.Request;
 using Courses.Dtos.CheckTasks.Response;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseCompletedProducer;
-using Courses.Services.Producers.NotificationSentProducer;
-using MassTransit.Data.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
 public class CheckTaskManagementService(
-    ICourseRepository courseRepository,
     IBlockRepository blockRepository,
-    IBlockCompletedInfoRepository blockCompletedInfoRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
-    ICheckTasksService checkTasksService,
-    ICourseCompletedProducer courseCompletedProducer,
+    ITaskCompletionService taskCompletionService,
     ICourseManagementService courseManagementService,
     IUserTaskPointsRepository userTaskPointsRepository,
-    INotificationSentProducer notificationSentProducer,
     IMapper mapper)
     : ICheckTaskManagementService
 {
@@ -38,72 +30,6 @@ public class CheckTaskManagementService(
             return Results.Forbid();
 
         return Results.Ok(block);
-    }
-
-    public IResult GetUserTaskPoints(
-        List<UserInputRequest> inputsDto,
-        TasksBlock block,
-        Guid userId)
-    {
-        var points = new List<UserTaskPoints>();
-        foreach (var inputDto in inputsDto)
-        {
-            var task = block.Tasks.SingleOrDefault(task => inputDto.TaskId == task.Id);
-
-            if (task is null)
-                return Results.NotFound($"Task with id={inputDto.TaskId} not found.");
-
-            if (task.TaskType != inputDto.TaskType)
-                return Results.BadRequest(
-                    $"Task with id={inputDto.TaskId} has invalid TaskType={inputDto.TaskType}.");
-
-            var tp = checkTasksService.CheckTask(task, inputDto);
-            tp.UserId = userId;
-            tp.CourseId = block.Module.CourseId;
-            points.Add(tp);
-        }
-
-        return Results.Ok(points);
-    }
-
-    public async Task ManageTaskBlockCompleted(List<UserTaskPoints> pointsInfo, Guid userId, int blockId)
-    {
-        var bci = await blockCompletedInfoRepository
-            .GetCompletedCourseBlockAsync(userId, blockId);
-        if (pointsInfo.All(utp => utp.HasFullPoints) && bci is null)
-        {
-            await blockCompletedInfoRepository.AddCompletedCourseBlockAsync(userId, blockId);
-        }
-        else if (pointsInfo.Any(utp => !utp.HasFullPoints)
-                 && bci is not null)
-        {
-            await blockCompletedInfoRepository.DeleteCompletedCourseBlocksAsync(bci);
-        }
-    }
-
-    public async Task ManageCourseCompleted(Guid userId, int courseId)
-    {
-        var course = (await courseRepository.GetCourseWithBlocksAsync(courseId))!;
-        var courseBlocks = course.Modules
-            .SelectMany(m => m.Blocks)
-            .Where(b => b.BlockType is BlockType.TasksBlock)
-            .Select(b => b.Id).Order();
-        var userBlocks = (await blockCompletedInfoRepository
-            .GetAllCompletedCourseBlocksByUser(userId, courseId))
-            .Where(b => b.Block.BlockType is BlockType.TasksBlock)
-            .Select(b => b.BlockId).Order();
-
-        if (courseBlocks.SequenceEqual(userBlocks))
-        {
-            await courseCompletedProducer.PublishAsync(new CourseCompleted(userId, courseId));
-
-            var notificationSent = new NotificationSent(
-                course.Title,
-                "Вы успешно закончили обучение на курсе!",
-                userId,
-                course.PictureHref);
-            await notificationSentProducer.PublishForOne(notificationSent);
-        }
     }
 
     public async Task<IResult> GetTaskPointsStored(
@@ -160,7 +86,7 @@ public class CheckTaskManagementService(
 
         var block = okGetTaskBlock.Value!;
 
-        var responseGetTaskPoints = GetUserTaskPoints(inputsDto, block, userId);
+        var responseGetTaskPoints = taskCompletionService.GetUserTaskPoints(inputsDto, block, userId);
         if (responseGetTaskPoints is not Ok<List<UserTaskPoints>> okGetTaskPoints)
             return responseGetTaskPoints;
 
@@ -169,8 +95,8 @@ public class CheckTaskManagementService(
         await userTaskPointsRepository
             .StoreUserTaskPointsForConcreteUserAndBlock(
                 pointsInfo, userId, courseId, blockId);
-        await ManageTaskBlockCompleted(pointsInfo, userId, blockId);
-        await ManageCourseCompleted(userId, courseId);
+        await taskCompletionService.ManageTaskBlockCompleted(pointsInfo, userId, blockId);
+        await taskCompletionService.ManageCourseCompleted(userId, courseId);
 
         var pointsPrepared = block.Tasks
             .Select(task =>
