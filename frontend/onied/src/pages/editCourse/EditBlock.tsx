@@ -19,9 +19,9 @@ function EditBlock() {
   const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
 
   useEffect(() => {
+    setBlock(null);
     if (isNaN(parsedCourseId) || isNaN(parsedBlockId)) {
       setFound(false);
-      setBlock(null);
       return;
     }
     api
@@ -30,14 +30,6 @@ function EditBlock() {
         api
           .get("courses/" + courseId + "/hierarchy")
           .then((response) => {
-            console.log(response.data);
-
-            console.log(
-              response.data.modules
-                .map((m: any) => m.blocks)
-                .reduce((x: BlockInfo[], y: BlockInfo[]) => x.concat(y))
-            );
-
             const block = response.data.modules
               .map((m: any) => m.blocks)
               .reduce((x: BlockInfo[], y: BlockInfo[]) => x.concat(y))
@@ -46,12 +38,12 @@ function EditBlock() {
           })
           .catch((error) => {
             console.log(error);
-            if ("response" in error && error.response.status == 404) {
-              setFound(false);
-            }
+            if (error.response?.status == 404) setFound(false);
+            if (error.response?.status == 403) setIsForbid(true);
           });
       })
       .catch((error) => {
+        if (error.response?.status === 404) setFound(false);
         if (error.response?.status === 403) setIsForbid(true);
       });
   }, [courseId]);
@@ -64,10 +56,7 @@ function EditBlock() {
 
   return (
     <>
-      <EditBlockDispathcer
-        courseId={Number.parseFloat(courseId!)}
-        block={block!}
-      />
+      <EditBlockDispathcer courseId={parsedCourseId} block={block!} />
     </>
   );
 }

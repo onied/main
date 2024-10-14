@@ -172,7 +172,7 @@ function CheckTaskComponent() {
           <label htmlFor="points" className={classes.label}>
             Количество баллов:
           </label>
-          <div className={classes.badge + " " + classes.points} id="points">
+          <div className={classes.badge + " " + classes.points}>
             <div className={classes.spinbox}>
               <input
                 type="number"
@@ -187,17 +187,20 @@ function CheckTaskComponent() {
                   setPoints(event.target.valueAsNumber);
                   event.target.value = event.target.valueAsNumber.toString();
                 }}
+                id="points"
               ></input>
               <div className={classes.spinButtons}>
                 <button
                   className={classes.spinButton}
                   onClick={() => setPoints(points + 1)}
+                  data-testid="increasePoints"
                 >
                   <span className={classes.spinButtonArrowUp}>⌃</span>
                 </button>
                 <button
                   className={classes.spinButton}
                   onClick={() => setPoints(points - 1)}
+                  data-testid="decreasePoints"
                 >
                   <span className={classes.spinButtonArrowDown}>⌄</span>
                 </button>

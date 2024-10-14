@@ -27,6 +27,7 @@ function TasksToCheck() {
       })
       .catch((error) => {
         console.log(error);
+        setLoadStatus(error.response?.status ?? 0);
       });
   }, []);
 
