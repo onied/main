@@ -3,6 +3,7 @@ using AutoMapper;
 using Courses.Data.Models;
 using Courses.Dtos.Catalog.Response;
 using Courses.Dtos.Course.Response;
+using Courses.Dtos.EditCourse.Request;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
@@ -24,7 +25,6 @@ public class CoursesServiceTests
     private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
     private readonly Mock<ICourseCreatedProducer> _courseCreatedProducer = new();
-    private readonly Mock<ICourseManagementService> _courseManagementService = new();
     private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
     private readonly CourseService _service;
     private readonly Fixture _fixture = new();
@@ -48,9 +48,6 @@ public class CoursesServiceTests
     {
         // Arrange
         var courseId = -1;
-
-        _courseRepository.Setup(r => r.GetCourseAsync(-1))
-            .Returns(Task.FromResult<Course?>(null));
 
         // Act
         var result = await _service.GetCoursePreview(courseId, Guid.NewGuid());
@@ -85,7 +82,7 @@ public class CoursesServiceTests
         modules.ForEach(module => course.Modules.Add(module));
 
         _courseRepository.Setup(r => r.GetCourseAsync(courseId))
-            .Returns(Task.FromResult<Course?>(course));
+            .ReturnsAsync(course);
 
         // Act
         var result = await _service.GetCoursePreview(courseId, Guid.NewGuid());
@@ -124,7 +121,7 @@ public class CoursesServiceTests
         modules.ForEach(module => course.Modules.Add(module));
 
         _courseRepository.Setup(r => r.GetCourseAsync(courseId))
-            .Returns(Task.FromResult<Course?>(course));
+            .ReturnsAsync(course);
 
         // Act
         var result = await _service.GetCoursePreview(courseId, Guid.NewGuid());
@@ -140,15 +137,8 @@ public class CoursesServiceTests
     [Fact]
     public async Task GetCourseHierarchy_ReturnsNotFound_WhenCourseNotExist()
     {
-        // Arrange
-        var courseId = -1;
-        var userId = Guid.NewGuid();
-
-        _courseRepository.Setup(r => r.GetCourseWithBlocksAsync(courseId))
-            .Returns(Task.FromResult<Course?>(null));
-
         // Act
-        var result = await _service.GetCourseHierarchy(courseId, userId, null);
+        var result = await _service.GetCourseHierarchy(-1, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -174,12 +164,10 @@ public class CoursesServiceTests
         modules.ForEach(module => course.Modules.Add(module));
 
         _courseRepository.Setup(r => r.GetCourseWithBlocksAsync(courseId))
-            .Returns(Task.FromResult<Course?>(course));
+            .ReturnsAsync(course);
         _blockCompletedInfoRepository
             .Setup(r => r.GetAllCompletedCourseBlocksByUser(userId, courseId))
-            .Returns(Task.FromResult<List<BlockCompletedInfo>>([]));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
+            .ReturnsAsync(new List<BlockCompletedInfo>());
 
         // Act
         var result = await _service.GetCourseHierarchy(courseId, userId, null);
@@ -192,90 +180,44 @@ public class CoursesServiceTests
         Assert.Equal(course.Modules.Count, value.Modules.Count);
     }
 
-    [Fact(Skip = "Нужно починить, выключен для прохождения пайплайна")]
+    [Fact]
     public async Task GetSummaryBlock_ReturnsNotFound_WhenBlockNotExist()
     {
-        // Arrange
-        var courseId = -1;
-        var blockId = -1;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
-            .Returns(Task.FromResult<SummaryBlock?>(null));
-
         // Act
-        var result = await _service.GetSummaryBlock(courseId, blockId, userId, null);
+        var result = await _service.GetSummaryBlock(-1, -1, Guid.NewGuid(), null);
 
         // Assert
-        Assert.IsType<ForbidHttpResult>(result);
+        Assert.IsType<NotFound>(result);
     }
 
-    [Fact(Skip = "Нужно починить, выключен для прохождения пайплайна")]
+    [Fact]
     public async Task GetSummaryBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<SummaryBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.SummaryBlock)
-            .Create();
-        module.Blocks.Add(block);
+        _blockRepository.Setup(x => x.GetSummaryBlock(It.IsAny<int>()))
+            .ReturnsAsync(new SummaryBlock { Module = new Module { CourseId = 0 } });
 
         var courseId = -1;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
-            .Returns(Task.FromResult<SummaryBlock?>(block));
 
         // Act
-        var result = await _service.GetSummaryBlock(courseId, blockId, userId, null);
+        var result = await _service.GetSummaryBlock(courseId, -1, Guid.NewGuid(), null);
 
         // Assert
-        Assert.IsType<ForbidHttpResult>(result);
+        Assert.IsType<NotFound>(result);
     }
 
     [Fact]
     public async Task GetSummaryBlock_ReturnsBlock()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<SummaryBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.SummaryBlock).Create();
-        module.Blocks.Add(block);
-
-        var courseId = course.Id;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
+        var courseId = 1;
+        var blockId = 1;
 
         _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
-            .Returns(Task.FromResult<SummaryBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
+            .ReturnsAsync(new SummaryBlock { Id = blockId, Module = new Module { CourseId = courseId } });
 
         // Act
-        var result = await _service.GetSummaryBlock(courseId, blockId, userId, null);
+        var result = await _service.GetSummaryBlock(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<SummaryBlockResponse>>(result);
@@ -288,17 +230,8 @@ public class CoursesServiceTests
     [Fact]
     public async Task GetVideoBlock_ReturnsNotFound_WhenBlockNotExist()
     {
-        var courseId = -1;
-        var blockId = -1;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetSummaryBlock(blockId))
-            .Returns(Task.FromResult<SummaryBlock?>(null));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
-
         // Act
-        var result = await _service.GetVideoBlock(courseId, blockId, userId, null);
+        var result = await _service.GetVideoBlock(-1, -1, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -308,33 +241,13 @@ public class CoursesServiceTests
     public async Task GetVideoBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<VideoBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.VideoBlock).Create();
-        module.Blocks.Add(block);
+        _blockRepository.Setup(x => x.GetVideoBlock(It.IsAny<int>()))
+            .ReturnsAsync(new VideoBlock { Module = new Module { CourseId = 0 } });
 
         var courseId = -1;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetVideoBlock(blockId))
-            .Returns(Task.FromResult<VideoBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetVideoBlock(courseId, blockId, userId, null);
+        var result = await _service.GetVideoBlock(courseId, -1, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -344,34 +257,14 @@ public class CoursesServiceTests
     public async Task GetVideoBlock_ReturnsBlock()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<VideoBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.VideoBlock)
-            .Create();
-        module.Blocks.Add(block);
-
-        var courseId = course.Id;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
+        var courseId = 1;
+        var blockId = 1;
 
         _blockRepository.Setup(b => b.GetVideoBlock(blockId))
-            .Returns(Task.FromResult<VideoBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
+            .ReturnsAsync(new VideoBlock { Id = blockId, Module = new Module { CourseId = courseId } });
 
         // Act
-        var result = await _service.GetVideoBlock(courseId, blockId, userId, null);
+        var result = await _service.GetVideoBlock(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<VideoBlockResponse>>(result);
@@ -383,18 +276,8 @@ public class CoursesServiceTests
     [Fact]
     public async Task GetTasksBlock_ReturnsNotFound_WhenBlockNotExist()
     {
-        // Arrange
-        var courseId = -1;
-        var blockId = -1;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
-            .Returns(Task.FromResult<TasksBlock?>(null));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
-
         // Act
-        var result = await _service.GetTaskBlock(courseId, blockId, userId, null);
+        var result = await _service.GetTaskBlock(-1, -1, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -404,34 +287,13 @@ public class CoursesServiceTests
     public async Task GetTasksBlock_ReturnsNotFound_WhenCourseNotRight()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<TasksBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.TasksBlock)
-            .Create();
-        module.Blocks.Add(block);
+        _blockRepository.Setup(x => x.GetTasksBlock(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<bool>()))
+            .ReturnsAsync(new TasksBlock { Module = new Module { CourseId = 0 } });
 
         var courseId = -1;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
-            .Returns(Task.FromResult<TasksBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
 
         // Act
-        var result = await _service.GetTaskBlock(courseId, blockId, userId, null);
+        var result = await _service.GetTaskBlock(courseId, -1, Guid.NewGuid(), null);
 
         // Assert
         Assert.IsType<NotFound>(result);
@@ -441,39 +303,206 @@ public class CoursesServiceTests
     public async Task GetTasksBlock_ReturnsBlock()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
+        var courseId = 1;
+        var blockId = 1;
 
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<TasksBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.TasksBlock)
-            .Create();
-        module.Blocks.Add(block);
-
-        var courseId = course.Id;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
-            .Returns(Task.FromResult<TasksBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, It.IsAny<bool>(), It.IsAny<bool>()))
+            .ReturnsAsync(new TasksBlock { Id = blockId, Module = new Module { CourseId = courseId } });
 
         // Act
-        var result = await _service.GetTaskBlock(courseId, blockId, userId, null);
+        var result = await _service.GetTaskBlock(courseId, blockId, Guid.NewGuid(), null);
 
         // Assert
         var actionResult = Assert.IsType<Ok<TasksBlockResponse>>(result);
         var value = Assert.IsAssignableFrom<TasksBlockResponse>(
             actionResult.Value);
         Assert.Equal(blockId, value.Id);
+    }
+
+    [Fact]
+    public async Task CreateCourse_ShouldReturnUnauthorized_WhenUserIdIsNull()
+    {
+        // Act
+        var result = await _service.CreateCourse(null);
+
+        // Assert
+        Assert.IsType<UnauthorizedHttpResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateCourse_ShouldReturnUnauthorized_WhenUserDoesNotExist()
+    {
+        // Act
+        var result = await _service.CreateCourse(Guid.NewGuid().ToString());
+
+        // Assert
+        Assert.IsType<UnauthorizedHttpResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateCourse_ShouldReturnForbid_WhenUserCannotCreateCourses()
+    {
+        // Arrange
+        var userId = Guid.NewGuid().ToString();
+        var authorId = Guid.Parse(userId);
+        var user = _fixture.Create<User>();
+
+        _userRepository.Setup(repo => repo.GetUserAsync(authorId))
+            .ReturnsAsync(user);
+        _subscriptionManagementService.Setup(service => service.VerifyCreatingCoursesAsync(authorId))
+            .ReturnsAsync(false);
+
+        // Act
+        var result = await _service.CreateCourse(userId);
+
+        // Assert
+        Assert.IsType<ForbidHttpResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateCourse_ShouldCreateCourseAndReturnOk_WhenSuccessful()
+    {
+        // Arrange
+        var userId = Guid.NewGuid().ToString();
+        var authorId = Guid.Parse(userId);
+        var user = _fixture.Create<User>();
+        var category = _fixture.Create<Category>();
+
+        _userRepository.Setup(repo => repo.GetUserAsync(authorId))
+            .ReturnsAsync(user);
+        _subscriptionManagementService.Setup(service => service.VerifyCreatingCoursesAsync(authorId))
+            .ReturnsAsync(true);
+        _categoryRepository.Setup(repo => repo.GetAllCategoriesAsync())
+            .ReturnsAsync([category]);
+
+        var newCourse = _fixture.Create<Course>();
+        _courseRepository.Setup(repo => repo.AddCourseAsync(It.IsAny<Course>()))
+            .ReturnsAsync(newCourse);
+
+        // Act
+        var result = await _service.CreateCourse(userId);
+
+        // Assert
+        var actionResult = Assert.IsType<Ok<CreateCourseResponse>>(result);
+        var value = Assert.IsType<CreateCourseResponse>(actionResult.Value);
+        Assert.Equal(newCourse.Id, value.Id);
+
+        // Ensure that PublishAsync was called
+        _courseCreatedProducer.Verify(producer => producer.PublishAsync(newCourse), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetEditTaskBlock_ReturnsNotFound_WhenBlockNotExist()
+    {
+        // Act
+        var result = await _service.GetEditTaskBlock(-1, -1, Guid.NewGuid(), null);
+
+        // Assert
+        Assert.IsType<NotFound>(result);
+    }
+
+    [Fact]
+    public async Task GetEditTaskBlock_ReturnsNotFound_WhenCourseNotRight()
+    {
+        // Arrange
+        _blockRepository.Setup(x => x.GetTasksBlock(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<bool>()))
+            .ReturnsAsync(new TasksBlock { Module = new Module { CourseId = 0 } });
+
+        var courseId = -1;
+
+        // Act
+        var result = await _service.GetTaskBlock(courseId, -1, Guid.NewGuid(), null);
+
+        // Assert
+        Assert.IsType<NotFound>(result);
+    }
+
+    [Fact]
+    public async Task GetEditTaskBlock_ReturnsBlock()
+    {
+        // Arrange
+        var courseId = 1;
+        var blockId = 1;
+
+        _blockRepository.Setup(b => b.GetTasksBlock(blockId, It.IsAny<bool>(), It.IsAny<bool>()))
+            .ReturnsAsync(new TasksBlock { Id = blockId, Module = new Module { CourseId = courseId } });
+
+        // Act
+        var result = await _service.GetEditTaskBlock(courseId, blockId, Guid.NewGuid(), "User");
+
+        // Assert
+        var actionResult = Assert.IsType<Ok<EditTasksBlockRequest>>(result);
+        var value = Assert.IsType<EditTasksBlockRequest>(actionResult.Value);
+        Assert.Equal(blockId, value.Id);
+    }
+
+    [Fact]
+    public async Task EnterFreeCourse_ShouldReturnNotFound_WhenCourseIsNull()
+    {
+        // Act
+        var result = await _service.EnterFreeCourse(-1, Guid.NewGuid());
+
+        // Assert
+        Assert.IsType<NotFound>(result);
+    }
+
+    [Fact]
+    public async Task EnterFreeCourse_ShouldReturnNotFound_WhenCourseIsNotFree()
+    {
+        // Arrange
+        var id = 1;
+        var userId = Guid.NewGuid();
+        var course = new Course { Id = id, PriceRubles = 100 };
+
+        _courseRepository.Setup(repo => repo.GetCourseAsync(id))
+            .ReturnsAsync(course);
+
+        // Act
+        var result = await _service.EnterFreeCourse(id, userId);
+
+        // Assert
+        Assert.IsType<NotFound>(result);
+    }
+
+    [Fact]
+    public async Task EnterFreeCourse_ShouldReturnForbid_WhenUserAlreadyEnteredCourse()
+    {
+        // Arrange
+        var id = 1;
+        var userId = Guid.NewGuid();
+        var course = new Course { Id = id, PriceRubles = 0 };
+
+        _courseRepository.Setup(repo => repo.GetCourseAsync(id))
+            .ReturnsAsync(course);
+        _userCourseInfoRepository.Setup(repo => repo.GetUserCourseInfoAsync(userId, course.Id, false))
+            .ReturnsAsync(new UserCourseInfo());
+
+        // Act
+        var result = await _service.EnterFreeCourse(id, userId);
+
+        // Assert
+        Assert.IsType<ForbidHttpResult>(result);
+    }
+
+    [Fact]
+    public async Task EnterFreeCourse_ShouldAddUserCourseInfoAndReturnOk_WhenSuccessful()
+    {
+        // Arrange
+        var id = 1;
+        var userId = Guid.NewGuid();
+        var course = new Course { Id = id, PriceRubles = 0 };
+
+        _courseRepository.Setup(repo => repo.GetCourseAsync(id))
+            .ReturnsAsync(course);
+
+        // Act
+        var result = await _service.EnterFreeCourse(id, userId);
+
+        // Assert
+        Assert.IsType<Ok>(result);
+
+        // Verify that UserCourseInfo was added
+        _userCourseInfoRepository.Verify(repo =>
+            repo.AddUserCourseInfoAsync(It.Is<UserCourseInfo>(info => info.UserId == userId && info.CourseId == course.Id)), Times.Once);
     }
 }

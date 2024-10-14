@@ -47,9 +47,9 @@ public class ManualReviewTaskUserAnswerRepository(AppDbContext context) : IManua
             .Where(answer => CanReviewAnswer(teacher, answer)).ToList();
     }
 
-    public Task<ManualReviewTaskUserAnswer?> GetById(Guid userAnswerId)
+    public async Task<ManualReviewTaskUserAnswer?> GetById(Guid userAnswerId)
     {
-        return context.ManualReviewTaskUserAnswers
+        return await context.ManualReviewTaskUserAnswers
             .Include(check => check.Task)
             .ThenInclude(task => task.TasksBlock)
             .ThenInclude(block => block.Module)

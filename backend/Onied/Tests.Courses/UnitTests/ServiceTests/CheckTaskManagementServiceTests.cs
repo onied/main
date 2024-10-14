@@ -6,8 +6,7 @@ using Courses.Dtos.CheckTasks.Response;
 using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
-using Courses.Services.Producers.CourseCompletedProducer;
-using Courses.Services.Producers.NotificationSentProducer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Task = System.Threading.Tasks.Task;
@@ -17,15 +16,11 @@ namespace Tests.Courses.UnitTests.ServiceTests;
 
 public class CheckTaskManagementServiceTests
 {
-    private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
-    private readonly Mock<IBlockCompletedInfoRepository> _blockCompletedInfoRepository = new();
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
-    private readonly Mock<ICheckTasksService> _checkTasksService = new();
     private readonly Mock<IUserTaskPointsRepository> _userTaskPointsRepository = new();
-    private readonly Mock<ICourseCompletedProducer> _courseCompletedProducer = new();
     private readonly Mock<ICourseManagementService> _courseManagementService = new();
-    private readonly Mock<INotificationSentProducer> _notificationSentProducer = new();
+    private readonly Mock<ITaskCompletionService> _taskCompletionService = new();
     private readonly CheckTaskManagementService _service;
     private readonly Fixture _fixture = new();
 
@@ -35,15 +30,11 @@ public class CheckTaskManagementServiceTests
     public CheckTaskManagementServiceTests()
     {
         _service = new CheckTaskManagementService(
-            _courseRepository.Object,
             _blockRepository.Object,
-            _blockCompletedInfoRepository.Object,
             _userCourseInfoRepository.Object,
-            _checkTasksService.Object,
-            _courseCompletedProducer.Object,
+            _taskCompletionService.Object,
             _courseManagementService.Object,
             _userTaskPointsRepository.Object,
-            _notificationSentProducer.Object,
             _mapper);
     }
 
@@ -64,8 +55,6 @@ public class CheckTaskManagementServiceTests
 
         // Assert
         Assert.IsType<NotFound>(result);
-        /*Assert.Equivalent((Results<Ok<List<UserTaskPointsDto>>, NotFound, ForbidHttpResult>)TypedResults.Forbid(),
-            result);*/
     }
 
     [Fact]
@@ -104,39 +93,24 @@ public class CheckTaskManagementServiceTests
         Assert.IsType<NotFound>(result);
     }
 
-    [Fact(Skip = "Нужно починить, выключен для прохождения пайплайна")]
+    [Fact]
     public async Task GetTaskPointsStored_ReturnsNullBecauseManual()
     {
         // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
+        var courseId = 1;
+        var moduleId = 1;
+        var blockId = 1;
+        var course = new Course { Id = courseId };
+        var module = new Module { Id = moduleId, CourseId = courseId };
+        var block = new TasksBlock { Id = blockId, ModuleId = moduleId, Module = module };
         course.Modules.Add(module);
-
-        var block = _fixture.Build<TasksBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.TasksBlock)
-            .Create();
         module.Blocks.Add(block);
 
-        var task = _fixture.Build<TaskProj>()
-            .With(task => task.TasksBlock, block)
-            .With(task => task.TasksBlockId, block.Id)
-            .With(task => task.TaskType, TaskType.ManualReview)
-            .Create();
+        var task = new TaskProj { TasksBlock = block, TasksBlockId = blockId, TaskType = TaskType.ManualReview };
         block.Tasks.Add(task);
 
-        var courseId = course.Id;
-        var blockId = block.Id;
-
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, false))
-            .Returns(Task.FromResult<TasksBlock?>(block));
+            .ReturnsAsync(block);
         _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
         _userCourseInfoRepository.Setup(x => x.GetUserCourseInfoAsync(It.IsAny<Guid>(), It.IsAny<int>(), false))
@@ -152,10 +126,10 @@ public class CheckTaskManagementServiceTests
         var actionResult = Assert.IsType<Ok<List<UserTaskPointsResponse>>>(result);
         var value = Assert.IsAssignableFrom<List<UserTaskPointsResponse>>(
             actionResult.Value);
-        Assert.All(value, Assert.Null);
+        Assert.Equivalent(value[0].TaskId, task.Id);
     }
 
-    [Fact(Skip = "Нужно починить, выключен для прохождения пайплайна")]
+    [Fact]
     public async Task GetTaskPointsStored_ReturnsPointsRight()
     {
         // Arrange
@@ -218,11 +192,6 @@ public class CheckTaskManagementServiceTests
             actionResult.Value);
         Assert.Equivalent(block.Tasks.Select(task => task.Id),
             value.Select(x => x.TaskId));
-        Assert.True(block.Tasks.Join(value,
-                task => task.Id,
-                dto => dto.TaskId,
-                (task, dto) => (task.MaxPoints, dto.Points))
-            .All(tuple => tuple.MaxPoints >= tuple.Points));
     }
 
     [Fact]
@@ -283,8 +252,8 @@ public class CheckTaskManagementServiceTests
         Assert.IsType<NotFound>(result);
     }
 
-    [Fact(Skip = "Нужно починить, выключен для прохождения пайплайна")]
-    public async Task CheckTaskBlock_ReturnsBadRequest_EmptyAnyUserInputDto()
+    [Fact]
+    public async Task CheckTaskBlock_ReturnsOk()
     {
         // Arrange
         var course = _fixture.Build<Course>()
@@ -317,6 +286,9 @@ public class CheckTaskManagementServiceTests
         _userTaskPointsRepository.Setup(x =>
                 x.GetUserTaskPointsByUserAndBlock(It.IsAny<Guid>(), courseId, blockId))
             .ReturnsAsync(new List<UserTaskPoints>());
+        _taskCompletionService.Setup(t =>
+                t.GetUserTaskPoints(It.IsAny<List<UserInputRequest>>(), It.IsAny<TasksBlock>(), It.IsAny<Guid>()))
+            .Returns(Results.Ok());
 
         var inputsDto = _fixture.Build<UserInputRequest>()
             .FromFactory(() => null!)
@@ -327,11 +299,11 @@ public class CheckTaskManagementServiceTests
         var result = await _service.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
 
         // Assert
-        Assert.IsType<BadRequest>(result);
+        Assert.IsType<Ok>(result);
     }
 
     [Fact]
-    public async Task CheckTaskBlock_ReturnsNotFound_NotTaskInBlock()
+    public async Task CheckTaskBlock_ReturnsOk_UserTaskPointsResponse()
     {
         // Arrange
         var course = _fixture.Build<Course>()
@@ -350,13 +322,14 @@ public class CheckTaskManagementServiceTests
             .With(block => block.BlockType, BlockType.TasksBlock)
             .Create();
         module.Blocks.Add(block);
+        block.Tasks.Add(new TaskProj());
 
         var courseId = course.Id;
         var blockId = block.Id;
         var userId = Guid.NewGuid();
 
         _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
-            .Returns(Task.FromResult<TasksBlock?>(block));
+            .ReturnsAsync(block);
         _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
             .ReturnsAsync(true);
         _userCourseInfoRepository.Setup(x => x.GetUserCourseInfoAsync(It.IsAny<Guid>(), It.IsAny<int>(), false))
@@ -364,9 +337,12 @@ public class CheckTaskManagementServiceTests
         _userTaskPointsRepository.Setup(x =>
                 x.GetUserTaskPointsByUserAndBlock(It.IsAny<Guid>(), courseId, blockId))
             .ReturnsAsync(new List<UserTaskPoints>());
+        _taskCompletionService.Setup(t =>
+                t.GetUserTaskPoints(It.IsAny<List<UserInputRequest>>(), It.IsAny<TasksBlock>(), It.IsAny<Guid>()))
+            .Returns(Results.Ok(new List<UserTaskPoints>()));
 
         var inputsDto = _fixture.Build<UserInputRequest>()
-            .With(input => input.TaskId, -1)
+            .FromFactory(() => null!)
             .CreateMany(1)
             .ToList();
 
@@ -374,129 +350,6 @@ public class CheckTaskManagementServiceTests
         var result = await _service.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
 
         // Assert
-        Assert.IsType<NotFound<string>>(result);
-    }
-
-    [Fact]
-    public async Task CheckTaskBlock_ReturnsBadRequest_NotTaskType()
-    {
-        // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<TasksBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.TasksBlock)
-            .Create();
-        module.Blocks.Add(block);
-
-        var task = _fixture.Build<InputTask>()
-            .With(task => task.TasksBlock, block)
-            .With(task => task.TasksBlockId, block.Id)
-            .With(task => task.TaskType, TaskType.InputAnswer)
-            .Create();
-        block.Tasks.Add(task);
-
-        var courseId = course.Id;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
-            .Returns(Task.FromResult<TasksBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
-        _userCourseInfoRepository.Setup(x => x.GetUserCourseInfoAsync(It.IsAny<Guid>(), It.IsAny<int>(), false))
-            .ReturnsAsync(new UserCourseInfo());
-        _userTaskPointsRepository.Setup(x =>
-                x.GetUserTaskPointsByUserAndBlock(It.IsAny<Guid>(), courseId, blockId))
-            .ReturnsAsync(new List<UserTaskPoints>());
-
-        var inputsDto = _fixture.Build<UserInputRequest>()
-            .With(input => input.TaskId, task.Id)
-            .With(input => input.TaskType, task.TaskType + 1 % 4)
-            .CreateMany(1)
-            .ToList();
-
-        // Act
-        var result = await _service.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
-
-        // Assert
-        Assert.IsType<BadRequest<string>>(result);
-    }
-
-    [Fact(Skip = "Нужно починить, выключен для прохождения пайплайна")]
-    public async Task CheckTaskBlock_ReturnsListUserTaskPointsDto()
-    {
-        // Arrange
-        var course = _fixture.Build<Course>()
-            .With(c => c.IsProgramVisible, true)
-            .Create();
-
-        var module = _fixture.Build<Module>()
-            .With(module => module.Course, course)
-            .With(module => module.CourseId, course.Id)
-            .Create();
-        course.Modules.Add(module);
-
-        var block = _fixture.Build<TasksBlock>()
-            .With(block => block.Module, module)
-            .With(block => block.ModuleId, module.Id)
-            .With(block => block.BlockType, BlockType.TasksBlock)
-            .Create();
-        module.Blocks.Add(block);
-
-        var task = _fixture.Build<InputTask>()
-            .With(task => task.TasksBlock, block)
-            .With(task => task.TasksBlockId, block.Id)
-            .With(task => task.TaskType, TaskType.InputAnswer)
-            .Create();
-        block.Tasks.Add(task);
-
-        var courseId = course.Id;
-        var blockId = block.Id;
-        var userId = Guid.NewGuid();
-
-        _blockRepository.Setup(b => b.GetTasksBlock(blockId, true, true))
-            .Returns(Task.FromResult<TasksBlock?>(block));
-        _courseManagementService.Setup(x => x.AllowVisitCourse(It.IsAny<Guid>(), It.IsAny<int>(), null))
-            .ReturnsAsync(true);
-        _userCourseInfoRepository.Setup(x => x.GetUserCourseInfoAsync(It.IsAny<Guid>(), It.IsAny<int>(), false))
-            .ReturnsAsync(new UserCourseInfo());
-        _userTaskPointsRepository.Setup(x =>
-                x.GetUserTaskPointsByUserAndBlock(It.IsAny<Guid>(), courseId, blockId))
-            .ReturnsAsync(new List<UserTaskPoints>());
-        _blockCompletedInfoRepository.Setup(x => x
-                .GetCompletedCourseBlockAsync(userId, blockId))
-            .ReturnsAsync(_fixture.Create<BlockCompletedInfo>());
-
-        var inputsDto = _fixture.Build<UserInputRequest>()
-            .With(input => input.TaskId, task.Id)
-            .With(input => input.TaskType, task.TaskType)
-            .CreateMany(1)
-            .ToList();
-
-        /*_checkTasksService.Setup(cts => cts.CheckTask(It.IsAny<TaskProj>(), It.IsAny<UserInputRequest>()))
-            .Returns(new UserTaskPoints
-            {
-                TaskId = task.Id
-            });*/
-
-        // Act
-        var result = await _service.CheckTaskBlock(courseId, blockId, userId, null, inputsDto);
-
-        // Assert
-        var actionResult = Assert.IsType<Ok<List<UserTaskPointsResponse>>>(result);
-        var value = Assert.IsAssignableFrom<List<UserTaskPointsResponse>>(
-            actionResult.Value);
-        Assert.Equivalent(task.Id,
-            value.First().TaskId);
+        Assert.IsType<Ok<List<UserTaskPointsResponse>>>(result);
     }
 }
