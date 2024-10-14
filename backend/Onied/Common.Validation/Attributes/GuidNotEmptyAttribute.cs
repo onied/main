@@ -9,7 +9,6 @@ public class GuidNotEmptyAttribute : ValidationAttribute
     {
         if (value is Guid guid && guid != Guid.Empty)
             return ValidationResult.Success;
-        
         return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
     }
 }
