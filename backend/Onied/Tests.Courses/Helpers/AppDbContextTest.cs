@@ -1,9 +1,9 @@
 ﻿using Courses.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests.Courses.UnitTests;
+namespace Tests.Courses.Helpers;
 
-public class ContextGenerator
+public class AppDbContextTest
 {
     public static AppDbContext GetContext()
     {

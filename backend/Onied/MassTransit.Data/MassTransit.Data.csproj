@@ -11,4 +11,8 @@
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.1-develop.1720" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Common.Validation\Common.Validation.csproj" />
+    </ItemGroup>
+
 </Project>
