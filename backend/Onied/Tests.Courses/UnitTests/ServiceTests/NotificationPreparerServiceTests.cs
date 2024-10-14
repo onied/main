@@ -1,86 +1,87 @@
-﻿using Courses.Services;
+using AutoFixture;
+using Common.RandomUtils;
+using Courses.Services;
 using MassTransit.Data.Messages;
 
 namespace Tests.Courses.UnitTests.ServiceTests;
 
 public class NotificationPreparerServiceTests
 {
-    private readonly NotificationPreparerService _notificationPreparerService;
+    private readonly Fixture _fixture = new();
 
-    public NotificationPreparerServiceTests()
+    private readonly NotificationPreparerService _service = new();
+
+    [Fact]
+    public void PrepareNotification_ValidMessage_NoChanges()
     {
-        _notificationPreparerService = new NotificationPreparerService();
+        // Arrange
+        var notification =
+            _fixture
+                .Build<NotificationSent>()
+                .With(notification => notification.Title, Utils.GetRandomString(6))
+                .Create();
+
+        // Act
+        var actualNotification = _service.PrepareNotification(notification);
+
+        // Assert
+        Assert.Equivalent(notification, actualNotification);
     }
 
     [Fact]
-    public void PrepareNotification_TitleWithinLimit_ReturnsSameTitleAndMessage()
+    public void PrepareNotification_TitleOvercome_TextChanged()
     {
         // Arrange
-        var notification = new NotificationSent(
-            Title: "Short Title",
-            Message: "This is a short message.",
-            UserId: Guid.NewGuid()
-        );
+        var notification =
+            _fixture
+                .Build<NotificationSent>()
+                .With(notification => notification.Title, Utils.GetRandomString(101))
+                .Create();
 
         // Act
-        var result = _notificationPreparerService.PrepareNotification(notification);
+        var actualNotification = _service.PrepareNotification(notification);
 
         // Assert
-        Assert.Equal("Short Title", result.Title);
-        Assert.Equal("This is a short message.", result.Message);
+        Assert.EndsWith("...", actualNotification.Title);
+        Assert.Equal(100, actualNotification.Title.Length);
     }
 
     [Fact]
-    public void PrepareNotification_TitleExceedsLimit_TrimsTitle()
+    public void PrepareNotification_MessageOvercome_TextChanged()
     {
         // Arrange
-        var notification = new NotificationSent(
-            Title: new string('A', 105),
-            Message: "This is a valid message.",
-            UserId: Guid.NewGuid()
-        );
+        var notification =
+            _fixture
+                .Build<NotificationSent>()
+                .With(notification => notification.Message, Utils.GetRandomString(351))
+                .Create();
 
         // Act
-        var result = _notificationPreparerService.PrepareNotification(notification);
+        var actualNotification = _service.PrepareNotification(notification);
 
         // Assert
-        Assert.Equal(new string('A', 97) + "...", result.Title); // Should trim to 97 chars and add "..."
-        Assert.Equal("This is a valid message.", result.Message);
+        Assert.EndsWith("...", actualNotification.Message);
+        Assert.Equal(350, actualNotification.Message.Length);
     }
 
     [Fact]
-    public void PrepareNotification_MessageExceedsLimit_TrimsMessage()
+    public void PrepareNotification_TitleAndMessageOvercome_TextChanged()
     {
         // Arrange
-        var notification = new NotificationSent(
-            Title: "Valid Title",
-            Message: new string('B', 360),
-            UserId: Guid.NewGuid()
-        );
+        var notification =
+            _fixture
+                .Build<NotificationSent>()
+                .With(notification => notification.Title, Utils.GetRandomString(101))
+                .With(notification => notification.Message, Utils.GetRandomString(351))
+                .Create();
 
         // Act
-        var result = _notificationPreparerService.PrepareNotification(notification);
+        var actualNotification = _service.PrepareNotification(notification);
 
         // Assert
-        Assert.Equal("Valid Title", result.Title);
-        Assert.Equal(new string('B', 347) + "...", result.Message); // Should trim to 347 chars and add "..."
-    }
-
-    [Fact]
-    public void PrepareNotification_TitleAndMessageBothExceedLimits_TrimsBoth()
-    {
-        // Arrange
-        var notification = new NotificationSent(
-            Title: new string('C', 105),
-            Message: new string('D', 360),
-            UserId: Guid.NewGuid()
-        );
-
-        // Act
-        var result = _notificationPreparerService.PrepareNotification(notification);
-
-        // Assert
-        Assert.Equal(new string('C', 97) + "...", result.Title); // Should trim title
-        Assert.Equal(new string('D', 347) + "...", result.Message); // Should trim message
+        Assert.EndsWith("...", actualNotification.Title);
+        Assert.Equal(100, actualNotification.Title.Length);
+        Assert.EndsWith("...", actualNotification.Message);
+        Assert.Equal(350, actualNotification.Message.Length);
     }
 }
