@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
@@ -35,7 +34,7 @@ public class SubscriptionManagementServiceTests
     {
         _userRepository
             .Setup(r => r.GetAsync(It.IsAny<Guid>(), true, true))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync((User)null!);
 
         var result = await _subscriptionManagementService.GetActiveSubscription(Guid.NewGuid());
 
@@ -128,7 +127,7 @@ public class SubscriptionManagementServiceTests
     {
         _userRepository
             .Setup(r => r.GetAsync(It.IsAny<Guid>(), true, true))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync((User)null!);
 
         var result = await _subscriptionManagementService.GetSubscriptionsByUser(Guid.NewGuid());
 
@@ -182,7 +181,7 @@ public class SubscriptionManagementServiceTests
     {
         _userRepository
             .Setup(r => r.GetAsync(It.IsAny<Guid>(), true, true))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync((User)null!);
 
         var result = await _subscriptionManagementService.UpdateAutoRenewal(
             Guid.NewGuid(),

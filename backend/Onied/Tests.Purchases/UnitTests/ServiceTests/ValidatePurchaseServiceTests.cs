@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
@@ -97,8 +96,8 @@ public class ValidatePurchaseServiceTests
 
         _mockUserRepository
             .Setup(r => r.GetAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<bool>()))
-            .ReturnsAsync((User)null);
-        _mockCourseRepository.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync((Course)null);
+            .ReturnsAsync((User)null!);
+        _mockCourseRepository.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync((Course)null!);
 
         var result = await _validatePurchaseService.ValidatePurchase(dto, PurchaseType.Course);
 

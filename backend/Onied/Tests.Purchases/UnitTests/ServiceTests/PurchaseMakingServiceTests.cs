@@ -18,43 +18,41 @@ public class PurchaseMakingServiceTests
 {
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<IValidatePurchaseService> _mockValidatePurchaseService;
-    private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<ICourseRepository> _mockCourseRepository;
     private readonly Mock<ISubscriptionRepository> _mockSubscriptionRepository;
     private readonly Mock<IPurchaseRepository> _mockPurchaseRepository;
     private readonly Mock<IPurchaseTokenService> _mockTokenService;
     private readonly Mock<IPurchaseCreatedProducer> _mockPurchaseCreatedProducer;
-    private readonly Mock<ISubscriptionChangedProducer> _mockSubscriptionChangedProducer;
     private readonly PurchaseMakingService _purchaseMakingService;
 
     public PurchaseMakingServiceTests()
     {
         _mockMapper = new Mock<IMapper>();
         _mockValidatePurchaseService = new Mock<IValidatePurchaseService>();
-        _mockUserRepository = new Mock<IUserRepository>();
+        Mock<IUserRepository> mockUserRepository = new();
         _mockCourseRepository = new Mock<ICourseRepository>();
         _mockSubscriptionRepository = new Mock<ISubscriptionRepository>();
         _mockPurchaseRepository = new Mock<IPurchaseRepository>();
         _mockTokenService = new Mock<IPurchaseTokenService>();
         _mockPurchaseCreatedProducer = new Mock<IPurchaseCreatedProducer>();
-        _mockSubscriptionChangedProducer = new Mock<ISubscriptionChangedProducer>();
+        Mock<ISubscriptionChangedProducer> mockSubscriptionChangedProducer = new();
         _purchaseMakingService = new PurchaseMakingService(
             _mockMapper.Object,
             _mockValidatePurchaseService.Object,
-            _mockUserRepository.Object,
+            mockUserRepository.Object,
             _mockCourseRepository.Object,
             _mockSubscriptionRepository.Object,
             _mockPurchaseRepository.Object,
             _mockTokenService.Object,
             _mockPurchaseCreatedProducer.Object,
-            _mockSubscriptionChangedProducer.Object
+            mockSubscriptionChangedProducer.Object
         );
     }
 
     [Fact]
     public async Task GetCoursePreparedPurchase_CourseNotFound_ReturnsNotFound()
     {
-        _mockCourseRepository.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Course)null);
+        _mockCourseRepository.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Course)null!);
 
         var result = await _purchaseMakingService.GetCoursePreparedPurchase(1);
 
@@ -113,7 +111,7 @@ public class PurchaseMakingServiceTests
             .Setup(x =>
                 x.ValidatePurchase(It.IsAny<PurchaseRequestDto>(), It.IsAny<PurchaseType>())
             )
-            .ReturnsAsync((IResult)null);
+            .ReturnsAsync((IResult)null!);
         _mockMapper.Setup(m => m.Map<Purchase>(It.IsAny<PurchaseRequestDto>())).Returns(purchase);
         _mockPurchaseRepository
             .Setup(r => r.AddAsync(It.IsAny<Purchase>(), It.IsAny<CoursePurchaseDetails>()))
@@ -130,7 +128,7 @@ public class PurchaseMakingServiceTests
     [Fact]
     public async Task GetCertificatePreparedPurchase_CertificateNotFound_ReturnsNotFound()
     {
-        _mockCourseRepository.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Course)null);
+        _mockCourseRepository.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Course)null!);
 
         var result = await _purchaseMakingService.GetCertificatePreparedPurchase(1);
 
@@ -183,7 +181,7 @@ public class PurchaseMakingServiceTests
     {
         _mockSubscriptionRepository
             .Setup(x => x.GetAsync(It.IsAny<int>(), false))
-            .ReturnsAsync((Subscription)null);
+            .ReturnsAsync((Subscription)null!);
 
         var result = await _purchaseMakingService.GetSubscriptionPreparedPurchase(1);
 
