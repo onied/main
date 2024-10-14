@@ -1,9 +1,14 @@
 import classes from "./summary.module.css";
 
-function FileLink({ fileName, fileHref }) {
+type props = {
+  fileName: string;
+  fileHref: string;
+}
+
+function FileLink({ fileName, fileHref }: props) {
   return (
     <>
-      <div className={classes.fileLink}>
+      <div className={classes.fileLink} data-testid="markdown-summary-file-link">
         <svg
           width="25"
           height="32"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import EmbedVideo from "@onied/components/blocks/video/embedVideo";
-import api from "../../../config/axios";
-import CustomBeatLoader from "../../general/customBeatLoader";
+import api from "@onied/config/axios";
+import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 import { VideoBlock } from "@onied/types/block";
 
 type props = {

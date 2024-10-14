@@ -22,7 +22,6 @@ describe("Video", () => {
         
         const videoBlock: VideoBlock = {
             id: blockId,
-            index: 1,
             title: "default video",
             blockType: BlockType.VideoBlock,
             completed: false,
@@ -55,7 +54,6 @@ describe("Video", () => {
         
         const videoBlock: VideoBlock = {
             id: blockId,
-            index: 1,
             title: "default video",
             blockType: BlockType.VideoBlock,
             completed: false,

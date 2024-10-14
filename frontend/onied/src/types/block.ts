@@ -9,10 +9,15 @@ export enum BlockType {
 
 export type Block = {
   id: number;
-  index: number;
   title: string;
   blockType: BlockType;
   completed: boolean;
+};
+
+export type SummaryBlock = Block & {
+  markdownText?: string;
+  fileName?: string;
+  fileHref?: string;
 };
 
 export type TasksBlock = Block & {
