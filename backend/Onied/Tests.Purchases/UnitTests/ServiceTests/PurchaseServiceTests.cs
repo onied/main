@@ -38,7 +38,7 @@ public class PurchaseServiceTests
     {
         _mockUserRepository
             .Setup(repo => repo.GetAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<bool>()))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync((User)null!);
 
         var result = await _purchaseService.GetPurchasesByUser(Guid.NewGuid());
 
@@ -70,7 +70,7 @@ public class PurchaseServiceTests
             .Returns(new PurchaseTokenInfo { UserId = Guid.NewGuid(), Id = 1 });
         _mockUserRepository
             .Setup(repo => repo.GetAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<bool>()))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync((User)null!);
 
         var result = await _purchaseService.Verify(
             new VerifyTokenRequestDto { Token = "dummy-token" }
