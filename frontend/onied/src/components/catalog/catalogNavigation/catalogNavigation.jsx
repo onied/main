@@ -11,7 +11,8 @@ function CatalogNavigation({ currentPage, onPageChange, maxPageAmount }) {
       </div>
       <div
         className={classes.navItem}
-        onClick={() => onPageChange(currentPage - 1)}>
+        onClick={() => onPageChange(currentPage - 1)}
+      >
         Назад
       </div>
       {currentPage - 2 > 1 ? (
@@ -24,6 +25,7 @@ function CatalogNavigation({ currentPage, onPageChange, maxPageAmount }) {
               pageNumber={pageNumber}
               isActive={pageNumber === currentPage}
               onPageChange={onPageChange}
+              key={`page_${pageNumber}`}
             />
           );
         }
@@ -33,12 +35,14 @@ function CatalogNavigation({ currentPage, onPageChange, maxPageAmount }) {
       ) : null}
       <div
         className={classes.navItem}
-        onClick={() => onPageChange(currentPage + 1)}>
+        onClick={() => onPageChange(currentPage + 1)}
+      >
         Вперёд
       </div>
       <div
         className={classes.navItem}
-        onClick={() => onPageChange(maxPageAmount)}>
+        onClick={() => onPageChange(maxPageAmount)}
+      >
         {">"}
       </div>
     </div>
