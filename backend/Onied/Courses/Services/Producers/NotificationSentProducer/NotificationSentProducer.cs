@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using Common.Validation;
 using Courses.Services.Abstractions;
 using MassTransit;
 using MassTransit.Data.Messages;
@@ -11,20 +13,13 @@ public class NotificationSentProducer(
     IPublishEndpoint publishEndpoint
 ) : INotificationSentProducer
 {
+    private readonly DataAnnotationValidator _validator = new();
     public async Task PublishForAll(NotificationSent notificationSent)
     {
-        if (notificationSent.UserId != Guid.Empty)
-        {
-            logger.LogError("Error occured while sending notification, " +
-                            "mass notification can only have UserId=Guid.Empty");
-            throw new InvalidOperationException();
-        }
 
-        var allUsersNotifications = (await userRepository.GetUsersWithConditionAsync())
-            .Select(
-                u => notificationPreparerService
-                    .PrepareNotification(notificationSent with { UserId = u.Id })
-            );
+        var allUsersNotifications = 
+            (await userRepository.GetUsersWithConditionAsync())
+            .Select(u => ValidateAndPrepareNotification(notificationSent with { UserId = u.Id }));
 
         foreach (var notification in allUsersNotifications)
             await publishEndpoint.Publish(notification);
@@ -32,16 +27,20 @@ public class NotificationSentProducer(
 
     public async Task PublishForOne(NotificationSent notificationSent)
     {
-        if (notificationSent.UserId == Guid.Empty)
-        {
-            logger.LogError("Error occured while sending notification, " +
-                            "notification for concrete user cannot have UserId=Guid.Empty");
-            throw new InvalidOperationException();
-        }
+        var notification = ValidateAndPrepareNotification(notificationSent);
+        await publishEndpoint.Publish(notification);
+    }
 
-        await publishEndpoint.Publish(
-            notificationPreparerService
-                .PrepareNotification(notificationSent)
-        );
+    private NotificationSent ValidateAndPrepareNotification(NotificationSent notification)
+    {
+        notification = notificationPreparerService.PrepareNotification(notification);
+        
+        if (_validator.TryValidate(notification, out var results)) return notification;
+                    
+        logger.LogError("Error occured while sending notification, NotificationSent is invalid");
+        foreach (var r in results)
+            logger.LogError("NotificationSent validation error: {errorMessage}", r.ErrorMessage);
+            
+        throw new ValidationException();
     }
 }
