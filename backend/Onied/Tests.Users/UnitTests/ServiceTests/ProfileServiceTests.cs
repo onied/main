@@ -52,11 +52,7 @@ public class ProfileServiceTests
         // Assert
         Assert.IsType<Ok<UserProfileResponse>>(result);
         var profile = (result as Ok<UserProfileResponse>)!.Value!;
-        Assert.Equal(user.FirstName, profile.FirstName);
-        Assert.Equal(user.LastName, profile.LastName);
-        Assert.Equal(user.Gender, profile.Gender);
-        Assert.Equal(user.Avatar, profile.Avatar);
-        Assert.Equal(user.Email, profile.Email);
+        Assert.Equivalent(profile, user);
     }
 
     [Fact]
