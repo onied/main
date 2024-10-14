@@ -14,11 +14,10 @@ public class NotificationPreparerServiceTests
     public void PrepareNotification_ValidMessage_NoChanges()
     {
         // Arrange
-        var notification =
-            _fixture
-                .Build<NotificationSent>()
-                .With(notification => notification.Title, GetRandomString(6))
-                .Create();
+        var notification = _fixture
+            .Build<NotificationSent>()
+            .With(notification => notification.Title, GetRandomString(6))
+            .Create();
 
         // Act
         var actualNotification = _service.PrepareNotification(notification);
@@ -31,11 +30,10 @@ public class NotificationPreparerServiceTests
     public void PrepareNotification_TitleOvercome_TextChanged()
     {
         // Arrange
-        var notification =
-            _fixture
-                .Build<NotificationSent>()
-                .With(notification => notification.Title, GetRandomString(101))
-                .Create();
+        var notification = _fixture
+            .Build<NotificationSent>()
+            .With(notification => notification.Title, GetRandomString(101))
+            .Create();
 
         // Act
         var actualNotification = _service.PrepareNotification(notification);
@@ -49,11 +47,10 @@ public class NotificationPreparerServiceTests
     public void PrepareNotification_MessageOvercome_TextChanged()
     {
         // Arrange
-        var notification =
-            _fixture
-                .Build<NotificationSent>()
-                .With(notification => notification.Message, GetRandomString(351))
-                .Create();
+        var notification = _fixture
+            .Build<NotificationSent>()
+            .With(notification => notification.Message, GetRandomString(351))
+            .Create();
 
         // Act
         var actualNotification = _service.PrepareNotification(notification);
@@ -67,12 +64,11 @@ public class NotificationPreparerServiceTests
     public void PrepareNotification_TitleAndMessageOvercome_TextChanged()
     {
         // Arrange
-        var notification =
-            _fixture
-                .Build<NotificationSent>()
-                .With(notification => notification.Title, GetRandomString(101))
-                .With(notification => notification.Message, GetRandomString(351))
-                .Create();
+        var notification = _fixture
+            .Build<NotificationSent>()
+            .With(notification => notification.Title, GetRandomString(101))
+            .With(notification => notification.Message, GetRandomString(351))
+            .Create();
 
         // Act
         var actualNotification = _service.PrepareNotification(notification);

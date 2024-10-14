@@ -19,7 +19,6 @@ public class DataAnnotationValidator
     public bool TryValidate<T>(T model, out List<ValidationResult> results)
     {
         if (model == null) throw new ArgumentNullException(nameof(model));
-
         var context = new ValidationContext(model);
         results = [];
         var result = Validator.TryValidateObject(model, context, results, true);

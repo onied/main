@@ -14,7 +14,6 @@ namespace Tests.Courses.UnitTests.ServiceBusTests;
 public class NotificationSentProducerTests
 {
     private readonly Fixture _fixture = new();
-
     private readonly Mock<ILogger<NotificationSentProducer>> _logger = new();
     private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Mock<INotificationPreparerService> _notificationPreparerService = new();
@@ -25,8 +24,6 @@ public class NotificationSentProducerTests
         _userRepository.Object,
         _notificationPreparerService.Object,
         _publishEndpoint.Object);
-
-
     [Fact]
     public async Task PublishForOne_ValidMessage_Success()
     {
@@ -75,14 +72,12 @@ public class NotificationSentProducerTests
             .Setup(preparerService => preparerService.PrepareNotification(notification))
             .Returns(notification);
 
-
         var producer = GetProducer();
 
         // Act & Assert
         await Assert.ThrowsAsync<ValidationException>(
             async () => await producer.PublishForOne(notification));
     }
-
     [Fact]
     public async Task PublishForAll_NoUsers_NoMessages()
     {
@@ -106,7 +101,6 @@ public class NotificationSentProducerTests
         _publishEndpoint
             .Setup(pe => pe.Publish(It.IsAny<NotificationSent>(), It.IsAny<CancellationToken>()))
             .Callback((NotificationSent notificationSent, CancellationToken _) => queue.Enqueue(notificationSent));
-
         var producer = GetProducer();
 
         // Act
@@ -121,18 +115,15 @@ public class NotificationSentProducerTests
 
         Assert.Empty(queue);
     }
-
     [Fact]
     public async Task PublishForAll_ValidMessage_Success()
     {
         // Arrange
         const int expectedCount = 30;
-
         var notification = _fixture
             .Build<NotificationSent>()
             .With(n => n.Title, Common.RandomUtils.Utils.GetRandomString(6))
             .Create();
-
         var users = _fixture
             .Build<User>()
             .With(u => u.Id, Guid.NewGuid())
