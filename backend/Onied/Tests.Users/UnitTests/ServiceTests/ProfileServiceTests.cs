@@ -79,9 +79,7 @@ public class ProfileServiceTests
         Assert.IsType<Ok>(result);
         Assert.NotNull(changedUser);
         Assert.True(published);
-        Assert.Equal(request.Gender, changedUser.Gender);
-        Assert.Equal(request.FirstName, changedUser.FirstName);
-        Assert.Equal(request.LastName, changedUser.LastName);
+        Assert.Equivalent(request, changedUser);
     }
 
     [Fact]
