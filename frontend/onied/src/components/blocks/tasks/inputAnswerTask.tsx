@@ -1,16 +1,21 @@
 import { useState } from "react";
 import LineEdit from "../../general/lineedit/lineedit";
-import taskType from "./taskType";
+import { Task, TaskType, UserInputRequest } from "@onied/types/task";
 
-function InputAnswerTask({ task, onChange }) {
+type props = {
+  task: Task;
+  onChange: (request: UserInputRequest) => void
+};
+
+function InputAnswerTask({ task, onChange }: props) {
   const [value, setValue] = useState("");
 
-  const handleChange = (event) => {    
+  const handleChange = (event: any) => {    
     setValue(event.target.value);
     
     onChange({
       taskId: task.id,
-      taskType: taskType.INPUT_ANSWER,
+      taskType: TaskType.InputAnswer,
       isDone: true,
       answer: event.target.value,
     });

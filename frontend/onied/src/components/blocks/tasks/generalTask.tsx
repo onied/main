@@ -4,8 +4,16 @@ import InputAnswer from "./inputAnswerTask";
 import TaskTitle from "./taskTitle";
 import ManualReviewTask from "./manualReviewTask";
 import classes from "./tasks.module.css";
+import { Task, TaskPointsResponse, UserInputRequest } from "@onied/types/task";
 
-function GeneralTask({ task, index, taskPoints, onChange }) {
+type props = {
+  task: Task;
+  index: number;
+  taskPoints: TaskPointsResponse;
+  onChange: (index: number, input: UserInputRequest) => void
+};
+
+function GeneralTask({ task, index, taskPoints, onChange }: props) {
   const bodies = [
     SingleAnswersTask,
     MultipleAnswersTask,
@@ -13,7 +21,7 @@ function GeneralTask({ task, index, taskPoints, onChange }) {
     ManualReviewTask,
   ];
 
-  const handleChange = (input) => onChange(index, input);
+  const handleChange = (input: UserInputRequest) => onChange(index, input);
 
   return (
     <div>

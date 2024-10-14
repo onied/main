@@ -1,17 +1,22 @@
 import { useState } from "react";
 import Radio from "../../general/radio/radio";
 import classes from "./tasks.module.css";
-import taskType from "./taskType";
+import { Task, TaskType, UserInputRequest } from "@onied/types/task";
 
-function SingleAnswersTask({ task, onChange }) {
+type props = {
+  task: Task;
+  onChange: (request: UserInputRequest) => void;
+};
+
+function SingleAnswersTask({ task, onChange }: props) {
   const [value, setValue] = useState();
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     setValue(event.target.value);
 
     onChange({
       taskId: task.id,
-      taskType: taskType.SINGLE_ANSWER,
+      taskType: TaskType.SingleAnswer,
       isDone: true,
       variantsIds: [Number(event.target.value)]
     });
@@ -19,7 +24,7 @@ function SingleAnswersTask({ task, onChange }) {
 
   return (
     <>
-      {task.variants.map((variant) => {
+      {task.variants?.map((variant) => {
         return (
           <div key={variant.id} className={classes.variant}>
             <Radio
@@ -29,7 +34,7 @@ function SingleAnswersTask({ task, onChange }) {
               onChange={handleChange}
               checked={value == variant.id ? "t" : ""}
             ></Radio>
-            <label htmlFor={variant.id} className={classes.variantLabel}>
+            <label htmlFor={variant.id.toString()} className={classes.variantLabel}>
               {variant.description}
             </label>
           </div>

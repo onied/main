@@ -1,12 +1,17 @@
 import { useState } from "react";
 import Checkbox from "../../general/checkbox/checkbox";
 import classes from "./tasks.module.css";
-import taskType from "./taskType";
+import { Task, TaskType, UserInputRequest } from "@onied/types/task";
 
-function MultipleAnswersTask({ task, onChange }) {
-  const [values, setValues] = useState([]);
+type props = {
+  task: Task;
+  onChange: (request: UserInputRequest) => void;
+};
 
-  const handleChange = (event) => {
+function MultipleAnswersTask({ task, onChange }: props) {
+  const [values, setValues] = useState<number[]>([]);
+
+  const handleChange = (event: any) => {
     const currentVariantId = Number(event.target.value);
 
     const newValues = !values.includes(currentVariantId)
@@ -16,7 +21,7 @@ function MultipleAnswersTask({ task, onChange }) {
 
     onChange({
       taskId: task.id,
-      taskType: taskType.MULTIPLE_ANSWERS,
+      taskType: TaskType.MultipleAnswers,
       isDone: true,
       variantsIds: newValues,
     });
@@ -24,7 +29,7 @@ function MultipleAnswersTask({ task, onChange }) {
 
   return (
     <>
-      {task.variants.map((variant) => {
+      {task.variants?.map((variant) => {
         return (
           <div key={variant.id} className={classes.variant}>
             <Checkbox
@@ -34,7 +39,7 @@ function MultipleAnswersTask({ task, onChange }) {
               onChange={handleChange}
               checked={values.includes(variant.id) ? "t" : ""}
             ></Checkbox>
-            <label htmlFor={variant.id} className={classes.variantLabel}>
+            <label htmlFor={variant.id.toString()} className={classes.variantLabel}>
               {variant.description}
             </label>
           </div>

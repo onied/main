@@ -3,8 +3,7 @@ export enum TaskType {
   MultipleAnswers,
   InputAnswer,
   ManualReview,
-}
-``;
+};
 
 export type Variant = {
   id: number;
@@ -25,6 +24,7 @@ export type Task = {
   taskType: TaskType;
   maxPoints: number;
   isNew: boolean;
+  variants?: Variant[];
 };
 
 export type SingleAnswerTask = Task & {
@@ -40,4 +40,25 @@ export type InputAnswersTask = Task & {
   isNumber: boolean;
   isCaseSensitive: boolean;
   accuracy: number | null;
+};
+
+export type TaskPointsResponse = {
+  taskId: number;
+  points?: number;
+  content: string;
+};
+
+export type TaskPointsInfo = {
+  checked: boolean;
+  points: number;
+  maxPoints: number;
+};
+
+export type UserInputRequest = {
+  taskId: number;
+  isDone: boolean;
+  variantsIds?: number[];
+  answer?: string;
+  text?: string;
+  taskType: TaskType;
 };

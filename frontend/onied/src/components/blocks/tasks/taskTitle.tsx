@@ -1,7 +1,13 @@
-import PointBadge from "./pointBadge";
 import classes from "./tasks.module.css";
+import PointBadge from "./pointBadge";
+import { TaskPointsInfo } from "@onied/types/task";
 
-function TaskTitle({ taskTitle, pointInfo }) {
+type props = {
+  taskTitle: string;
+  pointInfo: TaskPointsInfo;
+};
+
+function TaskTitle({ taskTitle, pointInfo }: props) {
   return (
     <>
       <h2 className={classes.taskTitle}>

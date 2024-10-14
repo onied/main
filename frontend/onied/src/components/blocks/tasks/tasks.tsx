@@ -1,21 +1,29 @@
-import Button from "../../general/button/button";
+import { useEffect, useState } from "react";
 import GeneralTask from "./generalTask";
 import classes from "./tasks.module.css";
-import { useEffect, useState } from "react";
-import api from "../../../config/axios";
-import { useAppSelector } from "../../../hooks";
-import CustomBeatLoader from "../../general/customBeatLoader";
+import api from "@onied/config/axios";
+import { useAppSelector } from "@onied/hooks";
+import Button from "@onied/components/general/button/button";
+import CustomBeatLoader from "@onied/components/general/customBeatLoader";
+import { Task, TaskPointsResponse, UserInputRequest } from "@onied/types/task";
+import { TasksBlock } from "@onied/types/block";
+import { Module } from "@onied/types/course";
 
-function Tasks({ courseId, blockId }) {
+type props = {
+  courseId: number;
+  blockId: number;
+};
+
+function Tasks({ courseId, blockId }: props) {
   const hierarchyState = useAppSelector((state) => state.hierarchy);
 
-  const [tasks, setTasks] = useState();
-  const [found, setFound] = useState();
-  const [taskInputs, setTaskInputs] = useState();
-  const [reloadNeeded, setReloadNeeded] = useState(0);
-  const [taskPointsSequence, setTaskPointsSequence] = useState();
+  const [tasks, setTasks] = useState<TasksBlock>();
+  const [found, setFound] = useState<boolean>();
+  const [taskInputs, setTaskInputs] = useState<UserInputRequest[]>([]);
+  const [reloadNeeded, setReloadNeeded] = useState<number>(0);
+  const [taskPointsSequence, setTaskPointsSequence] = useState<TaskPointsResponse[] | null>();
 
-  const handleChange = (inputIndex, input) => {
+  const handleChange = (inputIndex: number, input: any) => {
     const newTaskInputs = [...taskInputs];
     newTaskInputs[inputIndex] = input;
     console.log(newTaskInputs);
@@ -23,7 +31,6 @@ function Tasks({ courseId, blockId }) {
   };
 
   useEffect(() => {
-    setTaskPointsSequence(undefined);
     api
       .get("courses/" + courseId + "/tasks/" + blockId + "/points")
       .then((response) => {
@@ -37,7 +44,6 @@ function Tasks({ courseId, blockId }) {
   }, [courseId, blockId]);
 
   useEffect(() => {
-    setFound(undefined);
     api
       .get("courses/" + courseId + "/tasks/" + blockId)
       .then((response) => {
@@ -45,7 +51,7 @@ function Tasks({ courseId, blockId }) {
         setFound(true);
         setTasks(response.data);
         setTaskInputs(
-          response.data.tasks.map((task) => {
+          response.data.tasks.map((task: Task) => {
             return {
               taskId: task.id,
               isDone: false,
@@ -68,8 +74,8 @@ function Tasks({ courseId, blockId }) {
 
   return (
     <form className={classes.tasksContainer} action="post">
-      <h2>{tasks.title}</h2>
-      {tasks.tasks.map((task, index) => {
+      <h2>{tasks!.title}</h2>
+      {tasks!.tasks.map((task, index) => {
         return (
           <GeneralTask
             key={index}
@@ -82,7 +88,7 @@ function Tasks({ courseId, blockId }) {
       })}
       <Button
         type="submit"
-        onClick={(e) => {
+        onClick={(e: any) => {
           e.preventDefault();
           console.log(taskInputs);
 
@@ -99,12 +105,12 @@ function Tasks({ courseId, blockId }) {
               setReloadNeeded(reloadNeeded + 1);
 
               if (
-                tasks.tasks.every(
+                tasks!.tasks.every(
                   (t, index) => t.maxPoints == newTaskPoints[index]?.points
                 )
               ) {
                 const moduleId = hierarchyState.hierarchy.modules.find(
-                  (module) => module.blocks.some((b) => b.id == blockId)
+                  (module: Module) => module.blocks.some((b) => b.id == blockId)
                 ).id;
                 const block =
                   hierarchyState.hierarchy.modules[moduleId].blocks[blockId];
