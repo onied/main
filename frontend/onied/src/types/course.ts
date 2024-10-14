@@ -1,11 +1,12 @@
 export type Course = {
   id: number;
-  modules: Array<Module>;
   title: string;
+  modules: Array<Module>;
 };
 
 export type Module = {
   id: number;
+  index: number;
   title: string;
   blocks: Array<BlockInfo>;
 };

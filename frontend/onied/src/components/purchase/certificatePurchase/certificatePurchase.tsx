@@ -56,8 +56,8 @@ function CertificatePurchase() {
     <div className={classes.certificatePurchaseContainer}>
       <h2 className={classes.pageTitle}>Покупка</h2>
       <PurchaseInfo
-        title={purchaseInfo.title}
-        price={purchaseInfo.price}
+        title={purchaseInfo!.title}
+        price={purchaseInfo!.price}
         purchaseType={PurchaseType.Certificate}
       />
       {error != null && <div className={classes.error}>{error}</div>}

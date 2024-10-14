@@ -1,5 +1,5 @@
 import classes from "./twoFactor.module.css";
-import CardTwoFactor from "../../../components/accountManagement/twoFactorAuth/cardTwoFactor/cardTwoFactor.jsx";
+import CardTwoFactor from "../../../components/accountManagement/twoFactorAuth/cardTwoFactor/cardTwoFactor.tsx";
 function TwoFactor() {
   return (
     <>

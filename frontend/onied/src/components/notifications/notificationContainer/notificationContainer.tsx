@@ -36,7 +36,7 @@ function NotificationContainer() {
         }
       })
       .catch(() => {
-        console.log("error occured loading notifications");
+        console.log("error occurred while loading notifications");
       });
   }, [showDropdown]);
 
@@ -67,6 +67,7 @@ function NotificationContainer() {
         <img
           src={unread ? bellActiveLogo : bellLogo}
           onClick={() => setShowDropdown((value) => !value)}
+          alt="уведомления"
         />
       </div>
       <div

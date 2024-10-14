@@ -19,6 +19,7 @@ function NotificationComponent({
       </div>
       {!notification.isRead && (
         <span
+          data-testid="read-button"
           className={classes.notificationReadButton}
           onClick={() => onRead({ ...notification, isRead: true })}
         />

@@ -68,7 +68,6 @@ function CatalogFilter() {
   }, [searchParams]);
 
   useEffect(() => {
-    console.log("here");
     if (categoryId !== undefined)
       searchParams.set("category", categoryId.toString());
     else searchParams.delete("category");
