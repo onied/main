@@ -24,12 +24,13 @@ import ButtonGoBack from "../../../components/general/buttonGoBack/buttonGoBack"
 import NotFound from "../../../components/general/responses/notFound/notFound";
 import Forbid from "../../../components/general/responses/forbid/forbid";
 import CustomBeatLoader from "../../../components/general/customBeatLoader";
+import { BlockType } from "../../../types/block";
 
 type Block = {
   id: number;
   index: number;
   title: string;
-  blockType: number;
+  blockType: BlockType;
 };
 
 type Module = {
@@ -58,17 +59,12 @@ function EditCourseHierarchy() {
   const [isForbid, setIsForbid] = useState(false);
   const forbid = <Forbid>Вы не можете редактировать данный курс.</Forbid>;
   const id = Number(courseId);
-  const blockTypes = [<></>, "summary", "video", "tasks"];
   const blockIcons = [
     <></>,
-    <FontAwesomeIcon icon={faFileLines} />,
-    <FontAwesomeIcon icon={faVideo} />,
-    <FontAwesomeIcon icon={faListCheck} />,
+    <FontAwesomeIcon icon={faFileLines} aria-label="конспект" />,
+    <FontAwesomeIcon icon={faVideo} aria-label="видео" />,
+    <FontAwesomeIcon icon={faListCheck} aria-label="задания" />,
   ];
-
-  useEffect(() => {
-    console.log(hierarchy);
-  }, [hierarchy]);
 
   const handleErrors = (error: any) => {
     if ("response" in error && error.response.status == 404) {
@@ -286,6 +282,7 @@ function EditCourseHierarchy() {
           <div
             className={classes.block}
             ref={provided.innerRef}
+            aria-label="блок"
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
@@ -301,19 +298,23 @@ function EditCourseHierarchy() {
                   renameBlock(moduleIndex, block.id, event.target.value)
                 }
                 onBlur={(event) => sendNameBlock(block.id, event.target.value)}
+                placeholder="название блока"
               />
               <span className={classes.blockButtons}>
                 <Link
                   className={classes.blockButton}
                   to={new URL("" + block.id, window.location.href).toString()}
                 >
-                  <FontAwesomeIcon icon={faPencil} />
+                  <FontAwesomeIcon
+                    icon={faPencil}
+                    aria-label="редактировать блок"
+                  />
                 </Link>
                 <a
                   onClick={() => deleteBlock(moduleIndex, block.id)}
                   className={classes.blockButton}
                 >
-                  <FontAwesomeIcon icon={faTrash} />
+                  <FontAwesomeIcon icon={faTrash} aria-label="удалить блок" />
                 </a>
               </span>
             </div>
@@ -337,6 +338,7 @@ function EditCourseHierarchy() {
           <div
             className={classes.moduleContainer}
             ref={provided.innerRef}
+            aria-label="модуль"
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
@@ -366,6 +368,11 @@ function EditCourseHierarchy() {
                             else newArray.push(module.id);
                             setExpandedModules(newArray);
                           }}
+                          aria-label={
+                            expandedModules.includes(module.id)
+                              ? "скрыть"
+                              : "раскрыть"
+                          }
                         />
                       }
                       className={classes.module}
@@ -384,6 +391,7 @@ function EditCourseHierarchy() {
                           onBlur={(event) => {
                             sendNameModule(module.id, event.target.value);
                           }}
+                          placeholder="название модуля"
                         />
                         <span className={classes.moduleButtons}>
                           <a
@@ -395,7 +403,10 @@ function EditCourseHierarchy() {
                               setAnchorEl(event.currentTarget);
                             }}
                           >
-                            <FontAwesomeIcon icon={faPlus} />
+                            <FontAwesomeIcon
+                              icon={faPlus}
+                              aria-label="добавить блок"
+                            />
                           </a>
                           <Menu
                             open={openedMenus.includes(module.id)}
@@ -405,13 +416,25 @@ function EditCourseHierarchy() {
                               setAnchorEl(null);
                             }}
                           >
-                            <MenuItem onClick={() => addBlock(module.id, 1)}>
+                            <MenuItem
+                              onClick={() =>
+                                addBlock(module.id, BlockType.SummaryBlock)
+                              }
+                            >
                               Конспект
                             </MenuItem>
-                            <MenuItem onClick={() => addBlock(module.id, 2)}>
+                            <MenuItem
+                              onClick={() =>
+                                addBlock(module.id, BlockType.VideoBlock)
+                              }
+                            >
                               Видео
                             </MenuItem>
-                            <MenuItem onClick={() => addBlock(module.id, 3)}>
+                            <MenuItem
+                              onClick={() =>
+                                addBlock(module.id, BlockType.TasksBlock)
+                              }
+                            >
                               Задания
                             </MenuItem>
                           </Menu>
@@ -419,7 +442,10 @@ function EditCourseHierarchy() {
                             onClick={() => deleteModule(module.id)}
                             className={classes.moduleButton}
                           >
-                            <FontAwesomeIcon icon={faTrash} />
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              aria-label="удалить модуль"
+                            />
                           </a>
                         </span>
                       </div>
@@ -468,10 +494,10 @@ function EditCourseHierarchy() {
           .then((response) => {
             console.log(response.data);
             if ("modules" in response.data) {
-              response.data.modules.sort((a, b) =>
+              response.data.modules.sort((a: Module, b: Module) =>
                 a.index > b.index ? 1 : -1
               );
-              response.data.modules.forEach((module) => {
+              response.data.modules.forEach((module: Module) => {
                 if ("blocks" in module)
                   module.blocks.sort((a, b) => (a.index > b.index ? 1 : -1));
               });
@@ -481,13 +507,13 @@ function EditCourseHierarchy() {
           .catch((error) => {
             console.log(error);
 
-            if ("response" in error && error.response.status == 404) {
-              setHierarchy(null);
-            }
+            if (error.response?.status == 404) setHierarchy(null);
+            if (error.response?.status === 403) setIsForbid(true);
           });
       })
       .catch((error) => {
         if (error.response?.status === 403) setIsForbid(true);
+        if (error.response?.status == 404) setHierarchy(null);
       });
   }, [id]);
 
