@@ -1,12 +1,10 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { http, HttpResponse } from "msw";
-import { describe, it, expect, vitest } from "vitest";
+import { describe, it, expect } from "vitest";
 
 import { server } from "@onied/tests/mocks/server";
-import mockedNavigate from "@onied/tests/mocks/useNavigate";
 import backend from "@onied/tests/helpers/backend";
 import { BlockType, VideoBlock } from "@onied/types/block";
 import Video from "./video";
