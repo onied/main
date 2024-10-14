@@ -32,7 +32,7 @@ public class NotificationSentProducerTests
         // Arrange
         var notification = _fixture
             .Build<NotificationSent>()
-            .With(property => property.Title, GetRandomString(6))
+            .With(property => property.Title, Common.RandomUtils.Utils.GetRandomString(6))
             .Create();
 
         Queue<NotificationSent> queue = new();
@@ -62,7 +62,7 @@ public class NotificationSentProducerTests
     }
     
     [Fact]
-    public async Task PublishForOne_UserIdIsQuidEmpty_Failure()
+    public async Task PublishForOne_UserIdIsGuidEmpty_Failure()
     {
         // Arrange
         var notification = _fixture
@@ -80,12 +80,5 @@ public class NotificationSentProducerTests
         // Act & Assert
         await Assert.ThrowsAsync<ValidationException>(
             async () => await producer.PublishForOne(notification));
-    }
-
-    private string GetRandomString(int length)
-    {
-        var bytes = new byte[length];
-        Random.Shared.NextBytes(bytes);
-        return Convert.ToBase64String(bytes);
     }
 }
