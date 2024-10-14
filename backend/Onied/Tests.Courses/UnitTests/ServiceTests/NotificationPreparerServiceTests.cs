@@ -63,6 +63,27 @@ public class NotificationPreparerServiceTests
         Assert.Equal(350, actualNotification.Message.Length);
     }
 
+    [Fact]
+    public void PrepareNotification_TitleAndMessageOvercome_TextChanged()
+    {
+        // Arrange
+        var notification =
+            _fixture
+                .Build<NotificationSent>()
+                .With(notification => notification.Title, GetRandomString(101))
+                .With(notification => notification.Message, GetRandomString(351))
+                .Create();
+
+        // Act
+        var actualNotification = _service.PrepareNotification(notification);
+
+        // Assert
+        Assert.EndsWith("...", actualNotification.Title);
+        Assert.Equal(100, actualNotification.Title.Length);
+        Assert.EndsWith("...", actualNotification.Message);
+        Assert.Equal(350, actualNotification.Message.Length);
+    }
+
     private string GetRandomString(int length)
     {
         var bytes = new byte[length];
