@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import EditCourseHierarchy from "./editHierarchy";
 import { http, HttpResponse } from "msw";
 import { server } from "../../../../test/mocks/server";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import backend from "../../../../test/helpers/backend";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { BlockType } from "../../../types/block";
