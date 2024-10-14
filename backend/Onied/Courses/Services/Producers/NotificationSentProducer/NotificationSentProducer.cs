@@ -13,25 +13,13 @@ public class NotificationSentProducer(
     IPublishEndpoint publishEndpoint
 ) : INotificationSentProducer
 {
+    private readonly DataAnnotationValidator _validator = new();
     public async Task PublishForAll(NotificationSent notificationSent)
     {
-        var allUsersNotifications = (await userRepository.GetUsersWithConditionAsync())
-            .Select(
-                u =>
-                {
-                    var notification = notificationPreparerService
-                        .PrepareNotification(notificationSent with { UserId = u.Id });
-        
-                    var validator = new DataAnnotationValidator();
-                    if (validator.TryValidate(notification, out var results)) return notification;
-                    
-                    logger.LogError("Error occured while sending notification, NotificationSent is invalid");
-                    foreach (var r in results)
-                        logger.LogError("NotificationSent validation error: {errorMessage}", r.ErrorMessage);
-            
-                    throw new ValidationException();
-                }
-            );
+
+        var allUsersNotifications = 
+            (await userRepository.GetUsersWithConditionAsync())
+            .Select(u => ValidateAndPrepareNotification(notificationSent with { UserId = u.Id }));
 
         foreach (var notification in allUsersNotifications)
             await publishEndpoint.Publish(notification);
@@ -39,19 +27,20 @@ public class NotificationSentProducer(
 
     public async Task PublishForOne(NotificationSent notificationSent)
     {
-        var notification = notificationPreparerService
-            .PrepareNotification(notificationSent);
-        
-        var validator = new DataAnnotationValidator();
-        if (!validator.TryValidate(notification, out var results))
-        {
-            logger.LogError("Error occured while sending notification, NotificationSent is invalid");
-            foreach (var r in results)
-                logger.LogError("NotificationSent validation error: {errorMessage}", r.ErrorMessage);
-            
-            throw new ValidationException();
-        }
-
+        var notification = ValidateAndPrepareNotification(notificationSent);
         await publishEndpoint.Publish(notification);
+    }
+
+    private NotificationSent ValidateAndPrepareNotification(NotificationSent notification)
+    {
+        notification = notificationPreparerService.PrepareNotification(notification);
+        
+        if (_validator.TryValidate(notification, out var results)) return notification;
+                    
+        logger.LogError("Error occured while sending notification, NotificationSent is invalid");
+        foreach (var r in results)
+            logger.LogError("NotificationSent validation error: {errorMessage}", r.ErrorMessage);
+            
+        throw new ValidationException();
     }
 }
