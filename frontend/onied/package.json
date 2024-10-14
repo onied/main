@@ -57,7 +57,8 @@
     "rehype-sanitize": "^6.0.0",
     "slick-carousel": "^1.8.1",
     "typescript": "^5.4.2",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
