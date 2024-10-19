@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Common.RandomUtils\Common.RandomUtils.csproj" />
+        <ProjectReference Include="..\..\Common\Common.RandomUtils\Common.RandomUtils.csproj" />
         <ProjectReference Include="..\Courses\Courses.csproj"/>
     </ItemGroup>
 

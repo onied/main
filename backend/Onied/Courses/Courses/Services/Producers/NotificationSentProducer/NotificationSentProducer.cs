@@ -17,7 +17,7 @@ public class NotificationSentProducer(
     public async Task PublishForAll(NotificationSent notificationSent)
     {
 
-        var allUsersNotifications = 
+        var allUsersNotifications =
             (await userRepository.GetUsersWithConditionAsync())
             .Select(u => ValidateAndPrepareNotification(notificationSent with { UserId = u.Id }));
 
@@ -34,13 +34,13 @@ public class NotificationSentProducer(
     private NotificationSent ValidateAndPrepareNotification(NotificationSent notification)
     {
         notification = notificationPreparerService.PrepareNotification(notification);
-        
+
         if (_validator.TryValidate(notification, out var results)) return notification;
-                    
+
         logger.LogError("Error occured while sending notification, NotificationSent is invalid");
         foreach (var r in results)
             logger.LogError("NotificationSent validation error: {errorMessage}", r.ErrorMessage);
-            
+
         throw new ValidationException();
     }
 }
