@@ -19,7 +19,7 @@ public class SubscriptionRepository(AppDbContext dbContext) : ISubscriptionRepos
             .AsNoTracking()
             .OrderBy(subscription => subscription.Id)
             .ToListAsync();
-    
+
     public async Task AddAsync(Subscription subscription)
     {
         await dbContext.Subscriptions.AddAsync(subscription);

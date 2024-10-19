@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Common.Validation\Common.Validation.csproj" />
+      <ProjectReference Include="..\Common\Common.Validation\Common.Validation.csproj" />
     </ItemGroup>
 
 </Project>
