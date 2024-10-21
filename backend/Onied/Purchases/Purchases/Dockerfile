@@ -7,12 +7,13 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Purchases/Purchases.csproj", "Purchases/"]
-COPY ["Purchases.Data/Purchases.Data.csproj", "Purchases.Data/"]
+COPY ["Purchases/Purchases/Purchases.csproj", "Purchases/Purchases/"]
 COPY ["MassTransit.Data/MassTransit.Data.csproj", "MassTransit.Data/"]
-RUN dotnet restore "Purchases/Purchases.csproj"
+COPY ["Common/Common.Validation/Common.Validation.csproj", "Common/Common.Validation/"]
+COPY ["Purchases/Purchases.Data/Purchases.Data.csproj", "Purchases/Purchases.Data/"]
+RUN dotnet restore "Purchases/Purchases/Purchases.csproj"
 COPY . .
-WORKDIR "/src/Purchases"
+WORKDIR "/src/Purchases/Purchases"
 RUN dotnet build "Purchases.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
