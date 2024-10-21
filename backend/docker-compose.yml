@@ -14,7 +14,7 @@ services:
       - 5135:8080
     build:
       context: Onied
-      dockerfile: Courses/Dockerfile
+      dockerfile: Courses/Courses/Dockerfile
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -31,7 +31,24 @@ services:
       - 5298:8080
     build:
       context: Onied
-      dockerfile: Notifications/Dockerfile
+      dockerfile: Notifications/Notifications/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+
+  support:
+    image: misergeevkpfu/support
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SupportDatabase=Host=db;Username=postgres;Password=postgres;Database=support_database
+      - RabbitMQ__Host=rabbitmq
+    ports:
+      - 5226:8080
+    build:
+      context: Onied
+      dockerfile: Support/Support/Dockerfile
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -48,7 +65,7 @@ services:
       - 5288:8080
     build:
       context: Onied
-      dockerfile: Users/Dockerfile
+      dockerfile: Users/Users/Dockerfile
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -70,7 +87,7 @@ services:
       - 5036:8080
     build:
       context: Onied
-      dockerfile: Purchases/Dockerfile
+      dockerfile: Purchases/Purchases/Dockerfile
     depends_on:
       rabbitmq:
         condition: service_healthy

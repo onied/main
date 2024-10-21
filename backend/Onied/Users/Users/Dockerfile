@@ -8,14 +8,15 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Users/Users.csproj", "Users/"]
+COPY ["Users/Users/Users.csproj", "Users/Users/"]
 COPY ["MassTransit.Data/MassTransit.Data.csproj", "MassTransit.Data/"]
-COPY ["Users.Data/Users.Data.csproj", "Users.Data/"]
+COPY ["Common/Common.Validation/Common.Validation.csproj", "Common/Common.Validation/"]
+COPY ["Users/Users.Data/Users.Data.csproj", "Users/Users.Data/"]
 COPY ["Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "Users/Users.csproj"
+RUN dotnet restore "Users/Users/Users.csproj"
 COPY . .
-RUN mv "Users/ocelot.Docker.json" "Users/ocelot.json"
-WORKDIR "/src/Users"
+RUN mv "Users/Users/ocelot.Docker.json" "Users/Users/ocelot.json"
+WORKDIR "/src/Users/Users"
 RUN dotnet build "Users.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
