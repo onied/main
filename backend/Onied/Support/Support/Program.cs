@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Support.Data;
 using Support.Extensions;
+using Support.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,9 @@ builder.Services.AddServices();
 
 builder.Services.AddAutoMapperConfigured();
 
-builder.Services.AddAuthorizationNegotiate();
+AuthorizationExtension.AddAuthorization(builder.Services);
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -31,6 +33,7 @@ if (app.Environment.IsDevelopment())
 app.UseCorsConfigured();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/api/v1/chat/hub");
 
 if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
 {
