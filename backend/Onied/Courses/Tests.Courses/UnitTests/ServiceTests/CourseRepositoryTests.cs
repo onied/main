@@ -261,6 +261,7 @@ public class CourseRepositoryTests
     private void ProduceTestData()
     {
         _course = _fixture.Build<Course>()
+            .With(c => c.Title, "010e883d-496d-4b6b-80f0-dcf9b96e645b")
             .With(c => c.Id, 1)
             .With(c => c.IsArchived, false)
             .With(c => c.AuthorId, _existingUserId)
@@ -271,6 +272,7 @@ public class CourseRepositoryTests
         _course.Users.Add(new User { Id = _existingUserId, FirstName = "Troll", LastName = "Face" });
 
         var course = _fixture.Build<Course>()
+            .With(c => c.Title, "85476ab4-11a1-473f-be5c-f2f60ef7ed89")
             .With(c => c.IsGlowing, true)
             .With(c => c.Id, 2)
             .With(c => c.IsArchived, true)

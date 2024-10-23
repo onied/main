@@ -3,7 +3,7 @@ import Card from "../../../general/card/card";
 import TwoFactorImg from "../../../../assets/twoFactor.svg";
 import Button from "../../../general/button/button";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, redirect } from "react-router-dom";
 import SixDigitsInput from "../../sixDigitsInput/sixDigitsInput";
 import api from "../../../../config/axios";
 import LoginService from "../../../../services/loginService";
@@ -32,35 +32,14 @@ function CardTwoFactor() {
 
   const sendCode = () => {
     if (digits !== "") {
-      api
-        .post("login", {
+      navigator("/login", {
+        state: {
           email: email,
           password: password,
           twoFactorCode: digits,
-        })
-        .then((response) => {
-          console.log(response);
-          LoginService.storeTokens(
-            response.data.accessToken,
-            response.data.expiresIn,
-            response.data.refreshToken
-          );
-          navigator("/");
-        })
-        .catch((reason) => {
-          const message =
-            reason.response == null || reason.response.status >= 500
-              ? "Ошибка сервера"
-              : reason.response.data.detail == "LockedOut"
-                ? "Слишком много неверных попыток входа, подождите несколько минут и попробуйте еще раз."
-                : "Неверные данные для входа";
-
-          navigator("/login", {
-            state: {
-              errorMessage: message,
-            },
-          });
-        });
+          redirect: location.state.redirect,
+        },
+      });
     } else {
       setErrorMessage("Поле не заполнено");
     }
