@@ -14,10 +14,12 @@ import api from "../../../../config/axios";
 import VkButton from "../../../general/vkbutton/vkbutton";
 import LoginService from "../../../../services/loginService";
 import ProfileService from "../../../../services/profileService";
+import { AxiosError } from "axios";
 
 type LoginFormData = {
   email: string;
   password: string;
+  twoFactorCode?: string | undefined;
 };
 
 function LoginForm() {
@@ -26,43 +28,32 @@ function LoginForm() {
   const location = useLocation();
 
   const [errorMessage, setErrorMessage] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  const [email, setEmail] = useState<string>(location.state?.email);
+  const [password, setPassword] = useState<string>(location.state?.password);
+
+  const redirect = location.state?.redirect ?? searchParams.get("redirect");
 
   useEffect(() => {
-    if (location.state != null) {
-      setErrorMessage(location.state.errorMessage);
+    if (location.state) {
+      handleSubmit(location.state.email, location.state.password);
     }
-  }, []);
+  }, [location.state]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (email: string, password: string) => {
     const formData: LoginFormData = {
-      email: email!,
-      password: password!,
+      email: email,
+      password: password,
+      twoFactorCode: location.state?.twoFactorCode ?? undefined,
     };
-
-    console.log(formData);
-
     api
-      .get("manage/2fa/info", {
-        params: { email: email },
-      })
+      .post("login", formData)
       .then((response) => {
-        if (response.data.isTwoFactorEnabled == true) {
-          navigator("/login/2fa", { state: { ...formData } });
-        }
-
-        return api.post("login", formData);
-      })
-      .then((response) => {
-        console.log(response);
         LoginService.storeTokens(
           response.data.accessToken,
           response.data.expiresIn,
           response.data.refreshToken
         );
         ProfileService.fetchProfile();
-        const redirect = searchParams.get("redirect");
         if (redirect) {
           const decoded = decodeURIComponent(redirect);
           if (decoded.startsWith("/")) {
@@ -72,8 +63,29 @@ function LoginForm() {
         }
         navigator("/");
       })
-      .catch((_) => {
-        setErrorMessage("Неверные имя пользователя или пароль");
+      .catch((error: AxiosError<any, any>) => {
+        if (!error.response || error.response.status >= 500)
+          setErrorMessage(
+            "Что-то пошло не так. Проверьте соединение с интернетом или повторите попытку позже."
+          );
+        else {
+          if (
+            error.response.status === 401 &&
+            error.response.data.detail === "RequiresTwoFactor"
+          ) {
+            navigator("/login/2fa", {
+              state: { ...formData, redirect: redirect },
+            });
+          } else if (error.response.data.detail === "LockedOut") {
+            setErrorMessage(
+              "Слишком много неверных попыток входа, повторите попытку позже."
+            );
+          } else if (formData.twoFactorCode) {
+            setErrorMessage("Неверные данные для входа");
+          } else {
+            setErrorMessage("Неверные имя пользователя или пароль");
+          }
+        }
       });
   };
 
@@ -86,7 +98,7 @@ function LoginForm() {
         action="post"
         onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault();
-          handleSubmit();
+          handleSubmit(email!, password!);
         }}
       >
         {errorMessage && (
