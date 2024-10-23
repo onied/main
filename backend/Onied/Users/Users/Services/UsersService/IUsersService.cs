@@ -23,8 +23,6 @@ public interface IUsersService
 
     public Task<IResult> Manage2Fa(TwoFactorRequest tfaRequest, ClaimsPrincipal claimsPrincipal);
 
-    public Task<IResult> Get2FaInfo(string email);
-
     public Task<IResult> GetInfo(ClaimsPrincipal claimsPrincipal);
 
     public Task<IResult> PostInfo(InfoRequest infoRequest, HttpContext context);
