@@ -64,15 +64,16 @@ function LoginForm() {
         navigator("/");
       })
       .catch((error: AxiosError<any, any>) => {
-        if (!error.response || error.response.status >= 500)
+        if (!error.response)
           setErrorMessage(
             "Что-то пошло не так. Проверьте соединение с интернетом или повторите попытку позже."
           );
         else {
-          if (
-            error.response.status === 401 &&
-            error.response.data.detail === "RequiresTwoFactor"
-          ) {
+          if (error.response.status >= 500) {
+            setErrorMessage(
+              "Произошла ошибка, не удалось проверить данные для входа."
+            );
+          } else if (error.response.data.detail === "RequiresTwoFactor") {
             navigator("/login/2fa", {
               state: { ...formData, redirect: redirect },
             });
