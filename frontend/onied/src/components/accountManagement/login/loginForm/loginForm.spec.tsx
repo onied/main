@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LoginForm from "./loginForm";
-import { MemoryRouter, redirect } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { http, HttpResponse } from "msw";
 import { server } from "../../../../../test/mocks/server";
 import { describe, it, expect } from "vitest";
