@@ -6,7 +6,7 @@ namespace Support.Extensions;
 
 public static class AuthorizationExtension
 {
-    public static AuthenticationBuilder AddAuthorization(this IServiceCollection services)
+    public static AuthenticationBuilder AddAuthorizationConfiguration(this IServiceCollection services)
     {
         var logger = services.BuildServiceProvider().GetService<ILogger<SupportUserRequirement>>();
         return services

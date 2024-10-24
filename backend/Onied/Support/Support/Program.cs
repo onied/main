@@ -17,7 +17,7 @@ builder.Services.AddServices();
 
 builder.Services.AddAutoMapperConfigured();
 
-AuthorizationExtension.AddAuthorization(builder.Services);
+builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
