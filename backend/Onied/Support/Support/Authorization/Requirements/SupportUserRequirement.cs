@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Support.Hubs;
+using Support.Helpers;
 
 namespace Support.Authorization.Requirements;
 
@@ -10,7 +10,8 @@ public class SupportUserRequirement(ILogger<SupportUserRequirement> logger) :
 {
     public const string Policy = "SupportUsersOnly";
 
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SupportUserRequirement requirement,
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
+        SupportUserRequirement requirement,
         HubInvocationContext resource)
     {
         var hubContext = (context.Resource as HubInvocationContext)?.Context;
@@ -20,7 +21,7 @@ public class SupportUserRequirement(ILogger<SupportUserRequirement> logger) :
             return Task.CompletedTask;
         }
 
-        if ((bool)(hubContext.Items[ChatHub.IsSupportUserItem] ?? false))
+        if (new ChatHubContextItemsHelper(hubContext.Items).IsSupportUser)
             context.Succeed(requirement);
 
         return Task.CompletedTask;
