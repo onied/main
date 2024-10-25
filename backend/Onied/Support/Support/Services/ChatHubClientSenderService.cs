@@ -9,6 +9,7 @@ namespace Support.Services;
 
 public class ChatHubClientSenderService(
     IHubContext<ChatHub, IChatClient> hubContext,
+    IClientNotificationProducer clientNotificationProducer,
     IMapperBase mapper) : IChatHubClientSender
 {
     public async Task SendMessageToSupportUsers(Message message)
@@ -25,6 +26,9 @@ public class ChatHubClientSenderService(
     {
         var messageDto = mapper.Map<HubMessageDto>(message);
         await hubContext.Clients.User(message.Chat.ClientId.ToString()).ReceiveMessage(messageDto);
+        // TODO: Somehow check if client is online, and if they aren't:
+        await clientNotificationProducer.NotifyClientOfNewMessage(message);
+        // TODO: otherwise do nothing.
     }
 
     public async Task NotifyMessageAuthorItWasRead(Message message)
