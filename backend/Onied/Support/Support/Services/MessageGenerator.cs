@@ -3,7 +3,7 @@ using Support.Data.Models;
 
 namespace Support.Services;
 
-public class SystemMessageGenerator : ISystemMessageGenerator
+public class MessageGenerator : IMessageGenerator
 {
     public Message GenerateOpenSessionMessage(Chat chat, Guid sessionId)
     {
@@ -32,6 +32,21 @@ public class SystemMessageGenerator : ISystemMessageGenerator
             ReadAt = null,
             MessageContent = "close-session",
             IsSystem = true
+        };
+    }
+
+    public Message GenerateMessage(Guid senderId, Chat chat, string messageContent)
+    {
+        return new Message
+        {
+            Id = Guid.NewGuid(),
+            Chat = chat,
+            ChatId = chat.Id,
+            UserId = senderId,
+            CreatedAt = DateTime.UtcNow,
+            ReadAt = null,
+            MessageContent = messageContent,
+            IsSystem = false
         };
     }
 }

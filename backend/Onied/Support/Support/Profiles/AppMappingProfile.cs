@@ -13,7 +13,8 @@ public class AppMappingProfile : Profile
                 .MapFrom(message => message.MessageContent))
             .ForMember(dto => dto.SupportNumbers,
             options => options
-                .MapFrom((message, _) => message.Chat.Support?.Number))
+                .MapFrom((message, _) =>
+                    message.UserId == message.Chat.SupportId ? message.Chat.Support?.Number : null))
             .ForMember(dto => dto.MessageId,
             options => options
                 .MapFrom(message => message.Id));

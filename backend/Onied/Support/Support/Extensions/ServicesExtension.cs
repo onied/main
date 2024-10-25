@@ -10,7 +10,8 @@ public static class ServicesExtension
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         return services.AddSingleton<IUserIdProvider, QueryUserIdProvider>()
-            .AddScoped<ISystemMessageGenerator, SystemMessageGenerator>()
-            .AddScoped<IChatManagementService, ChatManagementService>();
+            .AddScoped<IMessageGenerator, MessageGenerator>()
+            .AddScoped<IChatManagementService, ChatManagementService>()
+            .AddScoped<IChatHubClientSender, ChatHubClientSenderService>();
     }
 }

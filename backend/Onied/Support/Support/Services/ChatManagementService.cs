@@ -10,11 +10,10 @@ using Support.Hubs;
 namespace Support.Services;
 
 public class ChatManagementService(
-    ISystemMessageGenerator systemMessageGenerator,
-    IHubContext<ChatHub, IChatClient> hubContext,
+    IChatHubClientSender chatHubClientSender,
+    IMessageGenerator messageGenerator,
     AppDbContext dbContext,
-    ILogger<ChatManagementService> logger,
-    IMapperBase mapper) : IChatManagementService
+    ILogger<ChatManagementService> logger) : IChatManagementService
 {
 
     public async Task SendMessage(Guid senderId, string messageContent)
@@ -35,37 +34,17 @@ public class ChatManagementService(
         if (chat.CurrentSessionId == null)
         {
             chat.CurrentSessionId = Guid.NewGuid();
-            var systemMessage = systemMessageGenerator.GenerateOpenSessionMessage(chat, chat.CurrentSessionId.Value);
-            await SaveMessageAndSendToSupportUsers(systemMessage);
+            var systemMessage = messageGenerator.GenerateOpenSessionMessage(chat, chat.CurrentSessionId.Value);
+            dbContext.Messages.Add(systemMessage);
+            await chatHubClientSender.SendMessageToSupportUsers(systemMessage);
         }
 
-        var message = new Message
-        {
-            Id = Guid.NewGuid(),
-            Chat = chat,
-            ChatId = chat.Id,
-            UserId = senderId,
-            CreatedAt = DateTime.UtcNow,
-            ReadAt = null,
-            MessageContent = messageContent,
-            IsSystem = false
-        };
+        var message = messageGenerator.GenerateMessage(senderId, chat, messageContent);
 
-        await SaveMessageAndSendToSupportUsers(message);
+        dbContext.Messages.Add(message);
+        await chatHubClientSender.SendMessageToSupportUsers(message);
 
         await dbContext.SaveChangesAsync();
-    }
-
-    private async Task SaveMessageAndSendToSupportUsers(Message message)
-    {
-        dbContext.Messages.Add(message);
-
-        var messageDto = mapper.Map<HubMessageDto>(message);
-        if (message.Chat.SupportId == null)
-            await hubContext.Clients.Group(ChatHub.SupportUserGroup).ReceiveMessageFromChat(message.ChatId, messageDto);
-        else
-            await hubContext.Clients.User(message.Chat.SupportId.Value.ToString())
-                .ReceiveMessageFromChat(message.ChatId, messageDto);
     }
 
     public async Task MarkMessageAsRead(Guid senderId, Guid messageId)
@@ -86,7 +65,7 @@ public class ChatManagementService(
 
         message.ReadAt = DateTime.UtcNow;
         dbContext.Update(message);
-        await hubContext.Clients.User(message.UserId.ToString()).ReceiveReadAt(message.Id, message.ReadAt.Value);
+        await chatHubClientSender.NotifyMessageAuthorItWasRead(message);
 
         await dbContext.SaveChangesAsync();
     }
@@ -110,27 +89,16 @@ public class ChatManagementService(
             return;
         }
 
-        var message = new Message
-        {
-            Id = Guid.NewGuid(),
-            Chat = chat,
-            ChatId = chat.Id,
-            UserId = senderId,
-            CreatedAt = DateTime.UtcNow,
-            ReadAt = null,
-            MessageContent = messageContent,
-            IsSystem = false
-        };
+        var message = messageGenerator.GenerateMessage(senderId, chat, messageContent);
         dbContext.Messages.Add(message);
 
         if (chat.SupportId == null)
-            await hubContext.Clients.Group(ChatHub.SupportUserGroup).RemoveChatFromOpened(chat.Id);
+            await chatHubClientSender.NotifySupportUsersOfTakenChat(chat);
 
         chat.SupportId = senderId;
         dbContext.Chats.Update(chat);
 
-        var messageDto = mapper.Map<HubMessageDto>(message);
-        await hubContext.Clients.User(chat.ClientId.ToString()).ReceiveMessage(messageDto);
+        await chatHubClientSender.SendMessageToClient(message);
 
         await dbContext.SaveChangesAsync();
     }
@@ -153,18 +121,17 @@ public class ChatManagementService(
             return;
         }
 
-        var message = systemMessageGenerator.GenerateCloseSessionMessage(chat, senderId);
+        var message = messageGenerator.GenerateCloseSessionMessage(chat, senderId);
         dbContext.Messages.Add(message);
 
         if (chat.CurrentSessionId != null)
-            await hubContext.Clients.Group(ChatHub.SupportUserGroup).RemoveChatFromOpened(chat.Id);
+            await chatHubClientSender.NotifySupportUsersOfTakenChat(chat);
 
         chat.CurrentSessionId = null;
         chat.SupportId = null;
         dbContext.Chats.Update(chat);
 
-        var messageDto = mapper.Map<HubMessageDto>(message);
-        await hubContext.Clients.User(chat.ClientId.ToString()).ReceiveMessage(messageDto);
+        await chatHubClientSender.SendMessageToClient(message);
 
         await dbContext.SaveChangesAsync();
     }
@@ -211,8 +178,7 @@ public class ChatManagementService(
 
         lastMessage.Chat = chat;
 
-        var messageDto = mapper.Map<HubMessageDto>(lastMessage);
-        await hubContext.Clients.Group(ChatHub.SupportUserGroup).ReceiveMessageFromChat(chatId, messageDto);
+        await chatHubClientSender.SendMessageToSupportUsers(lastMessage);
 
         await dbContext.SaveChangesAsync();
     }
