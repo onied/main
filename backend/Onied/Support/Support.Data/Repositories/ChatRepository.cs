@@ -8,4 +8,35 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
 {
     public async Task<Chat?> GetAsync(Guid id)
         => await dbContext.Chats.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<Chat?> GetWithSupportAndMessagesAsync(Guid id)
+        => await dbContext.Chats
+            .AsNoTracking()
+            .Include(c => c.Support)
+            .Include(c => c.Messages)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+
+    public async Task<Chat?> GetWithSupportAndMessagesByUserIdAsync(Guid userId)
+        => await dbContext.Chats
+            .AsNoTracking()
+            .Include(c => c.Support)
+            .Include(c => c.Messages)
+            .FirstOrDefaultAsync(c => c.ClientId == userId);
+
+    public async Task<List<Chat>> GetActiveChatsAsync(Guid userId)
+        => await dbContext.Chats
+            .AsNoTracking()
+            .Include(c => c.Support)
+            .Include(c => c.Messages)
+            .Where(c => c.Support != null && c.Support.Id == userId)
+            .ToListAsync();
+
+    public async Task<List<Chat>> GetOpenChatsAsync(Guid userId)
+        => await dbContext.Chats
+            .AsNoTracking()
+            .Include(c => c.Support)
+            .Include(c => c.Messages)
+            .Where(c => c.CurrentSessionId != default && c.Support == null)
+            .ToListAsync();
 }
