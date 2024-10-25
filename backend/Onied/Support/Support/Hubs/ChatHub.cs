@@ -14,7 +14,7 @@ namespace Support.Hubs;
 public class ChatHub(IChatManagementService chatManagementService, ILogger<ChatHub> logger, AppDbContext dbContext)
     : Hub<IChatClient>
 {
-    private const string SupportUserGroup = "SupportUsers";
+    public const string SupportUserGroup = "SupportUsers";
 
     public override async Task OnConnectedAsync()
     {

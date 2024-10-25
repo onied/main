@@ -16,7 +16,6 @@ public class ChatManagementService(
     ILogger<ChatManagementService> logger,
     IMapperBase mapper) : IChatManagementService
 {
-    private const string SupportUserGroup = "SupportUsers";
 
     public async Task SendMessage(Guid senderId, string messageContent)
     {
@@ -63,7 +62,7 @@ public class ChatManagementService(
 
         var messageDto = mapper.Map<HubMessageDto>(message);
         if (message.Chat.SupportId == null)
-            await hubContext.Clients.Group(SupportUserGroup).ReceiveMessageFromChat(message.ChatId, messageDto);
+            await hubContext.Clients.Group(ChatHub.SupportUserGroup).ReceiveMessageFromChat(message.ChatId, messageDto);
         else
             await hubContext.Clients.User(message.Chat.SupportId.Value.ToString())
                 .ReceiveMessageFromChat(message.ChatId, messageDto);
@@ -125,7 +124,7 @@ public class ChatManagementService(
         dbContext.Messages.Add(message);
 
         if (chat.SupportId == null)
-            await hubContext.Clients.Group(SupportUserGroup).RemoveChatFromOpened(chat.Id);
+            await hubContext.Clients.Group(ChatHub.SupportUserGroup).RemoveChatFromOpened(chat.Id);
 
         chat.SupportId = senderId;
         dbContext.Chats.Update(chat);
@@ -158,7 +157,7 @@ public class ChatManagementService(
         dbContext.Messages.Add(message);
 
         if (chat.CurrentSessionId != null)
-            await hubContext.Clients.Group(SupportUserGroup).RemoveChatFromOpened(chat.Id);
+            await hubContext.Clients.Group(ChatHub.SupportUserGroup).RemoveChatFromOpened(chat.Id);
 
         chat.CurrentSessionId = null;
         chat.SupportId = null;
@@ -213,7 +212,7 @@ public class ChatManagementService(
         lastMessage.Chat = chat;
 
         var messageDto = mapper.Map<HubMessageDto>(lastMessage);
-        await hubContext.Clients.Group(SupportUserGroup).ReceiveMessageFromChat(chatId, messageDto);
+        await hubContext.Clients.Group(ChatHub.SupportUserGroup).ReceiveMessageFromChat(chatId, messageDto);
 
         await dbContext.SaveChangesAsync();
     }
