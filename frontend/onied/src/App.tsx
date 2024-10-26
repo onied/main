@@ -30,6 +30,9 @@ import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
 import ManageModerators from "./pages/manageModerators/manageModerators";
 import Landing from "./pages/landing/landing";
 import CustomBeatLoader from "./components/general/customBeatLoader";
+import { ChatBubble } from "@mui/icons-material";
+import ChatButton from "@onied/components/supportChatForUser/chatButton/chatButton";
+import SupportChatWrapper from "@onied/components/supportChatForUser/supportChatWrapper";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -101,6 +104,7 @@ function App() {
               ></Route>
             </Routes>
           </main>
+          <SupportChatWrapper></SupportChatWrapper>
         </LoadingContext.Provider>
       </ProfileContext.Provider>
     </>

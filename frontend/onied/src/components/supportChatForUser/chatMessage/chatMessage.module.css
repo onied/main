@@ -1,0 +1,18 @@
+.chatMessage {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.ownMessage {
+    background-color: var(--accent-color);
+    border-top-left-radius: 15px;
+}
+
+.foreignMessage {
+    border-top-right-radius: 15px;
+    background-color: #ECECEC;
+}
+
+.ownMessage span {
+    color: white;
+}

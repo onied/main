@@ -1,0 +1,12 @@
+.chatHeader {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--accent-color);
+    padding: 10px 0 10px 0;
+}
+
+.chatHeader p{
+    margin: 0;
+    color: white;
+    text-align: center;
+}
