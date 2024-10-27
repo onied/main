@@ -23,10 +23,5 @@ public class ExceptionMiddleware : IMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(exception.Message);
         }
-        catch (Exception exception)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsJsonAsync(new { message = exception.Message });
-        }
     }
 }
