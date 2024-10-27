@@ -15,13 +15,12 @@ public class ExceptionMiddleware : IMiddleware
         catch (HttpResponseException exception)
         {
             context.Response.StatusCode = (int)exception.ResponseStatusCode;
-            await context.Response.WriteAsJsonAsync(new { message = exception.Message });
+            await context.Response.WriteAsJsonAsync(new { detail = exception.Message });
         }
         catch (ValidationException exception)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(exception.Message);
+            await context.Response.WriteAsJsonAsync(new { detail = exception.Message });
         }
     }
 }
