@@ -42,11 +42,6 @@ public class ChatService(
             throw new NotFoundException($"The chat with ChatId = {chatId} was not found");
         }
 
-        if (chat.Support != null)
-        {
-            logger.LogWarning("Attempt to access chat ID: {ChatId} which is already occupied by another support staff member", chatId);
-            throw new ForbidException($"Chat with ChatId = {chatId} is already occupied by another support staff member");
-        }
 
         logger.LogInformation("Retrieved chat for support staff member {UserId}", userId);
         return mapper.Map<GetChatResponseDto>(chat);
