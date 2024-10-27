@@ -1,0 +1,30 @@
+.idBadge {
+    --id-badge-font: 10pt;
+    --id-badge-padding: 5px;
+    font-size: var(--badge-font);
+
+    width: calc(var(--id-badge-font) + var(--id-badge-padding) * 2);
+    height: calc(var(--id-badge-font) + var(--id-badge-padding) * 2);
+    border: 1px solid #bbbbbb;
+    border-radius: var(--id-badge-padding);
+    box-sizing: border-box;
+    text-align: center;
+    align-content: center;
+}
+
+.idBar {
+    height: min-content;
+    width: fit-content;
+
+    color: #bbbbbb;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.idBar > p {
+    margin: 0;
+    font-size: 10pt;
+}

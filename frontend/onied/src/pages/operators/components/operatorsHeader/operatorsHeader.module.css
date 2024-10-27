@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+.header {
+    --background-color: #9715D3;
+    --shadow: 0px 4px 4px 0px #00000015;
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--background-color);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.header * {
+    box-sizing: border-box;
+}
+
+.logoContainer {
+    display: flex;
+    flex-direction: row;
+    padding: calc(var(--header-height) * 0.1);
+    align-items: center;
+    gap: 1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+.logoContainer * {
+    text-decoration: none;
+    color: white;
+}
+
+.logoContainer:hover {
+    background-color: #00000015;
+}
+
+.logoImage {
+    overflow: hidden;
+    border-radius: 1rem;
+    height: calc(var(--header-height) * 0.8);
+    width: calc(var(--header-height) * 0.8);
+}
+
+.logoTitle {
+    font-family: "Quicksand", Helvetica;
+    font-weight: 300;
+}
+
+.profileContainer {
+    padding: calc(var(--header-height) * 0.1) 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: white;
+    text-decoration: none;
+    height: 100%;
+    font-family: "Quicksand", Helvetica;
+    font-weight: 600;
+}
+
+.profileContainer:hover {
+    background-color: #00000015;
+}
