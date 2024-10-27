@@ -24,7 +24,7 @@ public class ChatService(
         if (chat is null)
         {
             logger.LogWarning("No chat found for user ID: {UserId}. The chat has not yet been created", userId);
-            throw new BadRequestException("The chat has not yet been created for this user");
+            throw new NotFoundException("The chat has not yet been created for this user");
         }
 
         logger.LogInformation("Retrieved chat for user {UserId}", userId);
