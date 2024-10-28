@@ -25,4 +25,10 @@ public class Message
     public string MessageContent { get; set; } = null!;
 
     public bool IsSystem { get; set; }
+
+    /// <summary>
+    /// Nullable SupportUserId to associate the message with a support user if possible
+    /// </summary>
+    public Guid? SupportUserId { get; set; }
+    public SupportUser? SupportUser { get; set; }
 }

@@ -15,7 +15,7 @@ public class AppMappingProfile : Profile
                 opt => opt.MapFrom(src => src.Support == null ? (int?)null : src.Support.Number));
         CreateMap<Message, GetChatMessageItem>()
             .ForMember(dest => dest.SupportNumber,
-                opt => opt.MapFrom(src => src.Chat.Support == null ? (int?)null : src.Chat.Support.Number))
+                opt => opt.MapFrom(src => src.SupportUser == null ? (int?)null : src.SupportUser.Number))
             .ForMember(dest => dest.MessageId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,
@@ -29,7 +29,7 @@ public class AppMappingProfile : Profile
                 opt => opt.MapFrom(src => src.Messages.OrderBy(m => m.CreatedAt).LastOrDefault()));
         CreateMap<Message, GetChatsMessageItem>()
             .ForMember(dest => dest.SupportNumber,
-                opt => opt.MapFrom(src => src.Chat.Support == null ? (int?)null : src.Chat.Support.Number))
+                opt => opt.MapFrom(src => src.SupportUser == null ? (int?)null : src.SupportUser.Number))
             .ForMember(dest => dest.MessageId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,
