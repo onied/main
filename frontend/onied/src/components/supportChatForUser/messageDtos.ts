@@ -8,7 +8,7 @@ export type MessageDto = {
 };
 
 export type MessagesHistoryDto = {
-  supportNumber: number;
-  currentSessionId: string;
+  supportNumber: number | null;
+  currentSessionId: string | null;
   messages: MessageDto[];
 };

@@ -1,41 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatButton from "@onied/components/supportChatForUser/chatButton/chatButton";
 import ChatWindow from "@onied/components/supportChatForUser/chatWindow/chatWindow";
 import { MessagesHistoryDto } from "@onied/components/supportChatForUser/messageDtos";
+import GetHistory from "@onied/components/supportChatForUser/tempMessagesSource";
 
 function SupportChatWrapper() {
   const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
 
-  const [messagesHistory, setMessagesHistory] =
-    useState<MessagesHistoryDto | null>();
+  const [messagesHistory, setMessagesHistory] = useState<MessagesHistoryDto>();
 
-  setMessagesHistory({
-    supportNumber: 69,
-    currentSessionId: "6c27c121-8cf2-4db2-8c74-8834cb735fcd",
-    messages: [
-      {
-        messageId: "87dbe1eb-b8e5-4c0c-abac-7a8784ed5ff0",
-        supportNumber: null,
-        createdAt: "imagine some date and time",
-        messageText: "open-session 6c27c121-8cf2-4db2-8c74-8834cb735fcd",
-        isSystem: true,
-        readAt: "imagine some date and time",
-      },
-    ],
-  });
+  useEffect(() => {
+    setMessagesHistory(GetHistory(0));
+  }, []);
 
   return (
     <div
       style={{
         display: "inline-block",
         position: "fixed",
+        maxWidth: "22vw",
+        minWidth: "20vw",
         padding: "20px",
         right: 0,
         bottom: 0,
         zIndex: 9999,
       }}
     >
-      <ChatWindow isChatWindowOpen={isChatWindowOpen}></ChatWindow>
+      <ChatWindow
+        isChatWindowOpen={isChatWindowOpen}
+        messagesHistory={messagesHistory!}
+        setMessagesHistory={setMessagesHistory}
+      ></ChatWindow>
       <ChatButton
         isChatWindowOpen={isChatWindowOpen}
         setIsChatWindowOpen={setIsChatWindowOpen}
