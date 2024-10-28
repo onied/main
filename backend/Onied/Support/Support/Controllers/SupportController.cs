@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Support.Abstractions;
+using Support.Filters;
 
 namespace Support.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
+[AuthorizeSupportUser]
 public class SupportController(ISupportService supportService) : ControllerBase
 {
     [HttpGet]

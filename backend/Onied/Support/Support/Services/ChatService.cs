@@ -8,7 +8,6 @@ namespace Support.Services;
 
 public class ChatService(
     IChatRepository chatRepository,
-    IAuthorizationSupportUserService authorizationSupportUserService,
     ILogger<ChatService> logger,
     IMapper mapper) : IChatService
 {
@@ -33,8 +32,6 @@ public class ChatService(
 
     public async Task<GetChatResponseDto> GetChatById(Guid chatId, Guid? userId)
     {
-        await authorizationSupportUserService.AuthorizeSupportUser(userId);
-
         var chat = await chatRepository.GetWithSupportAndMessagesAsync(chatId);
         if (chat is null)
         {

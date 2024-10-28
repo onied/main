@@ -14,8 +14,6 @@ public class SupportService(
 {
     public async Task<List<GetChatsResponseDto>> GetActiveChats(Guid? userId)
     {
-        await authorizationSupportUserService.AuthorizeSupportUser(userId);
-
         var chats = await chatRepository.GetActiveChatsAsync((Guid)userId!);
         logger.LogInformation("Retrieved {chatsCount} active chats for user {userId}", chats.Count, userId);
         return mapper.Map<List<GetChatsResponseDto>>(chats);
@@ -23,8 +21,6 @@ public class SupportService(
 
     public async Task<List<GetChatsResponseDto>> GetOpenChats(Guid? userId)
     {
-        await authorizationSupportUserService.AuthorizeSupportUser(userId);
-
         var chats = await chatRepository.GetOpenChatsAsync((Guid)userId!);
         logger.LogInformation("Retrieved {chatsCount} active chats for user {userId}", chats.Count, userId);
         return mapper.Map<List<GetChatsResponseDto>>(chats);

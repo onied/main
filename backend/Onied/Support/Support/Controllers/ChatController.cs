@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Support.Abstractions;
+using Support.Filters;
 
 namespace Support.Controllers;
 
@@ -17,6 +18,7 @@ public class ChatController(IChatService chatService) : ControllerBase
 
     [HttpGet]
     [Route("{chatId:guid}")]
+    [AuthorizeSupportUser]
     public async Task<IResult> GetChatById([FromRoute] Guid chatId, [FromQuery] Guid? userId)
     {
         var response = await chatService.GetChatById(chatId, userId);
