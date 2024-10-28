@@ -2,8 +2,6 @@ using Support.Abstractions;
 using Support.Services;
 
 using Microsoft.AspNetCore.SignalR;
-using Support.Abstractions;
-using Support.Services;
 
 namespace Support.Extensions;
 
