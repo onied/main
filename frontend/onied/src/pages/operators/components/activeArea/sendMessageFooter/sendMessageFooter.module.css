@@ -8,3 +8,7 @@
 .sendArea {
     width: max-content;
 }
+
+.sendButton {
+    cursor: pointer;
+}

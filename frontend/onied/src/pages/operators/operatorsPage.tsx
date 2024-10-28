@@ -1,64 +1,33 @@
 import { Side } from "@onied/types/general";
-import { ChatBadge } from "@onied/types/chat";
 import OperatorsHeader from "./components/operatorsHeader/operatorsHeader";
 import ChatsSidebar from "./components/ChatsSidebar/chatsSidebar";
 import Background from "./components/background/background";
 import ActiveArea from "./components/activeArea/activeArea";
-
-const defaultBadges: ChatBadge[] = [
-    {
-        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        LastMessage: {
-            MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-            SupportNumber: 69,
-            CreatedAt: 0,
-            ReadAt: null,
-            IsSystem: false,
-            Message: "А что кушают поросятки?"
-        }
-    },
-    {
-        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-        LastMessage: {
-            MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-            SupportNumber: 69,
-            CreatedAt: 0,
-            ReadAt: null,
-            IsSystem: false,
-            Message: "А что кушают поросятки?"
-        }
-    },
-    {
-        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        LastMessage: {
-            MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-            SupportNumber: 69,
-            CreatedAt: 0,
-            ReadAt: null,
-            IsSystem: false,
-            Message: "бла-бла-бла"
-        }
-    }
-]
+import { useAppSelector } from "@onied/hooks";
 
 export default function OperatorsPage() {
+    const chatsState = useAppSelector((state) => state.chats);
+    console.log(chatsState)
+
     return <>
         <OperatorsHeader />
         <main>
             <Background />
             <ActiveChatsSidebar />
-            <ActiveArea />
+            {chatsState.currentChat && <ActiveArea activeChat={chatsState.currentChat} />}
             <OpenChatsSidebar />
         </main>
     </>
 }
 
 const ActiveChatsSidebar = () => {
-    const badges = defaultBadges
+    const chatsState = useAppSelector((state) => state.chats);
+    const badges = chatsState.activeChats
     return <ChatsSidebar title={"Активные обращения"} badges={badges} side={Side.Left} />
 }
 
 const OpenChatsSidebar = () => {
-    const badges = defaultBadges
+    const chatsState = useAppSelector((state) => state.chats);
+    const badges = chatsState.openChats
     return <ChatsSidebar title={"Открытые обращения"} badges={badges} side={Side.Right} />
 }

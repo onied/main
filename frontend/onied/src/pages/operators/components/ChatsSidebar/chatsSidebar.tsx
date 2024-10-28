@@ -18,8 +18,6 @@ export default function ChatsSidebar({ title, badges, side }: Props) {
 
     const toggleSidebar = () => setIsOpen(!isOpen)
 
-    console.log(`isOpen: ${isOpen}`)
-
     return (
         <div className={combineCssClasses([
             classes.sidebar,

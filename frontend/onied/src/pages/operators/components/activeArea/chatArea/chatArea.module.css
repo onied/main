@@ -46,6 +46,10 @@
     color: #bbbbbb;
 }
 
+.chatMessage.mine .timeBadge {
+    color: white;
+}
+
 .chatArea {
     background-color: white;
 

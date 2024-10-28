@@ -44,7 +44,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
     ])}>
         <p>{message.Message}</p>
         <div className={classes.chatFooter}>
-            <ReadBadge />
+            { message.ReadAt && <ReadBadge /> }
             <TimeBadge time={message.CreatedAt} />
         </div>
     </div>
