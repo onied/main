@@ -1,6 +1,11 @@
 .chatWindow {
     background-color: white;
     border-radius: 10px;
+    box-shadow: 0 4px 4px #00000025,
+                -4px 0 4px #00000025,
+                4px 0 4px #00000025;
+    overflow: hidden;
+    margin-bottom: 15px;
 }
 
 .chatHeader {
@@ -19,4 +24,6 @@
 .messagesTimeline{
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    height: 45vh;
 }

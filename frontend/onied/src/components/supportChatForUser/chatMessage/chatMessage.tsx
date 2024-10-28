@@ -1,26 +1,68 @@
 import classes from "./chatMessage.module.css";
 import tick from "../../../assets/cyanTick.svg";
+import anon from "../../../assets/anonOperatorIcon.png";
+import { MessageDto } from "@onied/components/supportChatForUser/messageDtos";
 
-type ChatMessageProps = {
-  message: string;
-  time: Date;
-  isOwn: boolean;
-  isRead: boolean;
-};
+type ChatMessageProps = MessageDto & { isFirstOperatorMessageInChain: boolean };
 
 function ChatMessage(props: ChatMessageProps) {
+  if (props.isSystem) {
+    switch (props.messageText.split(" ")[0]) {
+      case "close-session":
+        return <DialogEndSystemMessage></DialogEndSystemMessage>;
+      default:
+        return <></>;
+    }
+  }
+
   return (
-    <div
-      className={[
-        classes.chatMessage,
-        props.isOwn ? classes.ownMessage : classes.foreignMessage,
-      ].join(" ")}
-    >
-      <p>{props.message}</p>
-      <div className={classes.chatMessageFooter}>
-        <p>{props.time.toTimeString()}</p>
-        {props.isRead ? <img src={tick} /> : <></>}
+    <PersonsMessage
+      {...props}
+      isFirstOperatorMessageInChain={props.isFirstOperatorMessageInChain}
+    ></PersonsMessage>
+  );
+}
+
+function PersonsMessage(props: ChatMessageProps) {
+  return (
+    <>
+      {props.isFirstOperatorMessageInChain ? (
+        <div className={classes.newOperatorMessageHeader}>
+          <img src={anon} />
+          <span>Оператор №{props.supportNumber}</span>
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <div
+        className={[
+          classes.chatMessage,
+          props.supportNumber === null
+            ? classes.ownMessage
+            : classes.foreignMessage,
+        ].join(" ")}
+      >
+        <p>{props.messageText}</p>
+        <div className={classes.chatMessageFooter}>
+          {props.readAt !== null && props.supportNumber === null ? (
+            <img src={tick} />
+          ) : (
+            <></>
+          )}
+          <p>{props.createdAt.toLocaleTimeString()}</p>
+        </div>
       </div>
+    </>
+  );
+}
+
+function DialogEndSystemMessage() {
+  return (
+    <div className={classes.systemMessage}>
+      <div className={classes.line}></div>
+      <span>Диалог завершен</span>
+      <div className={classes.line}></div>
     </div>
   );
 }

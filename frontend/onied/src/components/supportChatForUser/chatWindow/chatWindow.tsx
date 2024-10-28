@@ -1,10 +1,16 @@
 import classes from "./chatWindow.module.css";
 import ChatMessage from "@onied/components/supportChatForUser/chatMessage/chatMessage";
-import { MessageDto } from "@onied/components/supportChatForUser/messageDtos";
+import {
+  MessageDto,
+  MessagesHistoryDto,
+} from "@onied/components/supportChatForUser/messageDtos";
+import ChatInput from "@onied/components/supportChatForUser/chatInput/chatInput";
+import { useEffect } from "react";
 
 type ChatWindowProps = {
   isChatWindowOpen: boolean;
-  messagesList: MessageDto[];
+  messagesHistory: MessagesHistoryDto;
+  setMessagesHistory: (messagesHistory: MessagesHistoryDto) => void;
 };
 
 function ChatWindow(props: ChatWindowProps) {
@@ -12,20 +18,39 @@ function ChatWindow(props: ChatWindowProps) {
   return (
     <div className={classes.chatWindow}>
       <div className={classes.chatHeader}>
-        <p>Поиск оператора.</p>
-        <p>Пожалуйста подождите...</p>
+        {props.messagesHistory === null ||
+        props.messagesHistory.supportNumber === null ? (
+          <div>
+            <p>Поиск оператора.</p>
+            <p>Пожалуйста подождите...</p>
+          </div>
+        ) : (
+          <div>
+            <p>На ваш вопрос ответит</p>
+            <p>Оператор №{props.messagesHistory.supportNumber}</p>
+          </div>
+        )}
       </div>
-      <div className={classes.messagesTimeline}>
-        {props.messagesList.map((message: MessageDto) => (
-          <ChatMessage
-            key={message.messageId}
-            message={message.messageText}
-            time={message.createdAt}
-            isOwn={message.supportNumber === null}
-            isRead={message.readAt !== null}
-          ></ChatMessage>
-        ))}
-      </div>
+      {props.messagesHistory === null ? (
+        <></>
+      ) : (
+        <div className={classes.messagesTimeline}>
+          {props.messagesHistory.messages.map(
+            (message: MessageDto, index: number, array: MessageDto[]) => (
+              <ChatMessage
+                key={message.messageId}
+                {...message}
+                isFirstOperatorMessageInChain={
+                  !message.isSystem &&
+                  array[index - 1].supportNumber === null &&
+                  array[index].supportNumber !== null
+                }
+              ></ChatMessage>
+            )
+          )}
+        </div>
+      )}
+      <ChatInput></ChatInput>
     </div>
   );
 }
