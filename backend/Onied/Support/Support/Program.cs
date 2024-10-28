@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Support.Data;
 using Support.Extensions;
+using Support.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
+
+builder.Services.AddSingleton<ExceptionMiddleware>();
 
 builder.Services.AddDbContextConfigured();
 builder.Services.AddRepositories();
@@ -27,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCorsConfigured();
 

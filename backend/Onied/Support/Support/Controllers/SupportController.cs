@@ -1,22 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using Support.Abstractions;
+using Support.Filters;
 
 namespace Support.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class SupportController : ControllerBase
+[AuthorizeSupportUser]
+public class SupportController(ISupportService supportService) : ControllerBase
 {
     [HttpGet]
     [Route("active")]
-    public Task<IResult> GetActiveChats([FromQuery] Guid? userId)
+    public async Task<IResult> GetActiveChats([FromQuery] Guid? userId)
     {
-        return Task.FromResult(Results.Ok(new { UserId = userId.ToString() }));
+        var response = await supportService.GetActiveChats(userId);
+        return Results.Ok(response);
     }
 
     [HttpGet]
     [Route("open")]
-    public Task<IResult> GetOpenChats([FromQuery] Guid? userId)
+    public async Task<IResult> GetOpenChats([FromQuery] Guid? userId)
     {
-        return Task.FromResult(Results.Ok(new { UserId = userId.ToString() }));
+        var response = await supportService.GetOpenChats(userId);
+        return Results.Ok(response);
+    }
+
+    [HttpGet]
+    [Route("profile")]
+    public async Task<IResult> GetProfile([FromQuery] Guid? userId)
+    {
+        var response = await supportService.GetProfile(userId);
+        return Results.Ok(response);
     }
 }
