@@ -1,3 +1,5 @@
+using Support.Abstractions;
+using Support.Services;
 
 using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
@@ -9,9 +11,13 @@ public static class ServicesExtension
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        return services.AddSingleton<IUserIdProvider, QueryUserIdProvider>()
+        return services
+            .AddSingleton<IUserIdProvider, QueryUserIdProvider>()
             .AddScoped<IMessageGenerator, MessageGenerator>()
             .AddScoped<IChatManagementService, ChatManagementService>()
-            .AddScoped<IChatHubClientSender, ChatHubClientSenderService>();
+            .AddScoped<IChatHubClientSender, ChatHubClientSenderService>()
+            .AddScoped<IChatService, ChatService>()
+            .AddScoped<ISupportService, SupportService>()
+            .AddScoped<IAuthorizationSupportUserService, AuthorizationSupportUserService>();
     }
 }
