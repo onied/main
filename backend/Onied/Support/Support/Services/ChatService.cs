@@ -39,8 +39,7 @@ public class ChatService(
             throw new NotFoundException($"The chat with ChatId = {chatId} was not found");
         }
 
-
-        logger.LogInformation("Retrieved chat for support staff member {UserId}", userId);
+        logger.LogInformation("Retrieved chat for support user {UserId}", userId);
         return mapper.Map<GetChatResponseDto>(chat);
     }
 }
