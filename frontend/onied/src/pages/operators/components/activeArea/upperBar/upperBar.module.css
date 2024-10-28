@@ -1,0 +1,23 @@
+.upperBar {
+    height: min-content;
+    width: 100%;
+
+    border-bottom: 1px solid #bbbbbb;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0 10px 0;
+}
+
+.buttonSvg {
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttonSvg:hover {
+    background-color: #ececec;
+}

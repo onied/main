@@ -17,7 +17,7 @@ export default function ChatBadgeList({ title, badges, side }: Props) {
         side == Side.Left ? classes.left : classes.right
     ])}>
         <div className={classes.chatBadgeListHeader}>{title}</div>
-        {badges.map(badge => <ChatBadgeItem badge={badge} />)}
+        {badges.map(badge => <ChatBadgeItem badge={badge} key={`${title[0]}-chat-badge-${badge.ChatId}`} />)}
     </nav>
 }
 

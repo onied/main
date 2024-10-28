@@ -7,7 +7,6 @@ import ChatBadgeList from './chatBadgeList'
 
 import { useState } from 'react'
 
-
 type Props = {
     title: string
     badges: ChatBadge[]

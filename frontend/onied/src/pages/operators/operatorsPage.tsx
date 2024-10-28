@@ -3,6 +3,7 @@ import { ChatBadge } from "@onied/types/chat";
 import OperatorsHeader from "./components/operatorsHeader/operatorsHeader";
 import ChatsSidebar from "./components/ChatsSidebar/chatsSidebar";
 import Background from "./components/background/background";
+import ActiveArea from "./components/activeArea/activeArea";
 
 const defaultBadges: ChatBadge[] = [
     {
@@ -17,7 +18,7 @@ const defaultBadges: ChatBadge[] = [
         }
     },
     {
-        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
         LastMessage: {
             MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
             SupportNumber: 69,
@@ -28,14 +29,14 @@ const defaultBadges: ChatBadge[] = [
         }
     },
     {
-        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
         LastMessage: {
             MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
             SupportNumber: 69,
             CreatedAt: 0,
             ReadAt: null,
             IsSystem: false,
-            Message: "А что кушают поросятки?"
+            Message: "бла-бла-бла"
         }
     }
 ]
@@ -46,6 +47,7 @@ export default function OperatorsPage() {
         <main>
             <Background />
             <ActiveChatsSidebar />
+            <ActiveArea />
             <OpenChatsSidebar />
         </main>
     </>
