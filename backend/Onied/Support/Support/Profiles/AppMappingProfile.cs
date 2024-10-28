@@ -46,6 +46,5 @@ public class AppMappingProfile : Profile
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,
                 opt => opt.MapFrom(src => src.MessageContent));
->>>>>>> dev
     }
 }
