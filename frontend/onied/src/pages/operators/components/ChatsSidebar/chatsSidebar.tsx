@@ -11,9 +11,10 @@ type Props = {
     title: string
     badges: ChatBadge[]
     side: Side
+    searchEnabled: boolean
 }
 
-export default function ChatsSidebar({ title, badges, side }: Props) {
+export default function ChatsSidebar({ title, badges, side, searchEnabled }: Props) {
     const [isOpen, setIsOpen] = useState(true)
 
     const toggleSidebar = () => setIsOpen(!isOpen)
@@ -30,7 +31,7 @@ export default function ChatsSidebar({ title, badges, side }: Props) {
             ])}>
                 <button className={classes.toggleButton} onClick={toggleSidebar}><HaburgerIcon /></button>
             </div>
-            <ChatBadgeList title={title} side={side} badges={badges} />
+            <ChatBadgeList title={title} side={side} badges={badges} searchEnabled={searchEnabled} />
         </div>
     )
 }

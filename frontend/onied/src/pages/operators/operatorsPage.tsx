@@ -23,11 +23,11 @@ export default function OperatorsPage() {
 const ActiveChatsSidebar = () => {
     const chatsState = useAppSelector((state) => state.chats);
     const badges = chatsState.activeChats
-    return <ChatsSidebar title={"Активные обращения"} badges={badges} side={Side.Left} />
+    return <ChatsSidebar title={"Активные обращения"} badges={badges} side={Side.Left} searchEnabled={false} />
 }
 
 const OpenChatsSidebar = () => {
     const chatsState = useAppSelector((state) => state.chats);
     const badges = chatsState.openChats
-    return <ChatsSidebar title={"Открытые обращения"} badges={badges} side={Side.Right} />
+    return <ChatsSidebar title={"Открытые обращения"} badges={badges} side={Side.Right} searchEnabled={true} />
 }
