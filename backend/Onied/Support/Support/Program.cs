@@ -19,6 +19,7 @@ builder.Services.AddRepositories();
 builder.Services.AddServices();
 
 builder.Services.AddAutoMapperConfigured();
+builder.Services.AddMassTransitConfigured();
 
 builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddControllers();

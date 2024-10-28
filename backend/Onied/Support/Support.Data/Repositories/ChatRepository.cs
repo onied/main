@@ -14,7 +14,6 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
             .AsNoTracking()
             .Include(c => c.Support)
             .Include(c => c.Messages)
-                .ThenInclude(m => m.SupportUser)
             .FirstOrDefaultAsync(c => c.Id == id);
 
 
@@ -23,7 +22,6 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
             .AsNoTracking()
             .Include(c => c.Support)
             .Include(c => c.Messages)
-                .ThenInclude(m => m.SupportUser)
             .FirstOrDefaultAsync(c => c.ClientId == userId);
 
     public async Task<List<Chat>> GetActiveChatsAsync(Guid userId)
@@ -31,7 +29,6 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
             .AsNoTracking()
             .Include(c => c.Support)
             .Include(c => c.Messages)
-                .ThenInclude(m => m.SupportUser)
             .Where(c => c.Support != null && c.Support.Id == userId)
             .ToListAsync();
 
@@ -40,7 +37,6 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
             .AsNoTracking()
             .Include(c => c.Support)
             .Include(c => c.Messages)
-                .ThenInclude(m => m.SupportUser)
             .Where(c => c.CurrentSessionId != default && c.Support == null)
             .ToListAsync();
 }

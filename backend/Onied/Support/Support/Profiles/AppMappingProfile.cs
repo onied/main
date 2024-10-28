@@ -10,13 +10,9 @@ public class AppMappingProfile : Profile
 {
     public AppMappingProfile()
     {
-        CreateMap<Message, HubMessageDto>().ForMember(dto => dto.Message,
+        CreateMap<MessageView, HubMessageDto>().ForMember(dto => dto.Message,
             options => options
                 .MapFrom(message => message.MessageContent))
-            .ForMember(dto => dto.SupportNumbers,
-            options => options
-                .MapFrom((message, _) =>
-                    message.UserId == message.Chat.SupportId ? message.Chat.Support?.Number : null))
             .ForMember(dto => dto.MessageId,
             options => options
                 .MapFrom(message => message.Id));
@@ -25,9 +21,7 @@ public class AppMappingProfile : Profile
         CreateMap<Chat, GetChatResponseDto>()
             .ForMember(dest => dest.SupportNumber,
                 opt => opt.MapFrom(src => src.Support == null ? (int?)null : src.Support.Number));
-        CreateMap<Message, GetChatMessageItem>()
-            .ForMember(dest => dest.SupportNumber,
-                opt => opt.MapFrom(src => src.SupportUser == null ? (int?)null : src.SupportUser.Number))
+        CreateMap<MessageView, GetChatMessageItem>()
             .ForMember(dest => dest.MessageId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,
@@ -39,9 +33,7 @@ public class AppMappingProfile : Profile
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.LastMessage,
                 opt => opt.MapFrom(src => src.Messages.OrderBy(m => m.CreatedAt).LastOrDefault()));
-        CreateMap<Message, GetChatsMessageItem>()
-            .ForMember(dest => dest.SupportNumber,
-                opt => opt.MapFrom(src => src.SupportUser == null ? (int?)null : src.SupportUser.Number))
+        CreateMap<MessageView, GetChatsMessageItem>()
             .ForMember(dest => dest.MessageId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Support.Data;
@@ -11,9 +12,11 @@ using Support.Data;
 namespace Support.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241028155912_ReplaceSupportUserPropertyWithView")]
+    partial class ReplaceSupportUserPropertyWithView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,10 +97,6 @@ namespace Support.Data.Migrations
 
             modelBuilder.Entity("Support.Data.Models.MessageView", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid")
                         .HasColumnName("chat_id");
@@ -105,6 +104,10 @@ namespace Support.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<bool>("IsSystem")
                         .HasColumnType("boolean")
@@ -123,9 +126,6 @@ namespace Support.Data.Migrations
                     b.Property<int?>("SupportNumber")
                         .HasColumnType("integer")
                         .HasColumnName("support_number");
-
-                    b.HasKey("Id")
-                        .HasName("pk_messages_view");
 
                     b.HasIndex("ChatId")
                         .HasDatabaseName("ix_messages_view_chat_id");
@@ -171,7 +171,7 @@ namespace Support.Data.Migrations
             modelBuilder.Entity("Support.Data.Models.Message", b =>
                 {
                     b.HasOne("Support.Data.Models.Chat", "Chat")
-                        .WithMany()
+                        .WithMany("Messages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -183,7 +183,7 @@ namespace Support.Data.Migrations
             modelBuilder.Entity("Support.Data.Models.MessageView", b =>
                 {
                     b.HasOne("Support.Data.Models.Chat", "Chat")
-                        .WithMany("Messages")
+                        .WithMany()
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()

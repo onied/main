@@ -10,7 +10,7 @@ namespace Support.Services;
 public class ChatHubClientSenderService(
     IHubContext<ChatHub, IChatClient> hubContext,
     IClientNotificationProducer clientNotificationProducer,
-    IMapperBase mapper) : IChatHubClientSender
+    IMapper mapper) : IChatHubClientSender
 {
     public async Task SendMessageToSupportUsers(Message message)
     {
