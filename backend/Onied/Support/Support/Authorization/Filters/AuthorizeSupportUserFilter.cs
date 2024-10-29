@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Support.Abstractions;
 
-namespace Support.Filters;
+namespace Support.Authorization.Filters;
 
 public class AuthorizeSupportUserAttribute : ActionFilterAttribute
 {

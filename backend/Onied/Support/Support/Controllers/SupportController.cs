@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Support.Abstractions;
-using Support.Filters;
+using Support.Authorization.Filters;
 
 namespace Support.Controllers;
 
