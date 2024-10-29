@@ -1,19 +1,19 @@
 .singleDigitInput {
-    border: none;
-    align-items: center;
-    background-color: #fafafa;
-    border-radius: 3px;
-    box-shadow: 0px 0px 4px 2px #9715d34c;
-    justify-content: center;
-    display: flex;
-    font-family: "Roboto", Helvetica;
-    font-size: 20pt;
-    font-weight: 800;
-    width: 2rem;
-    height: 2rem;
-    text-align: center;
+  border: none;
+  align-items: center;
+  background-color: #fafafa;
+  border-radius: 3px;
+  box-shadow: 0px 0px 4px 2px #9715d34c;
+  justify-content: center;
+  display: flex;
+  font-family: "Roboto", Helvetica;
+  font-size: 20pt;
+  font-weight: 800;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
 }
 
 .singleDigitInput:focus {
-    outline: none;
+  outline: none;
 }

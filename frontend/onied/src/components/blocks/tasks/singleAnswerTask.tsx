@@ -18,9 +18,9 @@ function SingleAnswersTask({ task, onChange }: props) {
       taskId: task.id,
       taskType: TaskType.SingleAnswer,
       isDone: true,
-      variantsIds: [Number(event.target.value)]
+      variantsIds: [Number(event.target.value)],
     });
-  }
+  };
 
   return (
     <>
@@ -34,7 +34,10 @@ function SingleAnswersTask({ task, onChange }: props) {
               onChange={handleChange}
               checked={value == variant.id ? "t" : ""}
             ></Radio>
-            <label htmlFor={variant.id.toString()} className={classes.variantLabel}>
+            <label
+              htmlFor={variant.id.toString()}
+              className={classes.variantLabel}
+            >
               {variant.description}
             </label>
           </div>

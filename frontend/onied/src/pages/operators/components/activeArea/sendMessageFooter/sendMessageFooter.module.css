@@ -1,14 +1,14 @@
 .chatFooter {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .sendArea {
-    width: max-content;
+  width: max-content;
 }
 
 .sendButton {
-    cursor: pointer;
+  cursor: pointer;
 }

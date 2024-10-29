@@ -4,5 +4,5 @@ import { ChatsReducer } from "./chatReducer";
 
 export const rootReducer = combineReducers({
   hierarchy: CourseHierarchyReducer,
-  chats: ChatsReducer
+  chats: ChatsReducer,
 });

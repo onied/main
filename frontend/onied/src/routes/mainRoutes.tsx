@@ -18,30 +18,35 @@ import TeachingRoutes from "./teachingRoutes";
 import { Route, Routes } from "react-router-dom";
 
 export default function mainRoutes() {
-    return <>
-        <Header />
-        <main>
-            <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/catalog" element={<Catalog />} />
+  return (
+    <>
+      <Header />
+      <main>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/catalog" element={<Catalog />} />
 
-                <Route path="/course/*" element={<CourseRoutes />} />
+          <Route path="/course/*" element={<CourseRoutes />} />
 
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/forgotPassword" element={<ForgotPassword />} />
-                <Route path="/login/2fa" element={<TwoFactor />} />
-                <Route path="/resetPassword" element={<ResetPassword />} />
-                <Route path="/oauth-redirect" element={<OauthRedirect />} />
-                <Route path="/confirmEmail" element={<ConfirmEmail />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/login/2fa" element={<TwoFactor />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
+          <Route path="/oauth-redirect" element={<OauthRedirect />} />
+          <Route path="/confirmEmail" element={<ConfirmEmail />} />
 
-                <Route path="/teaching/*" element={<TeachingRoutes />} />
+          <Route path="/teaching/*" element={<TeachingRoutes />} />
 
-                <Route path="/subscriptions" element={<SubscriptionsPreview />} />
-                <Route path="/profile/*" element={<ProfilePage />} />
-                <Route path="/purchases/*" element={<PurchasePage />} />
-                <Route path="/certificates/:courseId" element={<OrderCertificatePage />} />
-            </Routes>
-        </main>
+          <Route path="/subscriptions" element={<SubscriptionsPreview />} />
+          <Route path="/profile/*" element={<ProfilePage />} />
+          <Route path="/purchases/*" element={<PurchasePage />} />
+          <Route
+            path="/certificates/:courseId"
+            element={<OrderCertificatePage />}
+          />
+        </Routes>
+      </main>
     </>
+  );
 }

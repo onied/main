@@ -21,7 +21,9 @@ function Tasks({ courseId, blockId }: props) {
   const [found, setFound] = useState<boolean>();
   const [taskInputs, setTaskInputs] = useState<UserInputRequest[]>([]);
   const [reloadNeeded, setReloadNeeded] = useState<number>(0);
-  const [taskPointsSequence, setTaskPointsSequence] = useState<TaskPointsResponse[] | null>();
+  const [taskPointsSequence, setTaskPointsSequence] = useState<
+    TaskPointsResponse[] | null
+  >();
 
   const handleChange = (inputIndex: number, input: any) => {
     const newTaskInputs = [...taskInputs];

@@ -1,44 +1,71 @@
-import classes from './chatsSidebar.module.css'
+import classes from "./chatsSidebar.module.css";
 
-import combineCssClasses from '@onied/helpers/combineCssClasses'
-import { Side } from '@onied/types/general'
-import { ChatBadge } from '@onied/types/chat'
-import ChatBadgeList from './chatBadgeList'
+import combineCssClasses from "@onied/helpers/combineCssClasses";
+import { Side } from "@onied/types/general";
+import { ChatBadge } from "@onied/types/chat";
+import ChatBadgeList from "./chatBadgeList";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 type Props = {
-    title: string
-    badges: ChatBadge[]
-    side: Side
-    searchEnabled: boolean
-}
+  title: string;
+  badges: ChatBadge[];
+  side: Side;
+  searchEnabled: boolean;
+};
 
-export default function ChatsSidebar({ title, badges, side, searchEnabled }: Props) {
-    const [isOpen, setIsOpen] = useState(true)
+export default function ChatsSidebar({
+  title,
+  badges,
+  side,
+  searchEnabled,
+}: Props) {
+  const [isOpen, setIsOpen] = useState(true);
 
-    const toggleSidebar = () => setIsOpen(!isOpen)
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
-    return (
-        <div className={combineCssClasses([
-            classes.sidebar,
-            side == Side.Left ? classes.left : classes.right,
-            isOpen ? classes.open : null
-        ])}>
-            <div className={combineCssClasses([
-                classes.sidebarButtonPanel,
-                side == Side.Left ? classes.left : classes.right
-            ])}>
-                <button className={classes.toggleButton} onClick={toggleSidebar}><HaburgerIcon /></button>
-            </div>
-            <ChatBadgeList title={title} side={side} badges={badges} searchEnabled={searchEnabled} />
-        </div>
-    )
+  return (
+    <div
+      className={combineCssClasses([
+        classes.sidebar,
+        side == Side.Left ? classes.left : classes.right,
+        isOpen ? classes.open : null,
+      ])}
+    >
+      <div
+        className={combineCssClasses([
+          classes.sidebarButtonPanel,
+          side == Side.Left ? classes.left : classes.right,
+        ])}
+      >
+        <button className={classes.toggleButton} onClick={toggleSidebar}>
+          <HaburgerIcon />
+        </button>
+      </div>
+      <ChatBadgeList
+        title={title}
+        side={side}
+        badges={badges}
+        searchEnabled={searchEnabled}
+      />
+    </div>
+  );
 }
 
 const HaburgerIcon = () => (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" width="32" height="32" rx="2" fill="#ECECEC" />
-        <path d="M7.16663 8H16.5H25.8333M7.16663 16H25.8333M7.16663 24H25.8333"
-            stroke="#BBBBBB" strokeWidth="5.33333" strokeLinecap="round" />
-    </svg>)
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect x="0" width="32" height="32" rx="2" fill="#ECECEC" />
+    <path
+      d="M7.16663 8H16.5H25.8333M7.16663 16H25.8333M7.16663 24H25.8333"
+      stroke="#BBBBBB"
+      strokeWidth="5.33333"
+      strokeLinecap="round"
+    />
+  </svg>
+);

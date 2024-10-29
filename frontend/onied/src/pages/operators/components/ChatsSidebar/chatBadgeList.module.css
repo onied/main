@@ -1,91 +1,95 @@
 .chatBadgeList {
-    position: absolute;
-    top: 0;
-    bottom: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .chatBadgeList.left {
-    left: var(--sidebar-panel-width);
-    right: 0;
+  left: var(--sidebar-panel-width);
+  right: 0;
 }
 
 .chatBadgeList.right {
-    left: 0;
-    right: var(--sidebar-panel-width);
+  left: 0;
+  right: var(--sidebar-panel-width);
 }
 
 .chatBadgeListHeader {
-    height: fit-content;
-    width: 100%;
-    padding: 10px;
+  height: fit-content;
+  width: 100%;
+  padding: 10px;
 
-    border-bottom: 1px solid #bbbbbb;
+  border-bottom: 1px solid #bbbbbb;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .chatBadgeListHeader > p {
-    margin: 0;
-    font-size: x-large;
-    font-weight: 400;
+  margin: 0;
+  font-size: x-large;
+  font-weight: 400;
 }
 
 .badgeItem {
-    height: fit-content;
-    width: 100%;
+  height: fit-content;
+  width: 100%;
 
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
 }
 
 .badgeItem:hover {
-    background-color: #00000010;
-    cursor: pointer;
+  background-color: #00000010;
+  cursor: pointer;
 }
 
 .badgeItem > p {
-    margin: 0;
-    font-size: 14pt;
+  margin: 0;
+  font-size: 14pt;
 }
 
 .badgeFooter {
-    height: min-content;
-    width: 100%;
+  height: min-content;
+  width: 100%;
 
-    justify-content: space-between;
-    
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+  justify-content: space-between;
 
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  align-items: center;
 }
 
 .unreadCount {
-    --unread-count-font: 10pt;
-    --unread-count-padding: 5px;
-    --unread-count-diameter: calc(var(--unread-count-font) + var(--unread-count-padding) * 2);
+  --unread-count-font: 10pt;
+  --unread-count-padding: 5px;
+  --unread-count-diameter: calc(
+    var(--unread-count-font) + var(--unread-count-padding) * 2
+  );
 
-    font-size: var(--unread-count-font);
-    font-weight: 800;
+  font-size: var(--unread-count-font);
+  font-weight: 800;
 
-    background-color: #9747FF;
-    color: white;
+  background-color: #9747ff;
+  color: white;
 
-    min-width: var(--unread-count-diameter);
-    min-height: var(--unread-count-diameter);
-    width: var(--unread-count-diameter);
-    height: var(--unread-count-diameter);
-    border-radius: calc(var(--unread-count-font) / 2 + var(--unread-count-padding));
+  min-width: var(--unread-count-diameter);
+  min-height: var(--unread-count-diameter);
+  width: var(--unread-count-diameter);
+  height: var(--unread-count-diameter);
+  border-radius: calc(
+    var(--unread-count-font) / 2 + var(--unread-count-padding)
+  );
 
-    text-align: center;
-    align-content: center;
+  text-align: center;
+  align-content: center;
 }

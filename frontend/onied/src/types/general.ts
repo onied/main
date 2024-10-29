@@ -1,4 +1,4 @@
 export enum Side {
-    Left = 0,
-    Right = 1
+  Left = 0,
+  Right = 1,
 }

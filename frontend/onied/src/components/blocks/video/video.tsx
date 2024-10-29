@@ -7,7 +7,7 @@ import { VideoBlock } from "@onied/types/block";
 type props = {
   courseId: number;
   blockId: number;
-}
+};
 
 function Video({ courseId, blockId }: props) {
   const [videoBlock, setVideoBlock] = useState<VideoBlock>();
@@ -29,7 +29,7 @@ function Video({ courseId, blockId }: props) {
         }
       });
   }, [courseId, blockId]);
-  
+
   if (found === undefined) return <CustomBeatLoader />;
   if (!found) return <></>;
   return (

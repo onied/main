@@ -14,7 +14,6 @@ import OperatorsPage from "@onied/pages/operators/operatorsPage";
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
-
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);

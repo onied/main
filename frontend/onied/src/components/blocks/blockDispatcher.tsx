@@ -12,7 +12,7 @@ import { Block } from "@onied/types/block";
 type props = {
   hierarchy: Course;
   setCurrentBlock: (blockId: number) => void;
-}
+};
 
 function BlockDispatcher({ hierarchy, setCurrentBlock }: props) {
   const { blockId } = useParams();
@@ -30,18 +30,24 @@ function BlockDispatcher({ hierarchy, setCurrentBlock }: props) {
   const blocks: { [blockId: number]: Block } | undefined =
     hierarchy != null && "modules" in hierarchy
       ? hierarchy.modules
-        .flatMap((module) => module.blocks)
-        .reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {})
+          .flatMap((module) => module.blocks)
+          .reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {})
       : undefined;
 
-  if (isNaN(blockIdNumber)
-    || blocks === undefined
-    || !Object.keys(blocks).includes(blockId!))
+  if (
+    isNaN(blockIdNumber) ||
+    blocks === undefined ||
+    !Object.keys(blocks).includes(blockId!)
+  )
     return <NotFound>Блок не найден.</NotFound>;
 
   return (
     <div className={classes.blockWrapper}>
-      {blocks ? blockTypes[blocks[blockIdNumber].blockType]() : <CustomBeatLoader />}
+      {blocks ? (
+        blockTypes[blocks[blockIdNumber].blockType]()
+      ) : (
+        <CustomBeatLoader />
+      )}
     </div>
   );
 }
