@@ -1,6 +1,6 @@
 import classes from "./purchase.module.css";
 import { format } from "date-fns";
-import ruLocale from "date-fns/locale/ru";
+import { ru } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import { PurchaseType } from "../../../types/purchase";
 
@@ -29,7 +29,7 @@ export type Purchase = {
 
 function PurchaseContainer({ purchase }: { purchase: Purchase }) {
   const formatDate = (date: Date) => {
-    return format(new Date(date), "d MMMM yyyy", { locale: ruLocale });
+    return format(new Date(date), "d MMMM yyyy", { locale: ru });
   };
 
   const purchaseTypeMap = {

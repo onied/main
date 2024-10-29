@@ -12,6 +12,7 @@ import Register from "@onied/pages/accountManagement/register/register";
 import ResetPassword from "@onied/pages/accountManagement/resetPassword/resetPassword";
 import TwoFactor from "@onied/pages/accountManagement/twoFactorAuth/twoFactor";
 import OauthRedirect from "@onied/pages/oauthRedirect/oauthRedirect";
+import SupportChatWrapper from "@onied/components/supportChatForUser/supportChatWrapper";
 import CourseRoutes from "./courseRoutes";
 import TeachingRoutes from "./teachingRoutes";
 
@@ -46,6 +47,7 @@ export default function mainRoutes() {
             element={<OrderCertificatePage />}
           />
         </Routes>
+        <SupportChatWrapper />
       </main>
     </>
   );

@@ -47,10 +47,7 @@ function TeachingModerated() {
       {coursesList === undefined ? (
         <CustomBeatLoader />
       ) : coursesList.length > 0 ? (
-        <CourseCardsContainer
-          coursesList={coursesList}
-          owned={true}
-        ></CourseCardsContainer>
+        <CourseCardsContainer coursesList={coursesList}></CourseCardsContainer>
       ) : (
         <p className={classes.noCourses}>Нет модерируемых курсов</p>
       )}

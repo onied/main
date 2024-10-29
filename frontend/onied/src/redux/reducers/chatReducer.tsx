@@ -8,97 +8,97 @@ type ChatsState = {
 };
 
 const initialState: ChatsState = {
-  operatorProfile: { Number: 14 },
+  operatorProfile: { number: 14 },
   activeChats: [
     {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
+      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+      lastMessage: {
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        supportNumber: 69,
+        createdAt: 0,
+        readAt: null,
+        isSystem: false,
+        message: "А что кушают поросятки?",
       },
     },
     {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
+      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
+      lastMessage: {
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        supportNumber: 69,
+        createdAt: 0,
+        readAt: null,
+        isSystem: false,
+        message: "А что кушают поросятки?",
       },
     },
     {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "бла-бла-бла",
+      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+      lastMessage: {
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        supportNumber: 69,
+        createdAt: 0,
+        readAt: null,
+        isSystem: false,
+        message: "бла-бла-бла",
       },
     },
   ],
   openChats: [
     {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
+      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+      lastMessage: {
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        supportNumber: 69,
+        createdAt: 0,
+        readAt: null,
+        isSystem: false,
+        message: "А что кушают поросятки?",
       },
     },
     {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
+      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
+      lastMessage: {
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        supportNumber: 69,
+        createdAt: 0,
+        readAt: null,
+        isSystem: false,
+        message: "А что кушают поросятки?",
       },
     },
     {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "бла-бла-бла",
+      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+      lastMessage: {
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
+        supportNumber: 69,
+        createdAt: 0,
+        readAt: null,
+        isSystem: false,
+        message: "бла-бла-бла",
       },
     },
   ],
   currentChat: {
-    SupportNumber: 69,
-    CurrentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-    Messages: [
+    supportNumber: 69,
+    currentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+    messages: [
       {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        SupportNumber: null,
-        CreatedAt: 1730115891,
-        ReadAt: 1730115891,
-        IsSystem: false,
-        Message:
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+        supportNumber: null,
+        createdAt: 1730115891,
+        readAt: 1730115891,
+        isSystem: false,
+        message:
           "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
       },
       {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        SupportNumber: 69,
-        CreatedAt: 1730115891,
-        ReadAt: 1730115891,
-        IsSystem: false,
-        Message:
+        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+        supportNumber: 69,
+        createdAt: 1730115891,
+        readAt: 1730115891,
+        isSystem: false,
+        message:
           "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
       },
     ],

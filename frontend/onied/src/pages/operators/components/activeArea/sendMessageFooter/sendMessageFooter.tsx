@@ -17,7 +17,7 @@ export default function SendMessageFooter() {
       payload: {
         ...chats.currentChat!,
         Messages: [
-          ...chats.currentChat!.Messages,
+          ...chats.currentChat!.messages,
           {
             MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
             SupportNumber: 69,

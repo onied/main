@@ -5,19 +5,15 @@ import { OperatorProfile } from "@onied/types/chat";
 import OperatorChatApi from "@onied/api/operatorChat";
 
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function OperatorsHeader() {
   const [profile, setProfile] = useState<OperatorProfile | null>();
+  const location = useLocation();
 
   const opApi = new OperatorChatApi();
   useEffect(() => {
-    // opApi
-    //     .GetOperatorProfile()
-    //     .then(mbProfile => setProfile(mbProfile))
-    setProfile({
-      Number: 14,
-    });
+    opApi.GetOperatorProfile().then((mbProfile) => setProfile(mbProfile));
   }, []);
 
   return (
@@ -40,7 +36,7 @@ export default function OperatorsHeader() {
           </Link>
         ) : (
           <div className={classes.profileContainer}>
-            <p className={classes.profileName}>ОПЕРАТОР #{profile.Number}</p>
+            <p className={classes.profileName}>ОПЕРАТОР #{profile.number}</p>
           </div>
         )}
       </div>

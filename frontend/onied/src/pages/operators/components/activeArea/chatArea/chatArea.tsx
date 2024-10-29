@@ -43,7 +43,7 @@ const TimeBadge = ({ time }: { time: number }) => {
 };
 
 const ChatMessage = ({ message }: { message: Message }) => {
-  const isMine = message.SupportNumber != null;
+  const isMine = message.supportNumber != null;
 
   return (
     <div
@@ -52,10 +52,10 @@ const ChatMessage = ({ message }: { message: Message }) => {
         isMine ? classes.mine : classes.other,
       ])}
     >
-      <p>{message.Message}</p>
+      <p>{message.message}</p>
       <div className={classes.chatFooter}>
-        {message.ReadAt && <ReadBadge />}
-        <TimeBadge time={message.CreatedAt} />
+        {message.readAt && <ReadBadge />}
+        <TimeBadge time={message.createdAt} />
       </div>
     </div>
   );
@@ -64,7 +64,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
 export default function ChatArea({ chat }: { chat: Chat }) {
   return (
     <div className={classes.chatArea}>
-      {chat.Messages.map((msg) => (
+      {chat.messages.map((msg) => (
         <ChatMessage message={msg} />
       ))}
       <SendMessageFooter />

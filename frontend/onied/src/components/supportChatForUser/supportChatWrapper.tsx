@@ -3,7 +3,6 @@ import api from "../../config/axios";
 import ChatButton from "@onied/components/supportChatForUser/chatButton/chatButton";
 import ChatWindow from "@onied/components/supportChatForUser/chatWindow/chatWindow";
 import { MessagesHistoryDto } from "@onied/components/supportChatForUser/messageDtos";
-import GetHistory from "@onied/components/supportChatForUser/tempMessagesSource";
 import { AxiosError } from "axios";
 import { useProfile } from "@onied/hooks/profile/useProfile";
 
@@ -30,7 +29,6 @@ function SupportChatWrapper() {
           }
         } else {
           console.error("Could not reach the server.");
-          setMessagesHistory(GetHistory(0));
         }
       });
   }, []);

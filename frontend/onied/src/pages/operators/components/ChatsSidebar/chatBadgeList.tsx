@@ -32,7 +32,7 @@ export default function ChatBadgeList({
 
     setFilteredBadges(
       badges.filter((badge) => {
-        const badgeId = badge.ChatId.replaceAll("-", "").toLowerCase();
+        const badgeId = badge.chatId.replaceAll("-", "").toLowerCase();
         return badgeId.startsWith(id);
       })
     );
@@ -58,7 +58,7 @@ export default function ChatBadgeList({
       {filteredBadges.map((badge) => (
         <ChatBadgeItem
           badge={badge}
-          key={`${title[0]}-chat-badge-${badge.ChatId}`}
+          key={`${title[0]}-chat-badge-${badge.chatId}`}
         />
       ))}
     </nav>
@@ -70,25 +70,25 @@ const UnreadCount = ({ count }: { count: number }) => (
 );
 
 const currentChat: Chat = {
-  SupportNumber: 69,
-  CurrentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-  Messages: [
+  supportNumber: 69,
+  currentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+  messages: [
     {
-      MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      SupportNumber: null,
-      CreatedAt: 1730115891,
-      ReadAt: 1730115891,
-      IsSystem: false,
-      Message:
+      messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+      supportNumber: null,
+      createdAt: 1730115891,
+      readAt: 1730115891,
+      isSystem: false,
+      message:
         "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
     },
     {
-      MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      SupportNumber: 69,
-      CreatedAt: 1730115891,
-      ReadAt: 1730115891,
-      IsSystem: false,
-      Message:
+      messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+      supportNumber: 69,
+      createdAt: 1730115891,
+      readAt: 1730115891,
+      isSystem: false,
+      message:
         "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
     },
   ],
@@ -108,9 +108,9 @@ function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
 
   return (
     <div className={classes.badgeItem} onClick={openChatEvent}>
-      <p>{badge.LastMessage.Message}</p>
+      <p>{badge.lastMessage.message}</p>
       <div className={classes.badgeFooter}>
-        <IdBar id={badge.ChatId} />
+        <IdBar id={badge.chatId} />
         <UnreadCount count={1} />
       </div>
     </div>

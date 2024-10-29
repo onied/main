@@ -99,6 +99,7 @@ function Landing() {
     settingsStateSetter: Dispatch<SetStateAction<Settings>>
   ) => {
     const currentSlidesToShow =
+      // @ts-ignore
       slider.current?.innerSlider?.track.props.slidesToShow;
     if (courseCardsAmount > currentSlidesToShow) {
       settingsStateSetter((settings) => ({

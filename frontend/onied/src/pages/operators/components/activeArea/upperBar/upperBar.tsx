@@ -129,7 +129,7 @@ export default function UpperBar({ currentChat }: { currentChat: Chat }) {
   return (
     <div className={classes.upperBar}>
       <Return />
-      <IdBar id={currentChat.CurrentSessionId!} />
+      <IdBar id={currentChat.currentSessionId!} />
       <Unlink />
       <Finish />
     </div>

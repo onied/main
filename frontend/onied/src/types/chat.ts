@@ -1,25 +1,25 @@
 import { UUID } from "crypto";
 
 export type Message = {
-  MessageId: UUID;
-  SupportNumber: number | null;
-  CreatedAt: number;
-  ReadAt: number | null;
-  Message: string;
-  IsSystem: boolean;
+  messageId: UUID;
+  supportNumber: number | null;
+  createdAt: number;
+  readAt: number | null;
+  message: string;
+  isSystem: boolean;
 };
 
 export type Chat = {
-  SupportNumber: number | null;
-  CurrentSessionId: UUID | null;
-  Messages: Message[];
+  supportNumber: number | null;
+  currentSessionId: UUID | null;
+  messages: Message[];
 };
 
 export type ChatBadge = {
-  ChatId: UUID;
-  LastMessage: Message;
+  chatId: UUID;
+  lastMessage: Message;
 };
 
 export type OperatorProfile = {
-  Number: number;
+  number: number;
 };
