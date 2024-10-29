@@ -28,9 +28,12 @@ export default function OperatorsHeader() {
             </div>
             <div className={classes.rightWrapper}>{
                 profile == null
-                    ? <Link to="/login" className={classes.profileContainer}>
-                        Войти
-                    </Link>
+                    ? <Link
+            to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
+            className={classes.profileContainer}
+          >
+            Войти
+          </Link>
                     : <div className={classes.profileContainer}>
                         <p className={classes.profileName}>ОПЕРАТОР #{profile.Number}</p>
                     </div>
