@@ -50,7 +50,15 @@ function PersonsMessage(props: ChatMessageProps) {
           ) : (
             <></>
           )}
-          <p>{props.createdAt.toLocaleTimeString()}</p>
+          <p>
+            {props.createdAt.toLocaleString([], {
+              minute: "numeric",
+              hour: "numeric",
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+            })}
+          </p>
         </div>
       </div>
     </>

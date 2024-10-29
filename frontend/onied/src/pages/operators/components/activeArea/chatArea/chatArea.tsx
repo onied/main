@@ -31,15 +31,18 @@ const ReadBadge = () => {
   );
 };
 
-const TimeBadge = ({ time }: { time: number }) => {
-  const getShowTime = (unixTime: number) => {
-    const date = new Date(unixTime * 1000);
-    const hours = date.getHours().toString();
-    const minutes = ("0" + date.getMinutes()).substr(-2);
-    return `${hours}:${minutes}`;
-  };
-
-  return <span className={classes.timeBadge}>{getShowTime(time)}</span>;
+const TimeBadge = ({ time }: { time: Date }) => {
+  return (
+    <span className={classes.timeBadge}>
+      {time.toLocaleString([], {
+        minute: "numeric",
+        hour: "numeric",
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      })}
+    </span>
+  );
 };
 
 const ChatMessage = ({ message }: { message: Message }) => {
