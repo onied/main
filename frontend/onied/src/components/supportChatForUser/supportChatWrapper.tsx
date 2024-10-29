@@ -17,7 +17,11 @@ function SupportChatWrapper() {
     api
       .get("/chat")
       .then((response) => {
-        setMessagesHistory(response.data);
+        let data = response.data;
+        data.messages = data.messages.map((message: any) => {
+          return { ...message, createdAt: new Date(message.createdAt) };
+        });
+        setMessagesHistory(data);
       })
       .catch((error: AxiosError<any, any>) => {
         if (error.response != null) {
