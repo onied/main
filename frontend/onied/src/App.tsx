@@ -1,36 +1,18 @@
 import "./App.css";
-import Header from "./components/header/header";
-import Course from "./pages/course/course";
-import { Route, Routes } from "react-router-dom";
-import Preview from "./pages/preview/preview";
-import Catalog from "./pages/catalog/catalog.jsx";
-import ForgotPassword from "./pages/accountManagement/forgotPassword/forgotPassword";
-import Register from "./pages/accountManagement/register/register.jsx";
-import Login from "./pages/accountManagement/login/login";
-import TwoFactor from "./pages/accountManagement/twoFactorAuth/twoFactor.jsx";
-import ResetPassword from "./pages/accountManagement/resetPassword/resetPassword";
-import OauthRedirect from "./pages/oauthRedirect/oauthRedirect";
-import LoginService from "./services/loginService";
+
+import LoginService from "@onied/services/loginService";
+import ProfileService from "@onied/services/profileService";
+
+import { Profile } from "@onied/hooks/profile/profile";
+import { ProfileContext } from "@onied/hooks/profile/profileContext";
+import { LoadingContext } from "@onied/hooks/profile/loadingContext";
+import CustomBeatLoader from "@onied/components/general/customBeatLoader";
+
+import MainRoutes from "@onied/routes/mainRoutes";
+import OperatorsPage from "@onied/pages/operators/operatorsPage";
+
 import { useEffect, useState } from "react";
-import { Profile } from "./hooks/profile/profile";
-import { ProfileContext } from "./hooks/profile/profileContext";
-import ProfilePage from "./pages/profile/profile";
-import ConfirmEmail from "./pages/accountManagement/confirmEmail/confirmEmail";
-import ProfileService from "./services/profileService";
-import { LoadingContext } from "./hooks/profile/loadingContext";
-import TeachingPage from "./pages/teaching/teaching";
-import EditCourseHierarchy from "./pages/editCourse/editHierarchy/editHierarchy";
-import EditBlock from "./pages/editCourse/EditBlock";
-import EditPreview from "./pages/editCourse/editPreview/editPreview";
-import CheckTask from "./pages/checkTasks/checkTask/checkTask";
-import CreateCourse from "./pages/createCourse/createCourse";
-import PurchasePage from "./pages/purchase/purchase";
-import OrderCertificatePage from "./pages/certificates/orderCertificate";
-import SubscriptionsPreview from "./pages/subscriptions/subscriptionsPreview";
-import ManageModerators from "./pages/manageModerators/manageModerators";
-import Landing from "./pages/landing/landing";
-import CustomBeatLoader from "./components/general/customBeatLoader";
-import SupportChatWrapper from "@onied/components/supportChatForUser/supportChatWrapper";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -51,58 +33,10 @@ function App() {
     <>
       <ProfileContext.Provider value={profile}>
         <LoadingContext.Provider value={loading}>
-          <Header></Header>
-          <main>
-            <Routes>
-              <Route path="/" element={<Landing />}></Route>
-              <Route path="/course/create" element={<CreateCourse />}></Route>
-              <Route
-                path="/course/:courseId/learn/*"
-                element={<Course />}
-              ></Route>
-              <Route
-                path="/course/:courseId/edit/hierarchy"
-                element={<EditCourseHierarchy />}
-              ></Route>
-              <Route
-                path="/course/:courseId/edit/:blockId"
-                element={<EditBlock />}
-              ></Route>
-              <Route path="/course/:courseId/edit" element={<EditPreview />} />
-              <Route path="/course/:courseId" element={<Preview />}></Route>
-              <Route
-                path="/course/:courseId/manageModerators"
-                element={<ManageModerators />}
-              />
-              <Route path="/catalog" element={<Catalog />}></Route>
-              <Route
-                path="/subscriptions"
-                element={<SubscriptionsPreview />}
-              ></Route>
-              <Route path="/register" element={<Register />}></Route>
-              <Route path="/login" element={<Login />}></Route>
-              <Route path="/login/2fa" element={<TwoFactor />}></Route>
-              <Route
-                path="/forgotPassword"
-                element={<ForgotPassword />}
-              ></Route>
-              <Route path="/resetPassword" element={<ResetPassword />}></Route>
-              <Route path="/oauth-redirect" element={<OauthRedirect />}></Route>
-              <Route path="/confirmEmail" element={<ConfirmEmail />}></Route>
-              <Route path="/profile/*" element={<ProfilePage />}></Route>
-              <Route
-                path="/teaching/check/:taskCheckId"
-                element={<CheckTask />}
-              ></Route>
-              <Route path="/teaching/*" element={<TeachingPage />}></Route>
-              <Route path="/purchases/*" element={<PurchasePage />}></Route>
-              <Route
-                path="/certificates/:courseId"
-                element={<OrderCertificatePage />}
-              ></Route>
-            </Routes>
-          </main>
-          <SupportChatWrapper></SupportChatWrapper>
+          <Routes>
+            <Route path="/operators" element={<OperatorsPage />} />
+            <Route path="*" element={<MainRoutes />} />
+          </Routes>
         </LoadingContext.Provider>
       </ProfileContext.Provider>
     </>

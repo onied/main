@@ -4,7 +4,6 @@
  * @class VideoProvider
  */
 export default abstract class VideoProvider {
-
   // regex: регулярное выражение, соответствующее видеопровайдеру.
   abstract regex: RegExp;
 

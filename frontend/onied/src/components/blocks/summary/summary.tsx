@@ -9,7 +9,7 @@ import FileLink from "./fileLink";
 type props = {
   courseId: number;
   blockId: number;
-}
+};
 
 function Summary({ courseId, blockId }: props) {
   const [summary, setSummary] = useState<SummaryBlock>();

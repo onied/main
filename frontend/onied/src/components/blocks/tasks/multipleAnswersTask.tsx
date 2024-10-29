@@ -25,7 +25,7 @@ function MultipleAnswersTask({ task, onChange }: props) {
       isDone: true,
       variantsIds: newValues,
     });
-  }
+  };
 
   return (
     <>
@@ -39,7 +39,10 @@ function MultipleAnswersTask({ task, onChange }: props) {
               onChange={handleChange}
               checked={values.includes(variant.id) ? "t" : ""}
             ></Checkbox>
-            <label htmlFor={variant.id.toString()} className={classes.variantLabel}>
+            <label
+              htmlFor={variant.id.toString()}
+              className={classes.variantLabel}
+            >
               {variant.description}
             </label>
           </div>
