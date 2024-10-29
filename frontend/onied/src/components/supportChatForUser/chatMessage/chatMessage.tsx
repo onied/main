@@ -43,7 +43,7 @@ function PersonsMessage(props: ChatMessageProps) {
             : classes.foreignMessage,
         ].join(" ")}
       >
-        <p>{props.messageText}</p>
+        <p>{props.message}</p>
         <div className={classes.chatMessageFooter}>
           {props.readAt !== null && props.supportNumber === null ? (
             <img src={tick} />
