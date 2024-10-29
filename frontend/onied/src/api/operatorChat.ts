@@ -24,5 +24,5 @@ export default class OperatorChatApi {
 
     GetActiveChats = async () => await this.Get<ChatBadge[]>("/support/active")
 
-    GetOpenChats = async () => await this.Get<ChatBadge[]>("/support/v")
+    GetOpenChats = async () => await this.Get<ChatBadge[]>("/support/open")
 } 
