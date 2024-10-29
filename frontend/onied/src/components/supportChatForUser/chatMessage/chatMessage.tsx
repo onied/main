@@ -7,7 +7,7 @@ type ChatMessageProps = MessageDto & { isFirstOperatorMessageInChain: boolean };
 
 function ChatMessage(props: ChatMessageProps) {
   if (props.isSystem) {
-    switch (props.messageText.split(" ")[0]) {
+    switch (props.message.split(" ")[0]) {
       case "close-session":
         return <DialogEndSystemMessage></DialogEndSystemMessage>;
       default:
