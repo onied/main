@@ -10,12 +10,16 @@ public class AppMappingProfile : Profile
 {
     public AppMappingProfile()
     {
+        // Hub
         CreateMap<MessageView, HubMessageDto>().ForMember(dto => dto.Message,
             options => options
                 .MapFrom(message => message.MessageContent))
             .ForMember(dto => dto.MessageId,
             options => options
-                .MapFrom(message => message.Id));
+                .MapFrom(message => message.Id))
+            .ForMember(dto => dto.SupportNumber,
+                options => options
+                    .MapFrom(message => message.SupportNumberNullIfUser));
 
         // GetChat
         CreateMap<Chat, GetChatResponseDto>()
@@ -25,18 +29,24 @@ public class AppMappingProfile : Profile
             .ForMember(dest => dest.MessageId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,
-                opt => opt.MapFrom(src => src.MessageContent));
+                opt => opt.MapFrom(src => src.MessageContent))
+            .ForMember(dest => dest.SupportNumber,
+                opt => opt
+                    .MapFrom(src => src.SupportNumberNullIfUser));
 
         // GetChats
         CreateMap<Chat, GetChatsResponseDto>()
             .ForMember(dest => dest.ChatId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.LastMessage,
-                opt => opt.MapFrom(src => src.Messages.OrderBy(m => m.CreatedAt).LastOrDefault()));
+                opt => opt.MapFrom(src => src.Messages.LastOrDefault()));
         CreateMap<MessageView, GetChatsMessageItem>()
             .ForMember(dest => dest.MessageId,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Message,
-                opt => opt.MapFrom(src => src.MessageContent));
+                opt => opt.MapFrom(src => src.MessageContent))
+            .ForMember(dest => dest.SupportNumber,
+                opt => opt
+                    .MapFrom(src => src.SupportNumberNullIfUser));
     }
 }

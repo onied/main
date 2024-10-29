@@ -12,6 +12,8 @@ public class MessageView
     public Chat Chat { get; set; } = null!;
     public Guid ChatId { get; set; }
 
+    public Guid UserId { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime? ReadAt { get; set; }
@@ -22,4 +24,5 @@ public class MessageView
     public bool IsSystem { get; set; }
 
     public int? SupportNumber { get; set; }
+    public int? SupportNumberNullIfUser => UserId == Chat.ClientId ? null : SupportNumber;
 }
