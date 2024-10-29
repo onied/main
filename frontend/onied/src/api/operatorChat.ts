@@ -17,12 +17,33 @@ export default class OperatorChatApi {
       });
   };
 
-  GetChat = async (chatId: UUID) => await this.Get<Chat>(`chat/${chatId}`);
+  GetChat = async (chatId: UUID) => {
+    let data = await this.Get<Chat>(`chat/${chatId}`);
+    data.messages = data.messages.map((message) => {
+      message.createdAt = new Date(message.createdAt);
+      return message;
+    });
+    return data;
+  };
 
   GetOperatorProfile = async () =>
     await this.Get<OperatorProfile>("/support/profile");
 
-  GetActiveChats = async () => await this.Get<ChatBadge[]>("/support/active");
+  GetActiveChats = async () => {
+    let data = await this.Get<ChatBadge[]>("/support/active");
+    data = data.map((chat) => {
+      chat.lastMessage.createdAt = new Date(chat.lastMessage.createdAt);
+      return chat;
+    });
+    return data;
+  };
 
-  GetOpenChats = async () => await this.Get<ChatBadge[]>("/support/open");
+  GetOpenChats = async () => {
+    let data = await this.Get<ChatBadge[]>("/support/open");
+    data = data.map((chat) => {
+      chat.lastMessage.createdAt = new Date(chat.lastMessage.createdAt);
+      return chat;
+    });
+    return data;
+  };
 }
