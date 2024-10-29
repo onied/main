@@ -3,14 +3,14 @@ import classes from "./chatBadgeList.module.css";
 import IdBar from "@onied/components/general/idBar/idBar";
 import combineCssClasses from "@onied/helpers/combineCssClasses";
 import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
-import { Chat, ChatBadge } from "@onied/types/chat";
+import { ChatBadge } from "@onied/types/chat";
 import { Side } from "@onied/types/general";
 import { useAppDispatch } from "@onied/hooks";
 
 import { useState } from "react";
 import InputForm from "@onied/components/general/inputform/inputform";
 
-// import OperatorChatApi from '@onied/api/operatorChat'
+import OperatorChatApi from "@onied/api/operatorChat";
 
 type Props = {
   title: string;
@@ -69,42 +69,27 @@ const UnreadCount = ({ count }: { count: number }) => (
   <span className={classes.unreadCount}>{count}</span>
 );
 
-const currentChat: Chat = {
-  supportNumber: 69,
-  currentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-  messages: [
-    {
-      messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      supportNumber: null,
-      createdAt: 1730115891,
-      readAt: 1730115891,
-      isSystem: false,
-      message:
-        "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-    },
-    {
-      messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      supportNumber: 69,
-      createdAt: 1730115891,
-      readAt: 1730115891,
-      isSystem: false,
-      message:
-        "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-    },
-  ],
-};
-
 function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
   const dispatch = useAppDispatch();
-  // const operatorChatApi = new OperatorChatApi()
+  const operatorChatApi = new OperatorChatApi();
+  const [hidden, setHidden] = useState(false);
 
   const openChatEvent = () => {
-    // const currentChat = operatorChatApi.GetChat(badge.ChatId)
-    dispatch({
-      type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
-      payload: currentChat,
-    });
+    operatorChatApi
+      .GetChat(badge.chatId)
+      .then((currentChat) => {
+        dispatch({
+          type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
+          payload: currentChat,
+        });
+      })
+      .catch(() => {
+        dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
+        setHidden(true);
+      });
   };
+
+  if (hidden) return <></>;
 
   return (
     <div className={classes.badgeItem} onClick={openChatEvent}>

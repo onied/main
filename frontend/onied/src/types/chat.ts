@@ -3,8 +3,8 @@ import { UUID } from "crypto";
 export type Message = {
   messageId: UUID;
   supportNumber: number | null;
-  createdAt: number;
-  readAt: number | null;
+  createdAt: Date;
+  readAt: Date | null;
   message: string;
   isSystem: boolean;
 };

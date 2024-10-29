@@ -11,9 +11,9 @@ export default class OperatorChatApi {
         console.log(response);
         return response.data as TResponse;
       })
-      .catch((response) => {
-        console.log(response);
-        return null;
+      .catch((error) => {
+        console.error(error);
+        throw error;
       });
   };
 

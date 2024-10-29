@@ -15,7 +15,7 @@ const initialState: ChatsState = {
       lastMessage: {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
         supportNumber: 69,
-        createdAt: 0,
+        createdAt: new Date(),
         readAt: null,
         isSystem: false,
         message: "А что кушают поросятки?",
@@ -26,7 +26,7 @@ const initialState: ChatsState = {
       lastMessage: {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
         supportNumber: 69,
-        createdAt: 0,
+        createdAt: new Date(),
         readAt: null,
         isSystem: false,
         message: "А что кушают поросятки?",
@@ -37,7 +37,7 @@ const initialState: ChatsState = {
       lastMessage: {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
         supportNumber: 69,
-        createdAt: 0,
+        createdAt: new Date(),
         readAt: null,
         isSystem: false,
         message: "бла-бла-бла",
@@ -50,7 +50,7 @@ const initialState: ChatsState = {
       lastMessage: {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
         supportNumber: 69,
-        createdAt: 0,
+        createdAt: new Date(),
         readAt: null,
         isSystem: false,
         message: "А что кушают поросятки?",
@@ -61,7 +61,7 @@ const initialState: ChatsState = {
       lastMessage: {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
         supportNumber: 69,
-        createdAt: 0,
+        createdAt: new Date(),
         readAt: null,
         isSystem: false,
         message: "А что кушают поросятки?",
@@ -72,7 +72,7 @@ const initialState: ChatsState = {
       lastMessage: {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
         supportNumber: 69,
-        createdAt: 0,
+        createdAt: new Date(),
         readAt: null,
         isSystem: false,
         message: "бла-бла-бла",
@@ -86,8 +86,8 @@ const initialState: ChatsState = {
       {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
         supportNumber: null,
-        createdAt: 1730115891,
-        readAt: 1730115891,
+        createdAt: new Date(),
+        readAt: new Date(),
         isSystem: false,
         message:
           "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
@@ -95,8 +95,8 @@ const initialState: ChatsState = {
       {
         messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
         supportNumber: 69,
-        createdAt: 1730115891,
-        readAt: 1730115891,
+        createdAt: new Date(),
+        readAt: new Date(),
         isSystem: false,
         message:
           "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
