@@ -45,9 +45,26 @@ const TimeBadge = ({ time }: { time: Date }) => {
   );
 };
 
+function SystemMessage({ message }: { message: string }) {
+  const parsedMessage = message.startsWith("open-session ")
+    ? `Начало сессии ${message.split(" ")[1]}`
+    : message === "close-session"
+      ? "Конец сессии"
+      : undefined;
+  if (!parsedMessage) return <></>;
+  return (
+    <div className={classes.systemMessage}>
+      <div className={classes.line}></div>
+      <span>{parsedMessage}</span>
+      <div className={classes.line}></div>
+    </div>
+  );
+}
+
 const ChatMessage = ({ message }: { message: Message }) => {
   const isMine = message.supportNumber != null;
 
+  if (message.isSystem) return <SystemMessage message={message.message} />;
   return (
     <div
       className={combineCssClasses([

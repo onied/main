@@ -10,102 +10,11 @@ type ChatsState = {
 };
 
 const initialState: ChatsState = {
-  operatorProfile: { number: 14 },
-  activeChats: [
-    {
-      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-      lastMessage: {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: null,
-        isSystem: false,
-        message: "А что кушают поросятки?",
-      },
-    },
-    {
-      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-      lastMessage: {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: null,
-        isSystem: false,
-        message: "А что кушают поросятки?",
-      },
-    },
-    {
-      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      lastMessage: {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: null,
-        isSystem: false,
-        message: "бла-бла-бла",
-      },
-    },
-  ],
-  openChats: [
-    {
-      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-      lastMessage: {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: null,
-        isSystem: false,
-        message: "А что кушают поросятки?",
-      },
-    },
-    {
-      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-      lastMessage: {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: null,
-        isSystem: false,
-        message: "А что кушают поросятки?",
-      },
-    },
-    {
-      chatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      lastMessage: {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: null,
-        isSystem: false,
-        message: "бла-бла-бла",
-      },
-    },
-  ],
-  currentChat: {
-    supportNumber: 69,
-    currentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-    messages: [
-      {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        supportNumber: null,
-        createdAt: new Date(),
-        readAt: new Date(),
-        isSystem: false,
-        message:
-          "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-      },
-      {
-        messageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        supportNumber: 69,
-        createdAt: new Date(),
-        readAt: new Date(),
-        isSystem: false,
-        message:
-          "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-      },
-    ],
-  },
-  currentChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
+  operatorProfile: undefined,
+  activeChats: [],
+  openChats: [],
+  currentChat: undefined,
+  currentChatId: undefined,
 };
 
 export enum ChatsStateActionTypes {

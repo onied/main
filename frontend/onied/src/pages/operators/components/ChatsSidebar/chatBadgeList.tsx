@@ -7,7 +7,7 @@ import { ChatBadge } from "@onied/types/chat";
 import { Side } from "@onied/types/general";
 import { useAppDispatch } from "@onied/hooks";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputForm from "@onied/components/general/inputform/inputform";
 
 import OperatorChatApi from "@onied/api/operatorChat";
@@ -25,7 +25,11 @@ export default function ChatBadgeList({
   side,
   searchEnabled,
 }: Props) {
-  const [filteredBadges, setFilteredBadges] = useState<ChatBadge[]>(badges);
+  const [filteredBadges, setFilteredBadges] = useState<ChatBadge[]>([]);
+
+  useEffect(() => {
+    setFilteredBadges(badges);
+  }, [badges]);
 
   const searchChat = (query: string) => {
     const id = query.replaceAll("-", "").toLowerCase() ?? "";
@@ -65,9 +69,9 @@ export default function ChatBadgeList({
   );
 }
 
-const UnreadCount = ({ count }: { count: number }) => (
-  <span className={classes.unreadCount}>{count}</span>
-);
+// const UnreadCount = ({ count }: { count: number }) => (
+//   <span className={classes.unreadCount}>{count}</span>
+// );
 
 function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
   const dispatch = useAppDispatch();
@@ -84,8 +88,6 @@ function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
         });
       })
       .catch(() => {
-        dispatch({ type: ChatsStateActionTypes.FETCH_ACTIVE_CHATS });
-        dispatch({ type: ChatsStateActionTypes.FETCH_OPEN_CHATS });
         setHidden(true);
       });
   };
@@ -97,7 +99,7 @@ function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
       <p>{badge.lastMessage.message}</p>
       <div className={classes.badgeFooter}>
         <IdBar id={badge.chatId} />
-        <UnreadCount count={1} />
+        {/* <UnreadCount count={1} /> */}
       </div>
     </div>
   );

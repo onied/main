@@ -63,3 +63,21 @@
   gap: 10px;
   padding: 10px;
 }
+
+.line {
+  border-top: 2px solid #dbdbdb;
+  margin: 15px 0 15px 0;
+  width: 100%;
+}
+
+.systemMessage {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 0 10px;
+}
+
+.systemMessage span {
+  font-size: 0.8rem;
+}
