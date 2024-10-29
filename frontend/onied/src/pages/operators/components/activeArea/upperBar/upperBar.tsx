@@ -1,9 +1,9 @@
-import { Chat } from "@onied/types/chat";
 import classes from "./upperBar.module.css";
 
 import IdBar from "@onied/components/general/idBar/idBar";
 import { useAppDispatch } from "@onied/hooks";
 import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
+import { UUID } from "crypto";
 
 const Return = () => {
   const dispatch = useAppDispatch();
@@ -125,11 +125,11 @@ const Finish = () => {
   );
 };
 
-export default function UpperBar({ currentChat }: { currentChat: Chat }) {
+export default function UpperBar({ currentChatId }: { currentChatId: UUID }) {
   return (
     <div className={classes.upperBar}>
       <Return />
-      <IdBar id={currentChat.currentSessionId!} />
+      <IdBar id={currentChatId} />
       <Unlink />
       <Finish />
     </div>

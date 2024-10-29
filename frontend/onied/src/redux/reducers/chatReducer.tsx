@@ -1,10 +1,12 @@
 import { Chat, ChatBadge, OperatorProfile } from "@onied/types/chat";
+import { UUID } from "crypto";
 
 type ChatsState = {
   operatorProfile?: OperatorProfile;
   activeChats: ChatBadge[];
   openChats: ChatBadge[];
   currentChat?: Chat;
+  currentChatId?: UUID;
 };
 
 const initialState: ChatsState = {
@@ -103,6 +105,7 @@ const initialState: ChatsState = {
       },
     ],
   },
+  currentChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
 };
 
 export enum ChatsStateActionTypes {
@@ -125,7 +128,7 @@ interface FetchOpenChatsAction {
 }
 interface FetchCurrentChatAction {
   type: ChatsStateActionTypes.FETCH_CURRENT_CHAT;
-  payload: Chat | undefined;
+  payload: { chat: Chat; chatId: UUID } | undefined;
 }
 
 export type ChatsAction =
@@ -155,7 +158,8 @@ export const ChatsReducer = (state = initialState, action: ChatsAction) => {
     case ChatsStateActionTypes.FETCH_CURRENT_CHAT:
       return {
         ...state,
-        currentChat: action.payload,
+        currentChat: action.payload?.chat,
+        currentChatId: action.payload?.chatId,
       };
     default:
       return state;

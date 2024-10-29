@@ -80,11 +80,12 @@ function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
       .then((currentChat) => {
         dispatch({
           type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
-          payload: currentChat,
+          payload: { chat: currentChat, chatId: badge.chatId },
         });
       })
       .catch(() => {
-        dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
+        dispatch({ type: ChatsStateActionTypes.FETCH_ACTIVE_CHATS });
+        dispatch({ type: ChatsStateActionTypes.FETCH_OPEN_CHATS });
         setHidden(true);
       });
   };
