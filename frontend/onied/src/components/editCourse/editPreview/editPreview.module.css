@@ -1,154 +1,154 @@
-.firstBlock{
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.firstBlock {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.inputChanges{
-    display: flex;
-    flex-direction: column;
+.inputChanges {
+  display: flex;
+  flex-direction: column;
 }
 
-.inputChangesOneColumn{
-    width: 100%;
-    display: grid;
-    grid-template-columns: 0.3fr 1fr;
-    grid-row-gap: 25px;
-    padding-bottom: 20px;
+.inputChangesOneColumn {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  grid-row-gap: 25px;
+  padding-bottom: 20px;
 }
 
 .inputChangesOneColumn input,
-.inputChangesOneColumn textarea{
-    width: 95%;
+.inputChangesOneColumn textarea {
+  width: 95%;
 }
 
-.fixedHeightTextArea textarea{
-    height: 200px;
-    resize: none;
+.fixedHeightTextArea textarea {
+  height: 200px;
+  resize: none;
 }
 
-.inputChangesTwoColumns{
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 3vw;
-    padding-bottom: 20px;
+.inputChangesTwoColumns {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 3vw;
+  padding-bottom: 20px;
 }
 
-.inputChangesBlock{
-    display: flex;
-    flex-direction: column;
+.inputChangesBlock {
+  display: flex;
+  flex-direction: column;
 }
 
-.inputChangesBlock input{
-    width: 90%;
+.inputChangesBlock input {
+  width: 90%;
 }
 
-.newCoursePictureWrapper{
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
+.newCoursePictureWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 }
 
-.newCoursePicture{
-    width: 100%;
-    display: grid;
-    grid-template-columns: 0.3fr 1fr;
-    align-items: center;
+.newCoursePicture {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  align-items: center;
 }
 
-.newCoursePicture img{
-    margin-left: 10px;
-    width: 128px;
-    height: 96px;
-    border-radius: 15px;
+.newCoursePicture img {
+  margin-left: 10px;
+  width: 128px;
+  height: 96px;
+  border-radius: 15px;
 }
 
-.previewPrompt{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    text-align: end;
+.previewPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: end;
 }
 
-.previewPrompt span{
-    font-size: 1rem;
-    font-weight: 200;
-    letter-spacing: 0.1rem;
+.previewPrompt span {
+  font-size: 1rem;
+  font-weight: 200;
+  letter-spacing: 0.1rem;
 }
 
-.line{
-    margin-top: 20px;
-    border-top: 2px solid #DBDBDB;
+.line {
+  margin-top: 20px;
+  border-top: 2px solid #dbdbdb;
 }
 
-.formLabel{
-    font-size: 1.5rem;
+.formLabel {
+  font-size: 1.5rem;
 }
 
-.formFieldDescription{
-    font-size: 1rem;
-    font-weight: 200;
-    letter-spacing: 0.1rem;
-    padding: 10px 0;
+.formFieldDescription {
+  font-size: 1rem;
+  font-weight: 200;
+  letter-spacing: 0.1rem;
+  padding: 10px 0;
 }
 
-.toggleChanges{
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
+.toggleChanges {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
-.toggleChangeWrapper{
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 20px;
+.toggleChangeWrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
 }
 
-.checkboxAndTitle{
-    display: flex;
-    align-items: end;
+.checkboxAndTitle {
+  display: flex;
+  align-items: end;
 }
 
-.checkboxAndTitle label{
-    padding: 0 0.5rem;
+.checkboxAndTitle label {
+  padding: 0 0.5rem;
 }
 
-.checkboxAndTitle p{
-    margin: 0;
-    text-align: start;
+.checkboxAndTitle p {
+  margin: 0;
+  text-align: start;
 }
 
-.footerButtons{
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 30px;
+.footerButtons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 30px;
 }
 
 .previewInfoSaved {
-    display: block;
-    color: #419341;
-    text-align: center;
-    width: 100%;
+  display: block;
+  color: #419341;
+  text-align: center;
+  width: 100%;
 }
 
 .previewInfoError {
-    padding-top: 10px;
-    font-size: 10pt;
-    color: #ed4956;
-    text-align: left;
+  padding-top: 10px;
+  font-size: 10pt;
+  color: #ed4956;
+  text-align: left;
 }
 
-.submitNewFileButton{
-    padding: 0.5rem 2rem;
-    border-radius: 0.75rem;
-    background-color: #9715d3;
-    box-shadow: 0 4px 7px 0 #9715d380;
-    font-weight: 400;
-    font-size: 14pt;
-    color: white;
-    border: 0;
-    cursor: pointer;
-    margin: 0 1rem 0.5rem 1rem;
+.submitNewFileButton {
+  padding: 0.5rem 2rem;
+  border-radius: 0.75rem;
+  background-color: #9715d3;
+  box-shadow: 0 4px 7px 0 #9715d380;
+  font-weight: 400;
+  font-size: 14pt;
+  color: white;
+  border: 0;
+  cursor: pointer;
+  margin: 0 1rem 0.5rem 1rem;
 }

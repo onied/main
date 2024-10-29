@@ -8,7 +8,8 @@ function NavigationPageButton({ pageNumber, isActive, onPageChange }) {
           classes.navItem,
           isActive ? classes.activeNavItem : "",
         ].join(" ")}
-        onClick={() => onPageChange(pageNumber)}>
+        onClick={() => onPageChange(pageNumber)}
+      >
         {pageNumber}
       </div>
     </div>
