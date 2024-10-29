@@ -3,7 +3,7 @@ export enum TaskType {
   MultipleAnswers,
   InputAnswer,
   ManualReview,
-};
+}
 
 export type Variant = {
   id: number;
