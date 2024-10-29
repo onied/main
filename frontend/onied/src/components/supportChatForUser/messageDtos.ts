@@ -2,7 +2,7 @@ export type MessageDto = {
   messageId: string;
   supportNumber: number | null;
   createdAt: Date;
-  messageText: string;
+  message: string;
   isSystem: boolean;
   readAt: Date | null;
 };

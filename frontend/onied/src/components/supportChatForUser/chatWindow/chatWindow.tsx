@@ -5,10 +5,10 @@ import {
   MessagesHistoryDto,
 } from "@onied/components/supportChatForUser/messageDtos";
 import ChatInput from "@onied/components/supportChatForUser/chatInput/chatInput";
-import { useEffect } from "react";
 
 type ChatWindowProps = {
   isChatWindowOpen: boolean;
+  isFirstEverMessage: boolean;
   messagesHistory: MessagesHistoryDto;
   setMessagesHistory: (messagesHistory: MessagesHistoryDto) => void;
 };
@@ -18,8 +18,12 @@ function ChatWindow(props: ChatWindowProps) {
   return (
     <div className={classes.chatWindow}>
       <div className={classes.chatHeader}>
-        {props.messagesHistory === null ||
-        props.messagesHistory.supportNumber === null ? (
+        {props.isFirstEverMessage ? (
+          <div>
+            <p>Введите вопрос,</p>
+            <p>чтобы начать диалог</p>
+          </div>
+        ) : props.messagesHistory.supportNumber === null ? (
           <div>
             <p>Поиск оператора.</p>
             <p>Пожалуйста подождите...</p>
