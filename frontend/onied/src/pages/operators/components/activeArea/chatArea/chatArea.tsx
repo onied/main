@@ -1,7 +1,6 @@
 import classes from "./chatArea.module.css";
 
 import combineCssClasses from "@onied/helpers/combineCssClasses";
-import SendMessageFooter from "../sendMessageFooter/sendMessageFooter";
 import { Chat, Message } from "@onied/types/chat";
 import { useEffect, useRef } from "react";
 
@@ -91,14 +90,15 @@ export default function ChatArea({ chat }: { chat: Chat }) {
     scrollToBottom();
   }, [chat]);
   return (
-    <div className={classes.chatAreaWrapper}>
-      <div className={classes.chatArea}>
-        {chat.messages.map((msg) => (
-          <ChatMessage message={msg} key={msg.messageId} />
-        ))}
+    <div className={classes.chatAreaWrapperWrapper}>
+      <div className={classes.chatAreaWrapper}>
+        <div className={classes.chatArea}>
+          {chat.messages.map((msg) => (
+            <ChatMessage message={msg} key={msg.messageId} />
+          ))}
+          <div ref={bottom}></div>
+        </div>
       </div>
-      <SendMessageFooter />
-      <div ref={bottom}></div>
     </div>
   );
 }

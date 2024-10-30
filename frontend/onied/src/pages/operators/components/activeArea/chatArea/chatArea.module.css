@@ -50,11 +50,18 @@
   color: white;
 }
 
-.chatAreaWrapper {
+.chatAreaWrapperWrapper {
   overflow: auto;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  background-color: white;
+}
+
+.chatAreaWrapper {
   max-width: 650px;
-  height: 100%;
+  width: 100%;
 }
 
 .chatArea {

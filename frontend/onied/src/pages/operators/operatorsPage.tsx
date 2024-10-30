@@ -165,10 +165,7 @@ export default function OperatorsPage() {
         <Background />
         <ActiveChatsSidebar />
         {chatsState.currentChat && chatsState.currentChatId && (
-          <ActiveArea
-            activeChat={chatsState.currentChat}
-            currentChatId={chatsState.currentChatId}
-          />
+          <ActiveArea activeChat={chatsState.currentChat} />
         )}
         <OpenChatsSidebar />
       </main>
