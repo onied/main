@@ -1,5 +1,7 @@
+import { UUID } from "crypto";
+
 export type MessageDto = {
-  messageId: string;
+  messageId: UUID;
   supportNumber: number | null;
   createdAt: Date;
   message: string;
@@ -9,6 +11,6 @@ export type MessageDto = {
 
 export type MessagesHistoryDto = {
   supportNumber: number | null;
-  currentSessionId: string | null;
+  currentSessionId: UUID | null;
   messages: MessageDto[];
 };

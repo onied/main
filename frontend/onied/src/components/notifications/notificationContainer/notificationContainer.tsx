@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { Notification } from "../../../types/notifications";
+import { Notification } from "@onied/types/notifications";
 import NotificationComponent from "../notificationComponent";
-import useSignalR from "../../../hooks/signalr";
-import Config from "../../../config/config";
-import api from "../../../config/axios";
+import useSignalR from "@onied/hooks/signalr";
+import Config from "@onied/config/config";
+import api from "@onied/config/axios";
 
-import oniedLogo from "../../../assets/logo.svg";
-import bellLogo from "../../../assets/bell.svg";
-import bellActiveLogo from "../../../assets/bellActive.svg";
+import oniedLogo from "@onied/assets/logo.svg";
+import bellLogo from "@onied/assets/bell.svg";
+import bellActiveLogo from "@onied/assets/bellActive.svg";
 import classes from "./notificationContainer.module.css";
 
 function NotificationContainer() {
-  const { connection } = useSignalR(Config.BaseURL + "notifications/hub");
+  const { connection } = useSignalR(
+    Config.BaseURL.replace(/\/$/, "") + "/notifications/hub"
+  );
 
   const [unread, setUnread] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);

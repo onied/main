@@ -11,6 +11,8 @@ type ChatWindowProps = {
   isFirstEverMessage: boolean;
   messagesHistory: MessagesHistoryDto;
   setMessagesHistory: (messagesHistory: MessagesHistoryDto) => void;
+  sendMessage: (messageContent: string) => void;
+  sendMessageDisabled: boolean;
 };
 
 function ChatWindow(props: ChatWindowProps) {
@@ -54,7 +56,10 @@ function ChatWindow(props: ChatWindowProps) {
           )}
         </div>
       )}
-      <ChatInput></ChatInput>
+      <ChatInput
+        sendMessageDisabled={props.sendMessageDisabled}
+        sendMessageToHub={props.sendMessage}
+      ></ChatInput>
     </div>
   );
 }
