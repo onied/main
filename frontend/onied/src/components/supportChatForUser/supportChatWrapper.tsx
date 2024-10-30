@@ -42,6 +42,7 @@ function SupportChatWrapper() {
     if (!connection) return;
     const chatClient = chatHubClientConnection(connection);
     chatClient.send.SendMessage(messageContent);
+    setIsFirstEverMessage(false);
   };
 
   useEffect(fetchChat, []);
@@ -74,23 +75,30 @@ function SupportChatWrapper() {
     const chatClient = chatHubClientConnection(connection);
     return chatClient.on.ReceiveMessage((message) => {
       console.log("Receive message", message, messagesHistory);
-      if (messagesHistory == undefined) return;
-      setMessagesHistory({
-        ...messagesHistory,
-        messages: [...messagesHistory.messages, { ...message, readAt: null }],
-        supportNumber: (() => {
-          if (
-            message.supportNumber &&
-            messagesHistory.supportNumber != message.supportNumber
-          ) {
-            fetchChat();
-            return message.supportNumber;
-          }
-          return messagesHistory.supportNumber;
-        })(),
-      });
+      if (messagesHistory == undefined) {
+        setMessagesHistory({
+          messages: [{ ...message, readAt: null }],
+          supportNumber: message.supportNumber,
+          currentSessionId: null,
+        });
+      } else {
+        setMessagesHistory({
+          ...messagesHistory,
+          messages: [...messagesHistory.messages, { ...message, readAt: null }],
+          supportNumber: (() => {
+            if (
+              message.supportNumber &&
+              messagesHistory.supportNumber != message.supportNumber
+            ) {
+              fetchChat();
+              return message.supportNumber;
+            }
+            return messagesHistory.supportNumber;
+          })(),
+        });
+      }
     });
-  }, [connection, messagesHistory]);
+  }, [connection, messagesHistory, isFirstEverMessage]);
 
   useEffect(() => {
     if (!connection) return;
@@ -108,7 +116,7 @@ function SupportChatWrapper() {
     });
   }, [connection, messagesHistory]);
 
-  if (!profile || !messagesHistory) return <></>;
+  if (!profile || (!messagesHistory && !isFirstEverMessage)) return <></>;
 
   return (
     <div

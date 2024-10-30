@@ -74,6 +74,17 @@ export default function OperatorsPage() {
             chatId: chatsState.currentChatId,
           },
         });
+        if (!chatsState.activeChats.find((chat) => chat.chatId == chatId))
+          dispatch({
+            type: ChatsStateActionTypes.FETCH_ACTIVE_CHATS,
+            payload: [
+              ...chatsState.activeChats,
+              {
+                chatId: chatId,
+                lastMessage: message,
+              },
+            ],
+          });
       }
       if (chatsState.activeChats.find((chat) => chat.chatId == chatId)) {
         dispatch({
@@ -94,7 +105,7 @@ export default function OperatorsPage() {
             chat.chatId == chatId ? { ...chat, lastMessage: message } : chat
           ),
         });
-      } else {
+      } else if (!message.supportNumber) {
         dispatch({
           type: ChatsStateActionTypes.FETCH_OPEN_CHATS,
           payload: [
@@ -133,6 +144,7 @@ export default function OperatorsPage() {
     if (!connection || !chatsState.operatorProfile) return;
     const chatOperator = chatHubOperatorConnection(connection);
     return chatOperator.on.RemoveChatFromOpened((chatId) => {
+      console.log("Remove chat from opened", chatId);
       dispatch({
         type: ChatsStateActionTypes.FETCH_OPEN_CHATS,
         payload: chatsState.openChats.filter((chat) => chat.chatId != chatId),

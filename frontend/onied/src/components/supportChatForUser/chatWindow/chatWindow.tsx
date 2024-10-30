@@ -56,6 +56,7 @@ function ChatWindow(props: ChatWindowProps) {
                 {...message}
                 isFirstOperatorMessageInChain={
                   !message.isSystem &&
+                  index > 0 &&
                   array[index - 1].supportNumber === null &&
                   array[index].supportNumber !== null
                 }

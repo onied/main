@@ -71,7 +71,7 @@ public class ChatManagementService(
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SendMessageToChat(Guid senderId, Guid chatId, string messageContent)
+    public async Task SendMessageToChat(int senderNumber, Guid senderId, Guid chatId, string messageContent)
     {
         var chat = await dbContext.Chats.Where(chat => chat.Id == chatId).Include(chat => chat.Support)
             .SingleOrDefaultAsync();
@@ -90,19 +90,26 @@ public class ChatManagementService(
             return;
         }
 
-        var message = messageGenerator.GenerateMessage(senderId, chat, messageContent);
-        dbContext.Messages.Add(message);
-
         if (chat.SupportId == null)
             await chatHubClientSender.NotifySupportUsersOfTakenChat(chat);
 
         chat.SupportId = senderId;
         dbContext.Chats.Update(chat);
 
-        await chatHubClientSender.SendMessageToClient(message);
-        await chatHubClientSender.NotifySupportUserMessageAuthorItWasSent(message);
+        var message = messageGenerator.GenerateMessage(senderId, chat, messageContent);
+        dbContext.Messages.Add(message);
 
         await dbContext.SaveChangesAsync();
+
+        chat.Support = new SupportUser()
+        {
+            Id = senderId,
+            Number = senderNumber
+        };
+        message.Chat = chat;
+
+        await chatHubClientSender.SendMessageToClient(message);
+        await chatHubClientSender.NotifySupportUserMessageAuthorItWasSent(message);
     }
 
     public async Task CloseChat(Guid senderId, Guid chatId)

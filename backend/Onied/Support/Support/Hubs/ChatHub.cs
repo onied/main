@@ -31,11 +31,12 @@ public class ChatHub(IChatManagementService chatManagementService, ILogger<ChatH
             UserId = userId
         };
 
-        var isSupportUser = await dbContext.SupportUsers.FindAsync(userId) != null;
-        if (isSupportUser)
+        var supportUser = await dbContext.SupportUsers.FindAsync(userId);
+        if (supportUser != null)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, SupportUserGroup);
             items.IsSupportUser = true;
+            items.SupportNumber = supportUser.Number;
         }
     }
 
@@ -52,7 +53,9 @@ public class ChatHub(IChatManagementService chatManagementService, ILogger<ChatH
     [Authorize(SupportUserRequirement.Policy)]
     public async Task SendMessageToChat(Guid chatId, string messageContent)
     {
-        await chatManagementService.SendMessageToChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId,
+        var helper = new ChatHubContextItemsHelper(Context.Items);
+        if (helper.SupportNumber == null) return;
+        await chatManagementService.SendMessageToChat(helper.SupportNumber.Value, helper.UserId, chatId,
             messageContent);
     }
 
