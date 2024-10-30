@@ -75,7 +75,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
       <p>{message.message}</p>
       <div className={classes.chatFooter}>
         {message.readAt && <ReadBadge />}
-        <TimeBadge time={message.createdAt} />
+        <TimeBadge time={new Date(message.createdAt)} />
       </div>
     </div>
   );
@@ -85,7 +85,7 @@ export default function ChatArea({ chat }: { chat: Chat }) {
   return (
     <div className={classes.chatArea}>
       {chat.messages.map((msg) => (
-        <ChatMessage message={msg} />
+        <ChatMessage message={msg} key={msg.messageId} />
       ))}
       <SendMessageFooter />
     </div>

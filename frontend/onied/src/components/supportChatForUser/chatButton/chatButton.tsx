@@ -11,17 +11,18 @@ type ChatButtonProps = {
   unreadCount: number;
 };
 
-const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
     right: 10,
     top: 10,
-    border: `2px solid ${theme.palette.background.paper}`,
+    border: `2px solid white`,
     "background-color": "#ED4956",
     "font-size": "14pt",
     "font-weight": "800",
     "border-radius": "50%",
     "aspect-ratio": "1/1",
     padding: "0.8rem",
+    color: "white",
   },
 }));
 

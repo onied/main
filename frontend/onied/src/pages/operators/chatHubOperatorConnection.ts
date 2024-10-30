@@ -8,12 +8,13 @@ export function chatHubOperatorConnection(connection: HubConnection) {
     actionsOnReceive: (...args: any[]) => any
   ) => {
     connection.on(method, actionsOnReceive);
+    console.log("Registered method " + method);
     return () => connection.off(method);
   };
   return {
     on: {
       ReceiveReadAt: (
-        actionsOnReceive: (messageId: UUID, readAt: Date) => void
+        actionsOnReceive: (messageId: UUID, readAt: string) => void
       ) => onMethod("ReceiveReadAt", actionsOnReceive),
       ReceiveMessageFromChat: (
         actionsOnReceive: (chatId: UUID, message: Message) => void

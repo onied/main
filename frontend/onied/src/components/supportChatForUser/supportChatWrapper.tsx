@@ -63,7 +63,7 @@ function SupportChatWrapper() {
       if (message.supportNumber && message.readAt == null) {
         if (isChatWindowOpen) {
           chatClient.send.MarkMessageAsRead(message.messageId);
-          message.readAt = new Date();
+          message.readAt = new Date().toISOString();
         } else {
           unreadCount.current++;
         }

@@ -3,10 +3,10 @@ import { UUID } from "crypto";
 export type MessageDto = {
   messageId: UUID;
   supportNumber: number | null;
-  createdAt: Date;
+  createdAt: string;
   message: string;
   isSystem: boolean;
-  readAt: Date | null;
+  readAt: string | null;
 };
 
 export type MessagesHistoryDto = {

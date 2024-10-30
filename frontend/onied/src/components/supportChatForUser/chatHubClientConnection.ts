@@ -15,7 +15,7 @@ export function chatHubClientConnection(connection: HubConnection) {
       ReceiveMessage: (actionsOnReceive: (message: MessageDto) => void) =>
         onMethod("ReceiveMessage", actionsOnReceive),
       ReceiveReadAt: (
-        actionsOnReceive: (messageId: UUID, readAt: Date) => void
+        actionsOnReceive: (messageId: UUID, readAt: string) => void
       ) => onMethod("ReceiveReadAt", actionsOnReceive),
     },
     send: {

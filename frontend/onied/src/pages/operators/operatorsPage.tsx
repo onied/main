@@ -11,6 +11,7 @@ import useSignalR from "@onied/hooks/signalr";
 import Config from "@onied/config/config";
 import { chatHubOperatorConnection } from "./chatHubOperatorConnection";
 import { Message } from "@onied/types/chat";
+import { Navigate, useLocation } from "react-router-dom";
 
 export default function OperatorsPage() {
   const dispatch = useAppDispatch();
@@ -18,24 +19,26 @@ export default function OperatorsPage() {
   const { connection } = useSignalR(
     Config.BaseURL.replace(/\/$/, "") + "/chat/hub"
   );
-  console.log(chatsState);
+  const location = useLocation();
 
   useEffect(() => {
-    if (!connection || !chatsState.currentChat) return;
+    if (!connection || !chatsState.currentChat || !chatsState.operatorProfile)
+      return;
     const chatClient = chatHubOperatorConnection(connection);
-    let chat = { ...chatsState.currentChat };
+    const sn = chatsState.operatorProfile.number;
     let lastMessage: Message | undefined = undefined;
-    chat.messages.map((message) => {
-      if (
-        message.supportNumber !== chatsState.operatorProfile?.number &&
-        message.readAt == null
-      ) {
-        chatClient.send.MarkMessageAsRead(message.messageId);
-        message.readAt = new Date();
-      }
-      lastMessage = message;
-      return message;
-    });
+    let chat = {
+      ...chatsState.currentChat,
+      messages: chatsState.currentChat.messages.map((message) => {
+        let newMessage = { ...message };
+        if (newMessage.supportNumber !== sn && !newMessage.readAt) {
+          chatClient.send.MarkMessageAsRead(newMessage.messageId);
+          newMessage.readAt = new Date().toISOString();
+        }
+        lastMessage = newMessage;
+        return newMessage;
+      }),
+    };
     dispatch({
       type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
       payload: {
@@ -51,7 +54,7 @@ export default function OperatorsPage() {
           : chat
       ),
     });
-  }, [chatsState.currentChat]);
+  }, [chatsState.currentChatId]);
 
   useEffect(() => {
     if (!connection || !chatsState.operatorProfile) return;
@@ -101,30 +104,32 @@ export default function OperatorsPage() {
   }, [connection, chatsState.operatorProfile]);
 
   useEffect(() => {
-    if (!connection) return;
+    if (!connection || !chatsState.operatorProfile) return;
     const chatOperator = chatHubOperatorConnection(connection);
     return chatOperator.on.ReceiveReadAt((messageId, readAt) => {
-      chatsState.currentChat?.messages.find(
-        (message) => message.messageId == messageId
-      );
+      console.log("Received read at: " + messageId + " " + readAt);
+      console.log(chatsState.currentChat);
       if (chatsState.currentChat) {
         dispatch({
           type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
           payload: {
-            chat: chatsState.currentChat.messages.map((message) =>
-              message.messageId == messageId
-                ? { ...message, readAt: readAt }
-                : message
-            ),
+            chat: {
+              ...chatsState.currentChat,
+              messages: chatsState.currentChat.messages.map((message) =>
+                message.messageId == messageId
+                  ? { ...message, readAt: readAt }
+                  : message
+              ),
+            },
             chatId: chatsState.currentChatId,
           },
         });
       }
     });
-  }, [connection]);
+  }, [connection, chatsState.operatorProfile, chatsState.currentChat]);
 
   useEffect(() => {
-    if (!connection) return;
+    if (!connection || !chatsState.operatorProfile) return;
     const chatOperator = chatHubOperatorConnection(connection);
     return chatOperator.on.RemoveChatFromOpened((chatId) => {
       dispatch({
@@ -132,7 +137,13 @@ export default function OperatorsPage() {
         payload: chatsState.openChats.filter((chat) => chat.chatId != chatId),
       });
     });
-  }, [connection]);
+  }, [connection, chatsState.operatorProfile]);
+
+  if (!chatsState.operatorProfile) {
+    <Navigate
+      to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
+    />;
+  }
 
   return (
     <>
@@ -153,9 +164,9 @@ export default function OperatorsPage() {
 }
 
 const ActiveChatsSidebar = () => {
-  const dispatch = useAppDispatch();
   const chatsState = useAppSelector((state) => state.chats);
   const badges = chatsState.activeChats;
+  const dispatch = useAppDispatch();
   const opApi = new OperatorChatApi();
   useEffect(() => {
     opApi
