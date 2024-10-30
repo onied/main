@@ -12,7 +12,7 @@ import { chatHubClientConnection } from "./chatHubClientConnection";
 function SupportChatWrapper() {
   const [profile, _] = useProfile();
   const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
-  const [isFirstEverMessage, setIsFirstEverMessage] = useState(false);
+  const [isFirstMessageInSession, setIsFirstMessageInSession] = useState(false);
   const unreadCount = useRef(0);
   const [unreadCountReactive, setUnreadCount] = useState(unreadCount.current);
   const [messagesHistory, setMessagesHistory] = useState<MessagesHistoryDto>();
@@ -30,7 +30,7 @@ function SupportChatWrapper() {
       .catch((error: AxiosError<any, any>) => {
         if (error.response != null) {
           if (error.response.status == 404) {
-            setIsFirstEverMessage(true);
+            setIsFirstMessageInSession(true);
           }
         } else {
           console.error("Could not reach the server.");
@@ -42,7 +42,7 @@ function SupportChatWrapper() {
     if (!connection) return;
     const chatClient = chatHubClientConnection(connection);
     chatClient.send.SendMessage(messageContent);
-    setIsFirstEverMessage(false);
+    setIsFirstMessageInSession(false);
   };
 
   useEffect(fetchChat, []);
@@ -68,6 +68,12 @@ function SupportChatWrapper() {
       }),
     });
     setUnreadCount(unreadCount.current);
+    const len = messagesHistory.messages.length;
+    if (len > 0) {
+      const last = messagesHistory.messages[len - 1];
+      if (last.isSystem && last.message == "close-session")
+        setIsFirstMessageInSession(true);
+    }
   }, [connection, isChatWindowOpen, messagesHistory?.messages.length]);
 
   useEffect(() => {
@@ -98,7 +104,7 @@ function SupportChatWrapper() {
         });
       }
     });
-  }, [connection, messagesHistory, isFirstEverMessage]);
+  }, [connection, messagesHistory, isFirstMessageInSession]);
 
   useEffect(() => {
     if (!connection) return;
@@ -116,7 +122,7 @@ function SupportChatWrapper() {
     });
   }, [connection, messagesHistory]);
 
-  if (!profile || (!messagesHistory && !isFirstEverMessage)) return <></>;
+  if (!profile || (!messagesHistory && !isFirstMessageInSession)) return <></>;
 
   return (
     <div
@@ -133,7 +139,7 @@ function SupportChatWrapper() {
     >
       <ChatWindow
         isChatWindowOpen={isChatWindowOpen}
-        isFirstEverMessage={isFirstEverMessage}
+        isFirstMessageInSession={isFirstMessageInSession}
         messagesHistory={
           messagesHistory
             ? messagesHistory

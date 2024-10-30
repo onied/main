@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
 
 type ChatWindowProps = {
   isChatWindowOpen: boolean;
-  isFirstEverMessage: boolean;
+  isFirstMessageInSession: boolean;
   messagesHistory: MessagesHistoryDto;
   setMessagesHistory: (messagesHistory: MessagesHistoryDto) => void;
   sendMessage: (messageContent: string) => void;
@@ -28,7 +28,7 @@ function ChatWindow(props: ChatWindowProps) {
   return (
     <div className={classes.chatWindow}>
       <div className={classes.chatHeader}>
-        {props.isFirstEverMessage ? (
+        {props.isFirstMessageInSession ? (
           <div>
             <p>Введите вопрос,</p>
             <p>чтобы начать диалог</p>
