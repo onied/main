@@ -1,36 +1,28 @@
+import Config from "@onied/config/config";
 import classes from "./sendMessageFooter.module.css";
 
 import InputFormArea from "@onied/components/general/inputform/inputFormArea";
-import { useAppDispatch, useAppSelector } from "@onied/hooks";
-import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
+import { useAppSelector } from "@onied/hooks";
+import useSignalR from "@onied/hooks/signalr";
 
 import { MouseEventHandler, useState } from "react";
+import { chatHubOperatorConnection } from "@onied/pages/operators/chatHubOperatorConnection";
 
 export default function SendMessageFooter() {
   const chats = useAppSelector((state) => state.chats);
-  const dispatch = useAppDispatch();
-  const [message, setMessage] = useState<string>();
+  const [message, setMessage] = useState<string>("");
+  const { connection } = useSignalR(
+    Config.BaseURL.replace(/\/$/, "") + "/chat/hub"
+  );
 
   const sendMessage = () => {
-    dispatch({
-      type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
-      payload: {
-        ...chats.currentChat!,
-        Messages: [
-          ...chats.currentChat!.messages,
-          {
-            MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-            SupportNumber: 69,
-            CreatedAt: Date.now(),
-            ReadAt: null,
-            Message: message,
-            IsSystem: false,
-          },
-        ],
-      },
-    });
+    if (!connection || !chats.currentChatId) return;
+    const chatOperator = chatHubOperatorConnection(connection);
+    chatOperator.send.SendMessageToChat(chats.currentChatId, message);
+    setMessage("");
   };
 
+  if (!connection) return <></>;
   return (
     <div className={classes.chatFooter}>
       <InputFormArea

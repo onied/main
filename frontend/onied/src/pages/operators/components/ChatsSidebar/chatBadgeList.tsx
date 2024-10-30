@@ -69,9 +69,8 @@ export default function ChatBadgeList({
   );
 }
 
-// const UnreadCount = ({ count }: { count: number }) => (
-//   <span className={classes.unreadCount}>{count}</span>
-// );
+const UnreadCount = ({ hasUnread }: { hasUnread: boolean }) =>
+  hasUnread ? <span className={classes.unreadCount}>!</span> : <></>;
 
 function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
   const dispatch = useAppDispatch();
@@ -99,7 +98,11 @@ function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
       <p>{badge.lastMessage.message}</p>
       <div className={classes.badgeFooter}>
         <IdBar id={badge.chatId} />
-        {/* <UnreadCount count={1} /> */}
+        <UnreadCount
+          hasUnread={
+            !badge.lastMessage.supportNumber && !badge.lastMessage.readAt
+          }
+        />
       </div>
     </div>
   );

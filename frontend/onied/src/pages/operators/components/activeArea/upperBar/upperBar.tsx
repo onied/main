@@ -1,9 +1,12 @@
+import Config from "@onied/config/config";
 import classes from "./upperBar.module.css";
 
 import IdBar from "@onied/components/general/idBar/idBar";
 import { useAppDispatch } from "@onied/hooks";
+import useSignalR from "@onied/hooks/signalr";
 import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
 import { UUID } from "crypto";
+import { chatHubOperatorConnection } from "@onied/pages/operators/chatHubOperatorConnection";
 
 const Return = () => {
   const dispatch = useAppDispatch();
@@ -36,10 +39,11 @@ const Return = () => {
   );
 };
 
-const Unlink = () => {
+const Unlink = ({ sendUnlink }: { sendUnlink: () => void }) => {
   const dispatch = useAppDispatch();
 
   const clickEvent = () => {
+    sendUnlink();
     dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
   };
 
@@ -82,10 +86,11 @@ const Unlink = () => {
   );
 };
 
-const Finish = () => {
+const Finish = ({ sendFinish }: { sendFinish: () => void }) => {
   const dispatch = useAppDispatch();
 
   const clickEvent = () => {
+    sendFinish();
     dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
   };
 
@@ -126,12 +131,29 @@ const Finish = () => {
 };
 
 export default function UpperBar({ currentChatId }: { currentChatId: UUID }) {
+  const { connection } = useSignalR(
+    Config.BaseURL.replace(/\/$/, "") + "/chat/hub"
+  );
+
+  const sendUnlink = () => {
+    if (!connection) return;
+    const chatOperator = chatHubOperatorConnection(connection);
+    chatOperator.send.CloseChat(currentChatId);
+  };
+
+  const sendFinish = () => {
+    if (!connection) return;
+    const chatOperator = chatHubOperatorConnection(connection);
+    chatOperator.send.AbandonChat(currentChatId);
+  };
+
+  if (!connection) return <></>;
   return (
     <div className={classes.upperBar}>
       <Return />
       <IdBar id={currentChatId} />
-      <Unlink />
-      <Finish />
+      <Unlink sendUnlink={sendUnlink} />
+      <Finish sendFinish={sendFinish} />
     </div>
   );
 }
