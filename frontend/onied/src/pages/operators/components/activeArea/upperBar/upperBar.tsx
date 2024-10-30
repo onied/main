@@ -5,7 +5,6 @@ import IdBar from "@onied/components/general/idBar/idBar";
 import { useAppDispatch, useAppSelector } from "@onied/hooks";
 import useSignalR from "@onied/hooks/signalr";
 import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
-import { UUID } from "crypto";
 import { chatHubOperatorConnection } from "@onied/pages/operators/chatHubOperatorConnection";
 import { useDispatch } from "react-redux";
 
