@@ -20,6 +20,17 @@ public class AppMappingProfile : Profile
             .ForMember(dto => dto.SupportNumber,
                 options => options
                     .MapFrom(message => message.SupportNumberNullIfUser));
+        CreateMap<Message, HubMessageDto>().ForMember(dto => dto.Message,
+                options => options
+                    .MapFrom(message => message.MessageContent))
+            .ForMember(dto => dto.MessageId,
+                options => options
+                    .MapFrom(message => message.Id))
+            .ForMember(dto => dto.SupportNumber,
+                options => options
+                    .MapFrom(message =>
+                        message.UserId == message.Chat.ClientId ? null :
+                        message.Chat.Support != null ? (int?)message.Chat.Support.Number : null));
 
         // GetChat
         CreateMap<Chat, GetChatResponseDto>()

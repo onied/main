@@ -27,13 +27,19 @@ public class ChatHubClientSenderService(
         var messageDto = mapper.Map<HubMessageDto>(message);
         await hubContext.Clients.User(message.Chat.ClientId.ToString()).ReceiveMessage(messageDto);
         // TODO: Somehow check if client is online, and if they aren't:
-        await clientNotificationProducer.NotifyClientOfNewMessage(message);
+        // await clientNotificationProducer.NotifyClientOfNewMessage(message);
         // TODO: otherwise do nothing.
     }
 
     public async Task NotifyMessageAuthorItWasRead(Message message)
     {
         await hubContext.Clients.User(message.UserId.ToString()).ReceiveReadAt(message.Id, message.ReadAt!.Value);
+    }
+
+    public async Task NotifySupportUserMessageAuthorItWasSent(Message message)
+    {
+        var messageDto = mapper.Map<HubMessageDto>(message);
+        await hubContext.Clients.User(message.UserId.ToString()).ReceiveMessageFromChat(message.ChatId, messageDto);
     }
 
     public async Task NotifySupportUsersOfTakenChat(Chat chat)

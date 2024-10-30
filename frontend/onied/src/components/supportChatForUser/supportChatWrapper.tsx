@@ -57,6 +57,7 @@ function SupportChatWrapper() {
         if (message.supportNumber && message.readAt == null) {
           if (isChatWindowOpen) {
             chatClient.send.MarkMessageAsRead(message.messageId);
+            console.log(message);
             message.readAt = new Date().toISOString();
           } else {
             unreadCount.current++;
@@ -72,10 +73,11 @@ function SupportChatWrapper() {
     if (!connection) return;
     const chatClient = chatHubClientConnection(connection);
     return chatClient.on.ReceiveMessage((message) => {
+      console.log("Receive message", message, messagesHistory);
       if (messagesHistory == undefined) return;
       setMessagesHistory({
         ...messagesHistory,
-        messages: [...messagesHistory.messages, message],
+        messages: [...messagesHistory.messages, { ...message, readAt: null }],
         supportNumber: (() => {
           if (
             message.supportNumber &&
@@ -88,14 +90,12 @@ function SupportChatWrapper() {
         })(),
       });
     });
-  }, [connection]);
+  }, [connection, messagesHistory]);
 
   useEffect(() => {
     if (!connection) return;
     const chatClient = chatHubClientConnection(connection);
     return chatClient.on.ReceiveReadAt((messageId, readAt) => {
-      console.log("READ AT HERE " + messageId + " " + readAt);
-      console.log(messagesHistory);
       if (messagesHistory == undefined) return;
       setMessagesHistory({
         ...messagesHistory,
@@ -106,7 +106,7 @@ function SupportChatWrapper() {
         ),
       });
     });
-  }, [connection]);
+  }, [connection, messagesHistory]);
 
   if (!profile || !messagesHistory) return <></>;
 

@@ -43,6 +43,7 @@ public class ChatManagementService(
 
         dbContext.Messages.Add(message);
         await chatHubClientSender.SendMessageToSupportUsers(message);
+        await chatHubClientSender.SendMessageToClient(message);
 
         await dbContext.SaveChangesAsync();
     }
@@ -99,6 +100,7 @@ public class ChatManagementService(
         dbContext.Chats.Update(chat);
 
         await chatHubClientSender.SendMessageToClient(message);
+        await chatHubClientSender.NotifySupportUserMessageAuthorItWasSent(message);
 
         await dbContext.SaveChangesAsync();
     }

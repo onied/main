@@ -27,6 +27,7 @@ export default function SendMessageFooter() {
     <div className={classes.chatFooter}>
       <InputFormArea
         onInput={(e: any) => setMessage(e.target.value)}
+        value={message}
         style={{ width: "100%", height: "40px", resize: "none" }}
       />
       <SendButton onClick={sendMessage} />

@@ -3,6 +3,7 @@ import classes from "./chatArea.module.css";
 import combineCssClasses from "@onied/helpers/combineCssClasses";
 import SendMessageFooter from "../sendMessageFooter/sendMessageFooter";
 import { Chat, Message } from "@onied/types/chat";
+import { useEffect, useRef } from "react";
 
 const ReadBadge = () => {
   return (
@@ -82,12 +83,22 @@ const ChatMessage = ({ message }: { message: Message }) => {
 };
 
 export default function ChatArea({ chat }: { chat: Chat }) {
+  const bottom = useRef<null | HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    bottom.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat]);
   return (
-    <div className={classes.chatArea}>
-      {chat.messages.map((msg) => (
-        <ChatMessage message={msg} key={msg.messageId} />
-      ))}
+    <div className={classes.chatAreaWrapper}>
+      <div className={classes.chatArea}>
+        {chat.messages.map((msg) => (
+          <ChatMessage message={msg} key={msg.messageId} />
+        ))}
+      </div>
       <SendMessageFooter />
+      <div ref={bottom}></div>
     </div>
   );
 }

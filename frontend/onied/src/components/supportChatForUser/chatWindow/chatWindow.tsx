@@ -5,6 +5,7 @@ import {
   MessagesHistoryDto,
 } from "@onied/components/supportChatForUser/messageDtos";
 import ChatInput from "@onied/components/supportChatForUser/chatInput/chatInput";
+import { useEffect, useRef } from "react";
 
 type ChatWindowProps = {
   isChatWindowOpen: boolean;
@@ -17,6 +18,13 @@ type ChatWindowProps = {
 
 function ChatWindow(props: ChatWindowProps) {
   if (!props.isChatWindowOpen) return <></>;
+  const bottom = useRef<null | HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    bottom.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [props.messagesHistory]);
   return (
     <div className={classes.chatWindow}>
       <div className={classes.chatHeader}>
@@ -54,6 +62,7 @@ function ChatWindow(props: ChatWindowProps) {
               ></ChatMessage>
             )
           )}
+          <div ref={bottom}></div>
         </div>
       )}
       <ChatInput

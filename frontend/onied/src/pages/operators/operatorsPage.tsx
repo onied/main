@@ -27,22 +27,21 @@ export default function OperatorsPage() {
     const chatClient = chatHubOperatorConnection(connection);
     const sn = chatsState.operatorProfile.number;
     let lastMessage: Message | undefined = undefined;
-    let chat = {
-      ...chatsState.currentChat,
-      messages: chatsState.currentChat.messages.map((message) => {
-        let newMessage = { ...message };
-        if (newMessage.supportNumber !== sn && !newMessage.readAt) {
-          chatClient.send.MarkMessageAsRead(newMessage.messageId);
-          newMessage.readAt = new Date().toISOString();
-        }
-        lastMessage = newMessage;
-        return newMessage;
-      }),
-    };
     dispatch({
       type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
       payload: {
-        chat: chat,
+        chat: {
+          ...chatsState.currentChat,
+          messages: chatsState.currentChat.messages.map((message) => {
+            const cond = message.supportNumber != sn && !message.readAt;
+            if (cond) chatClient.send.MarkMessageAsRead(message.messageId);
+            lastMessage = {
+              ...message,
+              readAt: cond ? new Date().toISOString() : message.readAt,
+            };
+            return lastMessage;
+          }),
+        },
         chatId: chatsState.currentChatId,
       },
     });
@@ -54,7 +53,11 @@ export default function OperatorsPage() {
           : chat
       ),
     });
-  }, [chatsState.currentChatId]);
+  }, [
+    chatsState.operatorProfile,
+    chatsState.currentChatId,
+    chatsState.currentChat?.messages.length,
+  ]);
 
   useEffect(() => {
     if (!connection || !chatsState.operatorProfile) return;
@@ -101,14 +104,12 @@ export default function OperatorsPage() {
         });
       }
     });
-  }, [connection, chatsState.operatorProfile]);
+  }, [connection, chatsState]);
 
   useEffect(() => {
     if (!connection || !chatsState.operatorProfile) return;
     const chatOperator = chatHubOperatorConnection(connection);
     return chatOperator.on.ReceiveReadAt((messageId, readAt) => {
-      console.log("Received read at: " + messageId + " " + readAt);
-      console.log(chatsState.currentChat);
       if (chatsState.currentChat) {
         dispatch({
           type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
@@ -126,7 +127,7 @@ export default function OperatorsPage() {
         });
       }
     });
-  }, [connection, chatsState.operatorProfile, chatsState.currentChat]);
+  }, [connection, chatsState]);
 
   useEffect(() => {
     if (!connection || !chatsState.operatorProfile) return;
@@ -137,7 +138,7 @@ export default function OperatorsPage() {
         payload: chatsState.openChats.filter((chat) => chat.chatId != chatId),
       });
     });
-  }, [connection, chatsState.operatorProfile]);
+  }, [connection, chatsState]);
 
   if (!chatsState.operatorProfile) {
     <Navigate
