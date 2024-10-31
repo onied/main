@@ -1,0 +1,75 @@
+.sidebar {
+  --sidebar-width: 400px;
+  --sidebar-panel-width: 48px;
+
+  z-index: 9998;
+  position: fixed;
+  min-width: var(--sidebar-width);
+  width: fit-content;
+  width: min-content;
+  height: 100vh;
+
+  top: var(--header-height);
+  bottom: 0;
+
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.sidebar * {
+  box-sizing: border-box;
+}
+
+.sidebar.left {
+  left: calc(var(--sidebar-panel-width) - var(--sidebar-width));
+  border-right: 1px solid #bbbbbb;
+  transition: left 0.3s ease;
+}
+
+.sidebar.left.open {
+  left: 0;
+}
+
+.sidebar.right {
+  right: calc(var(--sidebar-panel-width) - var(--sidebar-width));
+  border-left: 1px solid #bbbbbb;
+  transition: right 0.3s ease;
+}
+
+.sidebar.right.open {
+  right: 0;
+}
+
+.sidebarButtonPanel {
+  position: fixed;
+  width: var(--sidebar-panel-width);
+  height: 100vh;
+
+  top: var(--header-height);
+
+  z-index: 9999;
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.sidebarButtonPanel.left {
+  left: 0;
+  border-right: 1px solid #bbbbbb;
+}
+
+.sidebarButtonPanel.right {
+  right: 0;
+  border-left: 1px solid #bbbbbb;
+}
+
+.toggleButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}

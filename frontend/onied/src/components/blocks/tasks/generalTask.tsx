@@ -10,7 +10,7 @@ type props = {
   task: Task;
   index: number;
   taskPoints: TaskPointsResponse;
-  onChange: (index: number, input: UserInputRequest) => void
+  onChange: (index: number, input: UserInputRequest) => void;
 };
 
 function GeneralTask({ task, index, taskPoints, onChange }: props) {

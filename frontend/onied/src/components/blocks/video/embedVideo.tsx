@@ -14,9 +14,8 @@ function videoLinkToIFrame(href: string) {
   const embedRegex = embedElements.filter((item) => item.regex.test(href));
   if (embedRegex.length == 0)
     return (
-      <div className={classes.embedVideo}>
-        Неверный формат ссылки на видео
-      </div>);
+      <div className={classes.embedVideo}>Неверный формат ссылки на видео</div>
+    );
   const iframeLink = embedRegex[0].getLink(href);
 
   return (

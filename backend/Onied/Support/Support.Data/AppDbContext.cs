@@ -17,5 +17,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Chat>().HasOne<SupportUser>(chat => chat.Support).WithMany(user => user.ActiveChats);
         modelBuilder.Entity<SupportUser>().HasAlternateKey(user => user.Number);
         modelBuilder.Entity<SupportUser>().Property(user => user.Number).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Message>()
+            .HasOne(message => message.SupportUser)
+            .WithMany()
+            .HasForeignKey(message => message.SupportUserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -79,6 +79,10 @@ namespace Support.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("read_at");
 
+                    b.Property<Guid?>("SupportUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("support_user_id");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
@@ -88,6 +92,9 @@ namespace Support.Data.Migrations
 
                     b.HasIndex("ChatId")
                         .HasDatabaseName("ix_messages_chat_id");
+
+                    b.HasIndex("SupportUserId")
+                        .HasDatabaseName("ix_messages_support_user_id");
 
                     b.ToTable("messages", (string)null);
                 });
@@ -134,7 +141,15 @@ namespace Support.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_messages_chats_chat_id");
 
+                    b.HasOne("Support.Data.Models.SupportUser", "SupportUser")
+                        .WithMany()
+                        .HasForeignKey("SupportUserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_messages_support_users_support_user_id");
+
                     b.Navigation("Chat");
+
+                    b.Navigation("SupportUser");
                 });
 
             modelBuilder.Entity("Support.Data.Models.Chat", b =>
