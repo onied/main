@@ -15,7 +15,11 @@ public class SendMessageConsumer(
     public async Task Consume(ConsumeContext<SendMessage> context)
     {
         var chat = await chatRepository.GetWithSupportByUserIdAsync(context.Message.SenderId)
-                   ?? await chatRepository.CreateForUserAsync(context.Message.SenderId);
+                   ?? new Chat
+                   {
+                       Id = Guid.NewGuid(),
+                       ClientId = context.Message.SenderId
+                   };
 
         if (chat.CurrentSessionId == null)
         {

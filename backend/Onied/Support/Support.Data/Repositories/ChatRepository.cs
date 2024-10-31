@@ -48,7 +48,6 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
     public Task<Chat?> GetWithSupportByUserIdAsync(Guid userId)
     {
         return dbContext.Chats
-            .AsNoTracking()
             .Include(chat => chat.Support)
             .Where(chat => chat.ClientId == userId)
             .SingleOrDefaultAsync();
@@ -57,22 +56,9 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
     public Task<Chat?> GetWithSupportAsync(Guid chatId)
     {
         return dbContext.Chats
-            .AsNoTracking()
             .Include(chat => chat.Support)
             .Where(chat => chat.Id == chatId)
             .SingleOrDefaultAsync();
-    }
-
-    public async Task<Chat> CreateForUserAsync(Guid userId)
-    {
-        var chat = new Chat
-        {
-            Id = Guid.NewGuid(),
-            ClientId = userId
-        };
-        dbContext.Chats.Add(chat);
-        await dbContext.SaveChangesAsync();
-        return chat;
     }
 
     public async Task UpdateAsync(Chat chat)

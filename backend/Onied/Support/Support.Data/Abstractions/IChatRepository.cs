@@ -16,7 +16,5 @@ public interface IChatRepository
 
     public Task<Chat?> GetWithSupportAsync(Guid chatId);
 
-    public Task<Chat> CreateForUserAsync(Guid userId);
-
     public Task UpdateAsync(Chat chat);
 }

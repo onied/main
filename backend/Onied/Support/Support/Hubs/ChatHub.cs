@@ -13,7 +13,7 @@ namespace Support.Hubs;
 public class ChatHub(
     ILogger<ChatHub> logger,
     ISupportUserRepository supportUserRepository,
-    Bind<IMassTransitInMemoryBus, IPublishEndpoint> publishEndpoint)
+    IPublishEndpoint publishEndpoint)
     : Hub<IChatClient>
 {
     public const string SupportUserGroup = "SupportUsers";
@@ -43,34 +43,34 @@ public class ChatHub(
 
     public async Task SendMessage(string messageContent)
     {
-        await publishEndpoint.Value.Publish(
+        await publishEndpoint.Publish(
             new SendMessage(new ChatHubContextItemsHelper(Context.Items).UserId, messageContent));
     }
 
     public async Task MarkMessageAsRead(Guid messageId)
     {
-        await publishEndpoint.Value.Publish(
+        await publishEndpoint.Publish(
             new MarkMessageAsRead(new ChatHubContextItemsHelper(Context.Items).UserId, messageId));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
     public async Task SendMessageToChat(Guid chatId, string messageContent)
     {
-        await publishEndpoint.Value.Publish(
+        await publishEndpoint.Publish(
             new SendMessageToChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId, messageContent));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
     public async Task CloseChat(Guid chatId)
     {
-        await publishEndpoint.Value.Publish(
+        await publishEndpoint.Publish(
             new CloseChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
     public async Task AbandonChat(Guid chatId)
     {
-        await publishEndpoint.Value.Publish(
+        await publishEndpoint.Publish(
             new AbandonChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId));
     }
 }

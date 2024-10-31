@@ -9,7 +9,7 @@ namespace Support.Services.Consumers;
 
 public class NewMessageClientNotificationConsumer(
     IMessageRepository messageRepository,
-    IPublishEndpoint publishEndpoint,
+    Bind<INotificationBus, IPublishEndpoint> publishEndpoint,
     ILogger<NewMessageClientNotificationConsumer> logger)
     : IConsumer<NewMessageClientNotification>
 {
@@ -26,8 +26,9 @@ public class NewMessageClientNotificationConsumer(
         {
             var notification = NotificationSent.Normalize(new NotificationSent(
                 $"Сообщение от оператора #{message.SupportNumberNullIfUser}",
-                message.MessageContent, message.Chat.ClientId));
-            await publishEndpoint.Publish(notification);
+                message.MessageContent, message.Chat.ClientId,
+                "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"));
+            await publishEndpoint.Value.Publish(notification);
         }
     }
 }
