@@ -10,5 +10,13 @@ public interface IChatRepository
 
     public Task<List<Chat>> GetActiveChatsAsync(Guid userId);
 
-    public Task<List<Chat>> GetOpenChatsAsync(Guid userId);
+    public Task<List<Chat>> GetOpenChatsAsync();
+
+    public Task<Chat?> GetWithSupportByUserIdAsync(Guid userId);
+
+    public Task<Chat?> GetWithSupportAsync(Guid chatId);
+
+    public Task<Chat> CreateForUserAsync(Guid userId);
+
+    public Task UpdateAsync(Chat chat);
 }

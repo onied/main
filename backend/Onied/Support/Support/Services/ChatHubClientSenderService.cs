@@ -1,15 +1,18 @@
 using AutoMapper;
+using MassTransit;
+using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
 using Support.Data.Models;
 using Support.Dtos;
 using Support.Hubs;
+using Support.Messages;
 
 namespace Support.Services;
 
 public class ChatHubClientSenderService(
     IHubContext<ChatHub, IChatClient> hubContext,
-    IClientNotificationProducer clientNotificationProducer,
+    Bind<IMassTransitInMemoryBus, IMessageScheduler> messageScheduler,
     IMapper mapper) : IChatHubClientSender
 {
     public async Task SendMessageToSupportUsers(Message message)
@@ -26,9 +29,8 @@ public class ChatHubClientSenderService(
     {
         var messageDto = mapper.Map<HubMessageDto>(message);
         await hubContext.Clients.User(message.Chat.ClientId.ToString()).ReceiveMessage(messageDto);
-        // TODO: Somehow check if client is online, and if they aren't:
-        // await clientNotificationProducer.NotifyClientOfNewMessage(message);
-        // TODO: otherwise do nothing.
+        await messageScheduler.Value.SchedulePublish(DateTime.UtcNow.AddMinutes(1),
+            new NewMessageClientNotification(message.Id));
     }
 
     public async Task NotifyMessageAuthorItWasRead(Message message)

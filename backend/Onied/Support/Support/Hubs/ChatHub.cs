@@ -1,17 +1,19 @@
-using AutoMapper;
+using MassTransit;
+using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Support.Abstractions;
 using Support.Authorization.Requirements;
-using Support.Data;
-using Support.Data.Models;
-using Support.Dtos;
+using Support.Data.Abstractions;
 using Support.Helpers;
+using Support.Messages;
 
 namespace Support.Hubs;
 
-public class ChatHub(IChatManagementService chatManagementService, ILogger<ChatHub> logger, AppDbContext dbContext)
+public class ChatHub(
+    ILogger<ChatHub> logger,
+    ISupportUserRepository supportUserRepository,
+    Bind<IMassTransitInMemoryBus, IPublishEndpoint> publishEndpoint)
     : Hub<IChatClient>
 {
     public const string SupportUserGroup = "SupportUsers";
@@ -31,43 +33,44 @@ public class ChatHub(IChatManagementService chatManagementService, ILogger<ChatH
             UserId = userId
         };
 
-        var supportUser = await dbContext.SupportUsers.FindAsync(userId);
+        var supportUser = await supportUserRepository.GetAsync(userId);
         if (supportUser != null)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, SupportUserGroup);
             items.IsSupportUser = true;
-            items.SupportNumber = supportUser.Number;
         }
     }
 
     public async Task SendMessage(string messageContent)
     {
-        await chatManagementService.SendMessage(new ChatHubContextItemsHelper(Context.Items).UserId, messageContent);
+        await publishEndpoint.Value.Publish(
+            new SendMessage(new ChatHubContextItemsHelper(Context.Items).UserId, messageContent));
     }
 
     public async Task MarkMessageAsRead(Guid messageId)
     {
-        await chatManagementService.MarkMessageAsRead(new ChatHubContextItemsHelper(Context.Items).UserId, messageId);
+        await publishEndpoint.Value.Publish(
+            new MarkMessageAsRead(new ChatHubContextItemsHelper(Context.Items).UserId, messageId));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
     public async Task SendMessageToChat(Guid chatId, string messageContent)
     {
-        var helper = new ChatHubContextItemsHelper(Context.Items);
-        if (helper.SupportNumber == null) return;
-        await chatManagementService.SendMessageToChat(helper.SupportNumber.Value, helper.UserId, chatId,
-            messageContent);
+        await publishEndpoint.Value.Publish(
+            new SendMessageToChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId, messageContent));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
     public async Task CloseChat(Guid chatId)
     {
-        await chatManagementService.CloseChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId);
+        await publishEndpoint.Value.Publish(
+            new CloseChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
     public async Task AbandonChat(Guid chatId)
     {
-        await chatManagementService.AbandonChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId);
+        await publishEndpoint.Value.Publish(
+            new AbandonChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId));
     }
 }

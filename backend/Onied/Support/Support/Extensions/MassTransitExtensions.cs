@@ -1,6 +1,6 @@
 using MassTransit;
 using Support.Abstractions;
-using Support.Services;
+using Support.Services.Consumers;
 
 namespace Support.Extensions;
 
@@ -28,12 +28,24 @@ public static class MassTransitExtensions
             })
             .AddMassTransit<IMassTransitInMemoryBus>(x =>
             {
-                // x.AddConsumer<NotificationSentConsumer>()
-                //     .Endpoint(e => e.Name = "notification-sent-notifications");
+                x.AddPublishMessageScheduler();
 
-                x.UsingInMemory();
+                x.AddHangfireConsumers();
+
+                x.AddConsumer<AbandonChatConsumer>();
+                x.AddConsumer<CloseChatConsumer>();
+                x.AddConsumer<MarkMessageAsReadConsumer>();
+                x.AddConsumer<NewMessageClientNotificationConsumer>();
+                x.AddConsumer<SendMessageConsumer>();
+                x.AddConsumer<SendMessageToChatConsumer>();
+
+                x.UsingInMemory((context, cfg) =>
+                {
+                    cfg.UsePublishMessageScheduler();
+
+                    cfg.ConfigureEndpoints(context);
+                });
             });
-        serviceCollection.AddScoped<IClientNotificationProducer, ClientNotificationProducer>();
         return serviceCollection;
     }
 }

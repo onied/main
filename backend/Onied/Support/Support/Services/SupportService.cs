@@ -21,7 +21,7 @@ public class SupportService(
 
     public async Task<List<GetChatsResponseDto>> GetOpenChats(Guid? userId)
     {
-        var chats = await chatRepository.GetOpenChatsAsync((Guid)userId!);
+        var chats = await chatRepository.GetOpenChatsAsync();
         logger.LogInformation("Retrieved {chatsCount} active chats for user {userId}", chats.Count, userId);
         return mapper.Map<List<GetChatsResponseDto>>(chats);
     }

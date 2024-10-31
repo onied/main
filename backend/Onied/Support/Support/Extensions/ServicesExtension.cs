@@ -1,7 +1,6 @@
+using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
 using Support.Services;
-
-using Microsoft.AspNetCore.SignalR;
 
 namespace Support.Extensions;
 
@@ -12,7 +11,6 @@ public static class ServicesExtension
         return services
             .AddSingleton<IUserIdProvider, QueryUserIdProvider>()
             .AddScoped<IMessageGenerator, MessageGenerator>()
-            .AddScoped<IChatManagementService, ChatManagementService>()
             .AddScoped<IChatHubClientSender, ChatHubClientSenderService>()
             .AddScoped<IChatService, ChatService>()
             .AddScoped<ISupportService, SupportService>()
