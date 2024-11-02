@@ -3,10 +3,8 @@ import Card from "../../../general/card/card";
 import TwoFactorImg from "../../../../assets/twoFactor.svg";
 import Button from "../../../general/button/button";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, redirect } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SixDigitsInput from "../../sixDigitsInput/sixDigitsInput";
-import api from "../../../../config/axios";
-import LoginService from "../../../../services/loginService";
 
 function CardTwoFactor() {
   const navigator = useNavigate();
