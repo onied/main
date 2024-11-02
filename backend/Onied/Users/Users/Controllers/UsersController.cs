@@ -61,13 +61,6 @@ public class UsersController(IUsersService usersService) : ControllerBase
     }
 
     [HttpGet]
-    [ActionName("manage/2fa/info")]
-    public Task<IResult> Get2FaInfo(string email)
-    {
-        return usersService.Get2FaInfo(email);
-    }
-
-    [HttpGet]
     [ActionName("manage/info")]
     public Task<IResult> GetInfo()
     {

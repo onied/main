@@ -248,15 +248,6 @@ public class UsersService(
         });
     }
 
-    public async Task<IResult> Get2FaInfo(string email)
-    {
-        var user = await userManager.FindByEmailAsync(email);
-        if (user is null) return TypedResults.NotFound();
-
-        var response = new TwoFactorEnabledResponse(user.TwoFactorEnabled);
-        return TypedResults.Ok(response);
-    }
-
     public async Task<IResult> GetInfo(ClaimsPrincipal claimsPrincipal)
     {
         if (await userManager.GetUserAsync(claimsPrincipal) is not { } user)
