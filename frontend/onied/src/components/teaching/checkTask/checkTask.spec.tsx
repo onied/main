@@ -34,10 +34,10 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json(initial);
       }),
-      http.put(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.put(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json({}, { status: 400 });
       })
     );
@@ -92,10 +92,10 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json(initial, { status: 404 });
       }),
-      http.put(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.put(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json({}, { status: 400 });
       })
     );
@@ -141,10 +141,10 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json(initial, { status: 403 });
       }),
-      http.put(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.put(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json({}, { status: 400 });
       })
     );
@@ -190,10 +190,10 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json(initial);
       }),
-      http.put(backend("/teaching/check/" + taskId), ({ request }) => {
+      http.put(backend("/teaching/check/" + taskId), () => {
         return HttpResponse.json();
       })
     );
@@ -240,7 +240,7 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
       http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
@@ -294,7 +294,7 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
       http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
@@ -348,7 +348,7 @@ describe("CheckTaskComponent", () => {
       points: 1,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
       http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
@@ -402,7 +402,7 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
       http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
@@ -461,7 +461,7 @@ describe("CheckTaskComponent", () => {
       points: 1,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
       http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
@@ -520,10 +520,10 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
-      http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.put(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json({ errors: { Points: true } }, { status: 400 });
       })
     );
@@ -572,10 +572,10 @@ describe("CheckTaskComponent", () => {
       points: 0,
     };
     server.use(
-      http.get(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.get(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json(initial);
       }),
-      http.put(backend("/teaching/check/" + taskId), async ({ request }) => {
+      http.put(backend("/teaching/check/" + taskId), async () => {
         return HttpResponse.json({}, { status: 403 });
       })
     );

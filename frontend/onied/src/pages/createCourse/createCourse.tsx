@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import api from "../../config/axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function CreateCourse() {
   const isCreated = useRef(false);
   const navigate = useNavigate();
-  const [noAccess, setNoAccess] = useState(false);
 
   useEffect(() => {
     if (!isCreated.current) {
@@ -26,7 +25,6 @@ function CreateCourse() {
     }
   });
 
-  if (noAccess) return <Navigate to="/login"></Navigate>;
   return <CustomBeatLoader />;
 }
 

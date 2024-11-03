@@ -1,0 +1,29 @@
+.chatWindow {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 4px #00000025,
+                -4px 0 4px #00000025,
+                4px 0 4px #00000025;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.chatHeader {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--accent-color);
+    padding: 10px 0 10px 0;
+}
+
+.chatHeader p{
+    margin: 0;
+    color: white;
+    text-align: center;
+}
+
+.messagesTimeline{
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 45vh;
+}

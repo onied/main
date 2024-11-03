@@ -1,27 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses", "Courses\Courses.csproj", "{8A7F9D9A-DDD4-4D9D-8834-1ED2A7C64FA9}"
+#
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses", "Courses\Courses\Courses.csproj", "{8A7F9D9A-DDD4-4D9D-8834-1ED2A7C64FA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Courses", "Tests.Courses\Tests.Courses.csproj", "{242B338E-3147-4ABA-95B0-FA29EFC25872}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Courses", "Courses\Tests.Courses\Tests.Courses.csproj", "{242B338E-3147-4ABA-95B0-FA29EFC25872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "Users\Users.csproj", "{45B6A958-CB94-485D-B412-6DA2F72860A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "Users\Users\Users.csproj", "{45B6A958-CB94-485D-B412-6DA2F72860A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Data", "MassTransit.Data\MassTransit.Data.csproj", "{7C3E1D98-DAEA-4C0A-89C2-B79F4F375033}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases", "Purchases\Purchases.csproj", "{953DF9BD-4B35-45B2-96C9-C8A5B2232970}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases", "Purchases\Purchases\Purchases.csproj", "{953DF9BD-4B35-45B2-96C9-C8A5B2232970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{BAA9985E-2077-4202-B689-A2466509E1B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications\Notifications.csproj", "{BAA9985E-2077-4202-B689-A2466509E1B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases.Data", "Purchases.Data\Purchases.Data.csproj", "{1FDB5C14-2474-465B-9614-BA4000AA79D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchases.Data", "Purchases\Purchases.Data\Purchases.Data.csproj", "{1FDB5C14-2474-465B-9614-BA4000AA79D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Data", "Notifications.Data\Notifications.Data.csproj", "{DF820669-7396-4911-B9A9-EA211793A815}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Data", "Notifications\Notifications.Data\Notifications.Data.csproj", "{DF820669-7396-4911-B9A9-EA211793A815}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Data", "Users.Data\Users.Data.csproj", "{77FC1C04-2A21-4CC5-84E7-703FBE1E782D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Data", "Users\Users.Data\Users.Data.csproj", "{77FC1C04-2A21-4CC5-84E7-703FBE1E782D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{7AD2F083-A114-41AA-90B6-E7E946B1B1AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Data", "Courses.Data\Courses.Data.csproj", "{F6DA34F2-68BF-441D-A22B-90DC6CD25553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Data", "Courses\Courses.Data\Courses.Data.csproj", "{F6DA34F2-68BF-441D-A22B-90DC6CD25553}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Courses", "Courses", "{7A101061-4CFE-4CAE-901B-D11FFC905CE9}"
 EndProject
@@ -31,15 +31,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Purchases", "Purchases", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{CF649131-0AD5-4066-BE8B-B968191037DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Purchases", "Tests.Purchases\Tests.Purchases.csproj", "{A50BF4F2-7051-4280-BBF9-58C4C55299C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Purchases", "Purchases\Tests.Purchases\Tests.Purchases.csproj", "{A50BF4F2-7051-4280-BBF9-58C4C55299C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Users", "Tests.Users\Tests.Users.csproj", "{CF5F57AF-E4CC-4C5D-8B4D-60E1BEFA8853}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Users", "Users\Tests.Users\Tests.Users.csproj", "{CF5F57AF-E4CC-4C5D-8B4D-60E1BEFA8853}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Validation", "Common.Validation\Common.Validation.csproj", "{19C32B81-4A1A-479D-B957-61E8DE17EDF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Validation", "Common\Common.Validation\Common.Validation.csproj", "{19C32B81-4A1A-479D-B957-61E8DE17EDF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E0E97389-094F-434B-B5AA-4C73560CE3EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.RandomUtils", "Common.RandomUtils\Common.RandomUtils.csproj", "{D9351A88-323F-4E81-BC84-1AAD6BBF1569}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.RandomUtils", "Common\Common.RandomUtils\Common.RandomUtils.csproj", "{D9351A88-323F-4E81-BC84-1AAD6BBF1569}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support", "Support", "{EE195947-CF0A-40FC-B282-4A958B4094A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Support", "Support\Support\Support.csproj", "{39F902E7-51E6-4EF5-A8F5-0D16BB1743EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Support.Data", "Support\Support.Data\Support.Data.csproj", "{2F48AEA1-2488-4FE2-BBF0-282DCC23C397}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +117,14 @@ Global
 		{D9351A88-323F-4E81-BC84-1AAD6BBF1569}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9351A88-323F-4E81-BC84-1AAD6BBF1569}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9351A88-323F-4E81-BC84-1AAD6BBF1569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39F902E7-51E6-4EF5-A8F5-0D16BB1743EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39F902E7-51E6-4EF5-A8F5-0D16BB1743EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39F902E7-51E6-4EF5-A8F5-0D16BB1743EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39F902E7-51E6-4EF5-A8F5-0D16BB1743EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F48AEA1-2488-4FE2-BBF0-282DCC23C397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F48AEA1-2488-4FE2-BBF0-282DCC23C397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F48AEA1-2488-4FE2-BBF0-282DCC23C397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F48AEA1-2488-4FE2-BBF0-282DCC23C397}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8A7F9D9A-DDD4-4D9D-8834-1ED2A7C64FA9} = {7A101061-4CFE-4CAE-901B-D11FFC905CE9}
@@ -126,5 +140,7 @@ Global
 		{CF5F57AF-E4CC-4C5D-8B4D-60E1BEFA8853} = {CF649131-0AD5-4066-BE8B-B968191037DB}
 		{19C32B81-4A1A-479D-B957-61E8DE17EDF4} = {E0E97389-094F-434B-B5AA-4C73560CE3EA}
 		{D9351A88-323F-4E81-BC84-1AAD6BBF1569} = {E0E97389-094F-434B-B5AA-4C73560CE3EA}
+		{39F902E7-51E6-4EF5-A8F5-0D16BB1743EA} = {EE195947-CF0A-40FC-B282-4A958B4094A2}
+		{2F48AEA1-2488-4FE2-BBF0-282DCC23C397} = {EE195947-CF0A-40FC-B282-4A958B4094A2}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,31 @@
+.inputWrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.textArea {
+    width: 100%;
+    margin: 10px;
+    border: 1px solid #BBBBBB;
+    border-radius: 10px;
+}
+
+.sendButton {
+    background-color: var(--accent-color);
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    margin: 10px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: none;
+}
+
+.sendButton img{
+    position: relative;
+    top: 2px;
+    left: -2px;
+    width: 24px;
+    height: 24px;
+}

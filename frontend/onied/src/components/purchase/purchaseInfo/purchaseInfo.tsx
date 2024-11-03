@@ -15,6 +15,7 @@ function PurchaseInfo({
     [PurchaseType.Course]: "Курс",
     [PurchaseType.Certificate]: "Сертификат",
     [PurchaseType.Subscription]: "Подписка",
+    [PurchaseType.Any]: "",
   };
 
   return (

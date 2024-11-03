@@ -74,7 +74,6 @@ describe("EditVideoBlockComponent", () => {
   });
   it("reports when not found", async () => {
     // Arrange
-    const initial = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     const expected = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     server.use(
       http.put(backend("/courses/1/edit/video/1"), async ({ request }) => {
@@ -105,9 +104,8 @@ describe("EditVideoBlockComponent", () => {
   it("reports when not found while saving", async () => {
     // Arrange
     const initial = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-    const expected = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     server.use(
-      http.put(backend("/courses/1/edit/video/1"), async ({ request }) => {
+      http.put(backend("/courses/1/edit/video/1"), () => {
         return HttpResponse.json({}, { status: 404 });
       }),
       http.get(backend("/courses/1/edit/check-edit-course"), () => {
@@ -136,9 +134,8 @@ describe("EditVideoBlockComponent", () => {
   it("reports when not found while saving", async () => {
     // Arrange
     const initial = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-    const expected = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     server.use(
-      http.put(backend("/courses/1/edit/video/1"), async ({ request }) => {
+      http.put(backend("/courses/1/edit/video/1"), () => {
         return HttpResponse.json({}, { status: 403 });
       }),
       http.get(backend("/courses/1/edit/check-edit-course"), () => {

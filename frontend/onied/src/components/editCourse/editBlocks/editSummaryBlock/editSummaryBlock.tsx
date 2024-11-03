@@ -42,7 +42,7 @@ function EditSummaryBlockComponent({
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
   const [newFileName, setNewFileName] = useState<string>("");
   const [newFileHref, setNewFileHref] = useState<string>("");
-  const [newFileHrefError, setNewFileHrefError] = useState<string | null>(null);
+  const [newFileHrefError, _] = useState<string | null>(null);
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
@@ -89,8 +89,8 @@ function EditSummaryBlockComponent({
 
   const onMDChange = (
     value?: string,
-    event?: React.ChangeEvent<HTMLTextAreaElement>,
-    state?: ContextStore
+    _?: React.ChangeEvent<HTMLTextAreaElement>,
+    __?: ContextStore
   ) => {
     if (value === undefined) {
       value = "";
@@ -176,7 +176,7 @@ function EditSummaryBlockComponent({
           {currentBlock!.fileHref ? (
             <div className={classes.fileAddingFileIcon}>
               <FileLink
-                fileName={currentBlock!.fileName}
+                fileName={currentBlock!.fileName!}
                 fileHref={currentBlock!.fileHref}
               />
               <div>

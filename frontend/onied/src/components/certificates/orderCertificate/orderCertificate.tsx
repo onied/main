@@ -127,24 +127,27 @@ function OrderCertificate() {
             mapStyle="mapbox://styles/mapbox/streets-v9"
             ref={mapRef}
           >
-            <SearchBox
-              accessToken={Config.MapboxApiKey}
-              value={address}
-              onChange={setAddress}
-              map={mapRef.current?.getMap()}
-              onRetrieve={(resp) => {
-                const feature = resp.features[0];
-                if (feature == null) return;
-                setAddress(feature.properties.full_address);
-              }}
-              options={{
-                country: "RU",
-                language: "ru",
-                types: "address, city",
-              }}
-              marker={true}
-              mapboxgl={mapboxgl}
-            />
+            {
+              // @ts-ignore
+              <SearchBox
+                accessToken={Config.MapboxApiKey}
+                value={address}
+                onChange={setAddress}
+                map={mapRef.current?.getMap()}
+                onRetrieve={(resp) => {
+                  const feature = resp.features[0];
+                  if (feature == null) return;
+                  setAddress(feature.properties.full_address);
+                }}
+                options={{
+                  country: "RU",
+                  language: "ru",
+                  types: "address, city",
+                }}
+                marker={true}
+                mapboxgl={mapboxgl}
+              />
+            }
           </Map>
           {error ? <div className={classes.error}>{error}</div> : <></>}
         </div>

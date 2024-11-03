@@ -14,9 +14,10 @@ function ManualReviewTask({ task, onChange, initialValue }: props) {
 
   // default library signature
   const handleChange = (
-    text?: string, 
-    _event?: React.ChangeEvent<HTMLTextAreaElement>, 
-    _state?: ContextStore) => {
+    text?: string,
+    _event?: React.ChangeEvent<HTMLTextAreaElement>,
+    _state?: ContextStore
+  ) => {
     setValue(text ?? "");
     onChange({
       taskId: task.id,
