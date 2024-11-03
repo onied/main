@@ -13,12 +13,6 @@ function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && searchQuery != "") {
-      navigate(`/catalog?q=${searchQuery}`);
-    }
-  };
-
   return (
     <header className={classes.header}>
       <div className={classes.leftWrapper}>
@@ -46,7 +40,11 @@ function Header() {
             placeholder={"Поиск..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleKeyPress}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && searchQuery != "") {
+                navigate(`/catalog?q=${searchQuery}`);
+              }
+            }}
           ></input>
         </div>
         {profile == null ? (

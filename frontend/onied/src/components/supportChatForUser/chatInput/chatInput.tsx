@@ -4,11 +4,18 @@ import InputForm from "@onied/components/general/inputform/inputform";
 import Button from "@onied/components/general/button/button";
 import { ChangeEvent, useState } from "react";
 
-function ChatInput() {
+function ChatInput({
+  sendMessageDisabled,
+  sendMessageToHub,
+}: {
+  sendMessageDisabled: boolean;
+  sendMessageToHub: (messageContent: string) => void;
+}) {
   const [inputText, setInputText] = useState("");
 
   const sendMessage = () => {
-    console.log(inputText);
+    if (sendMessageDisabled) return;
+    sendMessageToHub(inputText);
     setInputText("");
   };
 
@@ -20,8 +27,13 @@ function ChatInput() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setInputText(e.target.value)
         }
+        disabled={sendMessageDisabled}
       ></InputForm>
-      <Button className={classes.sendButton} onClick={sendMessage}>
+      <Button
+        className={classes.sendButton}
+        onClick={sendMessage}
+        disabled={sendMessageDisabled}
+      >
         <img className={classes.sendIcon} src={sendIcon} />
       </Button>
     </div>

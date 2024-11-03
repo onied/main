@@ -107,7 +107,7 @@ jobs:
           uses: actions/setup-node@v4
           with:
             node-version: ${{ env.node-version }}
-        - name: Install Frontend dependencies
+        - name: Install Nest.JS dependencies
           if: matrix.project == 'backend-nest'
           run: npm install --prefix ${{ env.backend-nest-path }}
         - name: Run ESLint (Nest.JS)

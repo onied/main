@@ -110,7 +110,7 @@ describe("EditPreviewComponent", () => {
       courseProgram: ["asdf", "jsldkjflkj", "i am really tired"],
     };
     server.use(
-      http.put(backend("/courses/1/edit"), async ({ request }) => {
+      http.put(backend("/courses/1/edit"), () => {
         return HttpResponse.json({}, { status: 403 });
       }),
       http.get(backend("/courses/1"), () => {
@@ -326,7 +326,7 @@ describe("EditPreviewComponent", () => {
       courseProgram: [],
     };
     server.use(
-      http.put(backend("/courses/1/edit"), async ({ request }) => {
+      http.put(backend("/courses/1/edit"), () => {
         return HttpResponse.json(
           {
             errors: {
@@ -395,7 +395,7 @@ describe("EditPreviewComponent", () => {
       courseProgram: [],
     };
     server.use(
-      http.put(backend("/courses/1/edit"), async ({ request }) => {
+      http.put(backend("/courses/1/edit"), () => {
         return HttpResponse.json(
           {
             errors: {
@@ -465,7 +465,7 @@ describe("EditPreviewComponent", () => {
       courseProgram: [],
     };
     server.use(
-      http.put(backend("/courses/1/edit"), async ({ request }) => {
+      http.put(backend("/courses/1/edit"), () => {
         return HttpResponse.json();
       }),
       http.get(backend("/courses/1"), () => {

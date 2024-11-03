@@ -9,7 +9,6 @@ namespace Courses.Services.Producers.NotificationSentProducer;
 public class NotificationSentProducer(
     ILogger<NotificationSentProducer> logger,
     IUserRepository userRepository,
-    INotificationPreparerService notificationPreparerService,
     IPublishEndpoint publishEndpoint
 ) : INotificationSentProducer
 {
@@ -33,7 +32,7 @@ public class NotificationSentProducer(
 
     private NotificationSent ValidateAndPrepareNotification(NotificationSent notification)
     {
-        notification = notificationPreparerService.PrepareNotification(notification);
+        notification = NotificationSent.Normalize(notification);
 
         if (_validator.TryValidate(notification, out var results)) return notification;
 

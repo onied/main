@@ -1,9 +1,12 @@
-import { Chat } from "@onied/types/chat";
+import Config from "@onied/config/config";
 import classes from "./upperBar.module.css";
 
 import IdBar from "@onied/components/general/idBar/idBar";
-import { useAppDispatch } from "@onied/hooks";
+import { useAppDispatch, useAppSelector } from "@onied/hooks";
+import useSignalR from "@onied/hooks/signalr";
 import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
+import { chatHubOperatorConnection } from "@onied/pages/operators/chatHubOperatorConnection";
+import { useDispatch } from "react-redux";
 
 const Return = () => {
   const dispatch = useAppDispatch();
@@ -36,15 +39,9 @@ const Return = () => {
   );
 };
 
-const Unlink = () => {
-  const dispatch = useAppDispatch();
-
-  const clickEvent = () => {
-    dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
-  };
-
+const Unlink = ({ sendUnlink }: { sendUnlink: () => void }) => {
   return (
-    <div className={classes.buttonSvg} onClick={clickEvent}>
+    <div className={classes.buttonSvg} onClick={sendUnlink}>
       <svg
         width="20"
         height="20"
@@ -82,15 +79,9 @@ const Unlink = () => {
   );
 };
 
-const Finish = () => {
-  const dispatch = useAppDispatch();
-
-  const clickEvent = () => {
-    dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
-  };
-
+const Finish = ({ sendFinish }: { sendFinish: () => void }) => {
   return (
-    <div className={classes.buttonSvg} onClick={clickEvent}>
+    <div className={classes.buttonSvg} onClick={sendFinish}>
       <svg
         width="20"
         height="20"
@@ -125,13 +116,58 @@ const Finish = () => {
   );
 };
 
-export default function UpperBar({ currentChat }: { currentChat: Chat }) {
+export default function UpperBar() {
+  const chatsState = useAppSelector((state) => state.chats);
+  const { connection } = useSignalR(
+    Config.BaseURL.replace(/\/$/, "") + "/chat/hub"
+  );
+  const dispatch = useDispatch();
+
+  const sendUnlink = () => {
+    if (!connection || !chatsState.currentChatId) return;
+    const chatOperator = chatHubOperatorConnection(connection);
+    chatOperator.send.CloseChat(chatsState.currentChatId);
+    dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
+    dispatch({
+      type: ChatsStateActionTypes.FETCH_ACTIVE_CHATS,
+      payload: chatsState.activeChats.filter(
+        (chat) => chat.chatId != chatsState.currentChatId
+      ),
+    });
+    dispatch({
+      type: ChatsStateActionTypes.FETCH_OPEN_CHATS,
+      payload: chatsState.openChats.filter(
+        (chat) => chat.chatId != chatsState.currentChatId
+      ),
+    });
+  };
+
+  const sendFinish = () => {
+    if (!connection || !chatsState.currentChatId) return;
+    const chatOperator = chatHubOperatorConnection(connection);
+    chatOperator.send.AbandonChat(chatsState.currentChatId);
+    dispatch({ type: ChatsStateActionTypes.FETCH_CURRENT_CHAT });
+    dispatch({
+      type: ChatsStateActionTypes.FETCH_ACTIVE_CHATS,
+      payload: chatsState.activeChats.filter(
+        (chat) => chat.chatId != chatsState.currentChatId
+      ),
+    });
+    dispatch({
+      type: ChatsStateActionTypes.FETCH_OPEN_CHATS,
+      payload: chatsState.openChats.filter(
+        (chat) => chat.chatId != chatsState.currentChatId
+      ),
+    });
+  };
+
+  if (!connection || !chatsState.currentChatId) return <></>;
   return (
     <div className={classes.upperBar}>
       <Return />
-      <IdBar id={currentChat.CurrentSessionId!} />
-      <Unlink />
-      <Finish />
+      <IdBar id={chatsState.currentChatId} />
+      <Unlink sendUnlink={sendUnlink} />
+      <Finish sendFinish={sendFinish} />
     </div>
   );
 }

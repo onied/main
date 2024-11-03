@@ -124,15 +124,6 @@ describe("EditSummaryBlockComponent", () => {
   });
   it("reports when not found", async () => {
     // Arrange
-    const initial = {
-      id: 1,
-      title: "title",
-      blockType: 1,
-      isCompleted: false,
-      markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
-    };
     const expected = {
       id: 1,
       title: "title",
@@ -188,17 +179,8 @@ describe("EditSummaryBlockComponent", () => {
       fileName: "string",
       fileHref: "string",
     };
-    const expected = {
-      id: 1,
-      title: "title",
-      blockType: 1,
-      isCompleted: false,
-      markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
-    };
     server.use(
-      http.put(backend("/courses/1/edit/summary/1"), async ({ request }) => {
+      http.put(backend("/courses/1/edit/summary/1"), () => {
         // const data: any = await request.json();
         // if (
         //   expected.id == data.id &&
@@ -246,28 +228,8 @@ describe("EditSummaryBlockComponent", () => {
       fileName: "string",
       fileHref: "string",
     };
-    const expected = {
-      id: 1,
-      title: "title",
-      blockType: 1,
-      isCompleted: false,
-      markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
-    };
     server.use(
-      http.put(backend("/courses/1/edit/summary/1"), async ({ request }) => {
-        // const data: any = await request.json();
-        // if (
-        //   expected.id == data.id &&
-        //   expected.title == data.title &&
-        //   expected.blockType == data.blockType &&
-        //   expected.isCompleted == data.isCompleted &&
-        //   expected.markdownText == data.markdownText &&
-        //   expected.fileName == data.fileName &&
-        //   expected.fileHref == data.fileHref
-        // )
-        //   return HttpResponse.json();
+      http.put(backend("/courses/1/edit/summary/1"), () => {
         return HttpResponse.json({}, { status: 403 });
       }),
       http.get(backend("/courses/1/edit/check-edit-course"), () => {

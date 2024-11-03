@@ -16,7 +16,6 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped<IUpdateTasksBlockService, UpdateTasksBlockService>();
         serviceCollection.AddScoped<ICheckTaskManagementService, CheckTaskManagementService>();
         serviceCollection.AddScoped<IManualReviewService, ManualReviewService>();
-        serviceCollection.AddScoped<INotificationPreparerService, NotificationPreparerService>();
         serviceCollection.AddScoped<IAccountsService, AccountsService>();
         serviceCollection.AddScoped<ICatalogService, CatalogService>();
         serviceCollection.AddScoped<ICourseService, CourseService>();

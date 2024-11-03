@@ -20,5 +20,5 @@ public class Chat
 
     public Guid? CurrentSessionId { get; set; }
 
-    public ICollection<Message> Messages { get; } = new List<Message>();
+    public ICollection<MessageView> Messages { get; } = new List<MessageView>();
 }

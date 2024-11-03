@@ -1,108 +1,20 @@
 import { Chat, ChatBadge, OperatorProfile } from "@onied/types/chat";
+import { UUID } from "crypto";
 
 type ChatsState = {
   operatorProfile?: OperatorProfile;
   activeChats: ChatBadge[];
   openChats: ChatBadge[];
   currentChat?: Chat;
+  currentChatId?: UUID;
 };
 
 const initialState: ChatsState = {
-  operatorProfile: { Number: 14 },
-  activeChats: [
-    {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
-      },
-    },
-    {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
-      },
-    },
-    {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "бла-бла-бла",
-      },
-    },
-  ],
-  openChats: [
-    {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
-      },
-    },
-    {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586d",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "А что кушают поросятки?",
-      },
-    },
-    {
-      ChatId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      LastMessage: {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586c",
-        SupportNumber: 69,
-        CreatedAt: 0,
-        ReadAt: null,
-        IsSystem: false,
-        Message: "бла-бла-бла",
-      },
-    },
-  ],
-  currentChat: {
-    SupportNumber: 69,
-    CurrentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-    Messages: [
-      {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        SupportNumber: null,
-        CreatedAt: 1730115891,
-        ReadAt: 1730115891,
-        IsSystem: false,
-        Message:
-          "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-      },
-      {
-        MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-        SupportNumber: 69,
-        CreatedAt: 1730115891,
-        ReadAt: 1730115891,
-        IsSystem: false,
-        Message:
-          "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-      },
-    ],
-  },
+  operatorProfile: undefined,
+  activeChats: [],
+  openChats: [],
+  currentChat: undefined,
+  currentChatId: undefined,
 };
 
 export enum ChatsStateActionTypes {
@@ -125,7 +37,7 @@ interface FetchOpenChatsAction {
 }
 interface FetchCurrentChatAction {
   type: ChatsStateActionTypes.FETCH_CURRENT_CHAT;
-  payload: Chat | undefined;
+  payload: { chat: Chat; chatId: UUID } | undefined;
 }
 
 export type ChatsAction =
@@ -155,7 +67,8 @@ export const ChatsReducer = (state = initialState, action: ChatsAction) => {
     case ChatsStateActionTypes.FETCH_CURRENT_CHAT:
       return {
         ...state,
-        currentChat: action.payload,
+        currentChat: action.payload?.chat,
+        currentChatId: action.payload?.chatId,
       };
     default:
       return state;

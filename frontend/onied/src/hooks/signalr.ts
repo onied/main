@@ -39,7 +39,7 @@ export default function useSignalR(url: string) {
         console.log("signal error", error);
       });
 
-    connection.onclose((error) => {
+    connection.onclose((_) => {
       if (canceled) {
         return;
       }
@@ -47,7 +47,7 @@ export default function useSignalR(url: string) {
       setConnection(undefined);
     });
 
-    connection.onreconnecting((error) => {
+    connection.onreconnecting((_) => {
       if (canceled) {
         return;
       }
@@ -55,7 +55,7 @@ export default function useSignalR(url: string) {
       setConnection(undefined);
     });
 
-    connection.onreconnected((error) => {
+    connection.onreconnected((_) => {
       if (canceled) {
         return;
       }

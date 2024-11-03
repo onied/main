@@ -3,14 +3,14 @@ import classes from "./chatBadgeList.module.css";
 import IdBar from "@onied/components/general/idBar/idBar";
 import combineCssClasses from "@onied/helpers/combineCssClasses";
 import { ChatsStateActionTypes } from "@onied/redux/reducers/chatReducer";
-import { Chat, ChatBadge } from "@onied/types/chat";
+import { ChatBadge } from "@onied/types/chat";
 import { Side } from "@onied/types/general";
 import { useAppDispatch } from "@onied/hooks";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputForm from "@onied/components/general/inputform/inputform";
 
-// import OperatorChatApi from '@onied/api/operatorChat'
+import OperatorChatApi from "@onied/api/operatorChat";
 
 type Props = {
   title: string;
@@ -25,14 +25,18 @@ export default function ChatBadgeList({
   side,
   searchEnabled,
 }: Props) {
-  const [filteredBadges, setFilteredBadges] = useState<ChatBadge[]>(badges);
+  const [filteredBadges, setFilteredBadges] = useState<ChatBadge[]>([]);
+
+  useEffect(() => {
+    setFilteredBadges(badges);
+  }, [badges]);
 
   const searchChat = (query: string) => {
     const id = query.replaceAll("-", "").toLowerCase() ?? "";
 
     setFilteredBadges(
       badges.filter((badge) => {
-        const badgeId = badge.ChatId.replaceAll("-", "").toLowerCase();
+        const badgeId = badge.chatId.replaceAll("-", "").toLowerCase();
         return badgeId.startsWith(id);
       })
     );
@@ -58,60 +62,47 @@ export default function ChatBadgeList({
       {filteredBadges.map((badge) => (
         <ChatBadgeItem
           badge={badge}
-          key={`${title[0]}-chat-badge-${badge.ChatId}`}
+          key={`${title[0]}-chat-badge-${badge.chatId}`}
         />
       ))}
     </nav>
   );
 }
 
-const UnreadCount = ({ count }: { count: number }) => (
-  <span className={classes.unreadCount}>{count}</span>
-);
-
-const currentChat: Chat = {
-  SupportNumber: 69,
-  CurrentSessionId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-  Messages: [
-    {
-      MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      SupportNumber: null,
-      CreatedAt: 1730115891,
-      ReadAt: 1730115891,
-      IsSystem: false,
-      Message:
-        "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-    },
-    {
-      MessageId: "62cbfd28-0c25-4898-9a2e-dae00719586e",
-      SupportNumber: 69,
-      CreatedAt: 1730115891,
-      ReadAt: 1730115891,
-      IsSystem: false,
-      Message:
-        "бла-бла-бла esfesfdsfds esfesfdsfds esfesfdsfds asda dsadsa da sadas",
-    },
-  ],
-};
+const UnreadCount = ({ hasUnread }: { hasUnread: boolean }) =>
+  hasUnread ? <span className={classes.unreadCount}>!</span> : <></>;
 
 function ChatBadgeItem({ badge }: { badge: ChatBadge }) {
   const dispatch = useAppDispatch();
-  // const operatorChatApi = new OperatorChatApi()
+  const operatorChatApi = new OperatorChatApi();
+  const [hidden, setHidden] = useState(false);
 
   const openChatEvent = () => {
-    // const currentChat = operatorChatApi.GetChat(badge.ChatId)
-    dispatch({
-      type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
-      payload: currentChat,
-    });
+    operatorChatApi
+      .GetChat(badge.chatId)
+      .then((currentChat) => {
+        dispatch({
+          type: ChatsStateActionTypes.FETCH_CURRENT_CHAT,
+          payload: { chat: currentChat, chatId: badge.chatId },
+        });
+      })
+      .catch(() => {
+        setHidden(true);
+      });
   };
+
+  if (hidden) return <></>;
 
   return (
     <div className={classes.badgeItem} onClick={openChatEvent}>
-      <p>{badge.LastMessage.Message}</p>
+      <p>{badge.lastMessage.message}</p>
       <div className={classes.badgeFooter}>
-        <IdBar id={badge.ChatId} />
-        <UnreadCount count={1} />
+        <IdBar id={badge.chatId} />
+        <UnreadCount
+          hasUnread={
+            !badge.lastMessage.supportNumber && !badge.lastMessage.readAt
+          }
+        />
       </div>
     </div>
   );

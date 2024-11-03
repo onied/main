@@ -1,8 +1,8 @@
 import classes from "./chatArea.module.css";
 
 import combineCssClasses from "@onied/helpers/combineCssClasses";
-import SendMessageFooter from "../sendMessageFooter/sendMessageFooter";
 import { Chat, Message } from "@onied/types/chat";
+import { useEffect, useRef } from "react";
 
 const ReadBadge = () => {
   return (
@@ -31,20 +31,40 @@ const ReadBadge = () => {
   );
 };
 
-const TimeBadge = ({ time }: { time: number }) => {
-  const getShowTime = (unixTime: number) => {
-    const date = new Date(unixTime * 1000);
-    const hours = date.getHours().toString();
-    const minutes = ("0" + date.getMinutes()).substr(-2);
-    return `${hours}:${minutes}`;
-  };
-
-  return <span className={classes.timeBadge}>{getShowTime(time)}</span>;
+const TimeBadge = ({ time }: { time: Date }) => {
+  return (
+    <span className={classes.timeBadge}>
+      {time.toLocaleString([], {
+        minute: "numeric",
+        hour: "numeric",
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      })}
+    </span>
+  );
 };
 
-const ChatMessage = ({ message }: { message: Message }) => {
-  const isMine = message.SupportNumber != null;
+function SystemMessage({ message }: { message: string }) {
+  const parsedMessage = message.startsWith("open-session ")
+    ? `Начало сессии ${message.split(" ")[1]}`
+    : message === "close-session"
+      ? "Конец сессии"
+      : undefined;
+  if (!parsedMessage) return <></>;
+  return (
+    <div className={classes.systemMessage}>
+      <div className={classes.line}></div>
+      <span>{parsedMessage}</span>
+      <div className={classes.line}></div>
+    </div>
+  );
+}
 
+const ChatMessage = ({ message }: { message: Message }) => {
+  const isMine = message.supportNumber != null;
+
+  if (message.isSystem) return <SystemMessage message={message.message} />;
   return (
     <div
       className={combineCssClasses([
@@ -52,22 +72,33 @@ const ChatMessage = ({ message }: { message: Message }) => {
         isMine ? classes.mine : classes.other,
       ])}
     >
-      <p>{message.Message}</p>
+      <p>{message.message}</p>
       <div className={classes.chatFooter}>
-        {message.ReadAt && <ReadBadge />}
-        <TimeBadge time={message.CreatedAt} />
+        {message.readAt && <ReadBadge />}
+        <TimeBadge time={new Date(message.createdAt)} />
       </div>
     </div>
   );
 };
 
 export default function ChatArea({ chat }: { chat: Chat }) {
+  const bottom = useRef<null | HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    bottom.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat]);
   return (
-    <div className={classes.chatArea}>
-      {chat.Messages.map((msg) => (
-        <ChatMessage message={msg} />
-      ))}
-      <SendMessageFooter />
+    <div className={classes.chatAreaWrapperWrapper}>
+      <div className={classes.chatAreaWrapper}>
+        <div className={classes.chatArea}>
+          {chat.messages.map((msg) => (
+            <ChatMessage message={msg} key={msg.messageId} />
+          ))}
+          <div ref={bottom}></div>
+        </div>
+      </div>
     </div>
   );
 }

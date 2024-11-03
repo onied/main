@@ -10,9 +10,15 @@
 
   font-family: "Quicksand", Helvetica;
   font-weight: 300;
+  height: 100%;
+  overflow: hidden;
 }
 
 .activeArea * {
   font-family: "Quicksand", Helvetica;
   font-weight: 300;
+}
+
+.activeArea {
+  width: 100%;
 }

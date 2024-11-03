@@ -5,20 +5,30 @@ import {
   MessagesHistoryDto,
 } from "@onied/components/supportChatForUser/messageDtos";
 import ChatInput from "@onied/components/supportChatForUser/chatInput/chatInput";
+import { useEffect, useRef } from "react";
 
 type ChatWindowProps = {
   isChatWindowOpen: boolean;
-  isFirstEverMessage: boolean;
+  isFirstMessageInSession: boolean;
   messagesHistory: MessagesHistoryDto;
   setMessagesHistory: (messagesHistory: MessagesHistoryDto) => void;
+  sendMessage: (messageContent: string) => void;
+  sendMessageDisabled: boolean;
 };
 
 function ChatWindow(props: ChatWindowProps) {
   if (!props.isChatWindowOpen) return <></>;
+  const bottom = useRef<null | HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    bottom.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [props.messagesHistory]);
   return (
     <div className={classes.chatWindow}>
       <div className={classes.chatHeader}>
-        {props.isFirstEverMessage ? (
+        {props.isFirstMessageInSession ? (
           <div>
             <p>Введите вопрос,</p>
             <p>чтобы начать диалог</p>
@@ -46,15 +56,20 @@ function ChatWindow(props: ChatWindowProps) {
                 {...message}
                 isFirstOperatorMessageInChain={
                   !message.isSystem &&
+                  index > 0 &&
                   array[index - 1].supportNumber === null &&
                   array[index].supportNumber !== null
                 }
               ></ChatMessage>
             )
           )}
+          <div ref={bottom}></div>
         </div>
       )}
-      <ChatInput></ChatInput>
+      <ChatInput
+        sendMessageDisabled={props.sendMessageDisabled}
+        sendMessageToHub={props.sendMessage}
+      ></ChatInput>
     </div>
   );
 }

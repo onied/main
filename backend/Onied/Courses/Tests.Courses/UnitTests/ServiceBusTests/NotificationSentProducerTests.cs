@@ -16,13 +16,11 @@ public class NotificationSentProducerTests
     private readonly Fixture _fixture = new();
     private readonly Mock<ILogger<NotificationSentProducer>> _logger = new();
     private readonly Mock<IUserRepository> _userRepository = new();
-    private readonly Mock<INotificationPreparerService> _notificationPreparerService = new();
     private readonly Mock<IPublishEndpoint> _publishEndpoint = new();
 
     private NotificationSentProducer GetProducer() => new(
         _logger.Object,
         _userRepository.Object,
-        _notificationPreparerService.Object,
         _publishEndpoint.Object);
     [Fact]
     public async Task PublishForOne_ValidMessage_Success()
@@ -34,10 +32,6 @@ public class NotificationSentProducerTests
             .Create();
 
         Queue<NotificationSent> queue = new();
-
-        _notificationPreparerService
-            .Setup(preparerService => preparerService.PrepareNotification(notification))
-            .Returns(notification);
 
         _publishEndpoint
             .Setup(pe => pe.Publish(It.IsAny<NotificationSent>(), It.IsAny<CancellationToken>()))
@@ -68,10 +62,6 @@ public class NotificationSentProducerTests
             .With(n => n.UserId, Guid.Empty)
             .Create();
 
-        _notificationPreparerService
-            .Setup(preparerService => preparerService.PrepareNotification(notification))
-            .Returns(notification);
-
         var producer = GetProducer();
 
         // Act & Assert
@@ -93,10 +83,6 @@ public class NotificationSentProducerTests
         _userRepository
             .Setup(repo => repo.GetUsersWithConditionAsync(null))
             .ReturnsAsync([]);
-
-        _notificationPreparerService
-            .Setup(preparerService => preparerService.PrepareNotification(It.IsAny<NotificationSent>()))
-            .Returns((NotificationSent n) => n);
 
         _publishEndpoint
             .Setup(pe => pe.Publish(It.IsAny<NotificationSent>(), It.IsAny<CancellationToken>()))
@@ -135,10 +121,6 @@ public class NotificationSentProducerTests
         _userRepository
             .Setup(repo => repo.GetUsersWithConditionAsync(null))
             .ReturnsAsync(users);
-
-        _notificationPreparerService
-            .Setup(preparerService => preparerService.PrepareNotification(It.IsAny<NotificationSent>()))
-            .Returns((NotificationSent n) => n);
 
         _publishEndpoint
             .Setup(pe => pe.Publish(It.IsAny<NotificationSent>(), It.IsAny<CancellationToken>()))

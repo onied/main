@@ -11,18 +11,15 @@ export default class OperatorChatApi {
         console.log(response);
         return response.data as TResponse;
       })
-      .catch((response) => {
-        console.log(response);
-        return null;
+      .catch((error) => {
+        console.error(error);
+        throw error;
       });
   };
 
   GetChat = async (chatId: UUID) => await this.Get<Chat>(`chat/${chatId}`);
-
   GetOperatorProfile = async () =>
     await this.Get<OperatorProfile>("/support/profile");
-
   GetActiveChats = async () => await this.Get<ChatBadge[]>("/support/active");
-
   GetOpenChats = async () => await this.Get<ChatBadge[]>("/support/open");
 }

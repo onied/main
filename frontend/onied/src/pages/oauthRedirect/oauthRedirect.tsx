@@ -7,7 +7,7 @@ import CustomBeatLoader from "../../components/general/customBeatLoader";
 
 function OauthRedirect() {
   const [loginResult, setLoginResult] = useState<Boolean | undefined>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const code = searchParams.get("code");
   const redirectUri = window.location.href.split("?")[0];
   useEffect(() => {

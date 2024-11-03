@@ -79,10 +79,6 @@ namespace Support.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("read_at");
 
-                    b.Property<Guid?>("SupportUserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("support_user_id");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
@@ -93,10 +89,50 @@ namespace Support.Data.Migrations
                     b.HasIndex("ChatId")
                         .HasDatabaseName("ix_messages_chat_id");
 
-                    b.HasIndex("SupportUserId")
-                        .HasDatabaseName("ix_messages_support_user_id");
-
                     b.ToTable("messages", (string)null);
+                });
+
+            modelBuilder.Entity("Support.Data.Models.MessageView", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("chat_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_system");
+
+                    b.Property<string>("MessageContent")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("message_content");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("read_at");
+
+                    b.Property<int?>("SupportNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("support_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_messages_view");
+
+                    b.HasIndex("ChatId")
+                        .HasDatabaseName("ix_messages_view_chat_id");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("messages_view", (string)null);
                 });
 
             modelBuilder.Entity("Support.Data.Models.SupportUser", b =>
@@ -135,21 +171,25 @@ namespace Support.Data.Migrations
             modelBuilder.Entity("Support.Data.Models.Message", b =>
                 {
                     b.HasOne("Support.Data.Models.Chat", "Chat")
-                        .WithMany("Messages")
+                        .WithMany()
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_messages_chats_chat_id");
 
-                    b.HasOne("Support.Data.Models.SupportUser", "SupportUser")
-                        .WithMany()
-                        .HasForeignKey("SupportUserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("fk_messages_support_users_support_user_id");
+                    b.Navigation("Chat");
+                });
+
+            modelBuilder.Entity("Support.Data.Models.MessageView", b =>
+                {
+                    b.HasOne("Support.Data.Models.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_view_chats_chat_id");
 
                     b.Navigation("Chat");
-
-                    b.Navigation("SupportUser");
                 });
 
             modelBuilder.Entity("Support.Data.Models.Chat", b =>
