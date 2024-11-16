@@ -1,12 +1,12 @@
 using AutoMapper;
 using MassTransit;
-using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
 using Support.Data.Models;
 using Support.Dtos;
+using Support.Events.Abstractions;
+using Support.Events.Messages;
 using Support.Hubs;
-using Support.Messages;
 
 namespace Support.Services;
 

@@ -1,15 +1,14 @@
 using MassTransit;
 using MassTransit.Data.Messages;
-using MassTransit.DependencyInjection;
-using Support.Abstractions;
+using Microsoft.Extensions.Logging;
 using Support.Data.Abstractions;
-using Support.Messages;
+using Support.Events.Messages;
 
-namespace Support.Services.Consumers;
+namespace Support.Events.Consumers;
 
 public class NewMessageClientNotificationConsumer(
     IMessageRepository messageRepository,
-    Bind<INotificationBus, IPublishEndpoint> publishEndpoint,
+    IPublishEndpoint publishEndpoint,
     ILogger<NewMessageClientNotificationConsumer> logger)
     : IConsumer<NewMessageClientNotification>
 {
@@ -28,7 +27,7 @@ public class NewMessageClientNotificationConsumer(
                 $"Сообщение от оператора #{message.SupportNumberNullIfUser}",
                 message.MessageContent, message.Chat.ClientId,
                 "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"));
-            await publishEndpoint.Value.Publish(notification);
+            await publishEndpoint.Publish(notification);
         }
     }
 }

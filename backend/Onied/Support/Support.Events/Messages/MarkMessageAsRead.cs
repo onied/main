@@ -1,3 +1,3 @@
-namespace Support.Messages;
+namespace Support.Events.Messages;
 
 public record MarkMessageAsRead(Guid SenderId, Guid MessageId);

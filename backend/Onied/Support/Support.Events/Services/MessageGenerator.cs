@@ -1,7 +1,7 @@
-using Support.Abstractions;
+using Support.Events.Abstractions;
 using Support.Data.Models;
 
-namespace Support.Services;
+namespace Support.Events.Services;
 
 public class MessageGenerator : IMessageGenerator
 {
