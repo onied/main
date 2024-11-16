@@ -53,8 +53,8 @@ public static class ConfigurationExtensions
 
                     cfg.Host(configuration["RabbitMQ:Host"], configuration["RabbitMQ:VHost"], h =>
                     {
-                        h.Username(configuration["RabbitMQ:Username"]);
-                        h.Password(configuration["RabbitMQ:Password"]);
+                        h.Username(configuration["RabbitMQ:Username"]!);
+                        h.Password(configuration["RabbitMQ:Password"]!);
                     });
 
                     cfg.ConfigureEndpoints(context);
