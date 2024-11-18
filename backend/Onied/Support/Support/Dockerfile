@@ -9,6 +9,9 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Support/Support/Support.csproj", "Support/Support/"]
 COPY ["Support/Support.Data/Support.Data.csproj", "Support/Support.Data/"]
+COPY ["Common/Common.Validation/Common.Validation.csproj", "Common/Common.Validation/"]
+COPY ["MassTransit.Data/MassTransit.Data.csproj", "MassTransit.Data/"]
+COPY ["Support/Support.Events/Support.Events.csproj", "Support/Support.Events/"]
 RUN dotnet restore "Support/Support/Support.csproj"
 COPY . .
 WORKDIR "/src/Support/Support"

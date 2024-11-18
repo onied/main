@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Support.Data;
+using Support.Events.Extensions;
 using Support.Extensions;
 using Support.Hubs;
 using Support.Middlewares;
@@ -17,10 +18,10 @@ builder.Services.AddRepositories();
 
 // Add your services inside AddService method
 builder.Services.AddServices();
+builder.Services.AddEventsServices();
 
 builder.Services.AddAutoMapperConfigured();
-builder.Services.AddHangfireConfigured();
-builder.Services.AddMassTransitConfigured();
+builder.Services.AddMassTransitWithHangfireConfigured();
 
 builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddControllers();

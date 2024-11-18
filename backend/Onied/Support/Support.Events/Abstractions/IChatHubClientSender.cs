@@ -1,6 +1,6 @@
 using Support.Data.Models;
 
-namespace Support.Abstractions;
+namespace Support.Events.Abstractions;
 
 public interface IChatHubClientSender
 {
