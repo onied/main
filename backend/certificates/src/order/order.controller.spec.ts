@@ -9,6 +9,8 @@ import { UserService } from "../user/user.service";
 import { NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Course } from "../course/course.entity";
 import { OrderStatus } from "./dto/response/orderStatus";
+import { CqrsModule } from "@nestjs/cqrs";
+import { QueryHandlers } from "./order.module";
 
 describe("OrderController", () => {
   let controller: OrderController;
@@ -17,6 +19,7 @@ describe("OrderController", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CqrsModule],
       controllers: [OrderController],
       providers: [
         {
@@ -35,8 +38,11 @@ describe("OrderController", () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        ...QueryHandlers,
       ],
     }).compile();
+
+    await module.init();
 
     controller = module.get<OrderController>(OrderController);
     userService = module.get<UserService>(UserService);
