@@ -1,28 +1,31 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Users.Commands;
 using Users.Dtos.Profile.Request;
+using Users.Queries;
 using Users.Services.ProfileService;
 
 namespace Users.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ProfileController(IProfileService profileService) : ControllerBase
+public class ProfileController(ISender sender) : ControllerBase
 {
     [HttpGet]
-    public Task<IResult> Get()
+    public async Task<IResult> Get()
     {
-        return profileService.Get(User);
+        return await sender.Send(new GetProfileQuery(User));
     }
 
     [HttpPut]
-    public Task<IResult> EditProfile([FromBody] ProfileChangedRequest profileChanged)
+    public async Task<IResult> EditProfile([FromBody] ProfileChangedRequest profileChanged)
     {
-        return profileService.EditProfile(profileChanged, User);
+        return await sender.Send(new EditProfileCommand(profileChanged, User));
     }
 
     [HttpPut("avatar")]
-    public Task<IResult> Avatar([FromBody] AvatarChangedRequest avatar)
+    public async Task<IResult> Avatar([FromBody] AvatarChangedRequest avatar)
     {
-        return profileService.Avatar(avatar, User);
+        return await sender.Send(new EditProfileAvatarCommand(avatar, User));
     }
 }
