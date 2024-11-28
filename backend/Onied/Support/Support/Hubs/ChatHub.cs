@@ -1,12 +1,11 @@
 using MassTransit;
-using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
 using Support.Authorization.Requirements;
 using Support.Data.Abstractions;
+using Support.Events.Messages;
 using Support.Helpers;
-using Support.Messages;
 
 namespace Support.Hubs;
 

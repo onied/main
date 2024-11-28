@@ -1,10 +1,10 @@
 using MassTransit;
-using Support.Abstractions;
+using Microsoft.Extensions.Logging;
 using Support.Data.Abstractions;
-using Support.Data.Models;
-using Support.Messages;
+using Support.Events.Abstractions;
+using Support.Events.Messages;
 
-namespace Support.Services.Consumers;
+namespace Support.Events.Consumers;
 
 public class SendMessageToChatConsumer(
     IChatHubClientSender chatHubClientSender,
