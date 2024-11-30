@@ -11,5 +11,5 @@ public class GetPurchasesByUserQueryHandler(
     public async Task<IResult> Handle(
         GetPurchasesByUserQuery request,
         CancellationToken cancellationToken)
-        => await purchaseService.GetPurchasesByUser(request.userId);
+        => await purchaseService.GetPurchasesByUser(request.UserId);
 }

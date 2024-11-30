@@ -2,4 +2,4 @@ using MediatR;
 
 namespace Purchases.Queries;
 
-public record GetPurchasesByUserQuery(Guid userId) : IRequest<IResult>;
+public record GetPurchasesByUserQuery(Guid UserId) : IRequest<IResult>;

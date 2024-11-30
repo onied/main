@@ -11,5 +11,5 @@ public class VerifyCommandHandler(
     public async Task<IResult> Handle(
         VerifyCommand request,
         CancellationToken cancellationToken)
-        => await purchaseService.Verify(request.dto);
+        => await purchaseService.Verify(request.Dto);
 }
