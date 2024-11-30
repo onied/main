@@ -1,20 +1,13 @@
-using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Notifications.Data.Abstractions;
-using Notifications.Dtos;
+using Notifications.Queries;
 
 namespace Notifications.Controllers;
 
 [Route("/api/v1/[controller]")]
-public class NotificationsController(
-    IMapper mapper,
-    INotificationRepository notificationRepository
-    ) : ControllerBase
+public class NotificationsController(ISender sender) : ControllerBase
 {
     [HttpGet]
     public async Task<IResult> Get([FromQuery] Guid userId)
-    {
-        var notifications = await notificationRepository.GetRangeByUserAsync(userId);
-        return Results.Ok(mapper.Map<List<NotificationDto>>(notifications));
-    }
+        => await sender.Send(new GetMessagesQuery(userId));
 }
