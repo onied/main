@@ -1,23 +1,25 @@
+using Courses.Commands;
 using Courses.Filters;
-using Courses.Services.Abstractions;
+using Courses.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{id:int}")]
-public class CoursesController(ICourseService courseService) : ControllerBase
+public class CoursesController(ISender sender) : ControllerBase
 {
     [HttpGet]
     public async Task<IResult> GetCoursePreview(int id, [FromQuery] Guid? userId)
     {
-        return await courseService.GetCoursePreview(id, userId);
+        return await sender.Send(new GetCoursePreviewQuery(id, userId));
     }
 
     [HttpPost("enter")]
     public async Task<IResult> EnterFreeCourse(int id, [FromQuery] Guid userId)
     {
-        return await courseService.EnterFreeCourse(id, userId);
+        return await sender.Send(new EnterFreeCourseCommand(id, userId));
     }
 
     [HttpGet]
@@ -26,7 +28,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     public async Task<IResult> GetCourseHierarchy(int id, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        return await courseService.GetCourseHierarchy(id, userId, role);
+        return await sender.Send(new GetCourseHierarchyQuery(id, userId, role));
     }
 
     [HttpGet]
@@ -35,7 +37,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     public async Task<IResult> GetSummaryBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        return await courseService.GetSummaryBlock(id, blockId, userId, role);
+        return await sender.Send(new GetSummaryBlockQuery(id, blockId, userId, role));
     }
 
     [HttpGet]
@@ -44,7 +46,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     public async Task<IResult> GetVideoBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        return await courseService.GetVideoBlock(id, blockId, userId, role);
+        return await sender.Send(new GetVideoBlockQuery(id, blockId, userId, role));
     }
 
     [HttpGet]
@@ -53,7 +55,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     public async Task<IResult> GetEditTaskBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        return await courseService.GetEditTaskBlock(id, blockId, userId, role);
+        return await sender.Send(new GetEditTaskBlockQuery(id, blockId, userId, role));
     }
 
     [HttpGet]
@@ -62,7 +64,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     public async Task<IResult> GetTaskBlock(int id, int blockId, [FromQuery] Guid userId,
         [FromQuery] string? role)
     {
-        return await courseService.GetTaskBlock(id, blockId, userId, role);
+        return await sender.Send(new GetTaskBlockQuery(id, blockId, userId, role));
     }
 
     [HttpPost]
@@ -70,6 +72,6 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     public async Task<IResult> CreateCourse(
         [FromQuery] string? userId)
     {
-        return await courseService.CreateCourse(userId);
+        return await sender.Send(new CreateCourseCommand(userId));
     }
 }
