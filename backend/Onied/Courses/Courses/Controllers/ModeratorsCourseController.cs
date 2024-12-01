@@ -1,21 +1,19 @@
-﻿using AutoMapper;
-using Courses.Dtos;
+﻿using Courses.Commands;
 using Courses.Dtos.Moderator.Request;
-using Courses.Services;
-using Courses.Services.Abstractions;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Courses.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/courses/{id:int}/moderators")]
-public class ModeratorsCourseController(ICourseManagementService courseManagementService) : ControllerBase
+public class ModeratorsCourseController(ISender sender) : ControllerBase
 {
     [HttpGet]
     public async Task<IResult> GetStudents(int id, [FromQuery] Guid userId)
     {
-        return await courseManagementService.GetStudents(id, userId);
+        return await sender.Send(new GetStudentsQuery(id, userId));
     }
 
     [HttpPatch]
@@ -24,9 +22,9 @@ public class ModeratorsCourseController(ICourseManagementService courseManagemen
         int id,
         [FromBody] EditModeratorRequest request,
         [FromQuery] Guid userId
-        )
+    )
     {
-        return await courseManagementService.DeleteModerator(id, request.StudentId, userId);
+        return await sender.Send(new DeleteModeratorCommand(id, request.StudentId, userId));
     }
 
     [HttpPatch]
@@ -35,8 +33,8 @@ public class ModeratorsCourseController(ICourseManagementService courseManagemen
         int id,
         [FromBody] EditModeratorRequest request,
         [FromQuery] Guid userId
-        )
+    )
     {
-        return await courseManagementService.AddModerator(id, request.StudentId, userId);
+        return await sender.Send(new AddModeratorCommand(id, request.StudentId, userId));
     }
 }
