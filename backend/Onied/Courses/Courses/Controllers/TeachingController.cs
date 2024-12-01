@@ -1,7 +1,6 @@
 ﻿using Courses.Commands;
 using Courses.Dtos.ManualReview.Request;
 using Courses.Queries;
-using Courses.Services.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +8,7 @@ namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{userId:guid}")]
-public class TeachingController(ISender sender, IManualReviewService manualReviewService)
-    : ControllerBase
+public class TeachingController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [Route("authored")]
