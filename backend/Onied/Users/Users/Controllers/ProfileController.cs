@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Users.Commands;
 using Users.Dtos.Profile.Request;
 using Users.Queries;
-using Users.Services.ProfileService;
 
 namespace Users.Controllers;
 
