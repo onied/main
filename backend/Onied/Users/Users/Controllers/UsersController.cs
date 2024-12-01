@@ -5,7 +5,6 @@ using Users.Commands;
 using Users.Dtos.Users.Request;
 using Users.Dtos.VkOauth.Request;
 using Users.Queries;
-using Users.Services.UsersService;
 
 namespace Users.Controllers;
 
