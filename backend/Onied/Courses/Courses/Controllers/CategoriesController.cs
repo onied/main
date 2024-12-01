@@ -1,18 +1,16 @@
-using AutoMapper;
-using Courses.Dtos;
-using Courses.Dtos.Catalog.Response;
-using Courses.Services.Abstractions;
+using Courses.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class CategoriesController(IMapper mapper, ICategoryRepository categoryRepository) : ControllerBase
+public class CategoriesController(ISender sender) : ControllerBase
 {
     [HttpGet]
     public async Task<IResult> GetCategories()
     {
-        return Results.Ok(mapper.Map<List<CategoryResponse>>(await categoryRepository.GetAllCategoriesAsync()));
+        return await sender.Send(new GetCategoriesQuery());
     }
 }
