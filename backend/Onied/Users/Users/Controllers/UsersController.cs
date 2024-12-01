@@ -1,82 +1,84 @@
+using MediatR;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Users.Commands;
 using Users.Dtos.Users.Request;
 using Users.Dtos.VkOauth.Request;
-using Users.Services.UsersService;
+using Users.Queries;
 
 namespace Users.Controllers;
 
 [ApiController]
 [Route("/api/v1/[action]")]
-public class UsersController(IUsersService usersService) : ControllerBase
+public class UsersController(ISender sender) : ControllerBase
 {
     [HttpPost]
-    public Task<IResult> Register([FromBody] RegisterUserRequest registration)
+    public async Task<IResult> Register([FromBody] RegisterUserRequest registration)
     {
-        return usersService.Register(registration, HttpContext);
+        return await sender.Send(new RegisterCommand(registration, HttpContext));
     }
 
     [HttpPost]
-    public Task<IResult> Login([FromBody] LoginRequest login)
+    public async Task<IResult> Login([FromBody] LoginRequest login)
     {
-        return usersService.Login(login);
+        return await sender.Send(new LoginCommand(login));
     }
 
     [HttpPost]
-    public Task<IResult> Refresh([FromBody] RefreshRequest refreshRequest)
+    public async Task<IResult> Refresh([FromBody] RefreshRequest refreshRequest)
     {
-        return usersService.Refresh(refreshRequest);
+        return await sender.Send(new TokenRefreshCommand(refreshRequest));
     }
 
     [HttpGet]
-    public Task<IResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code,
+    public async Task<IResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code,
         [FromQuery] string? changedEmail)
     {
-        return usersService.ConfirmEmail(userId, code, changedEmail);
+        return await sender.Send(new ConfirmEmailCommand(userId, code, changedEmail));
     }
 
     [HttpPost]
-    public Task<IResult> ResendConfirmationEmail([FromBody] ResendConfirmationEmailRequest resendRequest)
+    public async Task<IResult> ResendConfirmationEmail([FromBody] ResendConfirmationEmailRequest resendRequest)
     {
-        return usersService.ResendConfirmationEmail(resendRequest, HttpContext);
+        return await sender.Send(new ResendConfirmationEmailCommand(resendRequest, HttpContext));
     }
 
     [HttpPost]
-    public Task<IResult> ForgotPassword([FromBody] ForgotPasswordRequest resetRequest)
+    public async Task<IResult> ForgotPassword([FromBody] ForgotPasswordRequest resetRequest)
     {
-        return usersService.ForgotPassword(resetRequest);
+        return await sender.Send(new ForgotPasswordCommand(resetRequest));
     }
 
     [HttpPost]
-    public Task<IResult> ResetPassword([FromBody] ResetPasswordRequest resetRequest)
+    public async Task<IResult> ResetPassword([FromBody] ResetPasswordRequest resetRequest)
     {
-        return usersService.ResetPassword(resetRequest);
+        return await sender.Send(new ResetPasswordCommand(resetRequest));
     }
 
     [HttpPost]
     [ActionName("manage/2fa")]
-    public Task<IResult> Manage2Fa([FromBody] TwoFactorRequest tfaRequest)
+    public async Task<IResult> Manage2Fa([FromBody] TwoFactorRequest tfaRequest)
     {
-        return usersService.Manage2Fa(tfaRequest, User);
+        return await sender.Send(new Manage2FaCommand(tfaRequest, User));
     }
 
     [HttpGet]
     [ActionName("manage/info")]
-    public Task<IResult> GetInfo()
+    public async Task<IResult> GetInfo()
     {
-        return usersService.GetInfo(User);
+        return await sender.Send(new GetManageInfoQuery(User));
     }
 
     [HttpPost]
     [ActionName("manage/info")]
-    public Task<IResult> PostInfo([FromBody] InfoRequest infoRequest)
+    public async Task<IResult> PostInfo([FromBody] InfoRequest infoRequest)
     {
-        return usersService.PostInfo(infoRequest, HttpContext);
+        return await sender.Send(new ManageInfoCommand(infoRequest, HttpContext));
     }
 
     [HttpPost]
-    public Task<IResult> SigninVk([FromBody] OauthCodeRequest oauthCodeRequest)
+    public async Task<IResult> SigninVk([FromBody] OauthCodeRequest oauthCodeRequest)
     {
-        return usersService.SigninVk(oauthCodeRequest);
+        return await sender.Send(new SignInVkCommand(oauthCodeRequest));
     }
 }
