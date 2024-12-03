@@ -1,27 +1,35 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Support.Abstractions;
 using Support.Authorization.Filters;
-using Support.Queries;
 
 namespace Support.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
 [AuthorizeSupportUser]
-public class SupportController(ISender sender) : ControllerBase
+public class SupportController(ISupportService supportService) : ControllerBase
 {
     [HttpGet]
     [Route("active")]
     public async Task<IResult> GetActiveChats([FromQuery] Guid? userId)
-        => await sender.Send(new GetActiveChatsQuery(userId));
+    {
+        var response = await supportService.GetActiveChats(userId);
+        return Results.Ok(response);
+    }
 
     [HttpGet]
     [Route("open")]
     public async Task<IResult> GetOpenChats([FromQuery] Guid? userId)
-        => await sender.Send(new GetOpenChatsQuery(userId));
+    {
+        var response = await supportService.GetOpenChats(userId);
+        return Results.Ok(response);
+    }
 
     [HttpGet]
     [Route("profile")]
     public async Task<IResult> GetProfile([FromQuery] Guid? userId)
-        => await sender.Send(new GetProfileQuery(userId));
+    {
+        var response = await supportService.GetProfile(userId);
+        return Results.Ok(response);
+    }
 }
