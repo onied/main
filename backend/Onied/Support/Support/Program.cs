@@ -26,6 +26,7 @@ builder.Services.AddMassTransitWithHangfireConfigured();
 builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 var app = builder.Build();
 
