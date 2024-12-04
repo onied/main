@@ -6,8 +6,8 @@ import { Route, Routes } from "react-router-dom";
 export default function TeachingRoutes() {
   return (
     <Routes>
-      <Route path="/teaching/check/:taskCheckId" element={<CheckTask />} />
-      <Route path="/teaching/*" element={<TeachingPage />} />
+      <Route path="/check/:taskCheckId" element={<CheckTask />} />
+      <Route path="/*" element={<TeachingPage />} />
     </Routes>
   );
 }

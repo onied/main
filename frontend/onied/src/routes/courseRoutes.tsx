@@ -11,17 +11,17 @@ import { Route, Routes } from "react-router-dom";
 export default function CourseRoutes() {
   return (
     <Routes>
-      <Route path="/course/create" element={<CreateCourse />} />
-      <Route path="/course/:courseId/learn/*" element={<Course />} />
+      <Route path="/create" element={<CreateCourse />} />
+      <Route path="/:courseId/learn/*" element={<Course />} />
       <Route
-        path="/course/:courseId/edit/hierarchy"
+        path="/:courseId/edit/hierarchy"
         element={<EditCourseHierarchy />}
       />
-      <Route path="/course/:courseId/edit/:blockId" element={<EditBlock />} />
-      <Route path="/course/:courseId/edit" element={<EditPreview />} />
-      <Route path="/course/:courseId" element={<Preview />} />
+      <Route path="/:courseId/edit/:blockId" element={<EditBlock />} />
+      <Route path="/:courseId/edit" element={<EditPreview />} />
+      <Route path="/:courseId" element={<Preview />} />
       <Route
-        path="/course/:courseId/manageModerators"
+        path="/:courseId/manageModerators"
         element={<ManageModerators />}
       />
     </Routes>

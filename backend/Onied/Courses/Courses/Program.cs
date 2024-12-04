@@ -21,23 +21,29 @@ builder.Services.AddDbContext(builder.Configuration);
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
 
 builder.Services.AddCors();
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-    .AddNegotiate();
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
 
 builder.Services.AddMassTransitConfigured();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
-builder.Services.AddHttpClient("PurchasesServer", config =>
-{
-    config.BaseAddress = new Uri(builder.Configuration["PurchasesServerApi"]!);
-    config.Timeout = new TimeSpan(0, 0, 30);
-    config.DefaultRequestHeaders.Clear();
-});
-builder.Services.AddHttpClient("SubscriptionsServer", config =>
-{
-    config.BaseAddress = new Uri(builder.Configuration["SubscriptionsServerApi"]!);
-    config.Timeout = new TimeSpan(0, 0, 30);
-    config.DefaultRequestHeaders.Clear();
-});
+builder.Services.AddHttpClient(
+    "PurchasesServer",
+    config =>
+    {
+        config.BaseAddress = new Uri(builder.Configuration["PurchasesServerApi"]!);
+        config.Timeout = new TimeSpan(0, 0, 30);
+        config.DefaultRequestHeaders.Clear();
+    }
+);
+builder.Services.AddHttpClient(
+    "SubscriptionsServer",
+    config =>
+    {
+        config.BaseAddress = new Uri(builder.Configuration["SubscriptionsServerApi"]!);
+        config.Timeout = new TimeSpan(0, 0, 30);
+        config.DefaultRequestHeaders.Clear();
+    }
+);
 builder.Services.AddHttpClient(builder.Configuration);
 
 // Added business logic services
@@ -73,7 +79,8 @@ if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<AppDbContext>();
-    if (context.Database.GetPendingMigrations().Any()) context.Database.Migrate();
+    if (context.Database.GetPendingMigrations().Any())
+        context.Database.Migrate();
 }
 
 app.Run();

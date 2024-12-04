@@ -16,6 +16,8 @@ builder.Services.AddAutoMapperConfigured();
 builder.Services.AddMassTransitConfigured();
 builder.Services.AddHangfireWorker();
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+
 builder.Services.AddAuthorizationNegotiate();
 builder.Services.AddControllers();
 

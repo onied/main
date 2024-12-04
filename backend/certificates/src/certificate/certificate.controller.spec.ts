@@ -18,6 +18,8 @@ import { CertificatePreview } from "./dto/response/certificatePreview";
 import { CertificateListCard } from "./dto/response/certificateListCard";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
+import { CqrsModule } from "@nestjs/cqrs";
+import { CommandHandlers, QueryHandlers } from "./certificate.module";
 
 describe("CertificateController", () => {
   let controller: CertificateController;
@@ -25,6 +27,7 @@ describe("CertificateController", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CqrsModule],
       controllers: [CertificateController],
       providers: [
         CertificateService,
@@ -60,9 +63,13 @@ describe("CertificateController", () => {
             get: () => "",
           },
         },
+        ...CommandHandlers,
+        ...QueryHandlers,
         CertificateService,
       ],
     }).compile();
+
+    await module.init();
 
     controller = module.get<CertificateController>(CertificateController);
     certificateService = module.get<CertificateService>(CertificateService);

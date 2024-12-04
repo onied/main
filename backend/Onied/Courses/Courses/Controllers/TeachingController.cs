@@ -1,50 +1,53 @@
-﻿using Courses.Dtos.ManualReview.Request;
-using Courses.Services.Abstractions;
+﻿using Courses.Commands;
+using Courses.Dtos.ManualReview.Request;
+using Courses.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]/{userId:guid}")]
-public class TeachingController(IManualReviewService manualReviewService, ITeachingService teachingService)
-    : ControllerBase
+public class TeachingController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [Route("authored")]
     public async Task<IResult> GetAuthoredCourses(Guid userId)
     {
-        return await teachingService.GetAuthoredCourses(userId);
+        return await sender.Send(new GetAuthoredCoursesQuery(userId));
     }
 
     [HttpGet]
     [Route("moderated")]
     public async Task<IResult> GetModeratedCourses(Guid userId)
     {
-        return await teachingService.GetModeratedCourses(userId);
+        return await sender.Send(new GetModeratedCoursesQuery(userId));
     }
 
     [HttpGet]
     [Route("tasks-to-check-list")]
     public async Task<IResult> GetTasksToCheckList(Guid userId)
     {
-        return await manualReviewService.GetTasksToCheckForTeacher(userId);
+        return await sender.Send(new GetTasksToCheckListQuery(userId));
     }
 
     [HttpGet]
     [Route("check/{userAnswerId:guid}")]
-    public async Task<IResult> GetTaskToCheck(
-        Guid userId,
-        Guid userAnswerId)
+    public async Task<IResult> GetTaskToCheck(Guid userId, Guid userAnswerId)
     {
-        return await manualReviewService.GetManualReviewTaskUserAnswer(userId, userAnswerId);
+        return await sender.Send(new GetTaskToCheckQuery(userId, userAnswerId));
     }
 
     [HttpPut]
     [Route("check/{userAnswerId:guid}")]
     public async Task<IResult> CheckTask(
         Guid userId,
-        Guid userAnswerId, [FromBody] ReviewTaskRequest reviewTaskRequest)
+        Guid userAnswerId,
+        [FromBody] ReviewTaskRequest reviewTaskRequest
+    )
     {
-        return await manualReviewService.ReviewUserAnswer(userId, userAnswerId, reviewTaskRequest);
+        return await sender.Send(
+            new AddCheckedTaskCommand(userId, userAnswerId, reviewTaskRequest)
+        );
     }
 }

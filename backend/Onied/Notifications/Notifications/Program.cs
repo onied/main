@@ -22,6 +22,7 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContextConfigured();
 builder.Services.AddRepositories();
 builder.Services.AddAutoMapper(options => options.AddProfile<AppMappingProfile>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddMassTransitConfigured();
 builder.Services.AddScoped<INotificationSenderService, NotificationSenderService>();

@@ -1,14 +1,16 @@
-﻿using Courses.Dtos.Course.Response;
+﻿using Courses.Commands;
+using Courses.Dtos.Course.Response;
 using Courses.Dtos.EditCourse.Request;
 using Courses.Filters;
-using Courses.Services.Abstractions;
+using Courses.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Courses.Controllers;
 
 [ApiController]
 [Route("api/v1/courses/{id:int}/edit")]
-public class EditCoursesController(ICourseManagementService courseManagementService)
+public class EditCoursesController(ISender sender)
 {
     [HttpPut]
     [AuthorValidationFilter]
@@ -16,7 +18,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] EditCourseRequest editCourseRequest)
     {
-        return await courseManagementService.EditCourse(id, editCourseRequest, userId!);
+        return await sender.Send(new EditCourseCommand(id, editCourseRequest, userId));
     }
 
     [HttpPut]
@@ -27,7 +29,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] CourseResponse courseResponse)
     {
-        return await courseManagementService.EditHierarchy(id, courseResponse);
+        return await sender.Send(new EditHierarchyCommand(id, courseResponse));
     }
 
     [HttpPost]
@@ -38,7 +40,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId,
         [FromQuery] string? role)
     {
-        return await courseManagementService.AddModule(id);
+        return await sender.Send(new AddModuleCommand(id));
     }
 
     [HttpDelete]
@@ -49,7 +51,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] int moduleId,
         [FromQuery] string? userId, [FromQuery] string? role)
     {
-        return await courseManagementService.DeleteModule(id, moduleId);
+        return await sender.Send(new DeleteModuleCommand(id, moduleId));
     }
 
     [HttpPut]
@@ -60,7 +62,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] RenameModuleRequest renameModuleRequest)
     {
-        return await courseManagementService.RenameModule(id, renameModuleRequest);
+        return await sender.Send(new RenameModuleCommand(id, renameModuleRequest));
     }
 
     [HttpPost]
@@ -72,8 +74,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] AddBlockRequest addBlockRequest)
     {
-        return await courseManagementService.AddBlock(
-            id, moduleId, addBlockRequest.BlockType);
+        return await sender.Send(new AddBlockCommand(id, moduleId, addBlockRequest));
     }
 
     [HttpDelete]
@@ -85,7 +86,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId,
         [FromQuery] string? role)
     {
-        return await courseManagementService.DeleteBlock(id, blockId);
+        return await sender.Send(new DeleteBlockCommand(id, blockId));
     }
 
     [HttpPut]
@@ -96,7 +97,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] RenameBlockRequest renameBlockRequest)
     {
-        return await courseManagementService.RenameBlock(id, renameBlockRequest);
+        return await sender.Send(new RenameBlockCommand(id, renameBlockRequest));
     }
 
     [HttpPut]
@@ -108,7 +109,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] VideoBlockResponse videoBlockResponse)
     {
-        return await courseManagementService.EditVideoBlock(id, blockId, videoBlockResponse);
+        return await sender.Send(new EditVideoBlockCommand(id, blockId, videoBlockResponse));
     }
 
     [HttpPut]
@@ -120,7 +121,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId, [FromQuery] string? role,
         [FromBody] SummaryBlockResponse summaryBlockResponse)
     {
-        return await courseManagementService.EditSummaryBlock(id, blockId, summaryBlockResponse);
+        return await sender.Send(new EditSummaryBlockCommand(id, blockId, summaryBlockResponse));
     }
 
     [HttpPut]
@@ -133,7 +134,7 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? role,
         [FromBody] EditTasksBlockRequest tasksBlockRequest)
     {
-        return await courseManagementService.EditTasksBlock(id, blockId, tasksBlockRequest);
+        return await sender.Send(new EditTasksBlockCommand(id, blockId, tasksBlockRequest));
     }
 
     [HttpGet]
@@ -143,6 +144,6 @@ public class EditCoursesController(ICourseManagementService courseManagementServ
         [FromQuery] string? userId,
         [FromQuery] string? role)
     {
-        return await courseManagementService.CheckCourseAuthorAsync(id, userId, role);
+        return await sender.Send(new CheckEditCourseQuery(id, userId, role));
     }
 }

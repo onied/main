@@ -3,8 +3,12 @@ using AutoMapper;
 using Courses.Controllers;
 using Courses.Data.Models;
 using Courses.Dtos.Catalog.Response;
+using Courses.Handlers;
 using Courses.Profiles;
+using Courses.Queries;
 using Courses.Services.Abstractions;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Task = System.Threading.Tasks.Task;
@@ -14,24 +18,36 @@ namespace Tests.Courses.UnitTests.ControllerTests;
 public class CategoriesControllerTests
 {
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
+    private readonly Mock<ISender> _sender = new();
     private readonly CategoriesController _controller;
+    private readonly GetCategoriesQueryHandler _handler;
     private readonly Fixture _fixture = new();
 
-    private readonly IMapper _mapper =
-        new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
+    private readonly IMapper _mapper = new Mapper(
+        new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile()))
+    );
 
     public CategoriesControllerTests()
     {
-        _controller = new CategoriesController(_mapper, _categoryRepository.Object);
+        _controller = new CategoriesController(_sender.Object);
+        _handler = new GetCategoriesQueryHandler(_mapper, _categoryRepository.Object);
     }
 
     [Fact]
     public async Task Get_ReturnsNothing()
     {
         // Arrange
-
-        _categoryRepository.Setup(r => r.GetAllCategoriesAsync())
+        _sender
+            .Setup(m => m.Send(It.IsAny<GetCategoriesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(It.IsAny<IResult>());
+        _categoryRepository
+            .Setup(r => r.GetAllCategoriesAsync())
             .Returns(Task.FromResult<List<Category>>([]));
+        _sender
+            .Setup(m => m.Send(It.IsAny<GetCategoriesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                await _handler.Handle(It.IsAny<GetCategoriesQuery>(), It.IsAny<CancellationToken>())
+            );
 
         // Act
 
@@ -47,10 +63,19 @@ public class CategoriesControllerTests
     public async Task Get_ReturnsListOfCategories()
     {
         // Arrange
-        var categories = Enumerable.Range(1, 100).Select(_ => _fixture.Build<Category>().Create()).ToList();
+        var categories = Enumerable
+            .Range(1, 100)
+            .Select(_ => _fixture.Build<Category>().Create())
+            .ToList();
         var categoriesMapped = _mapper.Map<List<CategoryResponse>>(categories);
-        _categoryRepository.Setup(r => r.GetAllCategoriesAsync())
+        _categoryRepository
+            .Setup(r => r.GetAllCategoriesAsync())
             .Returns(Task.FromResult(categories));
+        _sender
+            .Setup(m => m.Send(It.IsAny<GetCategoriesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                await _handler.Handle(It.IsAny<GetCategoriesQuery>(), It.IsAny<CancellationToken>())
+            );
 
         // Assert
         var result = Assert.IsType<Ok<List<CategoryResponse>>>(await _controller.GetCategories());

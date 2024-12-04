@@ -8,14 +8,20 @@ import {
   Body,
 } from "@nestjs/common";
 import { CertificatePreview } from "./dto/response/certificatePreview";
-import { CertificateService } from "./certificate.service";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
 import { CertificateListCard } from "./dto/response/certificateListCard";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { GetCertificatePreviewQuery } from "./queries/get-certificate-preview.query";
+import { GetCertificatesListQuery } from "./queries/get-certificates-list.query";
+import { CreateOrderCommand } from "./commands/create-order.command";
 
 @Controller("api/v1/certificates")
 export class CertificateController {
-  constructor(private certificateService: CertificateService) {}
+  constructor(
+    private commandBus: CommandBus,
+    private queryBus: QueryBus
+  ) {}
   @Get(":courseId")
   async getCertificatePreview(
     @Query("userId") userId: string,
@@ -23,9 +29,8 @@ export class CertificateController {
   ): Promise<CertificatePreview> {
     const nCourseId = Number(courseId);
     if (isNaN(nCourseId)) throw new NotFoundException();
-    const result = await this.certificateService.getCertificatePreview(
-      userId,
-      nCourseId
+    const result = await this.queryBus.execute(
+      new GetCertificatePreviewQuery(userId, nCourseId)
     );
     return result;
   }
@@ -34,8 +39,9 @@ export class CertificateController {
   async getCertificatesList(
     @Query("userId") userId: string
   ): Promise<CertificateListCard[]> {
-    const result =
-      await this.certificateService.getAvailableCertificates(userId);
+    const result = await this.queryBus.execute(
+      new GetCertificatesListQuery(userId)
+    );
     return result;
   }
 
@@ -47,6 +53,8 @@ export class CertificateController {
   ): Promise<OrderIdResponse> {
     const nCourseId = Number(courseId);
     if (isNaN(nCourseId)) throw new NotFoundException();
-    return this.certificateService.createOrder(userId, nCourseId, orderRequest);
+    return this.commandBus.execute(
+      new CreateOrderCommand(userId, nCourseId, orderRequest)
+    );
   }
 }
