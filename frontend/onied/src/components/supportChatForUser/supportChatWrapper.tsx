@@ -134,7 +134,7 @@ function SupportChatWrapper() {
         padding: "20px",
         right: 0,
         bottom: 0,
-        zIndex: 9999,
+        zIndex: 1000,
       }}
     >
       <ChatWindow
