@@ -13,6 +13,7 @@ import OperatorsPage from "@onied/pages/operators/operatorsPage";
 
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import FileInputDialog from "./components/general/fileInputDialog/fileInputDialog";
 
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
