@@ -7,8 +7,13 @@ import useSignalR from "@onied/hooks/signalr";
 
 import { MouseEventHandler, useState } from "react";
 import { chatHubOperatorConnection } from "@onied/pages/operators/chatHubOperatorConnection";
+import { Badge, IconButton } from "@mui/material";
+import { AttachFile } from "@mui/icons-material";
+import FileInputDialog from "@onied/components/general/fileInputDialog/fileInputDialog";
 
 export default function SendMessageFooter() {
+  const [open, setOpen] = useState<boolean>(false);
+  const [files, setFiles] = useState<File[]>([]);
   const chats = useAppSelector((state) => state.chats);
   const [message, setMessage] = useState<string>("");
   const { connection } = useSignalR(
@@ -25,12 +30,26 @@ export default function SendMessageFooter() {
   if (!connection) return <></>;
   return (
     <div className={classes.chatFooter}>
+      <IconButton
+        onClick={() => setOpen(true)}
+        sx={{ ":hover": { backgroundColor: "unset" } }}
+      >
+        <Badge badgeContent={files.length}>
+          <AttachFile />
+        </Badge>
+      </IconButton>
       <InputFormArea
         onInput={(e: any) => setMessage(e.target.value)}
         value={message}
         style={{ width: "100%", height: "40px", resize: "none" }}
       />
       <SendButton onClick={sendMessage} />
+      <FileInputDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        files={files}
+        setFiles={setFiles}
+      ></FileInputDialog>
     </div>
   );
 }
