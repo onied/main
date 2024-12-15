@@ -1,6 +1,6 @@
 import { HubConnection } from "@microsoft/signalr";
 import { UUID } from "crypto";
-import { Message } from "@onied/types/chat";
+import { MessageFile, Message } from "@onied/types/chat";
 
 export function chatHubOperatorConnection(connection: HubConnection) {
   const onMethod = (
@@ -26,8 +26,12 @@ export function chatHubOperatorConnection(connection: HubConnection) {
       MarkMessageAsRead: (messageId: UUID) => {
         connection.send("MarkMessageAsRead", messageId);
       },
-      SendMessageToChat: (chatId: UUID, messageContent: string) => {
-        connection.send("SendMessageToChat", chatId, messageContent);
+      SendMessageToChat: (
+        chatId: UUID,
+        messageContent: string,
+        files: MessageFile[]
+      ) => {
+        connection.send("SendMessageToChat", chatId, messageContent, files);
       },
       CloseChat: (chatId: UUID) => {
         connection.send("CloseChat", chatId);

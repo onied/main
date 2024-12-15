@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import api from "@onied/config/axios";
 import ChatButton from "@onied/components/supportChatForUser/chatButton/chatButton";
 import ChatWindow from "@onied/components/supportChatForUser/chatWindow/chatWindow";
-import { MessagesHistoryDto } from "@onied/components/supportChatForUser/messageDtos";
+import {
+  FileDto,
+  MessagesHistoryDto,
+} from "@onied/components/supportChatForUser/messageDtos";
 import { AxiosError } from "axios";
 import { useProfile } from "@onied/hooks/profile/useProfile";
 import useSignalR from "@onied/hooks/signalr";
@@ -38,10 +41,10 @@ function SupportChatWrapper() {
       });
   };
 
-  const sendMessage = (messageContent: string) => {
+  const sendMessage = (messageContent: string, files: FileDto[]) => {
     if (!connection) return;
     const chatClient = chatHubClientConnection(connection);
-    chatClient.send.SendMessage(messageContent);
+    chatClient.send.SendMessage(messageContent, files);
     setIsFirstMessageInSession(false);
   };
 

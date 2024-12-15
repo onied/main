@@ -1,6 +1,6 @@
 import { HubConnection } from "@microsoft/signalr";
 import { UUID } from "crypto";
-import { MessageDto } from "./messageDtos";
+import { FileDto, MessageDto } from "./messageDtos";
 
 export function chatHubClientConnection(connection: HubConnection) {
   const onMethod = (
@@ -19,8 +19,8 @@ export function chatHubClientConnection(connection: HubConnection) {
       ) => onMethod("ReceiveReadAt", actionsOnReceive),
     },
     send: {
-      SendMessage: (messageContent: string) => {
-        connection.send("SendMessage", messageContent);
+      SendMessage: (messageContent: string, files: FileDto[]) => {
+        connection.send("SendMessage", messageContent, files);
       },
       MarkMessageAsRead: (messageId: UUID) => {
         connection.send("MarkMessageAsRead", messageId);

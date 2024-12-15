@@ -1,6 +1,7 @@
 import classes from "./chatWindow.module.css";
 import ChatMessage from "@onied/components/supportChatForUser/chatMessage/chatMessage";
 import {
+  FileDto,
   MessageDto,
   MessagesHistoryDto,
 } from "@onied/components/supportChatForUser/messageDtos";
@@ -12,7 +13,7 @@ type ChatWindowProps = {
   isFirstMessageInSession: boolean;
   messagesHistory: MessagesHistoryDto;
   setMessagesHistory: (messagesHistory: MessagesHistoryDto) => void;
-  sendMessage: (messageContent: string) => void;
+  sendMessage: (messageContent: string, files: FileDto[]) => void;
   sendMessageDisabled: boolean;
 };
 
