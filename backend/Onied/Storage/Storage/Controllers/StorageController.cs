@@ -12,7 +12,6 @@ namespace Storage.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 public class StorageController(
-    LinkGenerator linkGenerator,
     IMinioClient minio,
     IConfiguration configuration,
     ILogger<StorageController> logger)
@@ -86,31 +85,32 @@ public class StorageController(
             objects.Select(obj =>
                 new
                 {
-                    link = linkGenerator.GetUriByAction(HttpContext, nameof(Get),
-                        values: new { filename = obj.ObjectName }),
+                    objectName = obj.ObjectName,
                     filename = obj.DownloadName
                 }));
     }
 
     [HttpGet]
-    [Route("get/{filename}")]
-    public async Task<IResult> Get(string filename)
+    [Route("get/{objectName}")]
+    public async Task<IResult> Get(string objectName)
     {
         var minioConfiguration = configuration.GetSection("MinIO");
         try
         {
-            var stream = new MemoryStream();
             var bucketName = minioConfiguration["Bucket"];
-            var args = new GetObjectArgs()
+            var objectStatArgs = new StatObjectArgs()
                 .WithBucket(bucketName)
-                .WithObject(filename)
-                .WithCallbackStream(async (s, token) => await s.CopyToAsync(stream, token));
-            var file = await minio.GetObjectAsync(args).ConfigureAwait(false);
-            file.MetaData.TryGetValue("download-name", out var downloadName);
-            logger.LogInformation("Got file stream: {filename}, filename: {downloadName} (size: {size})", filename,
-                downloadName, file.Size);
-            stream.Seek(0, SeekOrigin.Begin);
-            return TypedResults.File(stream, file.ContentType, downloadName, file.LastModified);
+                .WithObject(objectName);
+            var obj = await minio.StatObjectAsync(objectStatArgs).ConfigureAwait(false);
+            obj.MetaData.TryGetValue("download-name", out var downloadName);
+            var args = new PresignedGetObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(objectName)
+                .WithHeaders(new Dictionary<string, string>()
+                    { { "response-content-disposition", $"attachment; filename=\"{downloadName}\"" } })
+                .WithExpiry(30);
+            var presignedUrl = await minio.PresignedGetObjectAsync(args).ConfigureAwait(false);
+            return TypedResults.Redirect(presignedUrl);
         }
         catch (Exception e) when (e is BucketNotFoundException or ObjectNotFoundException)
         {
@@ -118,8 +118,8 @@ public class StorageController(
         }
         catch (MinioException e)
         {
-            logger.LogError("Could not download a file. Reason: {message}", e.Message);
-            throw new HttpResponseException("Could not download a file.", HttpStatusCode.InternalServerError);
+            logger.LogError("Could not get a file. Reason: {message}", e.Message);
+            throw new HttpResponseException("Could not get a file.", HttpStatusCode.InternalServerError);
         }
     }
 }

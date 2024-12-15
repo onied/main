@@ -1,70 +1,91 @@
-.line{
-    border-top: 2px solid #DBDBDB;
-    margin: 15px 0 15px 0;
-    width: 100%;
+.line {
+  border-top: 2px solid #dbdbdb;
+  margin: 15px 0 15px 0;
+  width: 100%;
 }
 
 .systemMessage {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 10px;
-    padding: 0 10px 0 10px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 0 10px;
 }
 
-.systemMessage span{
-    font-size: 0.8rem;
+.systemMessage span {
+  font-size: 0.8rem;
 }
 
 .chatMessage {
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding: 0 10px 0 10px;
-    margin: 10px;
-    max-width: 65%;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  padding: 0 10px 0 10px;
+  margin: 10px;
+  max-width: 65%;
 }
 
 .chatMessage p:first-child {
-    margin: 10px 10px 10px 0;
+  margin: 10px 10px 10px 0;
 }
 
 .chatMessage p:last-child {
-    margin: 0 10px 10px 10px;
+  margin: 0 10px 10px 10px;
 }
 
 .ownMessage {
-    background-color: var(--accent-color);
-    border-top-left-radius: 15px;
-    align-self: end;
+  background-color: var(--accent-color);
+  border-top-left-radius: 15px;
+  align-self: end;
 }
 
 .foreignMessage {
-    border-top-right-radius: 15px;
-    background-color: #ECECEC;
+  border-top-right-radius: 15px;
+  background-color: #ececec;
 }
 
-.newOperatorMessageHeader{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding-left: 10px;
+.newOperatorMessageHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 10px;
 }
 
-.newOperatorMessageHeader span{
-    padding-left: 10px;
+.newOperatorMessageHeader span {
+  padding-left: 10px;
 }
 
 .ownMessage p {
-    color: white;
-    text-align: start;
+  color: white;
+  text-align: start;
 }
 
 .chatMessageFooter {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
-.chatMessageFooter p{
-    color: #BBBBBB;
+.chatMessageFooter p {
+  color: #bbbbbb;
+}
+
+.chatFiles {
+  list-style: none;
+  height: min-content;
+  margin: 0;
+  padding: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  border-top: 1px solid white;
+}
+
+.chatFile {
+  color: white;
+  font-weight: 400;
+}
+.chatFile:visited {
+  font-weight: 600;
 }
