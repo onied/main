@@ -12,6 +12,7 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
             .AsNoTracking()
             .Include(c => c.Support)
             .Include(c => c.Messages.OrderBy(message => message.CreatedAt))
+            .ThenInclude(view => view.Files)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
@@ -22,6 +23,7 @@ public class ChatRepository(AppDbContext dbContext) : IChatRepository
             .AsNoTracking()
             .Include(c => c.Support)
             .Include(c => c.Messages.OrderBy(message => message.CreatedAt))
+            .ThenInclude(view => view.Files)
             .FirstOrDefaultAsync(c => c.ClientId == userId);
     }
 

@@ -1,3 +1,4 @@
+import Config from "@onied/config/config";
 import classes from "./chatArea.module.css";
 
 import combineCssClasses from "@onied/helpers/combineCssClasses";
@@ -73,6 +74,27 @@ const ChatMessage = ({ message }: { message: Message }) => {
       ])}
     >
       <p>{message.message}</p>
+      {message.files.length > 0 && (
+        <ul className={classes.chatFiles}>
+          {message.files.map((file) => {
+            return (
+              <li key={file.fileUrl}>
+                <a
+                  href={
+                    Config.BaseURL.replace(/\/$/, "") +
+                    "/get/storage/" +
+                    file.fileUrl.replace(/^\//, "")
+                  }
+                  className={classes.chatFile}
+                  target="_blank"
+                >
+                  {file.filename}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )}
       <div className={classes.chatFooter}>
         {message.readAt && <ReadBadge />}
         <TimeBadge time={new Date(message.createdAt)} />
