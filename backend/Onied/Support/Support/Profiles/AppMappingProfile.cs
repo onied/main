@@ -2,7 +2,9 @@ using AutoMapper;
 using Support.Data.Models;
 using Support.Dtos;
 using Support.Dtos.Chat.GetChat.Response;
+using Support.Dtos.Hub.Response;
 using Support.Dtos.Support.GetChats.Response;
+using File = System.IO.File;
 
 namespace Support.Profiles;
 
@@ -31,6 +33,7 @@ public class AppMappingProfile : Profile
                     .MapFrom(message =>
                         message.UserId == message.Chat.ClientId ? null :
                         message.Chat.Support != null ? (int?)message.Chat.Support.Number : null));
+        CreateMap<Data.Models.File, HubMessageFileDto>();
 
         // GetChat
         CreateMap<Chat, GetChatResponseDto>()
@@ -44,6 +47,7 @@ public class AppMappingProfile : Profile
             .ForMember(dest => dest.SupportNumber,
                 opt => opt
                     .MapFrom(src => src.SupportNumberNullIfUser));
+        CreateMap<Data.Models.File, GetChatMessageFile>();
 
         // GetChats
         CreateMap<Chat, GetChatsResponseDto>()

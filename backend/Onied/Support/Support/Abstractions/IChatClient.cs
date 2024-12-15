@@ -1,4 +1,5 @@
 using Support.Dtos;
+using Support.Dtos.Hub.Response;
 
 namespace Support.Abstractions;
 
