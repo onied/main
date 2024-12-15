@@ -84,7 +84,12 @@ public class StorageController(
 
         return TypedResults.Ok(
             objects.Select(obj =>
-                linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { filename = obj.ObjectName })));
+                new
+                {
+                    link = linkGenerator.GetUriByAction(HttpContext, nameof(Get),
+                        values: new { filename = obj.ObjectName }),
+                    filename = obj.DownloadName
+                }));
     }
 
     [HttpGet]
