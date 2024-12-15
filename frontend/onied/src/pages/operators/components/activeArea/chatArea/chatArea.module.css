@@ -40,11 +40,11 @@
   flex-direction: column;
   gap: 0.5rem;
 
-  border-top: 1px solid white;
+  border-top: 1px solid gray;
 }
 
 .chatFile {
-  color: white;
+  color: black;
   font-weight: 400;
 }
 .chatFile:visited {
