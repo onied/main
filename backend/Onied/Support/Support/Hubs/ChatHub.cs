@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
 using Support.Authorization.Requirements;
 using Support.Data.Abstractions;
+using Support.Events.Dtos;
 using Support.Events.Messages;
 using Support.Helpers;
 
@@ -40,10 +41,10 @@ public class ChatHub(
         }
     }
 
-    public async Task SendMessage(string messageContent)
+    public async Task SendMessage(string messageContent, IEnumerable<SendMessageFileDto> files)
     {
         await publishEndpoint.Publish(
-            new SendMessage(new ChatHubContextItemsHelper(Context.Items).UserId, messageContent));
+            new SendMessage(new ChatHubContextItemsHelper(Context.Items).UserId, messageContent, files));
     }
 
     public async Task MarkMessageAsRead(Guid messageId)
@@ -53,10 +54,10 @@ public class ChatHub(
     }
 
     [Authorize(SupportUserRequirement.Policy)]
-    public async Task SendMessageToChat(Guid chatId, string messageContent)
+    public async Task SendMessageToChat(Guid chatId, string messageContent, IEnumerable<SendMessageFileDto> files)
     {
         await publishEndpoint.Publish(
-            new SendMessageToChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId, messageContent));
+            new SendMessageToChat(new ChatHubContextItemsHelper(Context.Items).UserId, chatId, messageContent, files));
     }
 
     [Authorize(SupportUserRequirement.Policy)]
