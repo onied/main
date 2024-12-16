@@ -18,7 +18,7 @@ import api from "@onied/config/axios";
 import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 
 type UploadedFile = {
-  link: string;
+  objectName: string;
   filename: string;
 };
 
@@ -57,7 +57,7 @@ function ChatInput({
         sendMessageToHub(
           inputText,
           uploadedFiles.map<FileDto>((file) => {
-            return { filename: file.filename, fileUrl: file.link };
+            return { filename: file.filename, fileUrl: file.objectName };
           })
         );
         setInputText("");
