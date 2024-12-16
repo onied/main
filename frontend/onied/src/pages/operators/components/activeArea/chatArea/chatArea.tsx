@@ -4,6 +4,7 @@ import classes from "./chatArea.module.css";
 import combineCssClasses from "@onied/helpers/combineCssClasses";
 import { Chat, Message } from "@onied/types/chat";
 import { useEffect, useRef } from "react";
+import FileEntry from "@onied/components/general/fileEntry/fileEntry";
 
 const ReadBadge = () => {
   return (
@@ -79,17 +80,11 @@ const ChatMessage = ({ message }: { message: Message }) => {
           {message.files.map((file) => {
             return (
               <li key={file.fileUrl}>
-                <a
-                  href={
-                    Config.BaseURL.replace(/\/$/, "") +
-                    "/get/storage/" +
-                    file.fileUrl.replace(/^\//, "")
-                  }
+                <FileEntry
                   className={classes.chatFile}
-                  target="_blank"
-                >
-                  {file.filename}
-                </a>
+                  fileName={file.filename}
+                  objectName={file.fileUrl}
+                />
               </li>
             );
           })}

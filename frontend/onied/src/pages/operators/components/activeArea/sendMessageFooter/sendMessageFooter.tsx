@@ -22,7 +22,7 @@ import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 import api from "@onied/config/axios";
 
 type UploadedFile = {
-  link: string;
+  objectName: string;
   filename: string;
 };
 
@@ -62,7 +62,7 @@ export default function SendMessageFooter() {
           chats.currentChatId,
           message,
           uploadedFiles.map<MessageFile>((file) => {
-            return { filename: file.filename, fileUrl: file.link };
+            return { filename: file.filename, fileUrl: file.objectName };
           })
         );
         setFiles([]);

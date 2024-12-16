@@ -110,7 +110,7 @@ public class StorageController(
                     { { "response-content-disposition", $"attachment; filename=\"{downloadName}\"" } })
                 .WithExpiry(30);
             var presignedUrl = await minio.PresignedGetObjectAsync(args).ConfigureAwait(false);
-            return TypedResults.Redirect(presignedUrl);
+            return TypedResults.Ok(new { presignedUrl });
         }
         catch (Exception e) when (e is BucketNotFoundException or ObjectNotFoundException)
         {

@@ -2,7 +2,7 @@ import classes from "./chatMessage.module.css";
 import tick from "../../../assets/cyanTick.svg";
 import anon from "../../../assets/anonOperatorIcon.png";
 import { MessageDto } from "@onied/components/supportChatForUser/messageDtos";
-import Config from "@onied/config/config";
+import FileEntry from "@onied/components/general/fileEntry/fileEntry";
 
 type ChatMessageProps = MessageDto & { isFirstOperatorMessageInChain: boolean };
 
@@ -50,17 +50,11 @@ function PersonsMessage(props: ChatMessageProps) {
             {props.files.map((file) => {
               return (
                 <li key={file.fileUrl}>
-                  <a
-                    href={
-                      Config.BaseURL.replace(/\/$/, "") +
-                      "/" +
-                      file.fileUrl.replace(/^\//, "")
-                    }
+                  <FileEntry
                     className={classes.chatFile}
-                    target="_blank"
-                  >
-                    {file.filename}
-                  </a>
+                    fileName={file.filename}
+                    objectName={file.fileUrl}
+                  />
                 </li>
               );
             })}
