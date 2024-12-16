@@ -1,5 +1,9 @@
 .file {
   text-decoration: solid underline;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
 }
 .file:hover {
   cursor: pointer;
