@@ -1,4 +1,3 @@
-import Config from "@onied/config/config";
 import classes from "./chatArea.module.css";
 
 import combineCssClasses from "@onied/helpers/combineCssClasses";
