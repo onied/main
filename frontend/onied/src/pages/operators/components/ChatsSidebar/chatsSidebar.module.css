@@ -2,7 +2,7 @@
   --sidebar-width: 400px;
   --sidebar-panel-width: 48px;
 
-  z-index: 9998;
+  z-index: 1000;
   position: fixed;
   min-width: var(--sidebar-width);
   width: fit-content;

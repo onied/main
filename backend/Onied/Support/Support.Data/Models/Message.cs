@@ -25,4 +25,6 @@ public class Message
     public string MessageContent { get; set; } = null!;
 
     public bool IsSystem { get; set; }
+
+    public ICollection<File> Files { get; set; } = new List<File>();
 }

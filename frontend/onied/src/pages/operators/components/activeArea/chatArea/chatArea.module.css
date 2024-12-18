@@ -30,6 +30,36 @@
   border-radius: 15px 0 15px 15px;
 }
 
+.chatFiles {
+  list-style: none;
+  height: min-content;
+  margin: 0;
+  padding: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.chatMessage.mine .chatFiles {
+  border-top: 1px solid white;
+}
+.chatMessage.other .chatFiles {
+  border-top: 1px solid gray;
+}
+
+.chatFile {
+  font-weight: 400;
+}
+.chatFile:visited {
+  font-weight: 600;
+}
+.chatMessage.mine .chatFile {
+  color: white;
+}
+.chatMessage.other .chatFile {
+  color: black;
+}
+
 .chatFooter {
   width: 100%;
   height: min-content;

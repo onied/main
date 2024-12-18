@@ -25,4 +25,6 @@ public class MessageView
 
     public int? SupportNumber { get; set; }
     public int? SupportNumberNullIfUser => UserId == Chat.ClientId ? null : SupportNumber;
+
+    public ICollection<File> Files { get; set; } = new List<File>();
 }

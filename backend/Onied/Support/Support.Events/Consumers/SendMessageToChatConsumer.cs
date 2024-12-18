@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Support.Data.Abstractions;
 using Support.Events.Abstractions;
 using Support.Events.Messages;
+using File = Support.Data.Models.File;
 
 namespace Support.Events.Consumers;
 
@@ -48,6 +49,12 @@ public class SendMessageToChatConsumer(
         await chatRepository.UpdateAsync(chat);
 
         var message = messageGenerator.GenerateMessage(context.Message.SenderId, chat, context.Message.MessageContent);
+        message.Files = context.Message.Files.Select(file => new File()
+        {
+            Id = Guid.NewGuid(),
+            Filename = file.Filename,
+            FileUrl = file.FileUrl
+        }).ToList();
         await messageRepository.AddAsync(message);
 
         message.Chat = chat;

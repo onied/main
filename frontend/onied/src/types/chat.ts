@@ -1,5 +1,10 @@
 import { UUID } from "crypto";
 
+export type MessageFile = {
+  filename: string;
+  fileUrl: string;
+};
+
 export type Message = {
   messageId: UUID;
   supportNumber: number | null;
@@ -7,6 +12,7 @@ export type Message = {
   readAt: string | null;
   message: string;
   isSystem: boolean;
+  files: MessageFile[];
 };
 
 export type Chat = {

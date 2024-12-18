@@ -8,4 +8,6 @@ public class GetChatMessageItem
     public string Message { get; set; } = null!;
     public bool IsSystem { get; set; }
     public DateTime? ReadAt { get; set; }
+
+    public ICollection<GetChatMessageFile> Files { get; set; } = new List<GetChatMessageFile>();
 }
