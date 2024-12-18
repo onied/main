@@ -3,7 +3,6 @@ using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Support.Abstractions;
 using Support.Data.Models;
-using Support.Dtos;
 using Support.Dtos.Hub.Response;
 using Support.Events.Abstractions;
 using Support.Events.Messages;
