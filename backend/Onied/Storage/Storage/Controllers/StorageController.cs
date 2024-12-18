@@ -1,15 +1,7 @@
-using System.Net;
-using System.Text.RegularExpressions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Minio;
-using Minio.DataModel.Args;
-using Minio.Exceptions;
-using Storage.Abstractions;
 using Storage.Commands;
-using Storage.Exceptions;
 using Storage.Queries;
-using Unidecode.NET;
 
 namespace Storage.Controllers;
 

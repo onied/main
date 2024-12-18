@@ -1,10 +1,8 @@
 using AutoMapper;
 using Support.Data.Models;
-using Support.Dtos;
 using Support.Dtos.Chat.GetChat.Response;
 using Support.Dtos.Hub.Response;
 using Support.Dtos.Support.GetChats.Response;
-using File = System.IO.File;
 
 namespace Support.Profiles;
 
