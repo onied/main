@@ -4,6 +4,7 @@ using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
 using Storage.Abstractions;
+using Storage.Constants;
 using Storage.Exceptions;
 using Unidecode.NET;
 
@@ -113,6 +114,67 @@ public class StorageService(
         {
             logger.LogError("Could not get a file. Reason: {message}", e.Message);
             throw new HttpResponseException("Could not get a file.", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<IResult> GetMetadata(string fileId)
+    {
+        try
+        {
+            var objectStatArgs = new StatObjectArgs()
+                .WithBucket(Buckets.Permanent)
+                .WithObject(fileId);
+            var obj = await minio.StatObjectAsync(objectStatArgs).ConfigureAwait(false);
+
+            var metadata = new Dictionary<string, string>();
+            foreach (var (key, value) in obj.MetaData)
+            {
+                if (key.StartsWith("x-amz-meta-"))
+                {
+                    metadata[key] = value;
+                }
+            }
+
+            return TypedResults.Ok(metadata);
+        }
+        catch (Exception e) when (e is BucketNotFoundException or ObjectNotFoundException)
+        {
+            throw new NotFoundException("Could not find file metadata.");
+        }
+        catch (MinioException e)
+        {
+            logger.LogError("Could not get file metadata. Reason: {message}", e.Message);
+            throw new HttpResponseException("Could not get file metadata.", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<IResult> GetUrlByFileId(string fileId)
+    {
+        try
+        {
+            var objectStatArgs = new StatObjectArgs()
+                .WithBucket(Buckets.Permanent)
+                .WithObject(fileId);
+            var obj = await minio.StatObjectAsync(objectStatArgs).ConfigureAwait(false);
+
+            var args = new PresignedGetObjectArgs()
+                .WithBucket(Buckets.Permanent)
+                .WithObject(fileId)
+                .WithHeaders(new Dictionary<string, string>
+                    { { "response-content-disposition", $"attachment; filename=\"{obj.MetaData["download-name"]}\"" } })
+                .WithExpiry(3600);
+            var presignedUrl = await minio.PresignedGetObjectAsync(args).ConfigureAwait(false);
+
+            return TypedResults.Ok(new { presignedUrl });
+        }
+        catch (Exception e) when (e is BucketNotFoundException or ObjectNotFoundException)
+        {
+            throw new NotFoundException("Could not find file.");
+        }
+        catch (MinioException e)
+        {
+            logger.LogError("Could not generate download URL. Reason: {message}", e.Message);
+            throw new HttpResponseException("Could not generate download URL.", HttpStatusCode.InternalServerError);
         }
     }
 }
