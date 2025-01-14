@@ -46,7 +46,7 @@ function EditVideoBlockComponent({
     "Неверный формат ссылки на видео"
   );
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState<boolean>(false);
-  const [fileId, setFileId] = useState<string>("");
+  const [_, setFileId] = useState<string>("");
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);

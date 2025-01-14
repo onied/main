@@ -36,7 +36,7 @@ function EditSummaryBlockComponent({
     SummaryBlock | null | undefined
   >();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
-  const [fileId, setFileId] = useState<string | null>(null);
+  const [_, setFileId] = useState<string | null>(null);
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);

@@ -98,7 +98,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
                   key={field.name}
                   label={field.label}
                   value={formData[field.name] || ""}
-                  onChange={(e) => handleFieldChange(e, field.name)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, field.name)}
                 />
                 {errors[field.name] ? (
                   <>
