@@ -17,10 +17,10 @@ const booksContext: MetadataContext = {
     "application/x-mobipocket-ebook",
   ],
   fields: [
-    { name: "Title", label: "Название", validRegex: "^.{,50}$" },
-    { name: "Description", label: "Описание", validRegex: "^.{,100}$" },
-    { name: "Author", label: "Автор", validRegex: "^.{,50}$" },
-    { name: "Publisher", label: "Издательство", validRegex: "^.{,50}$" },
+    { name: "Title", label: "Название", validRegex: "^.{0,50}$" },
+    { name: "Description", label: "Описание", validRegex: "^.{0,100}$" },
+    { name: "Author", label: "Автор", validRegex: "^.{0,50}$" },
+    { name: "Publisher", label: "Издательство", validRegex: "^.{0,50}$" },
     { name: "Isbn", label: "ISBN", validRegex: "^\\d{10,13}$" },
   ],
 };
@@ -34,9 +34,9 @@ const documentsContext: MetadataContext = {
     "text/markdown",
   ],
   fields: [
-    { name: "Title", label: "Название", validRegex: "^.{,50}$" },
-    { name: "Description", label: "Описание", validRegex: "^.{,100}$" },
-    { name: "Author", label: "Автор", validRegex: "^.{,50}$" },
+    { name: "Title", label: "Название", validRegex: "^.{0,50}$" },
+    { name: "Description", label: "Описание", validRegex: "^.{0,100}$" },
+    { name: "Author", label: "Автор", validRegex: "^.{0,50}$" },
   ],
 };
 
@@ -49,8 +49,8 @@ const exerciseMaterialsContext: MetadataContext = {
     "application/x-rar-compressed",
   ],
   fields: [
-    { name: "Title", label: "Название", validRegex: "^.{,50}$" },
-    { name: "Description", label: "Описание", validRegex: "^.{,100}$" },
+    { name: "Title", label: "Название", validRegex: "^.{0,50}$" },
+    { name: "Description", label: "Описание", validRegex: "^.{0,100}$" },
   ],
 };
 
@@ -64,10 +64,10 @@ const videosContext: MetadataContext = {
     "video/webm",
   ],
   fields: [
-    { name: "Title", label: "Название", validRegex: "^.{,50}$" },
-    { name: "Description", label: "Описание", validRegex: "^.{,100}$" },
-    { name: "Subject", label: "Тема", validRegex: "^.{,50}$" },
-    { name: "Author", label: "Автор", validRegex: "^.{,50}$" },
+    { name: "Title", label: "Название", validRegex: "^.{0,50}$" },
+    { name: "Description", label: "Описание", validRegex: "^.{0,100}$" },
+    { name: "Subject", label: "Тема", validRegex: "^.{0,50}$" },
+    { name: "Author", label: "Автор", validRegex: "^.{0,50}$" },
   ],
 };
 
@@ -80,10 +80,10 @@ const audioContext: MetadataContext = {
     "audio/x-ms-wma",
   ],
   fields: [
-    { name: "Title", label: "Название", validRegex: "^.{,50}$" },
-    { name: "Album", label: "Альбом", validRegex: "^.{,50}$" },
-    { name: "Genre", label: "Жанр", validRegex: "^.{,50}$" },
-    { name: "Artist", label: "Исполнитель", validRegex: "^.{,50}$" },
+    { name: "Title", label: "Название", validRegex: "^.{0,50}$" },
+    { name: "Album", label: "Альбом", validRegex: "^.{0,50}$" },
+    { name: "Genre", label: "Жанр", validRegex: "^.{0,50}$" },
+    { name: "Artist", label: "Исполнитель", validRegex: "^.{0,50}$" },
   ],
 };
 

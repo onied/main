@@ -1,0 +1,24 @@
+.dialogContentsWrapper {
+    margin: 16px;
+}
+
+.metadataForm {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: min-content 1fr;
+    padding: 16px 0 16px 0;
+    align-items: center;
+}
+
+.input{
+    width: 100%;
+}
+
+.errorMessage {
+    color: #ed4956;
+    font-size: 9pt;
+    font-weight: 300;
+    padding: 0;
+    margin: 0;
+}
+
