@@ -93,9 +93,9 @@ const videosContext: MetadataContext = {
 
 const audioContext: MetadataContext = {
   types: [
-    "audio/mp3",
+    "audio/mpeg",
     "audio/wav",
-    "audio/flac",
+    "audio/x-flac",
     "audio/ogg",
     "audio/x-ms-wma",
     ".mp3",

@@ -14,7 +14,7 @@ import YoutubeVideoProvider from "@onied/components/blocks/video/providers/youtu
 import VkVideoProvider from "@onied/components/blocks/video/providers/vkVideoProvider";
 import RutubeVideoProvider from "@onied/components/blocks/video/providers/rutubeVideoProvider";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
-import { videosContext } from "@onied/components/general/fileUploading/predefinedFileContexts";
+import {audioContext, videosContext} from "@onied/components/general/fileUploading/predefinedFileContexts";
 
 type VideoBlock = {
   id: string;
@@ -157,7 +157,7 @@ function EditVideoBlockComponent({
             open={isFileUploadDialogOpen}
             onClose={() => setIsFileUploadDialogOpen(false)}
             setFileId={setFileId}
-            context={videosContext}
+            contexts={[videosContext, audioContext]}
           ></FileUploadingDialog>
           <Button onClick={() => setIsFileUploadDialogOpen(true)}>Загрузить</Button>
         </div>

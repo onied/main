@@ -15,18 +15,38 @@ type FileUploadingDialogProps = {
   open: boolean;
   onClose: () => void;
   setFileId: (id: string) => void;
-  context: MetadataContext;
+  contexts: MetadataContext[];
 };
 
 function FileUploadingDialog(props: FileUploadingDialogProps) {
   const [file, setFile] = useState<File | null>(null);
+  const [metadataFields, setMetadataFields] = useState<MetadataContext | null>(
+    null
+  );
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [uploading, setUploading] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
-    setFile(selectedFile);
+    if (selectedFile) {
+      let fileType: string;
+      if (!selectedFile.type) {
+        fileType = "." + selectedFile.name.split(".").pop();
+      } else {
+        fileType = selectedFile.type;
+      }
+
+      for (let i = 0; i < props.contexts.length; i++) {
+        if (props.contexts[i].types.includes(fileType)) {
+          console.log(fileType);
+          console.log(props.contexts[i]);
+          setMetadataFields(props.contexts[i]);
+          break;
+        }
+      }
+      setFile(selectedFile);
+    }
   };
 
   const handleFieldChange = (
@@ -38,7 +58,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
       [name]: e.target.value,
     }));
 
-    const field = props.context.fields.find((field) => field.name === name);
+    const field = metadataFields!.fields.find((field) => field.name === name);
     if (field) {
       const regex = new RegExp(field.validRegex);
       if (!regex.test(e.target.value)) {
@@ -81,35 +101,51 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
       <div className={classes.dialogContentsWrapper}>
         <DialogTitle>Загрузить файл</DialogTitle>
         <DialogContent>
+          {file ? <></> : <p>Выбирите файл для загрузки</p>}
           <Box sx={{ mb: 2 }}>
             <input
               type="file"
-              accept={props.context.types.join(", ")}
+              accept={props.contexts
+                .map((context) => context.types) // Extract the 'types' array from each MetadataContext
+                .flat()
+                .join(", ")}
               aria-label={"Выбор файла"}
               onChange={handleFileChange}
               style={{ marginBottom: "16px" }}
             />
           </Box>
-          <div className={classes.metadataForm}>
-            {props.context.fields.map((field) => (
-              <>
-                <span>{field.label}</span>
-                <InputForm
-                  className={classes.input}
-                  key={field.name}
-                  aria-label={field.label}
-                  value={formData[field.name] || ""}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, field.name)}
-                />
-                {errors[field.name] ? (
+          {file ? (
+            metadataFields ? (
+              <div className={classes.metadataForm}>
+                {metadataFields.fields.map((field) => (
                   <>
-                    <div></div>
-                    <p className={classes.errorMessage}>{errors[field.name]}</p>
+                    <span>{field.label}</span>
+                    <InputForm
+                      className={classes.input}
+                      key={field.name}
+                      aria-label={field.label}
+                      value={formData[field.name] || ""}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleFieldChange(e, field.name)
+                      }
+                    />
+                    {errors[field.name] ? (
+                      <>
+                        <div></div>
+                        <p className={classes.errorMessage}>
+                          {errors[field.name]}
+                        </p>
+                      </>
+                    ) : null}
                   </>
-                ) : null}
-              </>
-            ))}
-          </div>
+                ))}
+              </div>
+            ) : (
+              <p>Тип загруженного файла не распознан</p>
+            )
+          ) : (
+            <></>
+          )}
         </DialogContent>
         <DialogActions>
           <Button
@@ -120,18 +156,23 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
           >
             Отмена
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={
-              !file ||
-              !(
-                Object.values(formData).length == props.context.fields.length
-              ) ||
-              uploading
-            }
-          >
-            {uploading ? "Загружается..." : "Загрузить"}
-          </Button>
+          {metadataFields ? (
+            <Button
+              onClick={handleSubmit}
+              disabled={
+                !file ||
+                !(
+                  Object.values(formData).length ==
+                  metadataFields!.fields.length
+                ) ||
+                uploading
+              }
+            >
+              {uploading ? "Загружается..." : "Загрузить"}
+            </Button>
+          ) : (
+            <></>
+          )}
         </DialogActions>
       </div>
     </Dialog>

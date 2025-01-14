@@ -11,7 +11,11 @@ import RecycleBinIcon from "../../../../assets/recycleBinIcon.svg";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../../general/responses/forbid/forbid";
-import { documentsContext } from "@onied/components/general/fileUploading/predefinedFileContexts";
+import {
+    booksContext,
+    documentsContext,
+    exerciseMaterialsContext
+} from "@onied/components/general/fileUploading/predefinedFileContexts";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
 
 type SummaryBlock = {
@@ -156,7 +160,7 @@ function EditSummaryBlockComponent({
               open={fileLoadModalOpen}
               onClose={() => setFileLoadModalOpen(false)}
               setFileId={setFileId}
-              context={documentsContext}
+              contexts={[documentsContext, exerciseMaterialsContext, booksContext]}
             ></FileUploadingDialog>
           </div>
           {currentBlock!.fileHref ? (
