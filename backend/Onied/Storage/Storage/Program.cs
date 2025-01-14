@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Minio;
 using Storage.Abstractions;
 using Storage.Middlewares;
@@ -17,6 +19,17 @@ builder.Services.AddMinio(configureClient => configureClient
     .Build());
 
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<Program>());
+
+RecurringJob.AddOrUpdate<ITemporaryStorageCleanerService>(
+    typeof(ITemporaryStorageCleanerService).FullName,
+    x => x.CleanTemporaryStorage(),
+    builder.Configuration.GetSection("Hangfire")["CronTemporaryStorageCleaner"],
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Utc
+    });
+
+builder.Services.AddHangfire(x => x.UseMemoryStorage());
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
