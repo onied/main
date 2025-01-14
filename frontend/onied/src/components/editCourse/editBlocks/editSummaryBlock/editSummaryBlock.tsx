@@ -17,6 +17,13 @@ import Dialog from "@mui/material/Dialog";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../../general/responses/forbid/forbid";
+import {
+    audioContext, booksContext,
+    documentsContext,
+    exerciseMaterialsContext,
+    videosContext
+} from "@onied/components/general/fileUploading/predefinedFileContexts";
+import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
 
 type SummaryBlock = {
   id: number;
@@ -40,9 +47,7 @@ function EditSummaryBlockComponent({
     SummaryBlock | null | undefined
   >();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
-  const [newFileName, setNewFileName] = useState<string>("");
-  const [newFileHref, setNewFileHref] = useState<string>("");
-  const [newFileHrefError, _] = useState<string | null>(null);
+  const [fileId, setFileId] = useState<string | null>(null);
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
@@ -53,20 +58,6 @@ function EditSummaryBlockComponent({
 
   const saveChanges = () => {
     sendingBlock(currentBlock!);
-  };
-
-  const saveNewFile = (e: any) => {
-    e.preventDefault();
-    setCurrentBlock({
-      ...currentBlock!,
-      fileName: newFileName,
-      fileHref: newFileHref,
-    });
-    sendingBlock({
-      ...currentBlock!,
-      fileName: newFileName,
-      fileHref: newFileHref,
-    }).then(() => setFileLoadModalOpen(false));
   };
 
   const deleteCurrentFile = () => {
@@ -172,6 +163,12 @@ function EditSummaryBlockComponent({
             >
               загрузить файл
             </Button>
+            <FileUploadingDialog
+              open={fileLoadModalOpen}
+              onClose={() => setFileLoadModalOpen(false)}
+              setFileId={setFileId}
+              context={documentsContext}
+            ></FileUploadingDialog>
           </div>
           {currentBlock!.fileHref ? (
             <div className={classes.fileAddingFileIcon}>
@@ -201,45 +198,6 @@ function EditSummaryBlockComponent({
           </Button>
         </div>
       </div>
-      <Dialog
-        open={fileLoadModalOpen}
-        onClose={() => setFileLoadModalOpen(false)}
-        PaperProps={{
-          component: "form",
-          onSubmit: saveNewFile,
-        }}
-      >
-        <DialogTitle>Загрузить файл</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Введите имя файла</DialogContentText>
-          <InputForm
-            value={newFileName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setNewFileName(e.target.value)
-            }
-            style={{ margin: "1rem" }}
-            type="text"
-            placeholder="имя файла"
-          ></InputForm>
-          <DialogContentText>Введите ссылку на файл</DialogContentText>
-
-          <InputForm
-            value={newFileHref}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setNewFileHref(e.target.value)
-            }
-            style={{ margin: "1rem" }}
-            type="url"
-            placeholder="ссылка на файл"
-          ></InputForm>
-          {newFileHrefError ? <div>{newFileHrefError}</div> : <></>}
-        </DialogContent>
-        <DialogActions>
-          <button type="submit" className={classes.submitNewFileButton}>
-            сохранить
-          </button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 }

@@ -10,10 +10,12 @@ import { MetadataContext } from "@onied/components/general/fileUploading/predefi
 import { useState } from "react";
 import InputForm from "@onied/components/general/inputform/inputform";
 import Button from "@onied/components/general/button/button";
+import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 
 type FileUploadingDialogProps = {
   open: boolean;
   onClose: () => void;
+  setFileId: (id: string) => void;
   context: MetadataContext;
 };
 
@@ -21,6 +23,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [uploading, setUploading] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -58,13 +61,20 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
     setFile(null);
     setFormData({});
     setErrors({});
+    setUploading(false);
   };
 
   const handleSubmit = () => {
     if (file && formData) {
-      //onSubmit(file, description);
+      setUploading(true);
+      setTimeout(() => {
+        const generatedFileId = crypto.randomUUID(); // Генерация случайного fileId
+        props.setFileId(generatedFileId);
+        clearDialogData();
+        props.onClose();
+        setUploading(false);
+      }, 2000);
     }
-    props.onClose();
   };
 
   return (
@@ -110,8 +120,17 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
           >
             Отмена
           </Button>
-          <Button onClick={handleSubmit} disabled={!file || !formData}>
-            Загрузить
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              !file ||
+              !(
+                Object.values(formData).length == props.context.fields.length
+              ) ||
+              uploading
+            }
+          >
+            {uploading ? "Загружается..." : "Загрузить"}
           </Button>
         </DialogActions>
       </div>
