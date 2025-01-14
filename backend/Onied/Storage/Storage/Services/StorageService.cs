@@ -126,16 +126,7 @@ public class StorageService(
                 .WithObject(fileId);
             var obj = await minio.StatObjectAsync(objectStatArgs).ConfigureAwait(false);
 
-            var metadata = new Dictionary<string, string>();
-            foreach (var (key, value) in obj.MetaData)
-            {
-                if (key.StartsWith("x-amz-meta-"))
-                {
-                    metadata[key] = value;
-                }
-            }
-
-            return TypedResults.Ok(metadata);
+            return TypedResults.Ok(obj.MetaData);
         }
         catch (Exception e) when (e is BucketNotFoundException or ObjectNotFoundException)
         {
@@ -156,12 +147,12 @@ public class StorageService(
                 .WithBucket(Buckets.Permanent)
                 .WithObject(fileId);
             var obj = await minio.StatObjectAsync(objectStatArgs).ConfigureAwait(false);
-
+            obj.MetaData.TryGetValue("download-name", out var downloadName);
             var args = new PresignedGetObjectArgs()
                 .WithBucket(Buckets.Permanent)
                 .WithObject(fileId)
                 .WithHeaders(new Dictionary<string, string>
-                    { { "response-content-disposition", $"attachment; filename=\"{obj.MetaData["download-name"]}\"" } })
+                    { { "response-content-disposition", $"attachment; filename=\"{downloadName}\"" } })
                 .WithExpiry(3600);
             var presignedUrl = await minio.PresignedGetObjectAsync(args).ConfigureAwait(false);
 
