@@ -23,4 +23,18 @@ public class StorageController(ISender sender)
     {
         return await sender.Send(new Get(objectName));
     }
+
+    [HttpGet]
+    [Route("metadata/{fileId}")]
+    public async Task<IResult> GetMetadata(string fileId)
+    {
+        return await sender.Send(new GetMetadataByFileIdQuery(fileId));
+    }
+
+    [HttpGet]
+    [Route("download-url/{fileId}")]
+    public async Task<IResult> GetDownloadUrl(string fileId)
+    {
+        return await sender.Send(new GetUrlByFileIdQuery(fileId));
+    }
 }
