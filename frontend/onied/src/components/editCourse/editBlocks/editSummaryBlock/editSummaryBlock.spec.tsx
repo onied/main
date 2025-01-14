@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import EditSummaryBlockComponent from "./editSummaryBlock";
 import { MemoryRouter } from "react-router-dom";
@@ -17,8 +17,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     const expected = {
       id: 1,
@@ -263,8 +261,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     const expected = {
       id: 1,
@@ -272,8 +268,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "stringasdf",
-      fileName: "asdfadsf",
-      fileHref: "http://example.com",
     };
     server.use(
       http.put(backend("/courses/1/edit/summary/1"), async ({ request }) => {
@@ -283,9 +277,7 @@ describe("EditSummaryBlockComponent", () => {
           expected.title == data.title &&
           expected.blockType == data.blockType &&
           expected.isCompleted == data.isCompleted &&
-          expected.markdownText == data.markdownText &&
-          expected.fileName == data.fileName &&
-          expected.fileHref == data.fileHref
+          expected.markdownText == data.markdownText
         )
           return HttpResponse.json();
         return HttpResponse.json({}, { status: 404 });
@@ -311,11 +303,19 @@ describe("EditSummaryBlockComponent", () => {
     const buttonDialog = await screen.findByText(/^загрузить файл$/i);
     await user.click(buttonDialog);
 
-    const filename = await screen.findByPlaceholderText(/^имя/i);
-    await user.type(filename, "asdfadsf");
-    const filehref = await screen.findByPlaceholderText(/^ссылка/i);
-    await user.type(filehref, "http://example.com");
-    const buttonSaveFile = await screen.findByText(/^сохранить$/i);
+    const fileInput = await screen.findByLabelText(/^выбор файла/i);
+    const testFile = new File(["test content"], "test-file.txt", {
+      type: "text/plain",
+    });
+    fireEvent.change(fileInput, { target: { files: [testFile] } });
+
+    const filename = await screen.findByLabelText(/^название/i);
+    await user.type(filename, "название1");
+    const fileDescription = await screen.findByLabelText(/^описание/i);
+    await user.type(fileDescription, "описание2");
+    const fileAuthor = await screen.findByLabelText(/^автор/i);
+    await user.type(fileAuthor, "Автор3");
+    const buttonSaveFile = await screen.findByText(/^загрузить$/i);
     await user.click(buttonSaveFile);
 
     const button = await screen.findByText(/^сохранить изменения$/i);

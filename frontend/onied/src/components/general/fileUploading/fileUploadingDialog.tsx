@@ -85,6 +85,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
             <input
               type="file"
               accept={props.context.types.join(", ")}
+              aria-label={"Выбор файла"}
               onChange={handleFileChange}
               style={{ marginBottom: "16px" }}
             />
@@ -96,7 +97,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
                 <InputForm
                   className={classes.input}
                   key={field.name}
-                  label={field.label}
+                  aria-label={field.label}
                   value={formData[field.name] || ""}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, field.name)}
                 />
