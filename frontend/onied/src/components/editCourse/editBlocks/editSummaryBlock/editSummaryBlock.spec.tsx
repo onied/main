@@ -24,8 +24,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     server.use(
       http.put(backend("/courses/1/edit/summary/1"), async ({ request }) => {
@@ -35,9 +33,7 @@ describe("EditSummaryBlockComponent", () => {
           expected.title == data.title &&
           expected.blockType == data.blockType &&
           expected.isCompleted == data.isCompleted &&
-          expected.markdownText == data.markdownText &&
-          expected.fileName == data.fileName &&
-          expected.fileHref == data.fileHref
+          expected.markdownText == data.markdownText
         )
           return HttpResponse.json();
         return HttpResponse.json({}, { status: 404 });
@@ -73,8 +69,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     const expected = {
       id: 1,
@@ -82,8 +76,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     server.use(
       http.put(backend("/courses/1/edit/summary/1"), async ({ request }) => {
@@ -93,9 +85,7 @@ describe("EditSummaryBlockComponent", () => {
           expected.title == data.title &&
           expected.blockType == data.blockType &&
           expected.isCompleted == data.isCompleted &&
-          expected.markdownText == data.markdownText &&
-          expected.fileName == data.fileName &&
-          expected.fileHref == data.fileHref
+          expected.markdownText == data.markdownText
         )
           return HttpResponse.json();
         return HttpResponse.json({}, { status: 403 });
@@ -128,8 +118,7 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
+
     };
     server.use(
       http.put(backend("/courses/1/edit/summary/1"), async ({ request }) => {
@@ -139,9 +128,7 @@ describe("EditSummaryBlockComponent", () => {
           expected.title == data.title &&
           expected.blockType == data.blockType &&
           expected.isCompleted == data.isCompleted &&
-          expected.markdownText == data.markdownText &&
-          expected.fileName == data.fileName &&
-          expected.fileHref == data.fileHref
+          expected.markdownText == data.markdownText
         )
           return HttpResponse.json();
         return HttpResponse.json({}, { status: 404 });
@@ -174,8 +161,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     server.use(
       http.put(backend("/courses/1/edit/summary/1"), () => {
@@ -185,9 +170,7 @@ describe("EditSummaryBlockComponent", () => {
         //   expected.title == data.title &&
         //   expected.blockType == data.blockType &&
         //   expected.isCompleted == data.isCompleted &&
-        //   expected.markdownText == data.markdownText &&
-        //   expected.fileName == data.fileName &&
-        //   expected.fileHref == data.fileHref
+        //   expected.markdownText == data.markdownText
         // )
         //   return HttpResponse.json();
         return HttpResponse.json({}, { status: 404 });
@@ -223,8 +206,6 @@ describe("EditSummaryBlockComponent", () => {
       blockType: 1,
       isCompleted: false,
       markdownText: "string",
-      fileName: "string",
-      fileHref: "string",
     };
     server.use(
       http.put(backend("/courses/1/edit/summary/1"), () => {
