@@ -1,6 +1,6 @@
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
 import { useNavigate } from "react-router-dom";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./editSummaryBlock.module.css";
 import api from "../../../../config/axios";
 import Button from "../../../general/button/button";
@@ -8,21 +8,10 @@ import MDEditor, { ContextStore } from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
 import FileLink from "../../../blocks/summary/fileLink";
 import RecycleBinIcon from "../../../../assets/recycleBinIcon.svg";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import InputForm from "../../../general/inputform/inputform";
-import DialogActions from "@mui/material/DialogActions";
-import Dialog from "@mui/material/Dialog";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../../general/responses/forbid/forbid";
-import {
-    audioContext, booksContext,
-    documentsContext,
-    exerciseMaterialsContext,
-    videosContext
-} from "@onied/components/general/fileUploading/predefinedFileContexts";
+import { documentsContext } from "@onied/components/general/fileUploading/predefinedFileContexts";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
 
 type SummaryBlock = {

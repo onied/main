@@ -10,7 +10,6 @@ import { MetadataContext } from "@onied/components/general/fileUploading/predefi
 import { useState } from "react";
 import InputForm from "@onied/components/general/inputform/inputform";
 import Button from "@onied/components/general/button/button";
-import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 
 type FileUploadingDialogProps = {
   open: boolean;
