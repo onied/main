@@ -28,7 +28,6 @@ public static class ServicesExtensions
             services.GetConfiguration().GetConnectionString("Redis")
             ?? throw new SystemException("Redis connection string not found");
         return services
-            .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(connectionString))
-            .AddSingleton<RedisRepository>();
+            .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(connectionString));
     }
 }
