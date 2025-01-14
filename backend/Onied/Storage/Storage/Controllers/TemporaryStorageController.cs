@@ -1,21 +1,29 @@
-using System.Text.Json.Nodes;
+using System.Text.Json;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Storage.Commands;
 
 namespace Storage.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class TemporaryStorageController
+[Route("temporary-storage")]
+public class TemporaryStorageController(ISender sender)
 {
-    [HttpPost("{fileId:guid}/file")]
-    public Task<IResult> LoadFile(Guid fileId, [FromForm] IFormFile file)
+    [HttpPost("init")]
+    public async Task<IResult> InitUpload()
     {
-        throw new NotImplementedException();
+        return await sender.Send(new InitUploadTemporaryFile());
+    }
+
+    [HttpPost("{fileId:guid}/file")]
+    public async Task<IResult> UploadFile(Guid fileId, IFormFile file)
+    {
+        return await sender.Send(new UploadTemporaryFile(fileId, file));
     }
 
     [HttpPost("{fileId:guid}/metadata")]
-    public Task<IResult> LoadMetadata(Guid fileId, [FromBody] JsonObject metadata)
+    public async Task<IResult> UploadMetadata(Guid fileId, [FromBody] JsonElement rawJsonText)
     {
-        return Task.FromResult(Results.Ok(metadata));
+        return await sender.Send(new UploadMetadata(fileId, rawJsonText));
     }
 }

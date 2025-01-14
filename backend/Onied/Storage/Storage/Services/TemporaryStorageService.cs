@@ -1,5 +1,5 @@
 using System.Net;
-using System.Text.Json.Nodes;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Minio;
 using Minio.DataModel.Args;
@@ -13,7 +13,6 @@ namespace Storage.Services;
 public class TemporaryStorageService(
     IMinioClient minio,
     IConfiguration configuration,
-    StorageService storageService,
     ILogger<TemporaryStorageService> logger)
 {
     private string GetHashSetKey(Guid id) => $"temporary_files__{id}";
@@ -67,7 +66,7 @@ public class TemporaryStorageService(
         }
     }
 
-    public async Task<IResult> InitLoading(IRedisRepository redisRepository)
+    public async Task<IResult> InitUpload(IRedisRepository redisRepository)
     {
         var id = Guid.NewGuid();
         await redisRepository.SetHashSetValue(GetHashSetKey(id), Counter, 0);
@@ -104,15 +103,16 @@ public class TemporaryStorageService(
                 SemaphoreSlim.Release();
             }
         }
+        // кинуть ошибку при переполнении
 
         return Results.Ok();
     }
     public async Task<IResult> UploadMetadata(
         Guid fileId,
-        JsonObject jsonContent,
+        JsonElement jsonText,
         IRedisRepository redisRepository)
     {
-        var rawString = jsonContent.ToString();
+        var rawString = jsonText.GetRawText();
         var counter = await redisRepository.GetHashSetValue<int?>(GetHashSetKey(fileId), Counter);
 
         if (counter is null)
@@ -125,7 +125,6 @@ public class TemporaryStorageService(
                 counter = await redisRepository.GetHashSetValue<int?>(GetHashSetKey(fileId), Counter);
                 if (counter is < 2)
                 {
-                    // load metadata
                     await redisRepository.SetHashSetValue(GetHashSetKey(fileId), Metadata, rawString);
                     logger.LogInformation("Uploaded temporary file metadata id={fileId}", fileId);
                     await redisRepository.SetHashSetValue(GetHashSetKey(fileId), Counter, counter + 1);

@@ -1,6 +1,6 @@
-using System.Text.Json.Nodes;
+using System.Text.Json;
 using MediatR;
 
 namespace Storage.Commands;
 
-public record UploadMetadata(Guid FileId, JsonObject Metadata) : IRequest<IResult>;
+public record UploadMetadata(Guid FileId, JsonElement Metadata) : IRequest<IResult>;
