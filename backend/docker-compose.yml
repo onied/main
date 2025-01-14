@@ -2,6 +2,7 @@
   - postgres/docker-compose.yml
   - rabbitmq/docker-compose.yml
   - minio/docker-compose.yml
+  - redis/docker-compose.yml
 
 services:
   courses:
@@ -69,6 +70,8 @@ services:
       db:
         condition: service_started
       minio:
+        condition: service_started
+      redis:
         condition: service_started
 
   users:
