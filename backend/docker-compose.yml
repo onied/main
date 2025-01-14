@@ -1,6 +1,7 @@
 ﻿include:
   - postgres/docker-compose.yml
   - rabbitmq/docker-compose.yml
+  - minio/docker-compose.yml
 
 services:
   courses:
@@ -53,6 +54,21 @@ services:
       rabbitmq:
         condition: service_healthy
       db:
+        condition: service_started
+
+  storage:
+    image: misergeevkpfu/storage
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 5264:8080
+    build:
+      context: Onied
+      dockerfile: Storage/Storage/Dockerfile
+    depends_on:
+      db:
+        condition: service_started
+      minio:
         condition: service_started
 
   users:

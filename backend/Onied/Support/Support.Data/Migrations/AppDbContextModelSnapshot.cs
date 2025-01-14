@@ -50,6 +50,36 @@ namespace Support.Data.Migrations
                     b.ToTable("chats", (string)null);
                 });
 
+            modelBuilder.Entity("Support.Data.Models.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("FileUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("file_url");
+
+                    b.Property<string>("Filename")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("filename");
+
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_files");
+
+                    b.HasIndex("MessageId")
+                        .HasDatabaseName("ix_files_message_id");
+
+                    b.ToTable("files", (string)null);
+                });
+
             modelBuilder.Entity("Support.Data.Models.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -124,6 +154,10 @@ namespace Support.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("support_number");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id")
                         .HasName("pk_messages_view");
 
@@ -168,6 +202,23 @@ namespace Support.Data.Migrations
                     b.Navigation("Support");
                 });
 
+            modelBuilder.Entity("Support.Data.Models.File", b =>
+                {
+                    b.HasOne("Support.Data.Models.Message", null)
+                        .WithMany("Files")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_files_messages_message_id");
+
+                    b.HasOne("Support.Data.Models.MessageView", null)
+                        .WithMany("Files")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_files_messages_view_message_id");
+                });
+
             modelBuilder.Entity("Support.Data.Models.Message", b =>
                 {
                     b.HasOne("Support.Data.Models.Chat", "Chat")
@@ -195,6 +246,16 @@ namespace Support.Data.Migrations
             modelBuilder.Entity("Support.Data.Models.Chat", b =>
                 {
                     b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Support.Data.Models.Message", b =>
+                {
+                    b.Navigation("Files");
+                });
+
+            modelBuilder.Entity("Support.Data.Models.MessageView", b =>
+                {
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Support.Data.Models.SupportUser", b =>

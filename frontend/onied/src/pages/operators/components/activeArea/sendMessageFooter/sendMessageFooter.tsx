@@ -7,30 +7,107 @@ import useSignalR from "@onied/hooks/signalr";
 
 import { MouseEventHandler, useState } from "react";
 import { chatHubOperatorConnection } from "@onied/pages/operators/chatHubOperatorConnection";
+import {
+  Badge,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
+import { AttachFile } from "@mui/icons-material";
+import FileInputDialog from "@onied/components/general/fileInputDialog/fileInputDialog";
+import { MessageFile } from "@onied/types/chat";
+import CustomBeatLoader from "@onied/components/general/customBeatLoader";
+import api from "@onied/config/axios";
+
+type UploadedFile = {
+  objectName: string;
+  filename: string;
+};
 
 export default function SendMessageFooter() {
+  const [open, setOpen] = useState<boolean>(false);
+  const [files, setFiles] = useState<File[]>([]);
   const chats = useAppSelector((state) => state.chats);
   const [message, setMessage] = useState<string>("");
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
   const { connection } = useSignalR(
     Config.BaseURL.replace(/\/$/, "") + "/chat/hub"
   );
 
   const sendMessage = () => {
     if (!connection || !chats.currentChatId) return;
-    const chatOperator = chatHubOperatorConnection(connection);
-    chatOperator.send.SendMessageToChat(chats.currentChatId, message);
-    setMessage("");
+    let promise = Promise.resolve<UploadedFile[]>([]);
+    if (files.length > 0) {
+      setUploading(true);
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      promise = api
+        .postForm("storage/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => response.data as UploadedFile[]);
+    }
+    promise
+      .then((uploadedFiles) => {
+        if (!connection || !chats.currentChatId) return;
+        const chatOperator = chatHubOperatorConnection(connection);
+        chatOperator.send.SendMessageToChat(
+          chats.currentChatId,
+          message,
+          uploadedFiles.map<MessageFile>((file) => {
+            return { filename: file.filename, fileUrl: file.objectName };
+          })
+        );
+        setFiles([]);
+        setMessage("");
+      })
+      .catch(() => {
+        setError("Could not upload files.");
+      })
+      .finally(() => {
+        setUploading(false);
+      });
   };
 
   if (!connection) return <></>;
   return (
     <div className={classes.chatFooter}>
+      <IconButton
+        onClick={() => setOpen(true)}
+        sx={{ ":hover": { backgroundColor: "unset" } }}
+      >
+        <Badge badgeContent={files.length}>
+          <AttachFile />
+        </Badge>
+      </IconButton>
       <InputFormArea
         onInput={(e: any) => setMessage(e.target.value)}
         value={message}
         style={{ width: "100%", height: "40px", resize: "none" }}
       />
       <SendButton onClick={sendMessage} />
+      <FileInputDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        files={files}
+        setFiles={setFiles}
+      ></FileInputDialog>
+      <Dialog open={uploading}>
+        <CustomBeatLoader />
+      </Dialog>
+      <Dialog open={error !== undefined} onClose={() => setError(undefined)}>
+        <DialogTitle>Could not upload files</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{error}</DialogContentText>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

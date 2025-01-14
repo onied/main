@@ -3,6 +3,7 @@ import classes from "./chatArea.module.css";
 import combineCssClasses from "@onied/helpers/combineCssClasses";
 import { Chat, Message } from "@onied/types/chat";
 import { useEffect, useRef } from "react";
+import FileEntry from "@onied/components/general/fileEntry/fileEntry";
 
 const ReadBadge = () => {
   return (
@@ -73,6 +74,21 @@ const ChatMessage = ({ message }: { message: Message }) => {
       ])}
     >
       <p>{message.message}</p>
+      {message.files.length > 0 && (
+        <ul className={classes.chatFiles}>
+          {message.files.map((file) => {
+            return (
+              <li key={file.fileUrl}>
+                <FileEntry
+                  className={classes.chatFile}
+                  fileName={file.filename}
+                  objectName={file.fileUrl}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
       <div className={classes.chatFooter}>
         {message.readAt && <ReadBadge />}
         <TimeBadge time={new Date(message.createdAt)} />
