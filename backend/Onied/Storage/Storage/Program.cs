@@ -15,20 +15,10 @@ builder.Services.AddSingleton<TemporaryStorageService>();
 
 builder.Services
     .AddMinioConfigured()
-    .AddRedisConfigured();
+    .AddRedisConfigured()
+    .AddHangfire(builder.Configuration);
 
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<Program>());
-
-RecurringJob.AddOrUpdate<ITemporaryStorageCleanerService>(
-    typeof(ITemporaryStorageCleanerService).FullName,
-    x => x.CleanTemporaryStorage(),
-    builder.Configuration.GetSection("Hangfire")["CronTemporaryStorageCleaner"],
-    new RecurringJobOptions
-    {
-        TimeZone = TimeZoneInfo.Utc
-    });
-
-builder.Services.AddHangfire(x => x.UseMemoryStorage());
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -17,17 +17,6 @@ public class PermanentStorageTransferService(
 
     public async Task TransferAfterUpload(string fileId)
     {
-        var uploadExists = await db.KeyExistsAsync(fileId);
-        if (!uploadExists || !await db.HashExistsAsync(fileId, CounterField))
-        {
-            var succeeded = await db.HashSetAsync(fileId, CounterField, 0);
-            if (!succeeded)
-            {
-                logger.LogError("Could not create key with counter in redis: {key}", fileId);
-                return;
-            }
-        }
-
         var redisHashObject = await db.HashGetAllAsync(fileId);
         var counter = redisHashObject.FirstOrDefault(entry => entry.Name == CounterField).Value;
         var parsed = counter.TryUnbox(out int counterValue);
@@ -38,13 +27,18 @@ public class PermanentStorageTransferService(
         }
 
         if (counterValue < 2)
-        {
-            await db.HashIncrementAsync(fileId, CounterField);
             return;
-        }
 
         var metadata = redisHashObject.FirstOrDefault(entry => entry.Name == MetadataField).Value;
         var metadataString = metadata.ToString();
+
+        var bucketExistsArgs = new BucketExistsArgs().WithBucket(Constants.Buckets.Permanent);
+        var bucketExists = await minioClient.BucketExistsAsync(bucketExistsArgs);
+        if (!bucketExists)
+        {
+            var makeBucketArgs = new MakeBucketArgs().WithBucket(Constants.Buckets.Permanent);
+            await minioClient.MakeBucketAsync(makeBucketArgs);
+        }
 
         var copySourceObjectArgs = new CopySourceObjectArgs()
             .WithBucket(Constants.Buckets.Temporary)
