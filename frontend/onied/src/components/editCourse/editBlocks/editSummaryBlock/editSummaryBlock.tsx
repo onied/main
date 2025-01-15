@@ -12,9 +12,9 @@ import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../../general/responses/forbid/forbid";
 import {
-    booksContext,
-    documentsContext,
-    exerciseMaterialsContext
+  booksContext,
+  documentsContext,
+  exerciseMaterialsContext,
 } from "@onied/components/general/fileUploading/predefinedFileContexts";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
 
@@ -40,7 +40,6 @@ function EditSummaryBlockComponent({
     SummaryBlock | null | undefined
   >();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
-  const [_, setFileId] = useState<string | null>(null);
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
@@ -80,6 +79,10 @@ function EditSummaryBlockComponent({
       value = "";
     }
     setCurrentBlock({ ...currentBlock!, markdownText: value! });
+  };
+
+  const setFileId = (id: string) => {
+    setCurrentBlock({ ...currentBlock!, fileHref: id, fileName: id });
   };
 
   useEffect(() => {
@@ -160,7 +163,11 @@ function EditSummaryBlockComponent({
               open={fileLoadModalOpen}
               onClose={() => setFileLoadModalOpen(false)}
               setFileId={setFileId}
-              contexts={[documentsContext, exerciseMaterialsContext, booksContext]}
+              contexts={[
+                documentsContext,
+                exerciseMaterialsContext,
+                booksContext,
+              ]}
             ></FileUploadingDialog>
           </div>
           {currentBlock!.fileHref ? (

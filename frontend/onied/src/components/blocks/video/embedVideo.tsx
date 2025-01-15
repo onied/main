@@ -3,11 +3,14 @@ import VideoProvider from "./providers/videoProvider";
 import YoutubeVideoProvider from "./providers/youtubeVideoProvider";
 import VkVideoProvider from "./providers/vkVideoProvider";
 import RutubeVideoProvider from "./providers/rutubeVideoProvider";
+import FileVideoProvider from "./providers/fileProvider";
+import { useEffect, useState } from "react";
 
 const embedElements: VideoProvider[] = [
   new YoutubeVideoProvider(),
   new VkVideoProvider(),
   new RutubeVideoProvider(),
+  new FileVideoProvider(),
 ];
 
 function videoLinkToIFrame(href: string) {
@@ -16,8 +19,12 @@ function videoLinkToIFrame(href: string) {
     return (
       <div className={classes.embedVideo}>Неверный формат ссылки на видео</div>
     );
-  const iframeLink = embedRegex[0].getLink(href);
+  const [iframeLink, setIframeLink] = useState<string | undefined>();
+  useEffect(() => {
+    embedRegex[0].getLink(href).then((link) => setIframeLink(link));
+  }, [embedRegex, href]);
 
+  if (!iframeLink) return <></>;
   return (
     <iframe
       data-testid="iframe-video"

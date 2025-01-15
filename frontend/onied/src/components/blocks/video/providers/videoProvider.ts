@@ -9,5 +9,5 @@ export default abstract class VideoProvider {
 
   // getLink: функция, которая конвертирует ссылку в ссылку для iframe.
   // regex должен содержать именованные группы, содержащиеся в convertHrefToIFrameSrc.
-  abstract getLink(href: string): string;
+  abstract getLink(href: string): Promise<string>;
 }
