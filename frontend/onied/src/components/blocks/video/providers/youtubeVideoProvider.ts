@@ -13,6 +13,8 @@ export default class YoutubeVideoProvider extends VideoProvider {
   getLink(href: string) {
     const matches = href.match(this.regex);
 
-    return `https://www.youtube.com/embed/${matches?.groups?.videoId}`;
+    return Promise.resolve(
+      `https://www.youtube.com/embed/${matches?.groups?.videoId}`
+    );
   }
 }

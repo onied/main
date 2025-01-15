@@ -4,8 +4,8 @@ function Button({ ...props }) {
   return (
     <>
       <button
-        className={[classes.button, props.className ?? ""].join(" ")}
         {...props}
+        className={[classes.button, props.className ?? ""].join(" ")}
       ></button>
     </>
   );

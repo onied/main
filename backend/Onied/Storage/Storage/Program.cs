@@ -1,22 +1,21 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
-using Minio;
 using Storage.Abstractions;
+using Storage.Extensions;
 using Storage.Middlewares;
 using Storage.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IRedisRepository, RedisRepository>();
 
 builder.Services.AddSingleton<ExceptionMiddleware>();
+builder.Services.AddSingleton<TemporaryStorageService>();
 
-var minioConfiguration = builder.Configuration.GetSection("MinIO");
-builder.Services.AddMinio(configureClient => configureClient
-    .WithEndpoint(minioConfiguration["Endpoint"], Convert.ToInt32(minioConfiguration["Port"]))
-    .WithCredentials(minioConfiguration["AccessKey"], minioConfiguration["SecretKey"])
-    .WithSSL(false)
-    .Build());
+builder.Services
+    .AddMinioConfigured()
+    .AddRedisConfigured();
 
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<Program>());
 

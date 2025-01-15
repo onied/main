@@ -1,6 +1,6 @@
 import ButtonGoBack from "../../../general/buttonGoBack/buttonGoBack";
 import { useNavigate } from "react-router-dom";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./editSummaryBlock.module.css";
 import api from "../../../../config/axios";
 import Button from "../../../general/button/button";
@@ -8,15 +8,15 @@ import MDEditor, { ContextStore } from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
 import FileLink from "../../../blocks/summary/fileLink";
 import RecycleBinIcon from "../../../../assets/recycleBinIcon.svg";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import InputForm from "../../../general/inputform/inputform";
-import DialogActions from "@mui/material/DialogActions";
-import Dialog from "@mui/material/Dialog";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
 import Forbid from "../../../general/responses/forbid/forbid";
+import {
+  booksContext,
+  documentsContext,
+  exerciseMaterialsContext,
+} from "@onied/components/general/fileUploading/predefinedFileContexts";
+import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
 
 type SummaryBlock = {
   id: number;
@@ -40,9 +40,6 @@ function EditSummaryBlockComponent({
     SummaryBlock | null | undefined
   >();
   const [fileLoadModalOpen, setFileLoadModalOpen] = useState(false);
-  const [newFileName, setNewFileName] = useState<string>("");
-  const [newFileHref, setNewFileHref] = useState<string>("");
-  const [newFileHrefError, _] = useState<string | null>(null);
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
@@ -53,20 +50,6 @@ function EditSummaryBlockComponent({
 
   const saveChanges = () => {
     sendingBlock(currentBlock!);
-  };
-
-  const saveNewFile = (e: any) => {
-    e.preventDefault();
-    setCurrentBlock({
-      ...currentBlock!,
-      fileName: newFileName,
-      fileHref: newFileHref,
-    });
-    sendingBlock({
-      ...currentBlock!,
-      fileName: newFileName,
-      fileHref: newFileHref,
-    }).then(() => setFileLoadModalOpen(false));
   };
 
   const deleteCurrentFile = () => {
@@ -96,6 +79,10 @@ function EditSummaryBlockComponent({
       value = "";
     }
     setCurrentBlock({ ...currentBlock!, markdownText: value! });
+  };
+
+  const setFileId = (id: string) => {
+    setCurrentBlock({ ...currentBlock!, fileHref: id, fileName: id });
   };
 
   useEffect(() => {
@@ -172,6 +159,16 @@ function EditSummaryBlockComponent({
             >
               загрузить файл
             </Button>
+            <FileUploadingDialog
+              open={fileLoadModalOpen}
+              onClose={() => setFileLoadModalOpen(false)}
+              setFileId={setFileId}
+              contexts={[
+                documentsContext,
+                exerciseMaterialsContext,
+                booksContext,
+              ]}
+            ></FileUploadingDialog>
           </div>
           {currentBlock!.fileHref ? (
             <div className={classes.fileAddingFileIcon}>
@@ -201,45 +198,6 @@ function EditSummaryBlockComponent({
           </Button>
         </div>
       </div>
-      <Dialog
-        open={fileLoadModalOpen}
-        onClose={() => setFileLoadModalOpen(false)}
-        PaperProps={{
-          component: "form",
-          onSubmit: saveNewFile,
-        }}
-      >
-        <DialogTitle>Загрузить файл</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Введите имя файла</DialogContentText>
-          <InputForm
-            value={newFileName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setNewFileName(e.target.value)
-            }
-            style={{ margin: "1rem" }}
-            type="text"
-            placeholder="имя файла"
-          ></InputForm>
-          <DialogContentText>Введите ссылку на файл</DialogContentText>
-
-          <InputForm
-            value={newFileHref}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setNewFileHref(e.target.value)
-            }
-            style={{ margin: "1rem" }}
-            type="url"
-            placeholder="ссылка на файл"
-          ></InputForm>
-          {newFileHrefError ? <div>{newFileHrefError}</div> : <></>}
-        </DialogContent>
-        <DialogActions>
-          <button type="submit" className={classes.submitNewFileButton}>
-            сохранить
-          </button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 }
