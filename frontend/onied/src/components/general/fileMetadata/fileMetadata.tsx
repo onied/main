@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import api from "@onied/config/axios";
-import classes from "./FileMetadata.module.css";
+import classes from "./fileMetadata.module.css";
 
 interface Metadata {
   [key: string]: string;
