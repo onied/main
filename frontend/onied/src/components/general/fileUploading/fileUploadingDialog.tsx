@@ -100,7 +100,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
           metadata: formData,
         };
 
-        const uploadFile = api.post(`/storage/upload-file/${fileId}`, fileData);
+        const uploadFile = api.post(`/temporary-storage/${fileId}/file`, fileData);
 
         const uploadMetadata = api.post(
           `/storage/metadata/${fileId}`,
