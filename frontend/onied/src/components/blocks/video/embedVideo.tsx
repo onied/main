@@ -20,11 +20,20 @@ function videoLinkToIFrame(href: string) {
       <div className={classes.embedVideo}>Неверный формат ссылки на видео</div>
     );
   const [iframeLink, setIframeLink] = useState<string | undefined>();
+  const [rawVideo, setRawVideo] = useState<boolean>(false);
   useEffect(() => {
+    setIframeLink(undefined);
     embedRegex[0].getLink(href).then((link) => setIframeLink(link));
+    setRawVideo(embedRegex[0].rawVideo);
   }, [embedRegex, href]);
 
   if (!iframeLink) return <></>;
+  if (rawVideo)
+    return (
+      <video controls className={classes.embedIFrame}>
+        <source src={iframeLink}></source>
+      </video>
+    );
   return (
     <iframe
       data-testid="iframe-video"

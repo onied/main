@@ -7,6 +7,7 @@ import VideoProvider from "./videoProvider";
  * @extends {VideoProvider}
  */
 export default class RutubeVideoProvider extends VideoProvider {
+  rawVideo = false;
   regex =
     /^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)?(\/[\S]+)?$/;
 

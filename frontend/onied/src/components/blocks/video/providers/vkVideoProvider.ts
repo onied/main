@@ -7,6 +7,7 @@ import VideoProvider from "./videoProvider";
  * @extends {VideoProvider}
  */
 export default class VkVideoProvider extends VideoProvider {
+  rawVideo = false;
   regex =
     /^(?:https:\/\/)?(?:www\.)?(?:vk\.com|m\.vk\.com)(?:\/video)(?<videoOid>[\d-]+)_(?<videoId>[\d]+)$/;
 
