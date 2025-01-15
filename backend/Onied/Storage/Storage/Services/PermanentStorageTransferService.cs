@@ -1,5 +1,6 @@
 using CommunityToolkit.HighPerformance.Helpers;
 using Minio;
+using Minio.DataModel;
 using Minio.DataModel.Args;
 using StackExchange.Redis;
 using Storage.Abstractions;
@@ -33,7 +34,8 @@ public class PermanentStorageTransferService(
             return;
         }
 
-        logger.LogInformation("Starting uploading file {fileId} to permanent storage...", fileId);
+        logger.LogInformation("Starting uploading file {fileId} to permanent storage with metadata {metadata}...",
+            fileId, metadata);
 
         var bucketExistsArgs = new BucketExistsArgs().WithBucket(Constants.Buckets.Permanent);
         var bucketExists = await minioClient.BucketExistsAsync(bucketExistsArgs);
@@ -43,14 +45,23 @@ public class PermanentStorageTransferService(
             await minioClient.MakeBucketAsync(makeBucketArgs);
         }
 
-        var copySourceObjectArgs = new CopySourceObjectArgs()
+        var statObjectArgs = new StatObjectArgs()
             .WithBucket(Constants.Buckets.Temporary)
             .WithObject(fileId);
+        var stat = await minioClient.StatObjectAsync(statObjectArgs);
+
+        var copyConditions = new CopyConditions();
+        copyConditions.SetReplaceMetadataDirective();
+        stat.MetaData.Add("Custom-Metadata", metadata);
+        var copySourceObjectArgs = new CopySourceObjectArgs()
+            .WithBucket(Constants.Buckets.Temporary)
+            .WithObject(fileId)
+            .WithCopyConditions(copyConditions);
         var copyObjectArgs = new CopyObjectArgs()
             .WithBucket(Constants.Buckets.Permanent)
             .WithObject(fileId)
             .WithCopyObjectSource(copySourceObjectArgs)
-            .WithHeaders(new Dictionary<string, string>() { { "metadata", metadata } });
+            .WithHeaders(stat.MetaData);
         await minioClient.CopyObjectAsync(copyObjectArgs);
 
 
