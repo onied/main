@@ -13,6 +13,8 @@ export default class VkVideoProvider extends VideoProvider {
   getLink(href: string) {
     const matches = href.match(this.regex);
 
-    return `https://vk.com/video_ext.php?oid=${matches?.groups?.videoOid}&id=${matches?.groups?.videoId}`;
+    return Promise.resolve(
+      `https://vk.com/video_ext.php?oid=${matches?.groups?.videoOid}&id=${matches?.groups?.videoId}`
+    );
   }
 }
