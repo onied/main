@@ -101,7 +101,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
       <div className={classes.dialogContentsWrapper}>
         <DialogTitle>Загрузить файл</DialogTitle>
         <DialogContent>
-          {file ? <></> : <p>Выбирите файл для загрузки</p>}
+          {file ? <></> : <p>Выберите файл для загрузки</p>}
           <Box sx={{ mb: 2 }}>
             <input
               type="file"
