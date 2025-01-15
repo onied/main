@@ -10,6 +10,7 @@ import { MetadataContext } from "@onied/components/general/fileUploading/predefi
 import { useState } from "react";
 import InputForm from "@onied/components/general/inputform/inputform";
 import Button from "@onied/components/general/button/button";
+import api from "@onied/config/axios";
 
 type FileUploadingDialogProps = {
   open: boolean;
@@ -83,16 +84,39 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
     setUploading(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (file && formData) {
       setUploading(true);
-      setTimeout(() => {
-        const generatedFileId = crypto.randomUUID(); // Генерация случайного fileId
-        props.setFileId(generatedFileId);
+
+      try {
+        const initResponse = await api.post("/storage/upload", null);
+        const fileId = initResponse.data.fileId;
+
+        const fileData = new FormData();
+        fileData.append("file", file);
+
+        const metadataData = {
+          fileId,
+          metadata: formData,
+        };
+
+        const uploadFile = api.post(`/storage/upload-file/${fileId}`, fileData);
+
+        const uploadMetadata = api.post(
+          `/storage/metadata/${fileId}`,
+          metadataData
+        );
+
+        await Promise.all([uploadFile, uploadMetadata]);
+
+        props.setFileId(fileId);
         clearDialogData();
         props.onClose();
+      } catch (error) {
+        console.error("Ошибка при загрузке файла:", error);
+      } finally {
         setUploading(false);
-      }, 2000);
+      }
     }
   };
 
