@@ -6,7 +6,7 @@ using Storage.Commands;
 namespace Storage.Controllers;
 
 [ApiController]
-[Route("temporary-storage")]
+[Route("/api/v1/temporary-storage")]
 public class TemporaryStorageController(ISender sender)
 {
     [HttpPost("init")]

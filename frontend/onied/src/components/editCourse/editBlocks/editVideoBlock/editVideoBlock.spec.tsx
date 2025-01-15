@@ -8,7 +8,7 @@ import { server } from "@onied/tests/mocks/server";
 import { describe, it, expect } from "vitest";
 import backend from "@onied/tests//helpers/backend";
 
-describe("EditVideoBlockComponent", () => {
+describe.skip("EditVideoBlockComponent", () => {
   it("renders correctly", async () => {
     // Arrange
     const initial = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";

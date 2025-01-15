@@ -14,7 +14,11 @@ import YoutubeVideoProvider from "@onied/components/blocks/video/providers/youtu
 import VkVideoProvider from "@onied/components/blocks/video/providers/vkVideoProvider";
 import RutubeVideoProvider from "@onied/components/blocks/video/providers/rutubeVideoProvider";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
-import {audioContext, videosContext} from "@onied/components/general/fileUploading/predefinedFileContexts";
+import {
+  audioContext,
+  videosContext,
+} from "@onied/components/general/fileUploading/predefinedFileContexts";
+import FileVideoProvider from "@onied/components/blocks/video/providers/fileProvider";
 
 type VideoBlock = {
   id: string;
@@ -28,6 +32,7 @@ const embedElements = [
   new YoutubeVideoProvider(),
   new VkVideoProvider(),
   new RutubeVideoProvider(),
+  new FileVideoProvider(),
 ];
 
 function EditVideoBlockComponent({
@@ -45,8 +50,8 @@ function EditVideoBlockComponent({
   const [errorLink, setErrorLink] = useState<string>(
     "Неверный формат ссылки на видео"
   );
-  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState<boolean>(false);
-  const [_, setFileId] = useState<string>("");
+  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] =
+    useState<boolean>(false);
 
   const notFound = <NotFound>Курс или блок не найден.</NotFound>;
   const [isForbid, setIsForbid] = useState(false);
@@ -79,6 +84,10 @@ function EditVideoBlockComponent({
           setIsForbid(true);
         }
       });
+  };
+
+  const setFileId = (id: string) => {
+    addLink({ target: { value: id } } as ChangeEvent<HTMLInputElement>);
   };
 
   useEffect(() => {
@@ -152,14 +161,18 @@ function EditVideoBlockComponent({
         />
         {errorLink && <span className={classes.errorMessage}>{errorLink}</span>}
         <div>
-          <p className={classes.addingLinkText}>Или загрузите свой файл на платформу</p>
+          <p className={classes.addingLinkText}>
+            Или загрузите свой файл на платформу
+          </p>
           <FileUploadingDialog
             open={isFileUploadDialogOpen}
             onClose={() => setIsFileUploadDialogOpen(false)}
             setFileId={setFileId}
             contexts={[videosContext, audioContext]}
           ></FileUploadingDialog>
-          <Button onClick={() => setIsFileUploadDialogOpen(true)}>Загрузить</Button>
+          <Button onClick={() => setIsFileUploadDialogOpen(true)}>
+            Загрузить
+          </Button>
         </div>
         <div className={classes.line}></div>
         <div className={classes.saveChanges}>
