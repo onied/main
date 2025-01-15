@@ -3,10 +3,14 @@ using Storage.Abstractions;
 
 namespace Storage.Services;
 
-public class TemporaryStorageCleanerService(IServer server) : ITemporaryStorageCleanerService
+public class TemporaryStorageCleanerService(IConnectionMultiplexer connectionMultiplexer)
+    : ITemporaryStorageCleanerService
 {
     public async Task CleanTemporaryStorage()
     {
-        await server.FlushAllDatabasesAsync();
+        foreach (var server in connectionMultiplexer.GetServers())
+        {
+            await server.FlushAllDatabasesAsync();
+        }
     }
 }

@@ -11,7 +11,9 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IRedisRepository, RedisRepository>();
 
 builder.Services.AddSingleton<ExceptionMiddleware>();
-builder.Services.AddSingleton<TemporaryStorageService>();
+builder.Services.AddScoped<TemporaryStorageService>();
+builder.Services.AddScoped<ITemporaryStorageCleanerService, TemporaryStorageCleanerService>();
+builder.Services.AddScoped<IPermanentStorageTransferService, PermanentStorageTransferService>();
 
 builder.Services
     .AddMinioConfigured()

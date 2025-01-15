@@ -12,8 +12,8 @@ namespace Storage.Services;
 
 public class TemporaryStorageService(
     IMinioClient minio,
-    IConfiguration configuration,
-    ILogger<TemporaryStorageService> logger)
+    ILogger<TemporaryStorageService> logger,
+    IPermanentStorageTransferService permanentStorageTransferService)
 {
     private string GetHashSetKey(Guid id) => $"temporary_files__{id}";
     private static readonly string Counter = nameof(Counter).ToLowerInvariant();
@@ -25,8 +25,7 @@ public class TemporaryStorageService(
     {
         try
         {
-            var minioConfiguration = configuration.GetSection("MinIO");
-            var bucketName = minioConfiguration["TemporaryBucket"];
+            var bucketName = Constants.Buckets.Temporary;
 
             var beArgs = new BucketExistsArgs().WithBucket(bucketName);
             var found = await minio.BucketExistsAsync(beArgs);
@@ -104,8 +103,10 @@ public class TemporaryStorageService(
             }
         }
 
-
-        // кинуть ошибку при переполнении
+        if (counter is < 3)
+            await permanentStorageTransferService.TransferAfterUpload(fileId.ToString());
+        else
+            throw new HttpResponseException("Uploaded too many times.");
 
         return Results.Ok();
     }
@@ -137,7 +138,11 @@ public class TemporaryStorageService(
                 SemaphoreSlim.Release();
             }
         }
-        // кинуть ошибку при переполнении
+
+        if (counter is < 3)
+            await permanentStorageTransferService.TransferAfterUpload(fileId.ToString());
+        else
+            throw new HttpResponseException("Uploaded too many times.");
 
         return Results.Ok();
     }
