@@ -148,6 +148,24 @@
       }
     },
     {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "DownstreamPathTemplate": "/api/v1/temporary-storage/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "storage",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/temporary-storage/{everything}",
+      "AddQueriesToRequest": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/v1/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

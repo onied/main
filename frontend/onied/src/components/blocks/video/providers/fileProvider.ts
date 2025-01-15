@@ -8,6 +8,7 @@ import VideoProvider from "./videoProvider";
  * @extends {VideoProvider}
  */
 export default class FileVideoProvider extends VideoProvider {
+  rawVideo = true;
   regex = /^[a-z0-9_\-]+$/;
 
   async getLink(href: string) {

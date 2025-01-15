@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Storage.Abstractions;
 using Storage.Extensions;
 using Storage.Middlewares;
@@ -9,11 +11,14 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IRedisRepository, RedisRepository>();
 
 builder.Services.AddSingleton<ExceptionMiddleware>();
-builder.Services.AddSingleton<TemporaryStorageService>();
+builder.Services.AddScoped<TemporaryStorageService>();
+builder.Services.AddScoped<ITemporaryStorageCleanerService, TemporaryStorageCleanerService>();
+builder.Services.AddScoped<IPermanentStorageTransferService, PermanentStorageTransferService>();
 
 builder.Services
     .AddMinioConfigured()
-    .AddRedisConfigured();
+    .AddRedisConfigured()
+    .AddHangfire(builder.Configuration);
 
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<Program>());
 

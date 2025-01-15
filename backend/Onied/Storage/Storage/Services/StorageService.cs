@@ -126,6 +126,9 @@ public class StorageService(
                 .WithObject(fileId);
             var obj = await minio.StatObjectAsync(objectStatArgs).ConfigureAwait(false);
 
+            var found = obj.MetaData.TryGetValue("Custom-Metadata", out var metadata);
+            if (found && metadata != null)
+                return TypedResults.Content(metadata, "application/json");
             return TypedResults.Ok(obj.MetaData);
         }
         catch (Exception e) when (e is BucketNotFoundException or ObjectNotFoundException)

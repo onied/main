@@ -1,5 +1,8 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Minio;
 using StackExchange.Redis;
+using Storage.Abstractions;
 using Storage.Services;
 
 namespace Storage.Extensions;
@@ -29,5 +32,23 @@ public static class ServicesExtensions
             ?? throw new SystemException("Redis connection string not found");
         return services
             .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(connectionString));
+    }
+
+    public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHangfire(x => x.UseMemoryStorage());
+        services.AddHangfireServer();
+
+        var recurringJobs = services.BuildServiceProvider().GetService<IRecurringJobManager>();
+        recurringJobs.AddOrUpdate<ITemporaryStorageCleanerService>(
+            typeof(ITemporaryStorageCleanerService).FullName,
+            x => x.CleanTemporaryStorage(),
+            configuration.GetSection("Hangfire")["CronTemporaryStorageCleaner"],
+            new RecurringJobOptions
+            {
+                TimeZone = TimeZoneInfo.Utc
+            });
+
+        return services;
     }
 }
