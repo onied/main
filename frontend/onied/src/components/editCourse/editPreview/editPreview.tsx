@@ -437,7 +437,7 @@ function EditPreviewComponent() {
             <></>
           )}
         </div>
-        <Link to={`../course/${courseId}/edit/hierarchy`}>
+        <Link to={`hierarchy`}>
           <Button
             style={{
               boxShadow: "none",

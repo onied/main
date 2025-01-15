@@ -7,12 +7,15 @@ import VideoProvider from "./videoProvider";
  * @extends {VideoProvider}
  */
 export default class RutubeVideoProvider extends VideoProvider {
+  rawVideo = false;
   regex =
     /^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)?(\/[\S]+)?$/;
 
   getLink(href: string) {
     const matches = href.match(this.regex);
 
-    return `https://rutube.ru/play/embed/${matches?.groups?.videoId}`;
+    return Promise.resolve(
+      `https://rutube.ru/play/embed/${matches?.groups?.videoId}`
+    );
   }
 }
