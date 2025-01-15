@@ -89,7 +89,7 @@ function FileUploadingDialog(props: FileUploadingDialogProps) {
       setUploading(true);
 
       try {
-        const initResponse = await api.post("/storage/upload", null);
+        const initResponse = await api.post("/temporary-storage/init", null);
         const fileId = initResponse.data.fileId;
 
         const fileData = new FormData();
