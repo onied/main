@@ -6,7 +6,6 @@ import api from "../../../../config/axios";
 import Button from "../../../general/button/button";
 import MDEditor, { ContextStore } from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
-import FileLink from "../../../blocks/summary/fileLink";
 import RecycleBinIcon from "../../../../assets/recycleBinIcon.svg";
 import NotFound from "../../../general/responses/notFound/notFound";
 import { BeatLoader } from "react-spinners";
@@ -17,6 +16,8 @@ import {
   exerciseMaterialsContext,
 } from "@onied/components/general/fileUploading/predefinedFileContexts";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
+import FileMetadata from "@onied/components/general/fileMetadata/fileMetadata";
+import FileEntrySummary from "@onied/components/general/fileEntrySummary/fileEntrySummary";
 
 type SummaryBlock = {
   id: number;
@@ -172,10 +173,11 @@ function EditSummaryBlockComponent({
           </div>
           {currentBlock!.fileHref ? (
             <div className={classes.fileAddingFileIcon}>
-              <FileLink
+              <FileEntrySummary
                 fileName={currentBlock!.fileName!}
-                fileHref={currentBlock!.fileHref}
+                objectName={currentBlock!.fileHref}
               />
+              <FileMetadata fileId={currentBlock.fileHref}></FileMetadata>
               <div>
                 <img
                   src={RecycleBinIcon}

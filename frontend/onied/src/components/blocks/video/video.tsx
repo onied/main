@@ -3,6 +3,7 @@ import EmbedVideo from "@onied/components/blocks/video/embedVideo";
 import api from "@onied/config/axios";
 import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 import { VideoBlock } from "@onied/types/block";
+import FileMetadata from "@onied/components/general/fileMetadata/fileMetadata";
 
 type props = {
   courseId: number;
@@ -36,6 +37,7 @@ function Video({ courseId, blockId }: props) {
     <>
       <h2>{videoBlock!.title}</h2>
       <EmbedVideo href={videoBlock!.href}></EmbedVideo>
+      <FileMetadata fileId={videoBlock!.href}></FileMetadata>
     </>
   );
 }

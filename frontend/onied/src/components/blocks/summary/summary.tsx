@@ -4,7 +4,8 @@ import api from "@onied/config/axios";
 import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 import { SummaryBlock } from "@onied/types/block";
 import classes from "./summary.module.css";
-import FileLink from "./fileLink";
+import FileMetadata from "@onied/components/general/fileMetadata/fileMetadata";
+import FileEntrySummary from "@onied/components/general/fileEntrySummary/fileEntrySummary";
 
 type props = {
   courseId: number;
@@ -41,7 +42,13 @@ function Summary({ courseId, blockId }: props) {
         {summary!.markdownText}
       </Markdown>
       {summary!.fileName == null || summary!.fileHref == null ? null : (
-        <FileLink fileName={summary!.fileName} fileHref={summary!.fileHref} />
+        <>
+          <FileEntrySummary
+            fileName={summary!.fileName}
+            objectName={summary!.fileHref}
+          />
+          <FileMetadata fileId={summary!.fileHref}></FileMetadata>
+        </>
       )}
     </>
   );

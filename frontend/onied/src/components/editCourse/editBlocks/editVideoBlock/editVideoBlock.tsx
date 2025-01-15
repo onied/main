@@ -19,6 +19,7 @@ import {
   videosContext,
 } from "@onied/components/general/fileUploading/predefinedFileContexts";
 import FileVideoProvider from "@onied/components/blocks/video/providers/fileProvider";
+import FileMetadata from "@onied/components/general/fileMetadata/fileMetadata";
 
 type VideoBlock = {
   id: string;
@@ -170,6 +171,7 @@ function EditVideoBlockComponent({
             setFileId={setFileId}
             contexts={[videosContext, audioContext]}
           ></FileUploadingDialog>
+          <FileMetadata fileId={currentBlock.href}></FileMetadata>
           <Button onClick={() => setIsFileUploadDialogOpen(true)}>
             Загрузить
           </Button>
