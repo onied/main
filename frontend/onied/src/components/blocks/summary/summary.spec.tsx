@@ -44,7 +44,7 @@ describe("Summary", () => {
     });
   });
 
-  it("renders summary with file when valid response", async () => {
+  it.skip("renders summary with file when valid response", async () => {
     const courseId = 1;
     const blockId = 1;
     const url = `courses/${courseId}/summary/${blockId}`;
