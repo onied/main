@@ -5,6 +5,7 @@ import CustomBeatLoader from "@onied/components/general/customBeatLoader";
 import { SummaryBlock } from "@onied/types/block";
 import classes from "./summary.module.css";
 import FileLink from "./fileLink";
+import FileMetadata from "@onied/components/general/fileMetadata/fileMetadata";
 
 type props = {
   courseId: number;
@@ -41,7 +42,10 @@ function Summary({ courseId, blockId }: props) {
         {summary!.markdownText}
       </Markdown>
       {summary!.fileName == null || summary!.fileHref == null ? null : (
-        <FileLink fileName={summary!.fileName} fileHref={summary!.fileHref} />
+        <>
+          <FileLink fileName={summary!.fileName} fileHref={summary!.fileHref} />
+          <FileMetadata fileId={summary!.fileHref}></FileMetadata>
+        </>
       )}
     </>
   );

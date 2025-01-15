@@ -17,6 +17,7 @@ import {
   exerciseMaterialsContext,
 } from "@onied/components/general/fileUploading/predefinedFileContexts";
 import FileUploadingDialog from "@onied/components/general/fileUploading/fileUploadingDialog";
+import FileMetadata from "@onied/components/general/fileMetadata/fileMetadata";
 
 type SummaryBlock = {
   id: number;
@@ -176,6 +177,7 @@ function EditSummaryBlockComponent({
                 fileName={currentBlock!.fileName!}
                 fileHref={currentBlock!.fileHref}
               />
+              <FileMetadata fileId={currentBlock.fileHref}></FileMetadata>
               <div>
                 <img
                   src={RecycleBinIcon}
