@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose.yml convert --out k8s/
+    kompose.version: 1.35.0 (9532ceef3)
+  labels:
+    io.kompose.service: certificates
+  name: certificates
+spec:
+  ports:
+    - name: "5508"
+      port: 5508
+      targetPort: 5508
+  selector:
+    io.kompose.service: certificates

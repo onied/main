@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose.yml convert --out k8s/
+    kompose.version: 1.35.0 (9532ceef3)
+  labels:
+    io.kompose.service: notifications
+  name: notifications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: notifications
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f docker-compose.yml convert --out k8s/
+        kompose.version: 1.35.0 (9532ceef3)
+      labels:
+        io.kompose.service: notifications
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ConnectionStrings__NotificationsDatabase
+              value: Host=db;Username=postgres;Password=postgres;Database=notifications_database
+            - name: RabbitMQ__Host
+              value: rabbitmq
+          image: misergeevkpfu/notifications
+          name: notifications
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
