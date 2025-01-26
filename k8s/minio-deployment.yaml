@@ -22,11 +22,9 @@ spec:
             - --console-address
             - :9001
             - /data
-          env:
-            - name: MINIO_ROOT_PASSWORD
-              value: adminadmin
-            - name: MINIO_ROOT_USER
-              value: admin
+          envFrom:
+            - configMapRef:
+                name: minio-config
           image: minio/minio
           name: minio
           ports:

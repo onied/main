@@ -15,13 +15,9 @@ spec:
         io.kompose.service: notifications
     spec:
       containers:
-        - env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Development
-            - name: ConnectionStrings__NotificationsDatabase
-              value: Host=db;Username=postgres;Password=postgres;Database=notifications_database
-            - name: RabbitMQ__Host
-              value: rabbitmq
+        - envFrom:
+            - configMapRef:
+                name: notifications-config
           image: misergeevkpfu/notifications
           name: notifications
           ports:

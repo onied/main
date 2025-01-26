@@ -15,7 +15,10 @@ spec:
         io.kompose.service: redis
     spec:
       containers:
-        - image: redis
+        - envFrom:
+            - configMapRef:
+                name: redis-config
+          image: redis
           name: redis
           ports:
             - containerPort: 6379

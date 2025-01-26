@@ -15,13 +15,9 @@ spec:
         io.kompose.service: support
     spec:
       containers:
-        - env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Development
-            - name: ConnectionStrings__SupportDatabase
-              value: Host=db;Username=postgres;Password=postgres;Database=support_database
-            - name: RabbitMQ__Host
-              value: rabbitmq
+        - envFrom:
+            - configMapRef:
+                name: support-config
           image: misergeevkpfu/support
           name: support
           ports:

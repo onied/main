@@ -15,9 +15,9 @@ spec:
         io.kompose.service: storage
     spec:
       containers:
-        - env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Development
+        - envFrom:
+            - configMapRef:
+                name: storage-config
           image: misergeevkpfu/storage
           name: storage
           ports:

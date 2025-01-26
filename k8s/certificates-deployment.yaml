@@ -15,24 +15,9 @@ spec:
         io.kompose.service: certificates
     spec:
       containers:
-        - env:
-            - name: DATABASE_HOST
-              value: db
-            - name: DATABASE_NAME
-              value: certificates_database
-            - name: DATABASE_PASS
-              value: postgres
-            - name: DATABASE_PORT
-              value: "5432"
-            - name: DATABASE_USER
-              value: postgres
-            - name: MAPBOX_API_KEY
-            - name: MAPBOX_API_URL
-              value: https://api.mapbox.com/search/geocode/v6/forward
-            - name: PURCHASES_API_URL
-              value: http://purchases:8080/api/v1/purchases/verify
-            - name: RABBITMQ_CONNECTION_STRING
-              value: amqp://guest:guest@rabbitmq:5672
+        - envFrom:
+            - configMapRef:
+                name: certificates-config
           image: misergeevkpfu/certificates
           name: certificates
           ports:

@@ -15,13 +15,9 @@ spec:
         io.kompose.service: users
     spec:
       containers:
-        - env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Development
-            - name: ConnectionStrings__UsersDatabase
-              value: Host=db;Username=postgres;Password=postgres;Database=users_database
-            - name: RabbitMQ__Host
-              value: rabbitmq
+        - envFrom:
+            - configMapRef:
+                name: users-config
           image: misergeevkpfu/users
           livenessProbe:
             exec:

@@ -17,9 +17,9 @@ spec:
         io.kompose.service: db
     spec:
       containers:
-        - env:
-            - name: POSTGRES_PASSWORD
-              value: postgres
+        - envFrom:
+            - configMapRef:
+                name: db-config
           image: misergeevkpfu/postgres
           name: db
           ports:

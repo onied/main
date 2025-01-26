@@ -15,7 +15,10 @@ spec:
         io.kompose.service: rabbitmq
     spec:
       containers:
-        - image: masstransit/rabbitmq:latest
+        - envFrom:
+            - configMapRef:
+                name: rabbitmq-config
+          image: masstransit/rabbitmq:latest
           livenessProbe:
             exec:
               command:

@@ -15,13 +15,9 @@ spec:
         io.kompose.service: purchases
     spec:
       containers:
-        - env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Development
-            - name: ConnectionStrings__PurchasesDatabase
-              value: Host=db;Username=postgres;Password=postgres;Database=purchases_database
-            - name: RabbitMQ__Host
-              value: rabbitmq
+        - envFrom:
+            - configMapRef:
+                name: purchases-config
           image: misergeevkpfu/purchases
           name: purchases
           ports:

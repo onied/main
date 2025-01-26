@@ -15,7 +15,10 @@ spec:
         io.kompose.service: frontend
     spec:
       containers:
-        - image: misergeevkpfu/frontend
+        - envFrom:
+            - configMapRef:
+                name: frontend-config
+          image: misergeevkpfu/frontend
           name: frontend
           ports:
             - containerPort: 8080
