@@ -1,9 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose -f docker-compose.yml convert --out k8s/
-    kompose.version: 1.35.0 (9532ceef3)
   labels:
     io.kompose.service: notifications
   name: notifications
@@ -14,9 +11,6 @@ spec:
       io.kompose.service: notifications
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose -f docker-compose.yml convert --out k8s/
-        kompose.version: 1.35.0 (9532ceef3)
       labels:
         io.kompose.service: notifications
     spec:
