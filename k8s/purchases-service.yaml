@@ -6,8 +6,8 @@ metadata:
   name: purchases
 spec:
   ports:
-    - name: "5036"
-      port: 5036
+    - name: "8080"
+      port: 8080
       targetPort: 8080
   selector:
     io.kompose.service: purchases

@@ -6,8 +6,8 @@ metadata:
   name: storage
 spec:
   ports:
-    - name: "5264"
-      port: 5264
+    - name: "8080"
+      port: 8080
       targetPort: 8080
   selector:
     io.kompose.service: storage
