@@ -6,4 +6,5 @@ data:
   ASPNETCORE_ENVIRONMENT: Development
   ConnectionStrings__CoursesDatabase: Host=db;Username=postgres;Password=postgres;Database=courses_database
   PurchasesServerApi: http://purchases:8080/api/v1/purchases/verify
+  SubscriptionsServerApi: http://purchases:8080/api/v1/purchases/subscriptions/active
   RabbitMQ__Host: rabbitmq

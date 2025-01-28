@@ -4,3 +4,5 @@ metadata:
   name: storage-config
 data:
   ASPNETCORE_ENVIRONMENT: Development
+  MinIO__Endpoint: minio
+  ConnectionStrings__Redis: "redis:6379,abortConnect=False"
