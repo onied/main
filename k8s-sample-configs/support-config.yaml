@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: support-config
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  ConnectionStrings__SupportDatabase: Host=db;Username=postgres;Password=postgres;Database=support_database
+  RabbitMQ__Host: rabbitmq

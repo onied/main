@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: purchases
+  name: purchases
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: purchases
+  template:
+    metadata:
+      labels:
+        io.kompose.service: purchases
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: purchases-config
+          image: misergeevkpfu/purchases
+          name: purchases
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always

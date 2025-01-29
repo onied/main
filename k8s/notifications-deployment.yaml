@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: notifications
+  name: notifications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: notifications
+  template:
+    metadata:
+      labels:
+        io.kompose.service: notifications
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: notifications-config
+          image: misergeevkpfu/notifications
+          name: notifications
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always

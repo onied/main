@@ -5,6 +5,8 @@ services:
       context: .
     environment:
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
 volumes:

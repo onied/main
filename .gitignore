@@ -5,6 +5,7 @@ structurizr/.structurizr
 *.http
 appsettings.Development.json
 docker-compose.override.yml
+k8s/config/
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
