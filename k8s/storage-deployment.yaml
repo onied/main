@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: storage
+  name: storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: storage
+  template:
+    metadata:
+      labels:
+        io.kompose.service: storage
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: storage-config
+          image: misergeevkpfu/storage
+          name: storage
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always

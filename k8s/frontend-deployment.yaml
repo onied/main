@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: frontend
+  template:
+    metadata:
+      labels:
+        io.kompose.service: frontend
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: frontend-config
+          image: misergeevkpfu/frontend
+          name: frontend
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always

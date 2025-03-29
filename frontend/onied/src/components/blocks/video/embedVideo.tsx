@@ -25,7 +25,7 @@ function videoLinkToIFrame(href: string) {
     setIframeLink(undefined);
     embedRegex[0].getLink(href).then((link) => setIframeLink(link));
     setRawVideo(embedRegex[0].rawVideo);
-  }, [embedRegex, href]);
+  }, [href]);
 
   if (!iframeLink) return <></>;
   if (rawVideo)

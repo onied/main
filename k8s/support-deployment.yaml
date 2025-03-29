@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: support
+  name: support
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: support
+  template:
+    metadata:
+      labels:
+        io.kompose.service: support
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: support-config
+          image: misergeevkpfu/support
+          name: support
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always

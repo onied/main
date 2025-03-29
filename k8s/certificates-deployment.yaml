@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: certificates
+  name: certificates
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: certificates
+  template:
+    metadata:
+      labels:
+        io.kompose.service: certificates
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: certificates-config
+          image: misergeevkpfu/certificates
+          name: certificates
+          ports:
+            - containerPort: 5508
+              protocol: TCP
+      restartPolicy: Always
