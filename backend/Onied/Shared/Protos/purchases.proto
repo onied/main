@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option csharp_namespace = "Purchases.Grpc";
+
+package purchases;
+
+import "google/protobuf/timestamp.proto";
+
+service PurchasesService{
+  rpc Verify (VerifyTokenRequest) 
+      returns (VerifyTokenReply);
+}
+
+service SubscriptionService{
+  rpc GetActiveSubscription (GetActiveSubscriptionRequest) 
+      returns (GetActiveSubscriptionReply);
+}
+
+enum VerificationOutcome {
+  OK = 0;
+  FORBID = 1;
+  BAD_REQUEST = 2;
+}
+
+message VerifyTokenRequest {
+  string token = 1;
+}
+
+message VerifyTokenReply {
+  VerificationOutcome verificationOutcome = 1;
+}
+
+message GetActiveSubscriptionRequest {
+  bytes userId = 1;
+}
+
+message GetActiveSubscriptionReply {
+  int32 id = 1;
+  string title = 2;
+  google.protobuf.Timestamp endDate = 3;
+  bool autoRenewalEnabled = 4;
+  bool coursesHighlightingEnabled = 5;
+  bool adsEnabled = 6;
+  bool certificatesEnabled = 7;
+  bool autoTestsReview = 8;
+
+  bool courseCreatingEnabled = 9;
+  int32 activeCoursesNumber = 10;
+  int32 studentsOnCourseLimit = 11;
+
+  DecimalValue price = 12;
+}
+
+message DecimalValue {
+  int64 units = 1;
+  sfixed32 nanos = 2;
+}
