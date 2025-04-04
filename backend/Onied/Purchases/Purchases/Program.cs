@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Purchases.Data;
 using Purchases.Extensions;
+using Purchases.Services.GrpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddServices();
 builder.Services.AddAutoMapperConfigured();
 builder.Services.AddMassTransitConfigured();
 builder.Services.AddHangfireWorker();
+builder.Services.AddGrpc();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
@@ -35,6 +37,8 @@ app.UseHttpsRedirection();
 
 app.UseCorsConfigured();
 
+app.MapGrpcService<PurchasesService>();
+app.MapGrpcService<SubscriptionService>();
 app.MapControllers();
 
 if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
