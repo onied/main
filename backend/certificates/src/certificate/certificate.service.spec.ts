@@ -22,6 +22,8 @@ import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
+import { VerificationOutcome } from "../grpc-generated/purchases";
+import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 
 describe("CertificateService", () => {
   let service: CertificateService;
@@ -59,6 +61,14 @@ describe("CertificateService", () => {
           provide: HttpService,
           useValue: {
             get: jest.fn(),
+          },
+        },
+        {
+          provide: PurchasesServiceClient,
+          useValue: {
+            verify: jest.fn().mockResolvedValue({
+              verificationOutcome: VerificationOutcome.OK,
+            }),
           },
         },
         {

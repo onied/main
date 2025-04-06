@@ -10,15 +10,24 @@ import { Course } from "../course/course.entity";
 import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { ConfigService } from "@nestjs/config";
 import { ForbiddenException } from "@nestjs/common";
-import { VerificationOutcome } from "../grpc-generated/purchases";
+import {
+  VerificationOutcome,
+  VerifyTokenReply,
+} from "../grpc-generated/purchases";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
   let courseService: CourseService;
   let repo: Repository<UserCourseInfo>;
-  let purchasesServiceClient: PurchasesServiceClient;
+  let purchasesServiceClient: jest.Mocked<PurchasesServiceClient>;
 
   beforeEach(async () => {
+    const purchasesClientMock = {
+      verify: jest.fn().mockResolvedValue({
+        verificationOutcome: VerificationOutcome.OK,
+      } as VerifyTokenReply),
+    } as unknown as jest.Mocked<PurchasesServiceClient>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserCourseInfoService,
@@ -37,16 +46,14 @@ describe("UserCourseInfoService", () => {
           useClass: Repository,
         },
         {
-          provide: PurchasesServiceClient,
+          provide: ConfigService,
           useValue: {
-            verify: jest.fn(),
+            get: jest.fn().mockReturnValue(""),
           },
         },
         {
-          provide: ConfigService,
-          useValue: {
-            get: () => "",
-          },
+          provide: PurchasesServiceClient,
+          useValue: purchasesClientMock,
         },
       ],
     }).compile();
@@ -56,9 +63,8 @@ describe("UserCourseInfoService", () => {
     repo = module.get<Repository<UserCourseInfo>>(
       getRepositoryToken(UserCourseInfo)
     );
-    purchasesServiceClient = module.get<PurchasesServiceClient>(
-      PurchasesServiceClient
-    );
+
+    purchasesServiceClient = purchasesClientMock;
   });
 
   it("should be defined", () => {
