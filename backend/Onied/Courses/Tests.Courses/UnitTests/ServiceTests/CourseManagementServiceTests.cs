@@ -10,39 +10,42 @@ using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseUpdatedProducer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using PurchasesGrpc;
 using Task = System.Threading.Tasks.Task;
 
 namespace Tests.Courses.UnitTests.ServiceTests;
 
 public class CourseManagementServiceTests
 {
-    private readonly IMapper _mapper =
-        new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
-    private readonly Mock<ICourseRepository> _courseRepository = new();
-    private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
-    private readonly Mock<IHttpClientFactory> _httpClientFactory = new();
     private readonly Mock<IBlockRepository> _blockRepository = new();
     private readonly Mock<ICategoryRepository> _categoryRepository = new();
-    private readonly Mock<IModuleRepository> _moduleRepository = new();
-    private readonly Mock<IUpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<ICourseUpdatedProducer> _courseUpdatedProducer = new();
-    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
-    private readonly CourseManagementService _service;
     private readonly Fixture _fixture = new();
+    private readonly Mock<PurchasesService.PurchasesServiceClient> _grpcClient = new();
+
+    private readonly IMapper _mapper =
+        new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
+
+    private readonly Mock<IModuleRepository> _moduleRepository = new();
+    private readonly CourseManagementService _service;
+    private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
+    private readonly Mock<IUpdateTasksBlockService> _updateTasksBlockService = new();
+    private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
 
     public CourseManagementServiceTests()
     {
         _service = new CourseManagementService(
             _courseRepository.Object,
             _userCourseInfoRepository.Object,
-            _httpClientFactory.Object,
             _blockRepository.Object,
             _updateTasksBlockService.Object,
             _moduleRepository.Object,
             _categoryRepository.Object,
             _courseUpdatedProducer.Object,
             _subscriptionManagementService.Object,
-            _mapper);
+            _mapper, _grpcClient.Object
+        );
     }
 
     [Fact]

@@ -63,7 +63,7 @@ public class SubscriptionManagementService(
 
             return mapper.Map<SubscriptionRequestDto>(subscription);
         }
-        catch (RpcException _)
+        catch (RpcException)
         {
             return null;
         }
