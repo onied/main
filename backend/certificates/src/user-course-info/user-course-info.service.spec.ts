@@ -7,16 +7,16 @@ import { UserService } from "../user/user.service";
 import { CourseService } from "../course/course.service";
 import { User } from "../user/user.entity";
 import { Course } from "../course/course.entity";
-import { HttpService } from "@nestjs/axios";
+import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { ConfigService } from "@nestjs/config";
-import { of, throwError } from "rxjs";
 import { ForbiddenException } from "@nestjs/common";
+import { VerificationOutcome } from "../grpc-generated/purchases";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
   let courseService: CourseService;
   let repo: Repository<UserCourseInfo>;
-  let httpService: HttpService;
+  let purchasesServiceClient: PurchasesServiceClient;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,15 +37,9 @@ describe("UserCourseInfoService", () => {
           useClass: Repository,
         },
         {
-          provide: HttpService,
+          provide: PurchasesServiceClient,
           useValue: {
-            post: () =>
-              of({
-                data: {},
-                headers: {},
-                status: 200,
-                statusText: "OK",
-              }),
+            verify: jest.fn(),
           },
         },
         {
@@ -62,7 +56,9 @@ describe("UserCourseInfoService", () => {
     repo = module.get<Repository<UserCourseInfo>>(
       getRepositoryToken(UserCourseInfo)
     );
-    httpService = module.get<HttpService>(HttpService);
+    purchasesServiceClient = module.get<PurchasesServiceClient>(
+      PurchasesServiceClient
+    );
   });
 
   it("should be defined", () => {
@@ -176,6 +172,10 @@ describe("UserCourseInfoService", () => {
       })
     );
 
+    (purchasesServiceClient.verify as jest.Mock).mockResolvedValueOnce({
+      response: { verificationOutcome: VerificationOutcome.OK },
+    });
+
     // Act
 
     const result = await service.checkIfUserCanBuyCertificate(user, course);
@@ -255,8 +255,10 @@ describe("UserCourseInfoService", () => {
         token: "",
       })
     );
-    jest.spyOn(httpService, "post").mockReturnValueOnce(throwError(() => {}));
 
+    (purchasesServiceClient.verify as jest.Mock).mockResolvedValueOnce({
+      response: { verificationOutcome: VerificationOutcome.FORBID },
+    });
     // Act
 
     try {
