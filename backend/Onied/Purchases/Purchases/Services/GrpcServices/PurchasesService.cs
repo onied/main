@@ -1,14 +1,14 @@
 using Grpc.Core;
 using Purchases.Data.Abstractions;
-using Purchases.Grpc;
 using Purchases.Services.Abstractions;
+using PurchasesGrpc;
 
 namespace Purchases.Services.GrpcServices;
 
 public class PurchasesService(
     IUserRepository userRepository,
     IPurchaseRepository purchaseRepository,
-    IPurchaseTokenService tokenService) : Grpc.PurchasesService.PurchasesServiceBase
+    IPurchaseTokenService tokenService) : PurchasesGrpc.PurchasesService.PurchasesServiceBase
 {
     public override async Task<VerifyTokenReply> Verify(VerifyTokenRequest request, ServerCallContext context)
     {

@@ -1,10 +1,9 @@
 syntax = "proto3";
 
-option csharp_namespace = "Purchases.Grpc";
-
-package purchases;
+package purchasesGrpc;
 
 import "google/protobuf/timestamp.proto";
+import "decimalValue.proto";
 
 service PurchasesService{
   rpc Verify (VerifyTokenRequest) 
@@ -48,10 +47,5 @@ message GetActiveSubscriptionReply {
   int32 activeCoursesNumber = 10;
   int32 studentsOnCourseLimit = 11;
 
-  DecimalValue price = 12;
-}
-
-message DecimalValue {
-  int64 units = 1;
-  sfixed32 nanos = 2;
+  decimalValue.DecimalValue price = 12;
 }

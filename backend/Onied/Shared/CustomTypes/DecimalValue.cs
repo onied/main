@@ -1,4 +1,4 @@
-namespace Purchases.Grpc;
+namespace DecimalValue;
 
 public partial class DecimalValue
 {

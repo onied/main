@@ -4,13 +4,13 @@ using Grpc.Core;
 using Purchases.Data.Abstractions;
 using Purchases.Data.Enums;
 using Purchases.Data.Models.PurchaseDetails;
-using Purchases.Grpc;
+using PurchasesGrpc;
 
 namespace Purchases.Services.GrpcServices;
 
 public class SubscriptionService(
     IUserRepository userRepository,
-    IMapper mapper) : Grpc.SubscriptionService.SubscriptionServiceBase
+    IMapper mapper) : PurchasesGrpc.SubscriptionService.SubscriptionServiceBase
 {
     public override async Task<GetActiveSubscriptionReply> GetActiveSubscription(GetActiveSubscriptionRequest request,
         ServerCallContext context)
