@@ -17,16 +17,9 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
 
     public async Task<Purchase> AddAsync(Purchase purchase, PurchaseDetails purchaseDetails)
     {
-        await using var transaction = await dbContext.Database.BeginTransactionAsync();
-
+        purchase.PurchaseDetails = purchaseDetails;
         var purchaseSaved = await dbContext.Purchases.AddAsync(purchase);
-        // todo избавиться от двух записей в бд, сделав foreign key.
         await dbContext.SaveChangesAsync();
-        purchaseDetails.Id = purchaseSaved.Entity.Id;
-        await dbContext.PurchaseDetails.AddAsync(purchaseDetails);
-        await dbContext.SaveChangesAsync();
-
-        await transaction.CommitAsync();
         return purchaseSaved.Entity;
     }
 

@@ -20,4 +20,5 @@ public interface ICourseRepository
     public Task AddModeratorAsync(int courseId, Guid studentId);
     public Task UpdateCourseAsync(Course course);
     public Task DeleteModeratorAsync(int courseId, Guid studentId);
+    public Task DeleteCourseAsync(int courseId);
 }

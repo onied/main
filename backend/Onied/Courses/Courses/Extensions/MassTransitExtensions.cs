@@ -17,6 +17,8 @@ public static class MassTransitExtensions
                 serviceCollection.BuildServiceProvider()
                     .GetService<IConfiguration>()!;
 
+            x.AddConsumer<CourseCreateFailedConsumer>()
+                .Endpoint(e => e.Name = "course-create-failed-courses");
             x.AddConsumer<UserCreatedConsumer>()
                 .Endpoint(e => e.Name = "user-created-courses");
             x.AddConsumer<ProfileUpdatedConsumer>()

@@ -183,4 +183,14 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
             }
         }
     }
+
+    public async Task DeleteCourseAsync(int courseId)
+    {
+        var course = await dbContext.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+        if (course is not null)
+        {
+            dbContext.Courses.Remove(course);
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }
