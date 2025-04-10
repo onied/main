@@ -14,9 +14,9 @@ public class CourseCreatedConsumer(
     IMapper mapper,
     IPurchaseUnitOfWork unitOfWork,
     IPurchaseTokenService tokenService,
-    IPurchaseCreatedProducer purchaseCreatedProducer) : IConsumer<CourseCreated>
+    IPurchaseCreatedProducer purchaseCreatedProducer) : IConsumer<CourseCreatedCertificates>
 {
-    public async Task Consume(ConsumeContext<CourseCreated> context)
+    public async Task Consume(ConsumeContext<CourseCreatedCertificates> context)
     {
         try
         {

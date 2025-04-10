@@ -52,6 +52,7 @@ public class AppMappingProfile : Profile
         CreateMap<UserCreated, User>();
         CreateMap<CourseUpdated, Course>();
         CreateMap<CourseCreated, Course>();
+        CreateMap<CourseCreatedCertificates, Course>();
         CreateMap<CourseCompleted, UserCourseInfo>().ForMember(
             dest => dest.IsCompleted,
             opt => opt.MapFrom(src => true));

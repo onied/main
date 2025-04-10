@@ -19,7 +19,7 @@ public static class MassTransitExtensions
                     .GetService<IConfiguration>()!;
 
             x.AddConsumer<CourseCreatedConsumer>()
-                .Endpoint(e => e.Name = "course-created-purchases");
+                .Endpoint(e => e.Name = "course-created-certificates-purchases");
             x.AddConsumer<CourseUpdatedConsumer>()
                 .Endpoint(e => e.Name = "course-updated-purchases");
             x.AddConsumer<CourseCompletedConsumer>()

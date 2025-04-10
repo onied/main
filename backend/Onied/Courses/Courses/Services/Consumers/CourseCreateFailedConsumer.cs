@@ -8,7 +8,7 @@ public class CourseCreateFailedConsumer(ICourseRepository courseRepository, ILog
 {
     public async Task Consume(ConsumeContext<CourseCreateFailed> context)
     {
-        logger.LogWarning("Failed to create course with id {0}: {1}", context.Message.CourseId, context.Message.ErrorMessage);
-        await courseRepository.DeleteCourseAsync(context.Message.CourseId);
+        logger.LogWarning("Failed to create course with id {0}: {1}", context.Message.Id, context.Message.ErrorMessage);
+        await courseRepository.DeleteCourseAsync(context.Message.Id);
     }
 }

@@ -1,3 +1,3 @@
 ﻿namespace MassTransit.Data.Messages;
 
-public record CourseCreateFailed(int CourseId, string ErrorMessage);
+public record CourseCreateFailed(int Id, string ErrorMessage);
