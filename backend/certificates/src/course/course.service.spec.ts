@@ -4,10 +4,12 @@ import { Course } from "./course.entity";
 import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { User } from "../user/user.entity";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CourseService", () => {
   let service: CourseService;
   let repo: Repository<Course>;
+  let amqpConnection: AmqpConnection;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,11 +23,13 @@ describe("CourseService", () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        AmqpConnection,
       ],
     }).compile();
 
     service = module.get<CourseService>(CourseService);
     repo = module.get<Repository<Course>>(getRepositoryToken(Course));
+    amqpConnection = module.get<AmqpConnection>(AmqpConnection);
   });
 
   it("should be defined", () => {

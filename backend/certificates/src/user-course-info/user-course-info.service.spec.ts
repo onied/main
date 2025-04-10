@@ -11,12 +11,14 @@ import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
 import { of, throwError } from "rxjs";
 import { ForbiddenException } from "@nestjs/common";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
   let courseService: CourseService;
   let repo: Repository<UserCourseInfo>;
   let httpService: HttpService;
+  let amqpConnection: AmqpConnection;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,6 +50,7 @@ describe("UserCourseInfoService", () => {
               }),
           },
         },
+        AmqpConnection,
         {
           provide: ConfigService,
           useValue: {
@@ -63,6 +66,7 @@ describe("UserCourseInfoService", () => {
       getRepositoryToken(UserCourseInfo)
     );
     httpService = module.get<HttpService>(HttpService);
+    amqpConnection = module.get<AmqpConnection>(AmqpConnection);
   });
 
   it("should be defined", () => {
