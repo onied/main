@@ -39,7 +39,6 @@ public class CourseCreatedConsumer(
             purchase = await unitOfWork.Purchases.AddAsync(purchase, purchaseDetails);
             purchase.Token = tokenService.GetToken(purchase);
             await unitOfWork.Purchases.UpdateAsync(purchase);
-            throw new Exception();
             await unitOfWork.CommitTransactionAsync();
             await purchaseCreatedProducer.PublishAsync(purchase);
         }
