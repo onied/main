@@ -30,10 +30,14 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         return purchaseSaved.Entity;
     }
 
-    public async Task RemoveAsync(Purchase purchase)
+    public async Task RemoveAsyncById(int purchaseId)
     {
-        dbContext.Purchases.Remove(purchase);
-        await dbContext.SaveChangesAsync();
+        var purchase = await dbContext.Purchases.FirstOrDefaultAsync(p => p.Id == purchaseId);
+        if (purchase is not null)
+        {
+            dbContext.Purchases.Remove(purchase);
+            await dbContext.SaveChangesAsync();
+        }
     }
 
     public async Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal)

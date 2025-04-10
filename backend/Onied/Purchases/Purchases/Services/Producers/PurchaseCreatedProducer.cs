@@ -14,6 +14,7 @@ public class PurchaseCreatedProducer(
     public async Task PublishAsync(Purchase purchase)
     {
         var purchaseCreated = new PurchaseCreated(
+            purchase.Id,
             purchase.UserId,
             (PurchaseType)purchase.PurchaseDetails.PurchaseType,
             purchase.PurchaseDetails is CoursePurchaseDetails pd1

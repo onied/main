@@ -12,6 +12,7 @@ namespace Purchases.Services;
 public class PurchaseMakingService(
     IMapper mapper,
     IValidatePurchaseService validatePurchaseService,
+    IPurchaseUnitOfWork unitOfWork,
     IUserRepository userRepository,
     ICourseRepository courseRepository,
     ISubscriptionRepository subscriptionRepository,
@@ -48,11 +49,22 @@ public class PurchaseMakingService(
             PurchaseDate = DateTime.UtcNow
         };
 
-        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
-        purchase.Token = tokenService.GetToken(purchase);
-        await purchaseRepository.UpdateAsync(purchase);
-        await purchaseCreatedProducer.PublishAsync(purchase);
-        return Results.Ok();
+        try
+        {
+            await unitOfWork.BeginTransactionAsync();
+            purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+            purchase.Token = tokenService.GetToken(purchase);
+            await purchaseRepository.UpdateAsync(purchase);
+            await unitOfWork.CommitTransactionAsync();
+            await purchaseCreatedProducer.PublishAsync(purchase);
+            return Results.Ok();
+        }
+        catch
+        {
+            await unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
+
     }
 
     public async Task<IResult> GetCertificatePreparedPurchase(int courseId)
@@ -79,11 +91,21 @@ public class PurchaseMakingService(
             PurchaseDate = DateTime.UtcNow
         };
 
-        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
-        purchase.Token = tokenService.GetToken(purchase);
-        await purchaseRepository.UpdateAsync(purchase);
-        await purchaseCreatedProducer.PublishAsync(purchase);
-        return Results.Ok();
+        try
+        {
+            await unitOfWork.BeginTransactionAsync();
+            purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+            purchase.Token = tokenService.GetToken(purchase);
+            await purchaseRepository.UpdateAsync(purchase);
+            await unitOfWork.CommitTransactionAsync();
+            await purchaseCreatedProducer.PublishAsync(purchase);
+            return Results.Ok();
+        }
+        catch
+        {
+            await unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task<IResult> GetSubscriptionPreparedPurchase(int subscriptionId)
@@ -114,18 +136,28 @@ public class PurchaseMakingService(
             AutoRenewalEnabled = true
         };
 
-        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
-        purchase.Token = tokenService.GetToken(purchase);
-        await purchaseRepository.UpdateAsync(purchase);
-        await purchaseCreatedProducer.PublishAsync(purchase);
+        try
+        {
+            await unitOfWork.BeginTransactionAsync();
+            purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
+            purchase.Token = tokenService.GetToken(purchase);
+            await purchaseRepository.UpdateAsync(purchase);
+            await purchaseCreatedProducer.PublishAsync(purchase);
 
-        var user = (await userRepository.GetAsync(userId))!;
-        user.SubscriptionId = dto.SubscriptionId!.Value;
-        await userRepository.UpdateAsync(user);
-
-        var subscription = (await subscriptionRepository
-            .GetAsync(dto.SubscriptionId.Value))!;
-        await subscriptionChangedProducer.PublishAsync(subscription, userId);
-        return Results.Ok();
+            var user = (await userRepository.GetAsync(userId))!;
+            var oldSubscriptionId = user.SubscriptionId;
+            user.SubscriptionId = dto.SubscriptionId!.Value;
+            await userRepository.UpdateAsync(user);
+            await unitOfWork.CommitTransactionAsync();
+            var subscription = (await subscriptionRepository
+                .GetAsync(dto.SubscriptionId.Value))!;
+            await subscriptionChangedProducer.PublishAsync(subscription, userId, oldSubscriptionId, purchase.Id);
+            return Results.Ok();
+        }
+        catch
+        {
+            await unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 }

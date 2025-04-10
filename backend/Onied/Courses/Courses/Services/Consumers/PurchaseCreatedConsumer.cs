@@ -28,6 +28,15 @@ public class PurchaseCreatedConsumer(
             CourseId = context.Message.CourseId!.Value,
             Token = context.Message.Token
         };
-        await userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
+        try
+        {
+            await userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
+            await context.Publish(new PurchaseCreatedCourses(context.Message));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to add user course info");
+            await context.Publish(new PurchaseCreateFailed(context.Message.Id, context.Message.Token, ex.Message));
+        }
     }
 }

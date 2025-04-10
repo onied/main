@@ -44,7 +44,7 @@ public class CourseCreatedConsumer(
         }
         catch (Exception ex)
         {
-            logger.LogWarning("Failed to create course: {0}", ex.Message);
+            logger.LogError(ex, "Failed to create course");
             await unitOfWork.RollbackTransactionAsync();
             await context.Publish(new CourseCreateFailed(context.Message.Id, ex.Message));
         }

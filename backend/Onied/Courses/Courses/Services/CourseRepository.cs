@@ -184,7 +184,7 @@ public class CourseRepository(AppDbContext dbContext) : ICourseRepository
         }
     }
 
-    public async Task DeleteCourseAsync(int courseId)
+    public async Task RemoveAsyncById(int courseId)
     {
         var course = await dbContext.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
         if (course is not null)
