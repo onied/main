@@ -76,6 +76,7 @@ describe("UserCourseInfoService", () => {
   it("should return all available certificates", async () => {
     // Arrange
 
+    jest.spyOn(amqpConnection, "publish").mock;
     const author: User = {
       id: "70cd45d8-4dd1-4576-8f63-10afcfaf9b46",
       firstName: "asdf",

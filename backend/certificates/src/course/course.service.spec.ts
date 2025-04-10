@@ -39,6 +39,7 @@ describe("CourseService", () => {
   it("should return for findOne", async () => {
     // Arrange
 
+    jest.spyOn(amqpConnection, "publish").mock;
     const author: User = {
       id: "066c23b2-cabf-4a7f-a6cd-e2c8b9e92425",
       firstName: "Василий",
