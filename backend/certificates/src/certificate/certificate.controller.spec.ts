@@ -20,6 +20,7 @@ import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
 import { CqrsModule } from "@nestjs/cqrs";
 import { CommandHandlers, QueryHandlers } from "./certificate.module";
+import { RabbitModule } from "../common/brokers/rabbit.module";
 
 describe("CertificateController", () => {
   let controller: CertificateController;
@@ -27,7 +28,7 @@ describe("CertificateController", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CqrsModule],
+      imports: [CqrsModule, RabbitModule],
       controllers: [CertificateController],
       providers: [
         CertificateService,

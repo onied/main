@@ -9,9 +9,9 @@ namespace Courses.Services.Consumers;
 
 public class PurchaseCreatedConsumer(
     ILogger<PurchaseCreatedConsumer> logger,
-    IUserCourseInfoRepository userCourseInfoRepository) : IConsumer<PurchaseCreated>
+    IUserCourseInfoRepository userCourseInfoRepository) : IConsumer<PurchaseCreatedCourses>
 {
-    public async Task Consume(ConsumeContext<PurchaseCreated> context)
+    public async Task Consume(ConsumeContext<PurchaseCreatedCourses> context)
     {
         logger.LogInformation("Processing new PurchaseCreated");
         if (context.Message.PurchaseType is PurchaseType.Course)
@@ -20,7 +20,7 @@ public class PurchaseCreatedConsumer(
         }
     }
 
-    private async Task ConsumeCoursePurchase(ConsumeContext<PurchaseCreated> context)
+    private async Task ConsumeCoursePurchase(ConsumeContext<PurchaseCreatedCourses> context)
     {
         var userCourseInfo = new UserCourseInfo()
         {
@@ -31,7 +31,7 @@ public class PurchaseCreatedConsumer(
         try
         {
             await userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
-            await context.Publish(new PurchaseCreatedCourses(context.Message));
+            await context.Publish(context.Message);
         }
         catch (Exception ex)
         {
