@@ -22,7 +22,6 @@ import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
-import { CqrsModule } from "@nestjs/cqrs";
 import { RabbitModule } from "../common/brokers/rabbit.module";
 
 describe("CertificateService", () => {
