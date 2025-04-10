@@ -20,7 +20,7 @@ import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
 import { CqrsModule } from "@nestjs/cqrs";
 import { CommandHandlers, QueryHandlers } from "./certificate.module";
-import { RabbitModule } from "../common/brokers/rabbit.module";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateController", () => {
   let controller: CertificateController;
@@ -28,7 +28,7 @@ describe("CertificateController", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CqrsModule, RabbitModule],
+      imports: [CqrsModule],
       controllers: [CertificateController],
       providers: [
         CertificateService,
@@ -56,6 +56,12 @@ describe("CertificateController", () => {
           provide: HttpService,
           useValue: {
             get: jest.fn(),
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
         {

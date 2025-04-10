@@ -18,7 +18,6 @@ describe("UserCourseInfoService", () => {
   let courseService: CourseService;
   let repo: Repository<UserCourseInfo>;
   let httpService: HttpService;
-  let amqpConnection: AmqpConnection;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,7 +49,12 @@ describe("UserCourseInfoService", () => {
               }),
           },
         },
-        AmqpConnection,
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
+          },
+        },
         {
           provide: ConfigService,
           useValue: {
@@ -66,7 +70,6 @@ describe("UserCourseInfoService", () => {
       getRepositoryToken(UserCourseInfo)
     );
     httpService = module.get<HttpService>(HttpService);
-    amqpConnection = module.get<AmqpConnection>(AmqpConnection);
   });
 
   it("should be defined", () => {
@@ -76,7 +79,6 @@ describe("UserCourseInfoService", () => {
   it("should return all available certificates", async () => {
     // Arrange
 
-    jest.spyOn(amqpConnection, "publish").mock;
     const author: User = {
       id: "70cd45d8-4dd1-4576-8f63-10afcfaf9b46",
       firstName: "asdf",

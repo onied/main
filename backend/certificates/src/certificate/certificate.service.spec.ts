@@ -22,7 +22,7 @@ import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
-import { RabbitModule } from "../common/brokers/rabbit.module";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateService", () => {
   let service: CertificateService;
@@ -34,7 +34,6 @@ describe("CertificateService", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [RabbitModule],
       providers: [
         CertificateService,
         UserService,
@@ -67,6 +66,12 @@ describe("CertificateService", () => {
           provide: ConfigService,
           useValue: {
             get: () => "",
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
       ],
