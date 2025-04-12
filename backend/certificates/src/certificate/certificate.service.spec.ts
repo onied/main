@@ -22,6 +22,7 @@ import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateService", () => {
   let service: CertificateService;
@@ -65,6 +66,12 @@ describe("CertificateService", () => {
           provide: ConfigService,
           useValue: {
             get: () => "",
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
       ],

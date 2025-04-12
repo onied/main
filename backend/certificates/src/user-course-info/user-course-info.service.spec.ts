@@ -11,6 +11,7 @@ import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
 import { of, throwError } from "rxjs";
 import { ForbiddenException } from "@nestjs/common";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
@@ -46,6 +47,12 @@ describe("UserCourseInfoService", () => {
                 status: 200,
                 statusText: "OK",
               }),
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
         {

@@ -12,31 +12,41 @@ namespace Purchases.Services.Consumers;
 public class CourseCreatedConsumer(
     ILogger<CourseCreatedConsumer> logger,
     IMapper mapper,
-    ICourseRepository courseRepository,
-    IPurchaseRepository purchaseRepository,
+    IPurchaseUnitOfWork unitOfWork,
     IPurchaseTokenService tokenService,
-    IPurchaseCreatedProducer purchaseCreatedProducer) : IConsumer<CourseCreated>
+    IPurchaseCreatedProducer purchaseCreatedProducer) : IConsumer<CourseCreatedCertificates>
 {
-    public async Task Consume(ConsumeContext<CourseCreated> context)
+    public async Task Consume(ConsumeContext<CourseCreatedCertificates> context)
     {
-        var course = mapper.Map<Course>(context.Message);
-        logger.LogInformation("Trying to create course(id={courseId}) in database", course.Id);
-        await courseRepository.AddAsync(course);
-        logger.LogInformation("Created course(id={courseId}) in database", course.Id);
+        try
+        {
+            await unitOfWork.BeginTransactionAsync();
+            var course = mapper.Map<Course>(context.Message);
+            logger.LogInformation("Trying to create course(id={courseId}) in database", course.Id);
+            await unitOfWork.Courses.AddAsync(course);
+            logger.LogInformation("Created course(id={courseId}) in database", course.Id);
 
-        var purchase = new Purchase()
+            var purchase = new Purchase()
+            {
+                UserId = course.AuthorId,
+                Price = 0
+            };
+            var purchaseDetails = new CoursePurchaseDetails()
+            {
+                CourseId = course.Id,
+                PurchaseType = PurchaseType.Course
+            };
+            purchase = await unitOfWork.Purchases.AddAsync(purchase, purchaseDetails);
+            purchase.Token = tokenService.GetToken(purchase);
+            await unitOfWork.Purchases.UpdateAsync(purchase);
+            await unitOfWork.CommitTransactionAsync();
+            await purchaseCreatedProducer.PublishAsync(purchase);
+        }
+        catch (Exception ex)
         {
-            UserId = course.AuthorId,
-            Price = 0
-        };
-        var purchaseDetails = new CoursePurchaseDetails()
-        {
-            CourseId = course.Id,
-            PurchaseType = PurchaseType.Course
-        };
-        purchase = await purchaseRepository.AddAsync(purchase, purchaseDetails);
-        purchase.Token = tokenService.GetToken(purchase);
-        await purchaseRepository.UpdateAsync(purchase);
-        await purchaseCreatedProducer.PublishAsync(purchase);
+            logger.LogError(ex, "Failed to create course");
+            await unitOfWork.RollbackTransactionAsync();
+            await context.Publish(new CourseCreateFailed(context.Message.Id, ex.Message));
+        }
     }
 }

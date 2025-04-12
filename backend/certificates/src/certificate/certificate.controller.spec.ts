@@ -20,6 +20,7 @@ import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
 import { CqrsModule } from "@nestjs/cqrs";
 import { CommandHandlers, QueryHandlers } from "./certificate.module";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateController", () => {
   let controller: CertificateController;
@@ -55,6 +56,12 @@ describe("CertificateController", () => {
           provide: HttpService,
           useValue: {
             get: jest.fn(),
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
         {

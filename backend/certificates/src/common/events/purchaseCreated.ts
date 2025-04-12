@@ -6,6 +6,7 @@ export class PurchaseType {
 }
 
 export type PurchaseCreated = {
+  id: number;
   userId: string;
   purchaseType: number;
   courseId: number | null;

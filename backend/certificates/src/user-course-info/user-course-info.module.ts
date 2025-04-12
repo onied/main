@@ -6,6 +6,7 @@ import { UserModule } from "../user/user.module";
 import { CourseModule } from "../course/course.module";
 import { HttpModule } from "@nestjs/axios";
 import { ConfigModule } from "@nestjs/config";
+import { RabbitModule } from "../common/brokers/rabbit.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from "@nestjs/config";
     HttpModule,
     ConfigModule,
     CourseModule,
+    RabbitModule,
   ],
   providers: [UserCourseInfoService],
   exports: [UserCourseInfoService],

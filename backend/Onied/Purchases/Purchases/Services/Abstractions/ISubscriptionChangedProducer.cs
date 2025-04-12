@@ -4,5 +4,5 @@ namespace Purchases.Services.Abstractions;
 
 public interface ISubscriptionChangedProducer
 {
-    public Task PublishAsync(Subscription subscription, Guid userId);
+    public Task PublishAsync(Subscription subscription, Guid userId, int oldSubscriptionId, int purchaseId);
 }

@@ -1,8 +1,8 @@
-using MassTransit.Data.Enums;
+﻿using MassTransit.Data.Enums;
 
 namespace MassTransit.Data.Messages;
 
-public record PurchaseCreated(
+public record PurchaseCreatedCourses(
     int Id,
     Guid UserId,
     PurchaseType PurchaseType,
