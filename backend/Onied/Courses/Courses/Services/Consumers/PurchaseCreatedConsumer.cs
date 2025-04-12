@@ -9,9 +9,9 @@ namespace Courses.Services.Consumers;
 
 public class PurchaseCreatedConsumer(
     ILogger<PurchaseCreatedConsumer> logger,
-    IUserCourseInfoRepository userCourseInfoRepository) : IConsumer<PurchaseCreatedCourses>
+    IUserCourseInfoRepository userCourseInfoRepository) : IConsumer<PurchaseCreated>
 {
-    public async Task Consume(ConsumeContext<PurchaseCreatedCourses> context)
+    public async Task Consume(ConsumeContext<PurchaseCreated> context)
     {
         logger.LogInformation("Processing new PurchaseCreated");
         if (context.Message.PurchaseType is PurchaseType.Course)
@@ -20,18 +20,25 @@ public class PurchaseCreatedConsumer(
         }
     }
 
-    private async Task ConsumeCoursePurchase(ConsumeContext<PurchaseCreatedCourses> context)
+    private async Task ConsumeCoursePurchase(ConsumeContext<PurchaseCreated> context)
     {
+        var message = context.Message;
         var userCourseInfo = new UserCourseInfo()
         {
-            UserId = context.Message.UserId,
-            CourseId = context.Message.CourseId!.Value,
-            Token = context.Message.Token
+            UserId = message.UserId,
+            CourseId = message.CourseId!.Value,
+            Token = message.Token
         };
         try
         {
             await userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
-            await context.Publish(context.Message);
+            await context.Publish(new PurchaseCreatedCourses(
+                message.Id,
+                message.UserId,
+                message.PurchaseType,
+                message.CourseId,
+                message.SubscriptionId,
+                message.Token));
         }
         catch (Exception ex)
         {
