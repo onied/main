@@ -49,7 +49,6 @@ export class CourseService {
       const author = await this.userRepository.findOneBy({
         id: msg.message.authorId,
       });
-      throw new Error();
       course.author = author;
       await this.courseRepository.save(course);
     } catch (error) {
