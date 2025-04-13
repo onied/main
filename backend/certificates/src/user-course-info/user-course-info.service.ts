@@ -24,7 +24,7 @@ export class UserCourseInfoService {
     private userCourseInfoRepository: Repository<UserCourseInfo>,
     private courseService: CourseService,
     @Inject(AmqpConnection)
-    private readonly amqpConnection: AmqpConnection
+    private readonly amqpConnection: AmqpConnection,
     private readonly purchasesServiceClient: PurchasesServiceClient
   ) {}
 
