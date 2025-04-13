@@ -4,16 +4,18 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserCourseInfo } from "./user-course-info.entity";
 import { UserModule } from "../user/user.module";
 import { CourseModule } from "../course/course.module";
-import { ConfigService } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { GrpcTransport } from "@protobuf-ts/grpc-transport";
 import { ChannelCredentials } from "@grpc/grpc-js";
+import * as fs from "node:fs";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserCourseInfo]),
     UserModule,
     CourseModule,
+    ConfigModule,
   ],
   providers: [
     UserCourseInfoService,
@@ -22,7 +24,9 @@ import { ChannelCredentials } from "@grpc/grpc-js";
       useFactory: (configService: ConfigService) => {
         const transport = new GrpcTransport({
           host: configService.get<string>("PURCHASES_API_URL"),
-          channelCredentials: ChannelCredentials.createInsecure(),
+          channelCredentials: ChannelCredentials.createSsl(
+            fs.readFileSync("dotnet-dev-cert.pem")
+          ),
         });
 
         return new PurchasesServiceClient(transport);
