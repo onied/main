@@ -47,8 +47,8 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
             .FirstOrDefaultAsync(c => c.CourseId == courseId);
         if (purchaseDetails != null)
         {
-            var purchase = dbContext.Purchases.FirstOrDefault(p => p.Id == purchaseDetails.Id)!;
-            dbContext.Purchases.Remove(purchase);
+            var purchase = await dbContext.Purchases.FirstOrDefaultAsync(p => p.Id == purchaseDetails.Id);
+            dbContext.Purchases.Remove(purchase!);
             await dbContext.SaveChangesAsync();
         }
 
