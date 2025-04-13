@@ -40,6 +40,20 @@ public class PurchaseRepository(AppDbContext dbContext) : IPurchaseRepository
         }
     }
 
+    public async Task RemoveAsyncByCourseId(int courseId)
+    {
+        var purchaseDetails = await dbContext.CoursePurchaseDetails
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.CourseId == courseId);
+        if (purchaseDetails != null)
+        {
+            var purchase = dbContext.Purchases.FirstOrDefault(p => p.Id == purchaseDetails.Id)!;
+            dbContext.Purchases.Remove(purchase);
+            await dbContext.SaveChangesAsync();
+        }
+
+    }
+
     public async Task<bool> UpdateAutoRenewal(Guid userId, int subscriptionId, bool autoRenewal)
     {
         var purchaseSubscription = await dbContext.Purchases

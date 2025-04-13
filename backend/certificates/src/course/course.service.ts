@@ -51,18 +51,8 @@ export class CourseService {
       });
       course.author = author;
       await this.courseRepository.save(course);
-      await this.amqpConnection.publish(
-        "course-created-certificates-purchases",
-        "",
-        {
-          messageType: [
-            "urn:message:MassTransit.Data.Messages:CourseCreatedCertificates",
-          ],
-          message: msg.message,
-        }
-      );
     } catch (error) {
-      await this.amqpConnection.publish("course-create-failed-courses", "", {
+      const event = {
         messageType: [
           "urn:message:MassTransit.Data.Messages:CourseCreateFailed",
         ],
@@ -70,7 +60,17 @@ export class CourseService {
           id: msg.message.id,
           errorMessage: error.message,
         },
-      });
+      };
+      await this.amqpConnection.publish(
+        "course-create-failed-courses",
+        "",
+        event
+      );
+      await this.amqpConnection.publish(
+        "course-create-failed-purchases",
+        "",
+        event
+      );
     }
   }
 

@@ -7,12 +7,13 @@ import { ConfigModule } from "@nestjs/config";
     ConfigModule.forRoot(),
     RabbitMQModule.forRoot({
       uri: process.env.RABBITMQ_CONNECTION_STRING,
-      connectionInitOptions: { wait: false },
+      connectionInitOptions: { wait: true, timeout: 10000 },
       connectionManagerOptions: {
         connectionOptions: {
           clientProperties: {
             connection_name: "Certificates",
           },
+          timeout: 30000,
         },
       },
     }),

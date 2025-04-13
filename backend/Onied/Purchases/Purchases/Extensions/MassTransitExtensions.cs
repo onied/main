@@ -17,10 +17,13 @@ public static class MassTransitExtensions
             var configuration =
                 serviceCollection.BuildServiceProvider()
                     .GetService<IConfiguration>()!;
+
             x.AddConsumer<PurchaseCreateFailedConsumer>()
                 .Endpoint(e => e.Name = "purchase-create-failed-purchases");
+            x.AddConsumer<CourseCreateFailedConsumer>()
+                .Endpoint(e => e.Name = "course-create-failed-purchases");
             x.AddConsumer<CourseCreatedConsumer>()
-                .Endpoint(e => e.Name = "course-created-certificates-purchases");
+                .Endpoint(e => e.Name = "course-created-purchases");
             x.AddConsumer<CourseUpdatedConsumer>()
                 .Endpoint(e => e.Name = "course-updated-purchases");
             x.AddConsumer<CourseCompletedConsumer>()
