@@ -49,6 +49,7 @@ export class CourseService {
       const author = await this.userRepository.findOneBy({
         id: msg.message.authorId,
       });
+      throw new Error();
       course.author = author;
       await this.courseRepository.save(course);
     } catch (error) {
@@ -62,12 +63,7 @@ export class CourseService {
         },
       };
       await this.amqpConnection.publish(
-        "course-create-failed-courses",
-        "",
-        event
-      );
-      await this.amqpConnection.publish(
-        "course-create-failed-purchases",
+        "MassTransit.Data.Messages:CourseCreateFailed",
         "",
         event
       );

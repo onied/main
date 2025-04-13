@@ -79,12 +79,7 @@ export class UserCourseInfoService {
         },
       };
       await this.amqpConnection.publish(
-        "purchase-create-failed-purchases",
-        "",
-        event
-      );
-      await this.amqpConnection.publish(
-        "purchase-create-failed-courses",
+        "MassTransit.Data.Messages:PurchaseCreateFailed",
         "",
         event
       );
