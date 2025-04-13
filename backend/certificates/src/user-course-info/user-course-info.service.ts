@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserCourseInfo } from "./user-course-info.entity";
-import { RabbitSubscribe } from "@golevelup/nestjs-rabbitmq";
+import { AmqpConnection, RabbitSubscribe } from "@golevelup/nestjs-rabbitmq";
 import {
   PurchaseCreated,
   PurchaseType,
@@ -23,6 +23,8 @@ export class UserCourseInfoService {
     @InjectRepository(UserCourseInfo)
     private userCourseInfoRepository: Repository<UserCourseInfo>,
     private courseService: CourseService,
+    @Inject(AmqpConnection)
+    private readonly amqpConnection: AmqpConnection
     private readonly purchasesServiceClient: PurchasesServiceClient
   ) {}
 
@@ -50,12 +52,30 @@ export class UserCourseInfoService {
   }
 
   @RabbitSubscribe({
-    exchange: "MassTransit.Data.Messages:PurchaseCreated",
+    exchange: "MassTransit.Data.Messages:PurchaseCreatedCourses",
     routingKey: "",
-    queue: "purchase-created-certificates",
+    queue: "purchase-created-courses-certificates",
   })
   public async userCreatedHandler(msg: MassTransitWrapper<PurchaseCreated>) {
     if (msg.message.purchaseType !== PurchaseType.Course) return;
-    await this.userCourseInfoRepository.save(msg.message as UserCourseInfo);
+    try {
+      await this.userCourseInfoRepository.save(msg.message as UserCourseInfo);
+    } catch (error) {
+      const event = {
+        messageType: [
+          "urn:message:MassTransit.Data.Messages:PurchaseCreateFailed",
+        ],
+        message: {
+          id: msg.message.id,
+          token: msg.message.token,
+          errorMessage: error.message,
+        },
+      };
+      await this.amqpConnection.publish(
+        "MassTransit.Data.Messages:PurchaseCreateFailed",
+        "",
+        event
+      );
+    }
   }
 }

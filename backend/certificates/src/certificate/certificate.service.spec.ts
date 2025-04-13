@@ -24,6 +24,7 @@ import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
 import { VerificationOutcome } from "../grpc-generated/purchases";
 import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateService", () => {
   let service: CertificateService;
@@ -75,6 +76,12 @@ describe("CertificateService", () => {
           provide: ConfigService,
           useValue: {
             get: () => "",
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
       ],

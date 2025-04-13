@@ -14,6 +14,7 @@ import {
   VerificationOutcome,
   VerifyTokenReply,
 } from "../grpc-generated/purchases";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
@@ -44,6 +45,12 @@ describe("UserCourseInfoService", () => {
         {
           provide: getRepositoryToken(Course),
           useClass: Repository,
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
+          },
         },
         {
           provide: ConfigService,

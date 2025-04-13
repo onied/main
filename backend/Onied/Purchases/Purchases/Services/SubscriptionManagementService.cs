@@ -23,7 +23,7 @@ public class SubscriptionManagementService(
 
         var activeSubPurchase = user.Purchases
             .Single(
-                p => p.PurchaseDetails.PurchaseType is PurchaseType.Subscription
+                p => p.PurchaseDetails?.PurchaseType is PurchaseType.Subscription
                      && (p.PurchaseDetails as SubscriptionPurchaseDetails)!.SubscriptionId == user.SubscriptionId
                      && ((SubscriptionPurchaseDetails)p.PurchaseDetails).EndDate > DateTime.Today);
         var pd = (SubscriptionPurchaseDetails)activeSubPurchase.PurchaseDetails;

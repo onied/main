@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<ICourseUnitOfWork, CourseUnitOfWork>();
         serviceCollection.AddScoped<IUserTaskPointsRepository, UserTaskPointsRepository>();
         serviceCollection.AddScoped<IUserRepository, UserRepository>();
         serviceCollection.AddScoped<ICourseRepository, CourseRepository>();

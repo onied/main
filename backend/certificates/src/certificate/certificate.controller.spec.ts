@@ -22,6 +22,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { CommandHandlers, QueryHandlers } from "./certificate.module";
 import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { VerificationOutcome } from "../grpc-generated/purchases";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateController", () => {
   let controller: CertificateController;
@@ -65,6 +66,12 @@ describe("CertificateController", () => {
             verify: jest.fn().mockResolvedValue({
               verificationOutcome: VerificationOutcome.OK,
             }),
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
         {

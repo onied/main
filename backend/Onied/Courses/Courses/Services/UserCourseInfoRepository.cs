@@ -2,6 +2,7 @@ using Courses.Data;
 using Courses.Data.Models;
 using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Courses.Services;
 
@@ -43,5 +44,15 @@ public class UserCourseInfoRepository(AppDbContext dbContext) : IUserCourseInfoR
         dbContext.UserCourseInfos.Update(userCourseInfo);
         await dbContext.SaveChangesAsync();
         return true;
+    }
+
+    public async Task RemoveAsyncByToken(string token)
+    {
+        var userCourseInfo = await dbContext.UserCourseInfos.FirstOrDefaultAsync(x => x.Token == token);
+        if (userCourseInfo != null)
+        {
+            dbContext.UserCourseInfos.Remove(userCourseInfo);
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

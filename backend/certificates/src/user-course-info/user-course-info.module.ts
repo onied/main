@@ -9,12 +9,14 @@ import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { GrpcTransport } from "@protobuf-ts/grpc-transport";
 import { ChannelCredentials } from "@grpc/grpc-js";
 import * as fs from "node:fs";
+import { RabbitModule } from "../common/brokers/rabbit.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserCourseInfo]),
     UserModule,
     CourseModule,
+    RabbitModule,
     ConfigModule,
   ],
   providers: [

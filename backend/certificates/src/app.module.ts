@@ -5,8 +5,8 @@ import { UserModule } from "./user/user.module";
 import { OrderModule } from "./order/order.module";
 import { CourseModule } from "./course/course.module";
 import { CertificateModule } from "./certificate/certificate.module";
-import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { UserCourseInfoModule } from "./user-course-info/user-course-info.module";
+import { RabbitModule } from "./common/brokers/rabbit.module";
 
 @Module({
   imports: [
@@ -25,17 +25,7 @@ import { UserCourseInfoModule } from "./user-course-info/user-course-info.module
     OrderModule,
     CourseModule,
     CertificateModule,
-    RabbitMQModule.forRoot(RabbitMQModule, {
-      uri: process.env.RABBITMQ_CONNECTION_STRING,
-      connectionInitOptions: { wait: false },
-      connectionManagerOptions: {
-        connectionOptions: {
-          clientProperties: {
-            connection_name: "Certificates",
-          },
-        },
-      },
-    }),
+    RabbitModule,
     UserCourseInfoModule,
   ],
 })
