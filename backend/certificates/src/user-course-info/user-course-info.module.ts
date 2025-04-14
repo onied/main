@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { GrpcTransport } from "@protobuf-ts/grpc-transport";
 import { ChannelCredentials } from "@grpc/grpc-js";
-import * as fs from "node:fs";
 import { RabbitModule } from "../common/brokers/rabbit.module";
 
 @Module({
@@ -26,9 +25,9 @@ import { RabbitModule } from "../common/brokers/rabbit.module";
       useFactory: (configService: ConfigService) => {
         const transport = new GrpcTransport({
           host: configService.get<string>("PURCHASES_API_URL"),
-          channelCredentials: ChannelCredentials.createSsl(
-            fs.readFileSync("dotnet-dev-cert.pem")
-          ),
+          channelCredentials: ChannelCredentials.createSsl(null, null, null, {
+            checkServerIdentity: null,
+          }),
         });
 
         return new PurchasesServiceClient(transport);

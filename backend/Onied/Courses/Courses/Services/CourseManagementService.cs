@@ -52,9 +52,9 @@ public class CourseManagementService(
         if (userCourseInfo is null) return false;
         if (userCourseInfo.Course.PriceRubles == 0) return true;
 
-        var requestString = JsonSerializer.Serialize(new VerifyTokenRequest(userCourseInfo.Token!));
         var response =
-            await grpcPurchasesClient.VerifyAsync(new PurchasesGrpc.VerifyTokenRequest { Token = requestString });
+            await grpcPurchasesClient.VerifyAsync(new PurchasesGrpc.VerifyTokenRequest
+            { Token = userCourseInfo.Token });
 
         return response.VerificationOutcome is VerificationOutcome.Ok;
     }
