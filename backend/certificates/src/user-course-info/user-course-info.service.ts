@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserCourseInfo } from "./user-course-info.entity";
@@ -11,9 +11,11 @@ import { MassTransitWrapper } from "../common/events/massTransitWrapper";
 import { CourseService } from "../course/course.service";
 import { User } from "../user/user.entity";
 import { Course } from "../course/course.entity";
-import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
-import { catchError, firstValueFrom } from "rxjs";
+import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
+import {
+  VerificationOutcome,
+  VerifyTokenRequest,
+} from "../grpc-generated/purchases";
 
 @Injectable()
 export class UserCourseInfoService {
@@ -21,10 +23,9 @@ export class UserCourseInfoService {
     @InjectRepository(UserCourseInfo)
     private userCourseInfoRepository: Repository<UserCourseInfo>,
     private courseService: CourseService,
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
     @Inject(AmqpConnection)
-    private readonly amqpConnection: AmqpConnection
+    private readonly amqpConnection: AmqpConnection,
+    private readonly purchasesServiceClient: PurchasesServiceClient
   ) {}
 
   public async checkIfUserCanBuyCertificate(
@@ -36,19 +37,11 @@ export class UserCourseInfoService {
       courseId: course.id,
     });
     if (completed === null) return false; // User has not completed the course yet
-    const response = await firstValueFrom(
-      this.httpService
-        .post(this.configService.get<string>("PURCHASES_API_URL"), {
-          token: completed.token,
-        })
-        .pipe(
-          catchError((error) => {
-            console.error(error);
-            throw new ForbiddenException();
-          })
-        )
-    );
-    return response.status == 200;
+
+    const request: VerifyTokenRequest = { token: completed.token };
+    const reply = await this.purchasesServiceClient.verify(request);
+
+    return reply.response.verificationOutcome === VerificationOutcome.OK;
   }
 
   public async getAllAvailableCertificates(user: User) {

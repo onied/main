@@ -37,6 +37,13 @@ export class CertificateService {
     const course = await this.courseService.findOne(courseId);
     if (course === null || !course.hasCertificates)
       throw new NotFoundException();
+    if (
+      !(await this.userCourseInfoService.checkIfUserCanBuyCertificate(
+        user,
+        course
+      ))
+    )
+      throw new ForbiddenException();
     return {
       price: 1000,
       course: {

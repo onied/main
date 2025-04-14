@@ -20,6 +20,8 @@ import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
 import { CqrsModule } from "@nestjs/cqrs";
 import { CommandHandlers, QueryHandlers } from "./certificate.module";
+import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
+import { VerificationOutcome } from "../grpc-generated/purchases";
 import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateController", () => {
@@ -56,6 +58,14 @@ describe("CertificateController", () => {
           provide: HttpService,
           useValue: {
             get: jest.fn(),
+          },
+        },
+        {
+          provide: PurchasesServiceClient,
+          useValue: {
+            verify: jest.fn().mockResolvedValue({
+              verificationOutcome: VerificationOutcome.OK,
+            }),
           },
         },
         {

@@ -1,10 +1,14 @@
-﻿using System.Net;
+﻿using AutoMapper;
 using Courses.Data.Models;
 using Courses.Dtos;
+using Courses.Profiles;
 using Courses.Services;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseUpdatedProducer;
+using Google.Protobuf;
+using Grpc.Core;
 using Moq;
+using PurchasesGrpc;
 using Tests.Courses.Helpers;
 using Task = System.Threading.Tasks.Task;
 
@@ -12,19 +16,29 @@ namespace Tests.Courses.UnitTests.ServiceTests;
 
 public class SubscriptionManagementServiceTests
 {
-    private readonly Mock<IHttpClientFactory> _httpClientFactory = new();
-    private readonly Mock<IUserRepository> _userRepository = new();
     private readonly Mock<ICourseRepository> _courseRepository = new();
     private readonly Mock<ICourseUpdatedProducer> _courseUpdatedProducer = new();
+
+    private readonly SubscriptionRequestDto _genericSubscription = new()
+    {
+        AdsEnabled = false, CertificatesEnabled = false, CourseCreatingEnabled = false,
+        CoursesHighlightingEnabled = false, Price = 0, Id = 1, Title = "Generic Subscription"
+    };
+
+    private readonly Mock<SubscriptionService.SubscriptionServiceClient> _grpcClient = new();
+
+    private readonly IMapper _mapper =
+        new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AppMappingProfile())));
+
     private readonly SubscriptionManagementService _service;
+    private readonly Mock<IUserRepository> _userRepository = new();
 
     public SubscriptionManagementServiceTests()
     {
         _service = new SubscriptionManagementService(
-            _httpClientFactory.Object,
             _userRepository.Object,
             _courseRepository.Object,
-            _courseUpdatedProducer.Object);
+            _courseUpdatedProducer.Object, _grpcClient.Object, _mapper);
     }
 
     [Fact]
@@ -32,12 +46,12 @@ public class SubscriptionManagementServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var subscription = new SubscriptionRequestDto { CertificatesEnabled = true };
+        _genericSubscription.CertificatesEnabled = true;
 
         _userRepository.Setup(repo => repo.GetUserWithTeachingCoursesAsync(userId))
             .ReturnsAsync(new User());
 
-        SetupHttpClient(subscription);
+        SetupGrpcClient(_genericSubscription);
 
         // Act
         var result = await _service.VerifyGivingCertificatesAsync(userId);
@@ -51,12 +65,11 @@ public class SubscriptionManagementServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var subscription = new SubscriptionRequestDto { CertificatesEnabled = false };
 
         _userRepository.Setup(repo => repo.GetUserWithTeachingCoursesAsync(userId))
             .ReturnsAsync(new User());
 
-        SetupHttpClient(subscription);
+        SetupGrpcClient(_genericSubscription);
 
         // Act
         var result = await _service.VerifyGivingCertificatesAsync(userId);
@@ -70,12 +83,12 @@ public class SubscriptionManagementServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var subscription = new SubscriptionRequestDto { CourseCreatingEnabled = true };
+        _genericSubscription.CourseCreatingEnabled = true;
 
         _userRepository.Setup(repo => repo.GetUserWithTeachingCoursesAsync(userId))
             .ReturnsAsync(new User());
 
-        SetupHttpClient(subscription);
+        SetupGrpcClient(_genericSubscription);
 
         // Act
         var result = await _service.VerifyCreatingCoursesAsync(userId);
@@ -89,12 +102,11 @@ public class SubscriptionManagementServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var subscription = new SubscriptionRequestDto { CourseCreatingEnabled = false };
 
         _userRepository.Setup(repo => repo.GetUserWithTeachingCoursesAsync(userId))
             .ReturnsAsync(new User());
 
-        SetupHttpClient(subscription);
+        SetupGrpcClient(_genericSubscription);
 
         // Act
         var result = await _service.VerifyCreatingCoursesAsync(userId);
@@ -167,9 +179,8 @@ public class SubscriptionManagementServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var subscription = new SubscriptionRequestDto();
 
-        SetupHttpClient(subscription);
+        SetupGrpcClient(_genericSubscription);
 
         // Act
         var result = await _service.GetSubscriptionAsync(userId);
@@ -184,11 +195,10 @@ public class SubscriptionManagementServiceTests
         // Arrange
         var userId = Guid.NewGuid();
 
-        var client = new HttpClient(new MockHttpMessageHandler(HttpStatusCode.BadRequest));
-        client.BaseAddress = new UriBuilder().Uri;
-
-        _httpClientFactory.Setup(f => f.CreateClient(It.IsAny<string>()))
-            .Returns(client);
+        _grpcClient.Setup(client =>
+            client.GetActiveSubscriptionAsync(
+                new GetActiveSubscriptionRequest { UserId = ByteString.CopyFrom(userId.ToByteArray()) }, null, null,
+                CancellationToken.None)).Throws(new RpcException(new Status(StatusCode.NotFound, "User not found.")));
 
         // Act
         var result = await _service.GetSubscriptionAsync(userId);
@@ -197,11 +207,20 @@ public class SubscriptionManagementServiceTests
         Assert.Null(result);
     }
 
-    private void SetupHttpClient(SubscriptionRequestDto subscription)
+    private void SetupGrpcClient(SubscriptionRequestDto subscription)
     {
-        var client = new HttpClient(new MockHttpMessageHandler(HttpStatusCode.OK, subscription));
-        client.BaseAddress = new UriBuilder().Uri;
-        _httpClientFactory.Setup(f => f.CreateClient(It.IsAny<string>()))
-            .Returns(client);
+        var mockCall = CallHelpers.CreateAsyncUnaryCall(new GetActiveSubscriptionReply
+        {
+            Id = subscription.Id,
+            Title = subscription.Title,
+            CoursesHighlightingEnabled = subscription.CoursesHighlightingEnabled, AdsEnabled = subscription.AdsEnabled,
+            CertificatesEnabled = subscription.CertificatesEnabled,
+            CourseCreatingEnabled = subscription.CourseCreatingEnabled, Price = subscription.Price
+        });
+
+        _grpcClient.Setup(client =>
+                client.GetActiveSubscriptionAsync(It.IsAny<GetActiveSubscriptionRequest>(), null, null,
+                    CancellationToken.None))
+            .Returns(mockCall);
     }
 }

@@ -8,28 +8,35 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.1" />
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12" />
-        <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0" />
-        <PackageReference Include="JWT" Version="10.1.1" />
-        <PackageReference Include="MediatR" Version="12.4.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
+        <PackageReference Include="AutoMapper" Version="13.0.1"/>
+        <PackageReference Include="Google.Protobuf" Version="3.30.2"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.70.0"/>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12"/>
+        <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0"/>
+        <PackageReference Include="JWT" Version="10.1.1"/>
+        <PackageReference Include="MediatR" Version="12.4.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\MassTransit.Data\MassTransit.Data.csproj" />
-      <ProjectReference Include="..\Purchases.Data\Purchases.Data.csproj" />
+        <ProjectReference Include="..\..\MassTransit.Data\MassTransit.Data.csproj"/>
+        <ProjectReference Include="..\..\Shared\Shared.csproj"/>
+        <ProjectReference Include="..\Purchases.Data\Purchases.Data.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\..\Protos\purchases.proto" GrpcService="Server"/>
     </ItemGroup>
 
     <ItemGroup>
         <Content Include="..\..\.dockerignore">
-          <Link>.dockerignore</Link>
+            <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
 

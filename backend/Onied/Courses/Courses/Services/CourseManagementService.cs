@@ -1,36 +1,30 @@
-using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Courses.Data.Models;
-using Courses.Dtos.Course.Request;
 using Courses.Dtos.Course.Response;
 using Courses.Dtos.EditCourse.Request;
 using Courses.Dtos.Moderator.Response;
-using Courses.Enums;
-using Courses.Extensions;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseUpdatedProducer;
+using PurchasesGrpc;
 using Shared;
+using VerifyTokenRequest = Courses.Dtos.Course.Request.VerifyTokenRequest;
 
 namespace Courses.Services;
 
 public class CourseManagementService(
     ICourseRepository courseRepository,
     IUserCourseInfoRepository userCourseInfoRepository,
-    IHttpClientFactory httpClientFactory,
     IBlockRepository blockRepository,
     IUpdateTasksBlockService updateTasksBlockService,
     IModuleRepository moduleRepository,
     ICategoryRepository categoryRepository,
     ICourseUpdatedProducer courseUpdatedProducer,
     ISubscriptionManagementService subscriptionManagementService,
-    IMapper mapper) : ICourseManagementService
+    IMapper mapper,
+    PurchasesService.PurchasesServiceClient grpcPurchasesClient) : ICourseManagementService
 {
-    public HttpClient PurchasesServerApiClient
-        => httpClientFactory.CreateClient(ServerApiConfig.PurchasesServer.GetStringValue()!);
-
     public async Task<IResult> CheckCourseAuthorAsync(int courseId,
         string? userId, string? role)
     {
@@ -58,13 +52,11 @@ public class CourseManagementService(
         if (userCourseInfo is null) return false;
         if (userCourseInfo.Course.PriceRubles == 0) return true;
 
-        var requestString = JsonSerializer.Serialize(new VerifyTokenRequest(userCourseInfo.Token!));
         var response =
-            await PurchasesServerApiClient.PostAsync(
-                string.Empty,
-                new StringContent(requestString, Encoding.UTF8, "application/json"));
+            await grpcPurchasesClient.VerifyAsync(new PurchasesGrpc.VerifyTokenRequest
+            { Token = userCourseInfo.Token });
 
-        return response.StatusCode is HttpStatusCode.OK;
+        return response.VerificationOutcome is VerificationOutcome.Ok;
     }
 
     public async Task<IResult> GetStudents(int courseId, Guid authorId)
@@ -158,7 +150,6 @@ public class CourseManagementService(
         int id,
         RenameBlockRequest renameBlockRequest)
     {
-
         if (!await blockRepository.RenameBlockAsync(
                 renameBlockRequest.BlockId, renameBlockRequest.Title))
             return Results.NotFound();
@@ -267,5 +258,4 @@ public class CourseManagementService(
         await courseUpdatedProducer.PublishAsync(course);
         return Results.Ok(mapper.Map<PreviewResponse>(course));
     }
-
 }

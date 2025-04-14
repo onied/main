@@ -7,19 +7,28 @@ import { UserService } from "../user/user.service";
 import { CourseService } from "../course/course.service";
 import { User } from "../user/user.entity";
 import { Course } from "../course/course.entity";
-import { HttpService } from "@nestjs/axios";
+import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
 import { ConfigService } from "@nestjs/config";
-import { of, throwError } from "rxjs";
 import { ForbiddenException } from "@nestjs/common";
+import {
+  VerificationOutcome,
+  VerifyTokenReply,
+} from "../grpc-generated/purchases";
 import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("UserCourseInfoService", () => {
   let service: UserCourseInfoService;
   let courseService: CourseService;
   let repo: Repository<UserCourseInfo>;
-  let httpService: HttpService;
+  let purchasesServiceClient: jest.Mocked<PurchasesServiceClient>;
 
   beforeEach(async () => {
+    const purchasesClientMock = {
+      verify: jest.fn().mockResolvedValue({
+        verificationOutcome: VerificationOutcome.OK,
+      } as VerifyTokenReply),
+    } as unknown as jest.Mocked<PurchasesServiceClient>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserCourseInfoService,
@@ -38,18 +47,6 @@ describe("UserCourseInfoService", () => {
           useClass: Repository,
         },
         {
-          provide: HttpService,
-          useValue: {
-            post: () =>
-              of({
-                data: {},
-                headers: {},
-                status: 200,
-                statusText: "OK",
-              }),
-          },
-        },
-        {
           provide: AmqpConnection,
           useValue: {
             publish: jest.fn(),
@@ -58,8 +55,12 @@ describe("UserCourseInfoService", () => {
         {
           provide: ConfigService,
           useValue: {
-            get: () => "",
+            get: jest.fn().mockReturnValue(""),
           },
+        },
+        {
+          provide: PurchasesServiceClient,
+          useValue: purchasesClientMock,
         },
       ],
     }).compile();
@@ -69,7 +70,8 @@ describe("UserCourseInfoService", () => {
     repo = module.get<Repository<UserCourseInfo>>(
       getRepositoryToken(UserCourseInfo)
     );
-    httpService = module.get<HttpService>(HttpService);
+
+    purchasesServiceClient = purchasesClientMock;
   });
 
   it("should be defined", () => {
@@ -183,6 +185,10 @@ describe("UserCourseInfoService", () => {
       })
     );
 
+    (purchasesServiceClient.verify as jest.Mock).mockResolvedValueOnce({
+      response: { verificationOutcome: VerificationOutcome.OK },
+    });
+
     // Act
 
     const result = await service.checkIfUserCanBuyCertificate(user, course);
@@ -262,8 +268,10 @@ describe("UserCourseInfoService", () => {
         token: "",
       })
     );
-    jest.spyOn(httpService, "post").mockReturnValueOnce(throwError(() => {}));
 
+    (purchasesServiceClient.verify as jest.Mock).mockResolvedValueOnce({
+      response: { verificationOutcome: VerificationOutcome.FORBID },
+    });
     // Act
 
     try {
