@@ -223,6 +223,9 @@ describe("CertificateService", () => {
 
       jest.spyOn(userService, "findOne").mockResolvedValueOnce(user);
       jest.spyOn(courseService, "findOne").mockResolvedValueOnce(course);
+      jest
+        .spyOn(userCourseInfoService, "checkIfUserCanBuyCertificate")
+        .mockResolvedValueOnce(true);
 
       // Act
       const promise = service.getCertificatePreview(user.id, course.id);
