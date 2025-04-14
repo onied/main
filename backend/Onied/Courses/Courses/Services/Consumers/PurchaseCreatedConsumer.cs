@@ -22,12 +22,28 @@ public class PurchaseCreatedConsumer(
 
     private async Task ConsumeCoursePurchase(ConsumeContext<PurchaseCreated> context)
     {
+        var message = context.Message;
         var userCourseInfo = new UserCourseInfo()
         {
-            UserId = context.Message.UserId,
-            CourseId = context.Message.CourseId!.Value,
-            Token = context.Message.Token
+            UserId = message.UserId,
+            CourseId = message.CourseId!.Value,
+            Token = message.Token
         };
-        await userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
+        try
+        {
+            await userCourseInfoRepository.AddUserCourseInfoAsync(userCourseInfo);
+            await context.Publish(new PurchaseCreatedCourses(
+                message.Id,
+                message.UserId,
+                message.PurchaseType,
+                message.CourseId,
+                message.SubscriptionId,
+                message.Token));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to add user course info");
+            await context.Publish(new PurchaseCreateFailed(context.Message.Id, context.Message.Token, ex.Message));
+        }
     }
 }

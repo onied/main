@@ -18,6 +18,7 @@ public class PurchaseMakingServiceTests
 {
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<IValidatePurchaseService> _mockValidatePurchaseService;
+    private readonly Mock<IPurchaseUnitOfWork> _mockPurchaseUnitOfWork;
     private readonly Mock<ICourseRepository> _mockCourseRepository;
     private readonly Mock<ISubscriptionRepository> _mockSubscriptionRepository;
     private readonly Mock<IPurchaseRepository> _mockPurchaseRepository;
@@ -29,6 +30,7 @@ public class PurchaseMakingServiceTests
     {
         _mockMapper = new Mock<IMapper>();
         _mockValidatePurchaseService = new Mock<IValidatePurchaseService>();
+        _mockPurchaseUnitOfWork = new Mock<IPurchaseUnitOfWork>();
         Mock<IUserRepository> mockUserRepository = new();
         _mockCourseRepository = new Mock<ICourseRepository>();
         _mockSubscriptionRepository = new Mock<ISubscriptionRepository>();
@@ -39,6 +41,7 @@ public class PurchaseMakingServiceTests
         _purchaseMakingService = new PurchaseMakingService(
             _mockMapper.Object,
             _mockValidatePurchaseService.Object,
+            _mockPurchaseUnitOfWork.Object,
             mockUserRepository.Object,
             _mockCourseRepository.Object,
             _mockSubscriptionRepository.Object,

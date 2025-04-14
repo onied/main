@@ -11,10 +11,12 @@ public class SubscriptionChangedProducer(
     IMapper mapper,
     IPublishEndpoint publishEndpoint) : ISubscriptionChangedProducer
 {
-    public async Task PublishAsync(Subscription subscription, Guid userId)
+    public async Task PublishAsync(Subscription subscription, Guid userId, int oldSubscriptionId, int purchaseId)
     {
         var subscriptionChanged = mapper.Map<SubscriptionChanged>(subscription);
         subscriptionChanged.UserId = userId;
+        subscriptionChanged.OldSubscriptionId = oldSubscriptionId;
+        subscriptionChanged.PurchaseId = purchaseId;
         await publishEndpoint.Publish(subscriptionChanged);
     }
 }

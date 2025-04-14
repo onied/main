@@ -1,18 +1,19 @@
-using System.Net;
-using System.Text.Json;
+using AutoMapper;
 using Courses.Dtos;
-using Courses.Enums;
-using Courses.Extensions;
 using Courses.Services.Abstractions;
 using Courses.Services.Producers.CourseUpdatedProducer;
+using Google.Protobuf;
+using Grpc.Core;
+using PurchasesGrpc;
 
 namespace Courses.Services;
 
 public class SubscriptionManagementService(
-    IHttpClientFactory httpClientFactory,
     IUserRepository userRepository,
     ICourseRepository courseRepository,
-    ICourseUpdatedProducer courseUpdatedProducer
+    ICourseUpdatedProducer courseUpdatedProducer,
+    SubscriptionService.SubscriptionServiceClient grpcPurchasesClient,
+    IMapper mapper
 ) : ISubscriptionManagementService
 {
     public async Task<bool> VerifyGivingCertificatesAsync(Guid userId)
@@ -54,20 +55,17 @@ public class SubscriptionManagementService(
 
     public async Task<SubscriptionRequestDto?> GetSubscriptionAsync(Guid userId)
     {
-        using var client = SubscriptionsServerApiClient();
-        var response = await client.GetAsync($"?userId={userId}");
-
-        if (response.StatusCode is not HttpStatusCode.OK) return null;
-        var options = new JsonSerializerOptions
+        try
         {
-            PropertyNameCaseInsensitive = true
-        };
-        return await JsonSerializer
-            .DeserializeAsync<SubscriptionRequestDto>(
-                await response.Content.ReadAsStreamAsync(), options);
-    }
+            var subscription =
+                await grpcPurchasesClient.GetActiveSubscriptionAsync(new GetActiveSubscriptionRequest
+                    { UserId = ByteString.CopyFrom(userId.ToByteArray()) });
 
-    private HttpClient SubscriptionsServerApiClient()
-        => httpClientFactory.CreateClient(
-            ServerApiConfig.SubscriptionsServer.GetStringValue()!);
+            return mapper.Map<SubscriptionRequestDto>(subscription);
+        }
+        catch (RpcException)
+        {
+            return null;
+        }
+    }
 }

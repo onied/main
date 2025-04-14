@@ -1,5 +1,6 @@
 using AutoMapper;
 using Courses.Data.Models;
+using Courses.Dtos;
 using Courses.Dtos.Catalog.Response;
 using Courses.Dtos.CheckTasks.Response;
 using Courses.Dtos.Course.Response;
@@ -9,6 +10,7 @@ using Courses.Dtos.Moderator.Response;
 using Courses.Profiles.Converters;
 using Courses.Profiles.Resolvers;
 using MassTransit.Data.Messages;
+using PurchasesGrpc;
 using BlockResponse = Courses.Dtos.Course.Response.BlockResponse;
 using CourseResponse = Courses.Dtos.Course.Response.CourseResponse;
 using ModuleResponse = Courses.Dtos.Course.Response.ModuleResponse;
@@ -49,7 +51,8 @@ public class AppMappingProfile : Profile
         CreateMap<TaskVariant, EditAnswersRequest>();
         CreateMap<TaskTextInputAnswer, EditAnswersRequest>();
 
-        CreateMap<Course, CourseCardResponse>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceRubles));
+        CreateMap<Course, CourseCardResponse>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceRubles));
         CreateMap<UserTaskPoints, UserTaskPointsResponse>();
         CreateMap<EditCourseRequest, Course>()
             .ForMember(dest => dest.PriceRubles, opt => opt.MapFrom(src => src.Price)).ReverseMap();
@@ -95,6 +98,10 @@ public class AppMappingProfile : Profile
         CreateMap<User, StudentResponse>()
             .ForMember(dest => dest.StudentId,
                 opt => opt.MapFrom(src => src.Id));
+
+        CreateMap<GetActiveSubscriptionReply, SubscriptionRequestDto>()
+            .ForMember(dest => dest.Price,
+                opt => opt.MapFrom(src => (decimal)src.Price));
 
         //MassTransit
         CreateMap<UserCreated, User>();

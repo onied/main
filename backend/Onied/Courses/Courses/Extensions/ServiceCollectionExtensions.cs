@@ -3,6 +3,7 @@ using Courses.Profiles.Converters;
 using Courses.Services;
 using Courses.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using PurchasesGrpc;
 
 namespace Courses.Extensions;
 
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<ICourseUnitOfWork, CourseUnitOfWork>();
         serviceCollection.AddScoped<IUserTaskPointsRepository, UserTaskPointsRepository>();
         serviceCollection.AddScoped<IUserRepository, UserRepository>();
         serviceCollection.AddScoped<ICourseRepository, CourseRepository>();
@@ -34,20 +36,21 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
         serviceCollection.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
         serviceCollection.AddScoped<IModuleRepository, ModuleRepository>();
-        return serviceCollection.AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
+        return serviceCollection
+            .AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
     }
 
-    public static IHttpClientBuilder AddHttpClient(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IHttpClientBuilder AddGrpcClients(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
     {
-        return serviceCollection.AddHttpClient("PurchasesServer", config =>
-        {
-            config.BaseAddress = new Uri(configuration["PurchasesServerApi"]!);
-            config.Timeout = new TimeSpan(0, 0, 30);
-            config.DefaultRequestHeaders.Clear();
-        });
+        serviceCollection.AddGrpcClient<PurchasesService.PurchasesServiceClient>(options =>
+            options.Address = new Uri(configuration["PurchasesGrpcAddress"]!));
+        return serviceCollection.AddGrpcClient<SubscriptionService.SubscriptionServiceClient>(options =>
+            options.Address = new Uri(configuration["PurchasesGrpcAddress"]!));
     }
 
-    public static IServiceCollection AddDbContext(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IServiceCollection AddDbContext(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
     {
         return serviceCollection.AddDbContext<AppDbContext>(optionsBuilder =>
             optionsBuilder.UseNpgsql(configuration.GetConnectionString("CoursesDatabase"))

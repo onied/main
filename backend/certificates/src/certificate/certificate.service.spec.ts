@@ -22,6 +22,9 @@ import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
 import { OrderRequest } from "./dto/request/orderRequest";
 import { OrderIdResponse } from "./dto/response/orderIdResponse";
+import { VerificationOutcome } from "../grpc-generated/purchases";
+import { PurchasesServiceClient } from "../grpc-generated/purchases.client";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CertificateService", () => {
   let service: CertificateService;
@@ -62,9 +65,23 @@ describe("CertificateService", () => {
           },
         },
         {
+          provide: PurchasesServiceClient,
+          useValue: {
+            verify: jest.fn().mockResolvedValue({
+              verificationOutcome: VerificationOutcome.OK,
+            }),
+          },
+        },
+        {
           provide: ConfigService,
           useValue: {
             get: () => "",
+          },
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
           },
         },
       ],
@@ -206,6 +223,9 @@ describe("CertificateService", () => {
 
       jest.spyOn(userService, "findOne").mockResolvedValueOnce(user);
       jest.spyOn(courseService, "findOne").mockResolvedValueOnce(course);
+      jest
+        .spyOn(userCourseInfoService, "checkIfUserCanBuyCertificate")
+        .mockResolvedValueOnce(true);
 
       // Act
       const promise = service.getCertificatePreview(user.id, course.id);

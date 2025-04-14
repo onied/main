@@ -4,6 +4,7 @@ import { Course } from "./course.entity";
 import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { User } from "../user/user.entity";
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 describe("CourseService", () => {
   let service: CourseService;
@@ -20,6 +21,12 @@ describe("CourseService", () => {
         {
           provide: getRepositoryToken(User),
           useClass: Repository,
+        },
+        {
+          provide: AmqpConnection,
+          useValue: {
+            publish: jest.fn(),
+          },
         },
       ],
     }).compile();

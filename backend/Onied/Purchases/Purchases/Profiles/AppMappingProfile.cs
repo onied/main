@@ -5,6 +5,7 @@ using Purchases.Data.Models.PurchaseDetails;
 using Purchases.Dtos;
 using Purchases.Dtos.Requests;
 using Purchases.Dtos.Responses;
+using PurchasesGrpc;
 
 namespace Purchases.Profiles;
 
@@ -28,6 +29,12 @@ public class AppMappingProfile : Profile
             .ForMember(
                 dest => dest.CourseCreatingEnabled,
                 opt => opt.MapFrom(src => src.ActiveCoursesNumber != 0));
+
+        CreateMap<Subscription, GetActiveSubscriptionReply>()
+            .ForMember(dest => dest.CourseCreatingEnabled,
+                opt => opt.MapFrom(src => src.ActiveCoursesNumber != 0))
+            .ForMember(dest => dest.Price,
+                opt => opt.MapFrom(src => (DecimalValue.DecimalValue)src.Price));
 
         CreateMap<SubscriptionPurchaseDetails, PurchaseDetailsDto>();
 
