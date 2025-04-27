@@ -24,7 +24,7 @@ class _CoursePageState extends State<CoursePage> {
         'index': 0,
         'blocks': [
           {'id': 1, 'title': 'Заголовок блока с конспектом', 'blockType': 1, 'index': 0, 'markdownText': 'Рыба текст', 'fileName': 'Название файла', 'fileHref': 'fdsfasd'},
-          {'id': 2, 'title': 'Заголовок блока с видео', 'blockType': 2, 'index': 1, 'href': 'https://rutube.ru/play/embed/80185da4f898f4b9ecfb81c1a535b9e1/'},
+          {'id': 2, 'title': 'Заголовок блока с видео', 'blockType': 2, 'index': 1, 'href': 'https://rutube.ru/video/80185da4f898f4b9ecfb81c1a535b9e1'},
           {'id': 3, 'title': 'Заголовок блока с заданиями', 'blockType': 3, 'index': 2,
             'tasks': [
               {'id': 0, 'title': 'Чипи чипи чапа чапа дуби дуби даба даба?', 'isDone': false, 'taskType': 0, 'maxPoints': 10,
@@ -55,7 +55,7 @@ class _CoursePageState extends State<CoursePage> {
         'index': 0,
         'blocks': [
           {'id': 4, 'title': 'Заголовок блока с конспектом', 'blockType': 1, 'index': 0},
-          {'id': 5, 'title': 'Заголовок блока с виде', 'blockType': 2, 'index': 1, 'href': ''},
+          {'id': 5, 'title': 'Заголовок блока с виде', 'blockType': 2, 'index': 1, 'href': 'https://vkvideo.ru/video-48265019_456243841'},
           {'id': 6, 'title': 'Заголовок блока с заданиями', 'blockType': 3, 'index': 2},
         ],
       },

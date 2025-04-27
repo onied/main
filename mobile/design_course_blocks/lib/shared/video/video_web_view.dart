@@ -1,3 +1,8 @@
+import 'package:collection/collection.dart';
+import 'package:design_course_blocks/shared/video/providers/rutube_video_provider.dart';
+import 'package:design_course_blocks/shared/video/providers/video_provider.dart';
+import 'package:design_course_blocks/shared/video/providers/vk_video_provider.dart';
+import 'package:design_course_blocks/shared/video/providers/youtube_video_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -11,8 +16,9 @@ class VideoWebView extends StatefulWidget {
 }
 
 class _VideoWebViewState extends State<VideoWebView> {
-  late final WebViewController _controller;
+  late WebViewController _controller;
   bool _hasError = false;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -32,25 +38,40 @@ class _VideoWebViewState extends State<VideoWebView> {
   }
 
   Future<void> _initializeController(String videoUrl) async {
-    final Uri? parsedUrl = Uri.tryParse(videoUrl);
-    if (parsedUrl == null || !parsedUrl.hasScheme) {
+    try {
+      final provider = embedElements.firstWhereOrNull(
+        (provider) => provider.regex.hasMatch(videoUrl)
+      );
+      if (provider == null){
+        throw Exception('Неверный формат ссылки на видео');
+      }
+      final embedUrl = provider.getLink(videoUrl);
+      _controller = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.parse(embedUrl));
       setState(() {
+        _isInitialized = true;
+        _hasError = false;
+      });
+    } catch (error) {
+      setState(() {
+        _isInitialized = true;
         _hasError = true;
       });
-      return;
     }
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(parsedUrl);
-    _controller.reload();
-    setState(() {
-      _hasError = false;
-    });
   }
+
+  final List<VideoProvider> embedElements = [
+    RutubeVideoProvider(),
+    YouTubeVideoProvider(),
+    VkVideoProvider(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    if (_hasError) {
+    if (!_isInitialized) {
+      return Center(child: CircularProgressIndicator());
+    } else if (_hasError) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

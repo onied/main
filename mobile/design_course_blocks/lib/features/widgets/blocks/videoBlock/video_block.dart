@@ -1,4 +1,4 @@
-import 'package:design_course_blocks/shared/video_web_view.dart';
+import 'package:design_course_blocks/shared/video/video_web_view.dart';
 import 'package:flutter/material.dart';
 
 class VideoBlock extends StatelessWidget {

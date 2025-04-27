@@ -1,7 +1,7 @@
 import 'package:design_course_blocks/features/widgets/blocks/tasksBlock/task_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/buttons/button.dart';
+import '../../../../shared/button/button.dart';
 
 class TasksBlock extends StatefulWidget {
   final dynamic block;
