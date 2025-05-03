@@ -1,120 +1,78 @@
+import 'package:design_courses/widgets/course_preview/allow_certificates.dart';
+import 'package:design_courses/widgets/course_preview/course_program.dart';
+import 'package:design_courses/widgets/course_preview/picture_preview.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_markdown/flutter_markdown.dart';
-
-import '../data/repository_mock.dart';
-import '../data/course_preview_dto.dart';
-import '../widgets/course_preview/picture_preview.dart';
-import '../widgets/course_preview/author_block.dart';
-import '../widgets/course_preview/allow_certificates.dart';
-import '../widgets/course_preview/course_program.dart';
+import 'package:design_courses/widgets/shared/button.dart';
+import 'package:design_courses/widgets/shared/app_bar.dart';
+import 'package:design_courses/data/course_preview_dto.dart';
 
 class PreviewPage extends StatelessWidget {
-  final PreviewDto dto = MockPreviewRepository().getSampleCourse();
+  final PreviewDto courseDto;
 
-  PreviewPage({super.key});
+  const PreviewPage({super.key, required this.courseDto});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(dto.title)),
+      appBar: const CustomAppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          dto.title,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PreviewPicture(
+                  href: courseDto.pictureHref,
+                  isArchived: courseDto.isArchived,
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        courseDto.title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Категория: ${dto.category.name}',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                            Text(
-                              'Время прохождения: ${dto.hoursCount} ч.',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(dto.description),
-                        if (dto.courseProgram != null) ...[
-                          const SizedBox(height: 16),
-                          CourseProgram(modules: dto.courseProgram!),
-                        ],
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        courseDto.courseAuthor.name,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        courseDto.category.name,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      courseDto.hasCertificates
+                          ? AllowCertificate()
+                          : SizedBox.shrink(),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        PreviewPicture(
-                          href: dto.pictureHref,
-                          isArchived: dto.isArchived,
-                        ),
-                        if (dto.price > 0)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: Text(
-                              '${dto.price} ₽',
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                dto.isOwned || dto.price == 0
-                                    ? Colors.green
-                                    : null,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          child: Text(
-                            dto.isOwned
-                                ? 'Продолжить'
-                                : dto.price > 0
-                                ? 'Купить'
-                                : 'Начать',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        AuthorBlock(
-                          authorName: dto.courseAuthor.name,
-                          authorAvatarHref: dto.courseAuthor.avatarHref,
-                        ),
-                        if (dto.hasCertificates) ...[
-                          const SizedBox(height: 16),
-                          const AllowCertificate(),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+              ],
+            ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Button(
+                textButton: courseDto.isOwned ? "продолжить" : "купить",
+                onPressed: () {},
               ),
-            ],
-          ),
+            ),
+            // Description
+            Text(
+              courseDto.description,
+              style: TextStyle(fontSize: 16, height: 1.5),
+            ),
+            Padding(padding: EdgeInsets.only(bottom: 10)),
+            CourseProgram(modules: courseDto.courseProgram),
+          ],
         ),
       ),
     );

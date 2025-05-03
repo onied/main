@@ -13,38 +13,32 @@ class PreviewPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.bottomLeft,
       children: [
-        // Image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(32), // 2rem
-          child: Image.network(href, width: double.infinity, fit: BoxFit.cover),
-        ),
-
-        // Archived label (if applicable)
-        if (isArchived)
-          Positioned(
-            left: 0,
-            bottom: 0,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 64, // 4rem
-              decoration: const BoxDecoration(
-                color: Color(0xFF9715D3),
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(32),
-                ),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'в архиве',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+        Container(
+          width: 120,
+          height: 160,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(8),
+            image: DecorationImage(
+              image: NetworkImage(href),
+              fit: BoxFit.cover,
             ),
           ),
+        ),
+        isArchived
+            ? Container(
+              width: 120,
+              color: Colors.black.withAlpha(65),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: const Text(
+                'в архиве',
+                style: TextStyle(color: Colors.black, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+            )
+            : SizedBox.shrink(),
       ],
     );
   }

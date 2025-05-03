@@ -7,24 +7,22 @@ class AllowCertificate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // SVG icon
           SizedBox(
-            width: 50,
-            height: 50,
-            child: SvgPicture.string(_certificateSvg, width: 50, height: 50),
+            width: 35,
+            height: 35,
+            child: SvgPicture.string(_certificateSvg, width: 35, height: 35),
           ),
-          const SizedBox(width: 8), // margin-left
           const Text(
             'курс выдает сертификаты',
             style: TextStyle(
               color: Color(0xFF686868),
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
             ),
           ),
         ],
