@@ -17,10 +17,9 @@ class AuthorBlock extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Avatar image
           Container(
-            width: 80,
-            height: 80,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
@@ -29,11 +28,10 @@ class AuthorBlock extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 16), // gap: 1rem
-          // Author name
+          const SizedBox(width: 8),
           Text(
             authorName,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
           ),
         ],
       ),

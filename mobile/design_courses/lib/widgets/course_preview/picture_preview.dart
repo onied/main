@@ -17,7 +17,7 @@ class PreviewPicture extends StatelessWidget {
       children: [
         Container(
           width: 120,
-          height: 160,
+          height: 180,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.black),
             borderRadius: BorderRadius.circular(8),

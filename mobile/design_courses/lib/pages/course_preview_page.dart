@@ -1,4 +1,5 @@
 import 'package:design_courses/widgets/course_preview/allow_certificates.dart';
+import 'package:design_courses/widgets/course_preview/author_block.dart';
 import 'package:design_courses/widgets/course_preview/course_program.dart';
 import 'package:design_courses/widgets/course_preview/picture_preview.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +41,9 @@ class PreviewPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 4),
-                      Text(
-                        courseDto.courseAuthor.name,
-                        style: TextStyle(fontSize: 18),
+                      AuthorBlock(
+                        authorName: courseDto.courseAuthor.name,
+                        authorAvatarHref: courseDto.courseAuthor.avatarHref,
                       ),
                       SizedBox(height: 4),
                       Text(
