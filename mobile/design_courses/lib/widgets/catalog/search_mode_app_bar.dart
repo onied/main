@@ -3,8 +3,13 @@ import 'package:design_courses/widgets/catalog/search_filters.dart';
 
 class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final ValueChanged<String> onSearchChanged;
+  final void Function(CoursesFilterPredicate) onFiltersPredicateChanged;
 
-  const SearchModeAppBar({super.key, required this.onSearchChanged});
+  const SearchModeAppBar({
+    super.key,
+    required this.onSearchChanged,
+    required this.onFiltersPredicateChanged,
+  });
 
   @override
   State<SearchModeAppBar> createState() => _SearchModeAppBarState();
@@ -16,11 +21,15 @@ class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _SearchModeAppBarState extends State<SearchModeAppBar> {
   final TextEditingController _searchController = TextEditingController();
 
-  void _openFilterPanel() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => const FilterBottomSheet(),
-    );
+  void _openFilterPanel() async {
+    final CoursesFilterPredicate? filterPredicate =
+        await showModalBottomSheet<CoursesFilterPredicate>(
+          context: context,
+          builder: (context) => const FilterBottomSheet(),
+        );
+    if (filterPredicate != null) {
+      widget.onFiltersPredicateChanged(filterPredicate);
+    }
   }
 
   @override

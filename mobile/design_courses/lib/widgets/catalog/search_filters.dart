@@ -1,24 +1,134 @@
+import 'package:design_courses/data/course_card_dto.dart';
+import 'package:design_courses/data/repository_mock.dart';
+import 'package:design_courses/widgets/shared/button.dart';
 import 'package:flutter/material.dart';
 
-class FilterBottomSheet extends StatelessWidget {
+typedef CoursesFilterPredicate = bool Function(CourseCardDto courseCardDto);
+
+class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _FilterBottomSheetState();
+}
+
+class _FilterBottomSheetState extends State<FilterBottomSheet> {
+  static const double maxPrice = 100_000;
+
+  final List<String> categories = [
+    'All',
+    ...MockPreviewRepository().getAllCategories(),
+  ];
+  String selectedCategory = 'All';
+
+  RangeValues priceRange = const RangeValues(0, maxPrice);
+
+  bool isCertificateIncluded = false;
+  bool isOnlyActive = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      height: 300,
+      height: 500,
       width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
-            'Фильтры',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          Text('🔧 Тут будут настройки фильтров'),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Фильтры',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            DropdownButtonFormField<String>(
+              value: selectedCategory,
+              decoration: const InputDecoration(labelText: 'Категория'),
+              items:
+                  categories
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(category),
+                        ),
+                      )
+                      .toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedCategory = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            const Text('Ценовой диапазон'),
+            RangeSlider(
+              values: priceRange,
+              min: 0,
+              max: maxPrice,
+              divisions: 20,
+              labels: RangeLabels(
+                '${priceRange.start.toInt()} ₽',
+                '${priceRange.end.toInt()} ₽',
+              ),
+              onChanged: (RangeValues values) {
+                setState(() {
+                  priceRange = values;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            CheckboxListTile(
+              title: const Text('Только с сертификатом'),
+              value: isCertificateIncluded,
+              onChanged: (value) {
+                setState(() {
+                  isCertificateIncluded = value!;
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: const Text('Только активные'),
+              value: isOnlyActive,
+              onChanged: (value) {
+                setState(() {
+                  isOnlyActive = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            Button(
+              onPressed: () {
+                filteringPredicate(CourseCardDto courseCardDto) {
+                  final matchesCategory =
+                      selectedCategory == 'All' ||
+                      courseCardDto.category == selectedCategory;
+                  final matchesPrice =
+                      courseCardDto.price >= priceRange.start &&
+                      courseCardDto.price <= priceRange.end;
+                  final matchesCertificate =
+                      !isCertificateIncluded || courseCardDto.hasCertificates;
+                  final matchesIsActive =
+                      !isOnlyActive || !courseCardDto.isArchived;
+
+                  return matchesCategory &&
+                      matchesPrice &&
+                      matchesCertificate &&
+                      matchesIsActive;
+                }
+
+                Navigator.pop(context, filteringPredicate);
+              },
+              textButton: 'Применить',
+            ),
+          ],
+        ),
       ),
     );
   }

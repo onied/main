@@ -1,11 +1,19 @@
+import 'package:design_courses/widgets/catalog/search_filters.dart';
+
 import 'course_preview_dto.dart';
 import 'course_card_dto.dart';
 
 class MockPreviewRepository {
-  static const CourseCardDto sampleCourseOwned = CourseCardDto(
+  static const allCategories = [
+    'Мобильная разработка',
+    'Категория 2',
+    'Категория 3',
+  ];
+
+  static CourseCardDto sampleCourseOwned = CourseCardDto(
     id: 1,
     title: 'Фундаментальные основы Flutter один',
-    category: 'Мобильная разработка',
+    category: allCategories[0],
     description:
         'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
     imageUrl:
@@ -13,12 +21,13 @@ class MockPreviewRepository {
     price: 2499,
     isOwned: true,
     isArchived: false,
+    hasCertificates: false,
   );
 
-  static const CourseCardDto sampleCourseNotOwnedOrArchived = CourseCardDto(
+  static CourseCardDto sampleCourseNotOwnedOrArchived = CourseCardDto(
     id: 2,
     title: 'Фундаментальные основы Flutter два',
-    category: 'Мобильная разработка',
+    category: allCategories[1],
     description:
         'Изучите Flutter с нуля!\nтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
     imageUrl:
@@ -26,12 +35,13 @@ class MockPreviewRepository {
     price: 2499,
     isOwned: false,
     isArchived: false,
+    hasCertificates: true,
   );
 
-  static const CourseCardDto sampleCourseArchived = CourseCardDto(
+  static CourseCardDto sampleCourseArchived = CourseCardDto(
     id: 3,
     title: 'Фундаментальные основы Flutter три',
-    category: 'Мобильная разработка',
+    category: allCategories[2],
     description:
         'Изучите Flutter с нуля!\nтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
     imageUrl:
@@ -39,9 +49,10 @@ class MockPreviewRepository {
     price: 2499,
     isOwned: false,
     isArchived: true,
+    hasCertificates: true,
   );
 
-  static const List<PreviewDto> samplePreviewDtos = [
+  static List<PreviewDto> samplePreviewDtos = [
     PreviewDto(
       id: 1,
       title: 'Фундаментальные основы Flutter один',
@@ -51,14 +62,14 @@ class MockPreviewRepository {
           'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
       hoursCount: 12,
       price: 2499,
-      category: Category(id: 1, name: 'Мобильная разработка'),
-      courseAuthor: CourseAuthor(
+      category: Category(id: 1, name: allCategories[0]),
+      courseAuthor: const CourseAuthor(
         name: 'Иван Иванов',
         avatarHref: 'https://www.w3schools.com/howto/img_avatar.png',
       ),
       isArchived: false,
-      hasCertificates: true,
-      courseProgram: [
+      hasCertificates: false,
+      courseProgram: const [
         'Введение в Flutter и Dart',
         'Работа с виджетами',
         'Состояние и управление состоянием',
@@ -76,14 +87,14 @@ class MockPreviewRepository {
           'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
       hoursCount: 12,
       price: 2499,
-      category: Category(id: 1, name: 'Мобильная разработка'),
-      courseAuthor: CourseAuthor(
+      category: Category(id: 2, name: allCategories[1]),
+      courseAuthor: const CourseAuthor(
         name: 'Иван Иванов',
         avatarHref: 'https://www.w3schools.com/howto/img_avatar.png',
       ),
       isArchived: false,
       hasCertificates: true,
-      courseProgram: [
+      courseProgram: const [
         'Введение в Flutter и Dart',
         'Работа с виджетами',
         'Состояние и управление состоянием',
@@ -101,14 +112,14 @@ class MockPreviewRepository {
           'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
       hoursCount: 12,
       price: 2499,
-      category: Category(id: 1, name: 'Мобильная разработка'),
-      courseAuthor: CourseAuthor(
+      category: Category(id: 3, name: allCategories[2]),
+      courseAuthor: const CourseAuthor(
         name: 'Иван Иванов',
         avatarHref: 'https://www.w3schools.com/howto/img_avatar.png',
       ),
       isArchived: true,
       hasCertificates: true,
-      courseProgram: [
+      courseProgram: const [
         'Введение в Flutter и Dart',
         'Работа с виджетами',
         'Состояние и управление состоянием',
@@ -118,6 +129,10 @@ class MockPreviewRepository {
       isOwned: false,
     ),
   ];
+
+  List<String> getAllCategories() {
+    return allCategories;
+  }
 
   PreviewDto getCourseById(int courseId) {
     return samplePreviewDtos
@@ -133,9 +148,13 @@ class MockPreviewRepository {
     ];
   }
 
-  List<CourseCardDto> getFilteredCourses(String searchQuery) {
+  List<CourseCardDto> getFilteredCourses(
+    String searchQuery,
+    CoursesFilterPredicate filterPredicate,
+  ) {
     return getAllCourses()
         .where((course) => course.title.contains(searchQuery))
+        .where(filterPredicate)
         .toList();
   }
 

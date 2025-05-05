@@ -7,6 +7,7 @@ class CourseCardDto {
   final int price;
   final bool isOwned;
   final bool isArchived;
+  final bool hasCertificates;
 
   const CourseCardDto({
     required this.id,
@@ -17,5 +18,6 @@ class CourseCardDto {
     required this.price,
     required this.isOwned,
     required this.isArchived,
+    required this.hasCertificates,
   });
 }
