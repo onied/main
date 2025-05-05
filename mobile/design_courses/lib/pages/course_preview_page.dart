@@ -1,7 +1,7 @@
 import 'package:design_courses/widgets/course_preview/allow_certificates.dart';
 import 'package:design_courses/widgets/course_preview/author_block.dart';
 import 'package:design_courses/widgets/course_preview/course_program.dart';
-import 'package:design_courses/widgets/course_preview/picture_preview.dart';
+import 'package:design_courses/widgets/shared/picture_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:design_courses/widgets/shared/button.dart';
 import 'package:design_courses/widgets/shared/app_bar.dart';
@@ -25,6 +25,8 @@ class PreviewPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PreviewPicture(
+                  width: 120,
+                  height: 180,
                   href: courseDto.pictureHref,
                   isArchived: courseDto.isArchived,
                 ),

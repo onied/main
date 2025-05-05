@@ -8,6 +8,7 @@ class FilterBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       height: 300,
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
@@ -16,7 +17,6 @@ class FilterBottomSheet extends StatelessWidget {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
-          // Add your filter options here (CheckboxListTile, DropdownButton, etc.)
           Text('🔧 Тут будут настройки фильтров'),
         ],
       ),
