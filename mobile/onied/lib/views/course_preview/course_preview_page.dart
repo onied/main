@@ -1,6 +1,7 @@
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/components/button/button.dart';
 import 'package:onied_mobile/components/picture_preview/picture_preview.dart';
-import 'package:onied_mobile/components/search_bar/app_bar.dart';
+import 'package:onied_mobile/components/search_bar/search_bar.dart';
 import 'package:onied_mobile/repositories/repository_mock.dart';
 import 'components/allow_certificates.dart';
 import 'components/author_block.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:onied_mobile/models/course_preview_dto.dart';
 
 class PreviewPage extends StatefulWidget {
-  final int courseId;
+  final String courseId;
 
   const PreviewPage({super.key, required this.courseId});
 
@@ -79,7 +80,13 @@ class _PreviewPageState extends State<PreviewPage> {
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Button(
                 text: courseDto.isOwned ? "продолжить" : "купить",
-                onPressed: () {},
+                onPressed: () {
+                  if (courseDto.isOwned) {
+                    context.go("/course/${courseDto.id}/learn");
+                  } else {
+                    context.go("/purchase");
+                  }
+                },
               ),
             ),
             // Description

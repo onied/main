@@ -1,5 +1,5 @@
 class PreviewDto {
-  final int id;
+  final String id;
   final String title;
   final String pictureHref;
   final String description;

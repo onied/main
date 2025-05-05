@@ -11,7 +11,7 @@ class MockPreviewRepository {
   ];
 
   static CourseCardDto sampleCourseOwned = CourseCardDto(
-    id: 1,
+    id: "1",
     title: 'Фундаментальные основы Flutter один',
     category: allCategories[0],
     description:
@@ -25,7 +25,7 @@ class MockPreviewRepository {
   );
 
   static CourseCardDto sampleCourseNotOwnedOrArchived = CourseCardDto(
-    id: 2,
+    id: "2",
     title: 'Фундаментальные основы Flutter два',
     category: allCategories[1],
     description:
@@ -39,7 +39,7 @@ class MockPreviewRepository {
   );
 
   static CourseCardDto sampleCourseArchived = CourseCardDto(
-    id: 3,
+    id: "3",
     title: 'Фундаментальные основы Flutter три',
     category: allCategories[2],
     description:
@@ -54,7 +54,7 @@ class MockPreviewRepository {
 
   static List<PreviewDto> samplePreviewDtos = [
     PreviewDto(
-      id: 1,
+      id: "1",
       title: 'Фундаментальные основы Flutter один',
       pictureHref:
           'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
@@ -79,7 +79,7 @@ class MockPreviewRepository {
       isOwned: true,
     ),
     PreviewDto(
-      id: 2,
+      id: "2",
       title: 'Фундаментальные основы Flutter два',
       pictureHref:
           'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
@@ -104,7 +104,7 @@ class MockPreviewRepository {
       isOwned: false,
     ),
     PreviewDto(
-      id: 3,
+      id: "3",
       title: 'Фундаментальные основы Flutter три',
       pictureHref:
           'https://lms.redvector.com/lpe/assets/core/img/large-placeholder-course.png',
@@ -134,7 +134,7 @@ class MockPreviewRepository {
     return allCategories;
   }
 
-  PreviewDto getCourseById(int courseId) {
+  PreviewDto getCourseById(String courseId) {
     return samplePreviewDtos
         .where((previewDto) => previewDto.id == courseId)
         .single;

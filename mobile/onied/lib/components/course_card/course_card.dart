@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/components/button/button.dart';
 import 'package:onied_mobile/components/picture_preview/picture_preview.dart';
 import 'package:onied_mobile/models/course_card_dto.dart';
-import 'package:onied_mobile/views/course_preview/course_preview_page.dart';
 
 class CourseCard extends StatelessWidget {
   final CourseCardDto courseCardDto;
@@ -12,13 +12,7 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap:
-          () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PreviewPage(courseId: courseCardDto.id),
-            ),
-          ),
+      onTap: () => context.go("/course/${courseCardDto.id}"),
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RedirectToLoginForm extends StatelessWidget {
   const RedirectToLoginForm({super.key});
@@ -9,24 +10,21 @@ class RedirectToLoginForm extends StatelessWidget {
       children: [
         Text("Уже есть аккаунт?"),
         Padding(
-          padding: EdgeInsets.only(
-              top: 20.0
-          ),
+          padding: EdgeInsets.only(top: 20.0),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
-                  child: FilledButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, "/login");
-                      },
-                      child: Text("войти")
-                  )
-              )
+                child: FilledButton(
+                  onPressed: () {
+                    context.go("/login");
+                  },
+                  child: Text("войти"),
+                ),
+              ),
             ],
           ),
         ),
-
       ],
     );
   }

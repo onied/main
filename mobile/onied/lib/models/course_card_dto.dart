@@ -1,5 +1,5 @@
 class CourseCardDto {
-  final int id;
+  final String id;
   final String title;
   final String category;
   final String description;

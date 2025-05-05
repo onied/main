@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onied_mobile/components/search_bar/app_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:onied_mobile/components/search_bar/search_bar.dart';
 import 'package:onied_mobile/models/course_card_dto.dart';
 import 'package:onied_mobile/repositories/repository_mock.dart';
-import 'package:onied_mobile/views/course_preview/course_preview_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -59,15 +59,7 @@ class HomePage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: InkWell(
-                        onTap:
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        PreviewPage(courseId: course.id), // TODO: route
-                              ),
-                            ),
+                        onTap: () => context.go("/course/${course.id}"),
                         child: Stack(
                           alignment: Alignment.bottomLeft,
                           children: [

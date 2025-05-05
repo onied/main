@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/app/app_theme.dart';
-import 'package:onied_mobile/views/catalog/search_results_page.dart';
 
 class CourseSearchBar extends StatelessWidget implements PreferredSizeWidget {
   const CourseSearchBar({super.key});
@@ -28,15 +28,11 @@ class CourseSearchBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          onPressed:
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchResultsPage()), // TODO: to route
-              ),
+          onPressed: () => context.go("/search"),
           icon: const Icon(Icons.search, color: Colors.white, size: 30),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () => context.go("/profile"),
           icon: const Icon(
             Icons.account_circle_outlined,
             color: Colors.white,
