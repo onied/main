@@ -2,7 +2,7 @@ import 'package:design_courses/data/course_card_dto.dart';
 import 'package:design_courses/data/repository_mock.dart';
 import 'package:design_courses/widgets/catalog/search_mode_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:design_courses/widgets/catalog/course_card.dart';
+import 'package:design_courses/widgets/shared/course_card.dart';
 
 class SearchResultsPage extends StatelessWidget {
   final List<CourseCardDto> filteredCourses =

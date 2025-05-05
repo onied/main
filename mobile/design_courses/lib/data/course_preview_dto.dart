@@ -1,4 +1,5 @@
 class PreviewDto {
+  final int id;
   final String title;
   final String pictureHref;
   final String description;
@@ -12,6 +13,7 @@ class PreviewDto {
   final bool isOwned;
 
   const PreviewDto({
+    required this.id,
     required this.title,
     required this.pictureHref,
     required this.description,

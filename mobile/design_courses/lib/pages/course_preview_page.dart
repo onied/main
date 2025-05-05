@@ -1,3 +1,4 @@
+import 'package:design_courses/data/repository_mock.dart';
 import 'package:design_courses/widgets/course_preview/allow_certificates.dart';
 import 'package:design_courses/widgets/course_preview/author_block.dart';
 import 'package:design_courses/widgets/course_preview/course_program.dart';
@@ -7,10 +8,23 @@ import 'package:design_courses/widgets/shared/button.dart';
 import 'package:design_courses/widgets/shared/app_bar.dart';
 import 'package:design_courses/data/course_preview_dto.dart';
 
-class PreviewPage extends StatelessWidget {
-  final PreviewDto courseDto;
+class PreviewPage extends StatefulWidget {
+  final int courseId;
 
-  const PreviewPage({super.key, required this.courseDto});
+  const PreviewPage({super.key, required this.courseId});
+
+  @override
+  State<PreviewPage> createState() => _PreviewPageState();
+}
+
+class _PreviewPageState extends State<PreviewPage> {
+  late PreviewDto courseDto;
+
+  @override
+  void initState() {
+    super.initState();
+    courseDto = MockPreviewRepository().getCourseById(widget.courseId);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -11,15 +11,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
+      backgroundColor: Color(0xFF383737),
       elevation: 0,
-      backgroundColor: Colors.white,
       titleSpacing: 16,
-      title: const Text(
-        'OniEd',
-        style: TextStyle(
-          fontFamily: 'Comic Sans MS',
-          fontSize: 32,
-          color: Colors.black,
+      title: InkWell(
+        onTap: () => Navigator.popUntil(context, (route) => route.isFirst),
+        child: const Text(
+          'OniEd',
+          style: TextStyle(
+            fontFamily: 'Comic Sans MS',
+            fontSize: 32,
+            color: Colors.white,
+          ),
         ),
       ),
       actions: [
@@ -29,13 +32,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 context,
                 MaterialPageRoute(builder: (context) => SearchResultsPage()),
               ),
-          icon: const Icon(Icons.search, color: Colors.black, size: 30),
+          icon: const Icon(Icons.search, color: Colors.white, size: 30),
         ),
         IconButton(
           onPressed: () {},
           icon: const Icon(
             Icons.account_circle_outlined,
-            color: Colors.black,
+            color: Colors.white,
             size: 45,
           ),
         ),

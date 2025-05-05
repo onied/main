@@ -3,6 +3,7 @@ import 'course_card_dto.dart';
 
 class MockPreviewRepository {
   static const CourseCardDto sampleCourseOwned = CourseCardDto(
+    id: 1,
     title: 'Фундаментальные основы Flutter',
     category: 'Мобильная разработка',
     description:
@@ -15,6 +16,7 @@ class MockPreviewRepository {
   );
 
   static const CourseCardDto sampleCourseNotOwnedOrArchived = CourseCardDto(
+    id: 2,
     title: 'Фундаментальные основы Flutter',
     category: 'Мобильная разработка',
     description:
@@ -27,19 +29,71 @@ class MockPreviewRepository {
   );
 
   static const CourseCardDto sampleCourseArchived = CourseCardDto(
+    id: 3,
     title: 'Фундаментальные основы Flutter',
     category: 'Мобильная разработка',
     description:
         'Изучите Flutter с нуля!\nтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
     imageUrl:
-        'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
+        'https://lms.redvector.com/lpe/assets/core/img/large-placeholder-course.png',
     price: 2499,
     isOwned: false,
     isArchived: true,
   );
 
-  PreviewDto getSampleCourse() {
-    return const PreviewDto(
+  static const List<PreviewDto> samplePreviewDtos = [
+    PreviewDto(
+      id: 1,
+      title: 'Фундаментальные основы Flutter',
+      pictureHref:
+          'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
+      description:
+          'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
+      hoursCount: 12,
+      price: 2499,
+      category: Category(id: 1, name: 'Мобильная разработка'),
+      courseAuthor: CourseAuthor(
+        name: 'Иван Иванов',
+        avatarHref: 'https://www.w3schools.com/howto/img_avatar.png',
+      ),
+      isArchived: false,
+      hasCertificates: true,
+      courseProgram: [
+        'Введение в Flutter и Dart',
+        'Работа с виджетами',
+        'Состояние и управление состоянием',
+        'Работа с сетевыми запросами',
+        'Публикация приложения',
+      ],
+      isOwned: true,
+    ),
+    PreviewDto(
+      id: 2,
+      title: 'Фундаментальные основы Flutter',
+      pictureHref:
+          'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
+      description:
+          'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
+      hoursCount: 12,
+      price: 2499,
+      category: Category(id: 1, name: 'Мобильная разработка'),
+      courseAuthor: CourseAuthor(
+        name: 'Иван Иванов',
+        avatarHref: 'https://www.w3schools.com/howto/img_avatar.png',
+      ),
+      isArchived: false,
+      hasCertificates: true,
+      courseProgram: [
+        'Введение в Flutter и Dart',
+        'Работа с виджетами',
+        'Состояние и управление состоянием',
+        'Работа с сетевыми запросами',
+        'Публикация приложения',
+      ],
+      isOwned: false,
+    ),
+    PreviewDto(
+      id: 3,
       title: 'Фундаментальные основы Flutter',
       pictureHref:
           'https://lms.redvector.com/lpe/assets/core/img/large-placeholder-course.png',
@@ -62,44 +116,28 @@ class MockPreviewRepository {
         'Публикация приложения',
       ],
       isOwned: false,
-    );
+    ),
+  ];
+
+  PreviewDto getCourseById(int courseId) {
+    return samplePreviewDtos
+        .where((previewDto) => previewDto.id == courseId)
+        .single;
   }
 
   List<CourseCardDto> getAllCourses() {
-    return const [
-      CourseCardDto(
-        title: 'Фундаментальные основы Flutter',
-        category: 'Мобильная разработка',
-        description:
-            'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
-        imageUrl:
-            'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
-        price: 2499,
-        isOwned: false,
-        isArchived: true,
-      ),
-      CourseCardDto(
-        title: 'Фундаментальные основы Flutter',
-        category: 'Мобильная разработка',
-        description:
-            'Изучите Flutter с нуля!\nтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
-        imageUrl:
-            'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
-        price: 2499,
-        isOwned: false,
-        isArchived: true,
-      ),
-      CourseCardDto(
-        title: 'Фундаментальные основы Flutter',
-        category: 'Мобильная разработка',
-        description:
-            'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
-        imageUrl:
-            'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
-        price: 2499,
-        isOwned: false,
-        isArchived: true,
-      ),
-    ];
+    return const [sampleCourseArchived];
+  }
+
+  List<CourseCardDto> getOwnedCourses() {
+    return List.generate(30, (_) => sampleCourseOwned);
+  }
+
+  List<CourseCardDto> getPopularCourses() {
+    return List.generate(30, (_) => sampleCourseNotOwnedOrArchived);
+  }
+
+  List<CourseCardDto> getRecommendedCourses() {
+    return List.generate(30, (_) => sampleCourseNotOwnedOrArchived);
   }
 }
