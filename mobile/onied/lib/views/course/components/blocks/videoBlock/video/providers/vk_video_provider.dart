@@ -1,4 +1,4 @@
-import 'package:onied_mobile/shared/video/providers/video_provider.dart';
+import 'video_provider.dart';
 
 class VkVideoProvider extends VideoProvider {
   @override

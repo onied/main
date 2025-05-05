@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:onied_mobile/shared/video/providers/rutube_video_provider.dart';
-import 'package:onied_mobile/shared/video/providers/video_provider.dart';
-import 'package:onied_mobile/shared/video/providers/vk_video_provider.dart';
-import 'package:onied_mobile/shared/video/providers/youtube_video_provider.dart';
+import 'providers/rutube_video_provider.dart';
+import 'providers/video_provider.dart';
+import 'providers/vk_video_provider.dart';
+import 'providers/youtube_video_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

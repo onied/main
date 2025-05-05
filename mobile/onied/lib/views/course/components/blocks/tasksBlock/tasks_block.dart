@@ -72,7 +72,7 @@ class _TasksBlockState extends State<TasksBlock> {
         else
           Button(
             onPressed: () {},
-            textButton: "Отправить на проверку",
+            text: "Отправить на проверку",
           )
       ],
     );

@@ -1,9 +1,10 @@
-import 'package:onied_mobile/shared/video/providers/video_provider.dart';
+import 'video_provider.dart';
 
 class YouTubeVideoProvider extends VideoProvider {
   @override
   RegExp get regex => RegExp(
-      r'^((?:https?:)?\/\/)?((?:www|m).)?((?:youtube(-nocookie)?.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|live\/|v\/)?)(?<videoId>[\w]+)(\S+)?$');
+    r'^((?:https?:)?\/\/)?((?:www|m).)?((?:youtube(-nocookie)?.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|live\/|v\/)?)(?<videoId>[\w]+)(\S+)?$',
+  );
 
   @override
   String getLink(String href) {

@@ -1,9 +1,10 @@
-import 'package:onied_mobile/shared/video/providers/video_provider.dart';
+import 'video_provider.dart';
 
 class RutubeVideoProvider extends VideoProvider {
   @override
-  RegExp get regex =>
-      RegExp(r'^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)?(\/[\S]+)?$');
+  RegExp get regex => RegExp(
+    r'^((?:https?:)?\/\/)?(rutube\.ru)(\/video)(?<videoId>\/[\w\d]+)?(\/[\S]+)?$',
+  );
 
   @override
   String getLink(String href) {

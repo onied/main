@@ -31,97 +31,97 @@ class PurchasePageState extends State<PurchasePage> {
       ),
       body: Container(
         padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 16,
-          children: [
-            Text(
-              "КОРОЛЬ ИНФОЦИГАН",
-              style: TextStyle(
-                fontSize: 24,
-                letterSpacing: 3,
-                fontWeight: FontWeight.w600,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 16,
+            children: [
+              Text(
+                "КОРОЛЬ ИНФОЦИГАН",
+                style: TextStyle(
+                  fontSize: 24,
+                  letterSpacing: 3,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("ПОДПИСКА", style: TextStyle(fontSize: 18)),
-                Text("10000 ₽", style: TextStyle(fontSize: 18)),
-              ],
-            ),
-            const Divider(),
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-                    child: Image.asset(
-                      'assets/paymentMethods.png',
-                      width: double.infinity,
-                    ),
-                  ),
-                  CreditCardForm(
-                    formKey: formKey,
-                    obscureCvv: true,
-                    obscureNumber: false,
-                    cardNumber: cardNumber,
-                    cvvCode: cvvCode,
-                    isHolderNameVisible: true,
-                    isCardNumberVisible: true,
-                    isExpiryDateVisible: true,
-                    cardHolderName: cardHolderName,
-                    expiryDate: expiryDate,
-                    inputConfiguration: const InputConfiguration(
-                      cardNumberDecoration: InputDecoration(
-                        hintText: 'Номер карты',
-                        border: OutlineInputBorder(),
-                      ),
-                      expiryDateDecoration: InputDecoration(
-                        hintText: 'мм/гг',
-                        border: OutlineInputBorder(),
-                      ),
-                      cvvCodeDecoration: InputDecoration(
-                        hintText: 'CVC/CVV/CVP',
-                        border: OutlineInputBorder(),
-                      ),
-                      cardHolderDecoration: InputDecoration(
-                        hintText: 'Держатель карты',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    onCreditCardModelChange: onCreditCardModelChange,
-                  ),
+                  Text("ПОДПИСКА", style: TextStyle(fontSize: 18)),
+                  Text("10000 ₽", style: TextStyle(fontSize: 18)),
                 ],
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                spacing: 16,
-                children: [
-                  Expanded(
-                    child: Button(textButton: "оплатить", onPressed: null),
-                  ),
-                  Expanded(
-                    child: Button(
-                      textButton: "отмена",
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+              const Divider(),
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+                      child: Image.asset(
+                        'assets/icons/paymentMethods.png',
+                        width: double.infinity,
+                      ),
                     ),
-                  ),
-                ],
+                    CreditCardForm(
+                      formKey: formKey,
+                      obscureCvv: true,
+                      obscureNumber: false,
+                      cardNumber: cardNumber,
+                      cvvCode: cvvCode,
+                      isHolderNameVisible: true,
+                      isCardNumberVisible: true,
+                      isExpiryDateVisible: true,
+                      cardHolderName: cardHolderName,
+                      expiryDate: expiryDate,
+                      inputConfiguration: const InputConfiguration(
+                        cardNumberDecoration: InputDecoration(
+                          hintText: 'Номер карты',
+                          border: OutlineInputBorder(),
+                        ),
+                        expiryDateDecoration: InputDecoration(
+                          hintText: 'мм/гг',
+                          border: OutlineInputBorder(),
+                        ),
+                        cvvCodeDecoration: InputDecoration(
+                          hintText: 'CVC/CVV/CVP',
+                          border: OutlineInputBorder(),
+                        ),
+                        cardHolderDecoration: InputDecoration(
+                          hintText: 'Держатель карты',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      onCreditCardModelChange: onCreditCardModelChange,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  spacing: 16,
+                  children: [
+                    Expanded(child: Button(text: "оплатить", onPressed: null)),
+                    Expanded(
+                      child: Button(
+                        text: "отмена",
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

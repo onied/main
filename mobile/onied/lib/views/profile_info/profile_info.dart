@@ -146,7 +146,7 @@ class ProfileInfoPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Button(textButton: "сохранить", onPressed: () {}),
+                        Button(text: "сохранить", onPressed: () {}),
                       ],
                     ),
 
@@ -170,10 +170,10 @@ class ProfileInfoPage extends StatelessWidget {
                               spacing: 4.0,
                               children: [
                                 Button(
-                                  textButton: "загрузить",
+                                  text: "загрузить",
                                   onPressed: () {},
                                 ),
-                                Button(textButton: "удалить", onPressed: null),
+                                Button(text: "удалить", onPressed: null),
                               ],
                             ),
                           ],
@@ -183,7 +183,7 @@ class ProfileInfoPage extends StatelessWidget {
 
                     const Divider(),
 
-                    Button(textButton: "выйти", onPressed: () {}),
+                    Button(text: "выйти", onPressed: () {}),
                   ],
                 ),
               ),
