@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/models/enums/sex.dart';
@@ -44,6 +45,7 @@ class _RegistrationState extends State<RegistrationForm> {
       "Trying to register ${jsonEncode(formDate.toJson())}...",
     );
     // final authData = AuthorizationApi.login(formDate);
+    context.go("/");
   }
 
   @override
@@ -93,7 +95,10 @@ class _RegistrationState extends State<RegistrationForm> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: 8),
-                    child: Text("Пол:", style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text(
+                      "Пол:",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                   _buildRadioOption(Sex.noSex, 'не указано'),
                   _buildRadioOption(Sex.man, 'мужской'),

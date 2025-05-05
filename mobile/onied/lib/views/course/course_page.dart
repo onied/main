@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:onied_mobile/app/app_theme.dart';
 import 'components/block_view.dart';
@@ -148,7 +149,7 @@ class _CoursePageState extends State<CoursePage> {
               setState(() {
                 selectedBlockId = blockId;
               });
-              Navigator.pop(context);
+              context.pop();
             },
           ),
         ),

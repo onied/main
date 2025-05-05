@@ -16,7 +16,7 @@ class CourseSearchBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       titleSpacing: 16,
       title: InkWell(
-        onTap: () => Navigator.popUntil(context, (route) => route.isFirst),
+        onTap: () => context.push("/"),
         child: const Text(
           'OniEd',
           style: TextStyle(
@@ -28,11 +28,11 @@ class CourseSearchBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          onPressed: () => context.go("/search"),
+          onPressed: () => context.push("/search"),
           icon: const Icon(Icons.search, color: Colors.white, size: 30),
         ),
         IconButton(
-          onPressed: () => context.go("/profile"),
+          onPressed: () => context.push("/profile"),
           icon: const Icon(
             Icons.account_circle_outlined,
             color: Colors.white,

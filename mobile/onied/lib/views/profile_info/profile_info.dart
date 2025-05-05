@@ -27,6 +27,7 @@ class ProfileInfoPage extends StatelessWidget {
           ).textTheme.titleLarge?.copyWith(color: Colors.white),
         ),
         backgroundColor: AppTheme.backgroundColorHeader,
+        foregroundColor: AppTheme.accent,
       ),
       body: SingleChildScrollView(
         child: Column(

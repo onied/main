@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/utils/email_validator.dart';
@@ -53,6 +54,7 @@ class _LoginFormState extends State<LoginForm> {
       );
       _logger.log(Level.INFO, "Trying to log in ${jsonEncode(formDate)}...");
       // final authData = AuthorizationApi.login(formDate);
+      context.push("/");
     } else {
       _enableCodeTextField();
     }

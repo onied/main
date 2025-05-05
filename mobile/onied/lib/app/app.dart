@@ -11,7 +11,7 @@ import 'package:onied_mobile/views/profile_info/profile_info.dart';
 import 'package:onied_mobile/views/purchase/purchase_page.dart';
 
 final _router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/login',
   routes: [
     GoRoute(
       path: '/',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/repositories/repository_mock.dart';
 import 'search_filters.dart';
 
@@ -56,7 +57,7 @@ class _SearchModeAppBarState extends State<SearchModeAppBar> {
         ),
         IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
       ],
     );

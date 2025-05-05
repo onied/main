@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/components/button/button.dart';
 import 'package:onied_mobile/models/course_card_dto.dart';
 import 'package:onied_mobile/repositories/repository_mock.dart';
@@ -121,7 +122,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       matchesIsActive;
                 }
 
-                Navigator.pop(context, filteringPredicate);
+                context.pop(filteringPredicate);
               },
               text: 'Применить',
             ),

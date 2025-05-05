@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: InkWell(
-                        onTap: () => context.go("/course/${course.id}"),
+                        onTap: () => context.push("/course/${course.id}"),
                         child: Stack(
                           alignment: Alignment.bottomLeft,
                           children: [

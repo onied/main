@@ -82,9 +82,9 @@ class _PreviewPageState extends State<PreviewPage> {
                 text: courseDto.isOwned ? "продолжить" : "купить",
                 onPressed: () {
                   if (courseDto.isOwned) {
-                    context.go("/course/${courseDto.id}/learn");
+                    context.push("/course/${courseDto.id}/learn");
                   } else {
-                    context.go("/purchase");
+                    context.push("/purchase");
                   }
                 },
               ),

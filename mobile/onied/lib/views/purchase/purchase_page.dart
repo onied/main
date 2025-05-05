@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:onied_mobile/components/button/button.dart';
@@ -28,6 +29,7 @@ class PurchasePageState extends State<PurchasePage> {
           ).textTheme.titleLarge?.copyWith(color: Colors.white),
         ),
         backgroundColor: AppTheme.backgroundColorHeader,
+        foregroundColor: AppTheme.accent,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
@@ -113,7 +115,7 @@ class PurchasePageState extends State<PurchasePage> {
                       child: Button(
                         text: "отмена",
                         onPressed: () {
-                          Navigator.pop(context);
+                          context.pop();
                         },
                       ),
                     ),
