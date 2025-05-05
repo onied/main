@@ -4,7 +4,7 @@ import 'course_card_dto.dart';
 class MockPreviewRepository {
   static const CourseCardDto sampleCourseOwned = CourseCardDto(
     id: 1,
-    title: 'Фундаментальные основы Flutter',
+    title: 'Фундаментальные основы Flutter один',
     category: 'Мобильная разработка',
     description:
         'Изучите Flutter с нуля!\nЭтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
@@ -17,7 +17,7 @@ class MockPreviewRepository {
 
   static const CourseCardDto sampleCourseNotOwnedOrArchived = CourseCardDto(
     id: 2,
-    title: 'Фундаментальные основы Flutter',
+    title: 'Фундаментальные основы Flutter два',
     category: 'Мобильная разработка',
     description:
         'Изучите Flutter с нуля!\nтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
@@ -30,7 +30,7 @@ class MockPreviewRepository {
 
   static const CourseCardDto sampleCourseArchived = CourseCardDto(
     id: 3,
-    title: 'Фундаментальные основы Flutter',
+    title: 'Фундаментальные основы Flutter три',
     category: 'Мобильная разработка',
     description:
         'Изучите Flutter с нуля!\nтот курс даст вам все необходимые знания для создания кроссплатформенных мобильных приложений.',
@@ -44,7 +44,7 @@ class MockPreviewRepository {
   static const List<PreviewDto> samplePreviewDtos = [
     PreviewDto(
       id: 1,
-      title: 'Фундаментальные основы Flutter',
+      title: 'Фундаментальные основы Flutter один',
       pictureHref:
           'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
       description:
@@ -69,7 +69,7 @@ class MockPreviewRepository {
     ),
     PreviewDto(
       id: 2,
-      title: 'Фундаментальные основы Flutter',
+      title: 'Фундаментальные основы Flutter два',
       pictureHref:
           'https://storage.googleapis.com/cms-storage-bucket/f399274b364a6194c43d.png',
       description:
@@ -94,7 +94,7 @@ class MockPreviewRepository {
     ),
     PreviewDto(
       id: 3,
-      title: 'Фундаментальные основы Flutter',
+      title: 'Фундаментальные основы Flutter три',
       pictureHref:
           'https://lms.redvector.com/lpe/assets/core/img/large-placeholder-course.png',
       description:
@@ -126,7 +126,17 @@ class MockPreviewRepository {
   }
 
   List<CourseCardDto> getAllCourses() {
-    return const [sampleCourseArchived];
+    return [
+      ...List.generate(30, (_) => sampleCourseOwned),
+      ...List.generate(30, (_) => sampleCourseNotOwnedOrArchived),
+      ...List.generate(30, (_) => sampleCourseArchived),
+    ];
+  }
+
+  List<CourseCardDto> getFilteredCourses(String searchQuery) {
+    return getAllCourses()
+        .where((course) => course.title.contains(searchQuery))
+        .toList();
   }
 
   List<CourseCardDto> getOwnedCourses() {

@@ -4,20 +4,32 @@ import 'package:design_courses/widgets/catalog/search_mode_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:design_courses/widgets/shared/course_card.dart';
 
-class SearchResultsPage extends StatelessWidget {
-  final List<CourseCardDto> filteredCourses =
-      MockPreviewRepository().getAllCourses();
+class SearchResultsPage extends StatefulWidget {
+  const SearchResultsPage({super.key});
 
-  SearchResultsPage({super.key});
+  @override
+  State<StatefulWidget> createState() => _SearchResultsPageState();
+}
+
+class _SearchResultsPageState extends State<SearchResultsPage> {
+  String query = '';
+  List<CourseCardDto> searchResults = MockPreviewRepository().getAllCourses();
+
+  void updateSearch(String newQuery) {
+    setState(() {
+      query = newQuery;
+      searchResults = MockPreviewRepository().getFilteredCourses(query);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SearchModeAppBar(),
+      appBar: SearchModeAppBar(onSearchChanged: updateSearch),
       body: ListView.builder(
-        itemCount: filteredCourses.length,
+        itemCount: searchResults.length,
         itemBuilder: (context, index) {
-          final course = filteredCourses[index];
+          final course = searchResults[index];
           return CourseCard(courseCardDto: course);
         },
       ),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:design_courses/widgets/catalog/search_filters.dart';
 
 class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const SearchModeAppBar({super.key});
+  final ValueChanged<String> onSearchChanged;
+
+  const SearchModeAppBar({super.key, required this.onSearchChanged});
 
   @override
   State<SearchModeAppBar> createState() => _SearchModeAppBarState();
@@ -35,7 +37,7 @@ class _SearchModeAppBarState extends State<SearchModeAppBar> {
           hintText: 'Введите запрос...',
           border: InputBorder.none,
         ),
-        onChanged: (value) {},
+        onChanged: widget.onSearchChanged,
       ),
       actions: [
         IconButton(
