@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddGraphQLServer()
     .AddQueryType<CourseQuery>()
     .AddPagingArguments()
