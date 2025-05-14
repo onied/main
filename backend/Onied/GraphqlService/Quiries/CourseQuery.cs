@@ -1,5 +1,6 @@
 ﻿using Courses.Data;
 using Courses.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphqlService.Quiries;
 
@@ -12,16 +13,32 @@ public class CourseQuery
     public IQueryable<Course> GetCourses(AppDbContext dbContext)
         => dbContext.Courses;
 
-    public Course GetCourseById(
+    public async Task<Course> GetCourseById(
         int id,
-        [Service] IHttpContextAccessor contextAccessor,
-        AppDbContext dbContext)
+        AppDbContext dbContext,
+        [Service] IHttpContextAccessor contextAccessor)
     {
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
-        var course = dbContext.Courses.FirstOrDefault(x => x.Id == id);
-
-        if (userId == null)
-            throw new GraphQLException("Доступ запрещен");
+        if (userId is null)
+        {
+            throw new GraphQLException("Unauthorized access");
+        }
+        var course = await dbContext.Courses
+            .Include(course => course.Modules)
+            .Include(course => course.Users)
+            .Include(course => course.Author)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        if (course is null)
+        {
+            throw new GraphQLException("Course not found");
+        }
+        var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
+        var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
+        var isAuthor = course.Author?.Id.ToString() == userId;
+        if (student is null && moderator is null && !isAuthor)
+        {
+            throw new GraphQLException("Forbidden access");
+        }
 
         return course;
     }
