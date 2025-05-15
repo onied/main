@@ -1,4 +1,4 @@
-namespace GraphqlService.Dtos.Course.Response;
+namespace GraphqlService.Dtos.Block.Response;
 
 public class VariantResponse
 {
