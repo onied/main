@@ -8,21 +8,20 @@ namespace GraphqlService.Quiries;
 
 public class CourseQuery(
     [Service] IHttpContextAccessor contextAccessor,
-    [Service] IMapper mapper,
-    [Service] AppDbContext dbContext)
+    [Service] IMapper mapper)
 {
     [UsePaging]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<Course> GetCourses()
+    public IQueryable<Course> GetCourses(AppDbContext dbContext)
         => dbContext.Courses;
 
     [UsePaging]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<Course> GetOwnedCourses()
+    public IQueryable<Course> GetOwnedCourses(AppDbContext dbContext)
     {
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
         if (userId is null)
@@ -38,14 +37,14 @@ public class CourseQuery(
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<Course> GetPopularCourses()
+    public IQueryable<Course> GetPopularCourses(AppDbContext dbContext)
     {
         return dbContext.Courses
             .OrderBy(x => x.Users.Count)
             .AsQueryable();
     }
 
-    public async Task<Course> GetCourseById(int id)
+    public async Task<Course> GetCourseById(int id, AppDbContext dbContext)
     {
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
         if (userId is null)
@@ -73,7 +72,7 @@ public class CourseQuery(
         return course;
     }
 
-    public async Task<SummaryBlockResponse> GetSummaryBlockById(int id)
+    public async Task<SummaryBlockResponse> GetSummaryBlockById(int id, AppDbContext dbContext)
     {
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
         if (userId is null)
@@ -103,7 +102,7 @@ public class CourseQuery(
         return mapper.Map<SummaryBlockResponse>(block);
     }
 
-    public async Task<VideoBlockResponse> GetVideoBlockById(int id)
+    public async Task<VideoBlockResponse> GetVideoBlockById(int id, AppDbContext dbContext)
     {
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
         if (userId is null)
@@ -133,7 +132,7 @@ public class CourseQuery(
         return mapper.Map<VideoBlockResponse>(block);
     }
 
-    public async Task<TasksBlockResponse> GetTasksBlockById(int id)
+    public async Task<TasksBlockResponse> GetTasksBlockById(int id, AppDbContext dbContext)
     {
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
         if (userId is null)
