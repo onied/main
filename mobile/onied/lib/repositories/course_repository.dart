@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:onied_mobile/models/course_block_model.dart';
 import 'package:onied_mobile/models/course_hierarchy_model.dart';
 import 'package:onied_mobile/models/course_preview_model.dart';
@@ -179,15 +180,15 @@ class CourseRepository {
       fileHref: "fdsfasd",
     ),
     CourseVideoBlockModel(
-      id: 1,
+      id: 2,
       title: 'Заголовок блока с конспектом',
-      index: 0,
+      index: 1,
       href: 'https://rutube.ru/video/80185da4f898f4b9ecfb81c1a535b9e1',
     ),
     CourseTaskBlockModel(
-      id: 1,
+      id: 3,
       title: 'Заголовок блока с конспектом',
-      index: 0,
+      index: 2,
       tasks: [
         CourseTaskBlockTask(
           id: 0,
@@ -278,6 +279,6 @@ class CourseRepository {
   }
 
   Future<CourseBlockModel?> getCourseBlockById(int blockId) async {
-    return sampleBlocks.firstWhere((block) => block.id == blockId);
+    return sampleBlocks.firstWhereOrNull((block) => block.id == blockId);
   }
 }

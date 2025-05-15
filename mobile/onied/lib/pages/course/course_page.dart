@@ -58,6 +58,7 @@ class CoursePage extends StatelessWidget {
                         context.read<CourseBloc>().add(
                           LoadBlock(blockId: blockId),
                         );
+                        Navigator.pop(context);
                       },
                     ),
                   ),

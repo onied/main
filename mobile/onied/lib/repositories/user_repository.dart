@@ -1,8 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
-import 'package:onied_mobile/app/config.dart';
 import 'package:onied_mobile/form_data/login_form_data.dart';
 import 'package:onied_mobile/form_data/login_vk_form_data.dart';
 import 'package:onied_mobile/form_data/registration_form_data.dart';
@@ -14,48 +9,51 @@ import 'package:onied_mobile/models/user_model.dart';
 
 class UserRepository {
   Future<AuthorizationData?> login(LoginFormData formData) async {
-    final response = await http.post(
-      Uri.parse("${Config.backendUrl}/login"),
-      body: jsonEncode(formData),
-    );
+    // final response = await http.post(
+    //   Uri.parse("${Config.backendUrl}/login"),
+    //   body: jsonEncode(formData),
+    // );
 
-    if (response.statusCode != HttpStatus.ok) {
-      return null;
-    }
+    // if (response.statusCode != HttpStatus.ok) {
+    //   return null;
+    // }
 
-    return AuthorizationData.fromJson(
-      jsonDecode(response.body) as Map<String, dynamic>,
-    );
+    // return AuthorizationData.fromJson(
+    //   jsonDecode(response.body) as Map<String, dynamic>,
+    // );
+    return null;
   }
 
   Future<AuthorizationData?> loginVk(LoginVkFormData formData) async {
-    final response = await http.post(
-      Uri.parse("${Config.backendUrl}/signinVk"),
-      body: jsonEncode(formData),
-    );
+    // final response = await http.post(
+    //   Uri.parse("${Config.backendUrl}/signinVk"),
+    //   body: jsonEncode(formData),
+    // );
 
-    if (response.statusCode != HttpStatus.ok) {
-      return null;
-    }
+    // if (response.statusCode != HttpStatus.ok) {
+    //   return null;
+    // }
 
-    return AuthorizationData.fromJson(
-      jsonDecode(response.body) as Map<String, dynamic>,
-    );
+    // return AuthorizationData.fromJson(
+    //   jsonDecode(response.body) as Map<String, dynamic>,
+    // );
+    return null;
   }
 
   Future<AuthorizationData?> register(RegistrationFormData formData) async {
-    final response = await http.post(
-      Uri.parse("${Config.backendUrl}/register"),
-      body: jsonEncode(formData),
-    );
+    // final response = await http.post(
+    //   Uri.parse("${Config.backendUrl}/register"),
+    //   body: jsonEncode(formData),
+    // );
 
-    if (response.statusCode != HttpStatus.ok) {
-      return null;
-    }
+    // if (response.statusCode != HttpStatus.ok) {
+    //   return null;
+    // }
 
-    return await login(
-      LoginFormData(email: formData.email, password: formData.password),
-    );
+    // return await login(
+    //   LoginFormData(email: formData.email, password: formData.password),
+    // );
+    return null;
   }
 
   Future<UserModel?> getProfile() async {

@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:onied_mobile/app/app_theme.dart';
+import 'package:onied_mobile/blocs/authorization/authorization_bloc.dart';
+import 'package:onied_mobile/blocs/authorization/authorization_bloc_event.dart';
 import 'package:onied_mobile/form_data/registration_form_data.dart';
 import 'package:onied_mobile/models/enums/gender.dart';
 
@@ -44,7 +47,7 @@ class _RegistrationState extends State<RegistrationForm> {
       Level.INFO,
       "Trying to register ${jsonEncode(formDate.toJson())}...",
     );
-    // final authData = AuthorizationApi.login(formDate);
+    context.read<AuthorizationBloc>().add(Register(formData: formDate));
     context.go("/");
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:logging/logging.dart';
-import 'package:onied_mobile/providers/vk_auth_service.dart';
+import 'package:onied_mobile/blocs/authorization/authorization_bloc.dart';
+import 'package:onied_mobile/blocs/authorization/authorization_bloc_event.dart';
 
 class VkLoginForm extends StatefulWidget {
   const VkLoginForm({super.key});
@@ -11,24 +12,14 @@ class VkLoginForm extends StatefulWidget {
 }
 
 class _VkLoginState extends State<StatefulWidget> {
-  final _logger = Logger("_VkLoginState");
-  final _vkAuthService = VKAuthService();
-
   String token = "";
-
-  Future<void> _tryLogin() async {
-    final code = await _vkAuthService.authViaVK();
-    if (code == null) return;
-    _logger.log(Level.INFO, "Got Code! $code");
-    // AuthorizationApi.loginVk(
-    //     LoginVkFormData(code: code, redirectUri: Config.redirectUri));
-  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return TextButton(
-      onPressed: _tryLogin,
+      onPressed: () {
+        context.read<AuthorizationBloc>().add(LoginWithVk());
+      },
       style: TextButton.styleFrom(textStyle: TextStyle(color: Colors.black)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
