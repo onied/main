@@ -20,3 +20,7 @@ repos:
         entry: dotnet format backend/Onied -v normal --no-restore --include
         types_or: ["c#"]
         require_serial: true
+  - repo: https://github.com/Cretezy/dart-format-pre-commit
+    rev: "master"
+    hooks:
+      - id: dart-format
