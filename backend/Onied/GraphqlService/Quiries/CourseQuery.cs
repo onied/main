@@ -54,8 +54,10 @@ public class CourseQuery(
         var course = await dbContext.Courses
             .AsNoTracking()
             .Include(course => course.Modules)
+                .ThenInclude(module => module.Blocks)
             .Include(course => course.Users)
             .Include(course => course.Author)
+            .Include(course => course.Category)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (course is null)
         {
