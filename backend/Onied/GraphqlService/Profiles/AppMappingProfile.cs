@@ -1,6 +1,7 @@
 using AutoMapper;
 using Courses.Data.Models;
 using GraphqlService.Dtos.Block.Response;
+using GraphqlService.Dtos.Course.Response;
 using Task = Courses.Data.Models.Task;
 using TaskResponse = GraphqlService.Dtos.Block.Response.TaskResponse;
 
@@ -23,5 +24,8 @@ public class AppMappingProfile : Profile
         // VideoBlock
         CreateMap<VideoBlock, VideoBlockResponse>().ForMember(dest => dest.Href,
             expression => expression.MapFrom(block => block.Url)).ReverseMap();
+
+        // CourseResponse
+        CreateMap<Course, CourseResponse>();
     }
 }

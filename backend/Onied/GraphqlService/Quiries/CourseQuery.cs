@@ -2,6 +2,7 @@
 using Courses.Data;
 using Courses.Data.Models;
 using GraphqlService.Dtos.Block.Response;
+using GraphqlService.Dtos.Course.Response;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraphqlService.Quiries;
@@ -72,6 +73,30 @@ public class CourseQuery(
         }
 
         return course;
+    }
+
+    public async Task<CourseResponse> GetPublicCourseById(int id, AppDbContext dbContext)
+    {
+        var course = await dbContext.Courses
+            .AsNoTracking()
+            .Include(course => course.Modules)
+            .ThenInclude(module => module.Blocks)
+            .Include(course => course.Users)
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        if (course is null)
+        {
+            throw new GraphQLException("Course not found");
+        }
+        var response = mapper.Map<CourseResponse>(course);
+        var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
+        var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
+        var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
+        var isAuthor = course.Author?.Id.ToString() == userId;
+        response.IsOwned = userId is not null || student is not null || moderator is not null || isAuthor;
+
+        return response;
     }
 
     public async Task<SummaryBlockResponse> GetSummaryBlockById(int id, AppDbContext dbContext)
