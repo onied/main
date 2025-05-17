@@ -94,7 +94,7 @@ public class CourseQuery(
         var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
         var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
         var isAuthor = course.Author?.Id.ToString() == userId;
-        response.IsOwned = userId is not null || student is not null || moderator is not null || isAuthor;
+        response.IsOwned = userId is not null && (student is not null || moderator is not null || isAuthor);
 
         return response;
     }
