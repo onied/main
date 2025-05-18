@@ -179,6 +179,23 @@
         "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value",
         "role": "Claims[http://schemas.microsoft.com/ws/2008/06/identity/claims/role] > value"
       }
+    },
+    {
+      "DownstreamPathTemplate": "/graphql",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5098 }
+      ],
+      "UpstreamPathTemplate": "/graphql",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Identity.Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "X-User-Id": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value",
+        "X-Role": "Claims[http://schemas.microsoft.com/ws/2008/06/identity/claims/role] > value"
+      }
     }
   ],
   "GlobalConfiguration": {
