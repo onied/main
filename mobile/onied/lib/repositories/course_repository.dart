@@ -32,8 +32,22 @@ class CourseRepository {
     return categoriesNames;
   }
 
-  Future<CoursePreviewModel?> getCourseById(String courseId) async {
-    throw UnimplementedError("");
+  Future<CoursePreviewModel?> getCourseById(int courseId) async {
+    final queryResult = await _courseProvider.getCoursePreviewById(courseId);
+
+    if (queryResult.hasException) {
+      throw Exception(
+        'Error fetching course preview: ${queryResult.exception.toString()}',
+      );
+    }
+
+    final data = queryResult.data;
+    final json = data?['publicCourseById'] as Map<String, dynamic>?;
+    if (json == null) {
+      throw Exception('No course data received for id $courseId');
+    }
+
+    return CoursePreviewModel.fromJson(json);
   }
 
   Future<Iterable<CourseCardModel>> getAllCourses() async {
@@ -55,7 +69,7 @@ class CourseRepository {
 
     if (queryResult.hasException) {
       throw Exception(
-        'Error fetching popular courses: ${queryResult.exception.toString()}',
+        'Error fetching owned courses: ${queryResult.exception.toString()}',
       );
     }
 
@@ -109,7 +123,7 @@ class CourseRepository {
 
     if (queryResult.hasException) {
       throw Exception(
-        'Error fetching popular courses: ${queryResult.exception.toString()}',
+        'Error fetching recommended courses: ${queryResult.exception.toString()}',
       );
     }
 

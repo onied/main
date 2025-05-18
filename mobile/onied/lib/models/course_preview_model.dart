@@ -1,5 +1,5 @@
 class CoursePreviewModel {
-  final String id;
+  final int id;
   final String title;
   final String pictureHref;
   final String description;
@@ -26,6 +26,39 @@ class CoursePreviewModel {
     required this.courseProgram,
     required this.isOwned,
   });
+
+  factory CoursePreviewModel.fromJson(Map<String, dynamic> json) {
+    return CoursePreviewModel(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      pictureHref: json['pictureHref'] as String,
+      description: json['description'] as String,
+      hoursCount: json['hoursCount'] as int,
+      price: json['priceRubles'] as int,
+      isArchived: json['isArchived'] as bool,
+      hasCertificates: json['hasCertificates'] as bool,
+      isOwned: json['isOwned'] as bool,
+      category: Category(
+        id: (json['category'] as Map<String, dynamic>?)?['id'] as int,
+        name: (json['category'] as Map<String, dynamic>?)?['name'] as String,
+      ),
+      courseAuthor: CourseAuthor(
+        name:
+            ((json['author'] as Map<String, dynamic>?)?['firstName']
+                as String) +
+            ((json['author'] as Map<String, dynamic>?)?['lastName'] as String),
+        avatarHref:
+            (json['author'] as Map<String, dynamic>?)?['avatarHref'] as String,
+      ),
+      courseProgram:
+          (json['modules'] as List<dynamic>?)
+              ?.map(
+                (m) => (m as Map<String, dynamic>)['title'] as String? ?? '',
+              )
+              .toList() ??
+          <String>[],
+    );
+  }
 }
 
 class Category {

@@ -17,6 +17,38 @@ class CourseProvider {
     return await service.performQuery(query, variables: const {});
   }
 
+  Future<QueryResult> getCoursePreviewById(int id) async {
+    String query = r'''
+    query PublicCourseById($id: Int!) {
+        publicCourseById(id: $id) {
+            id
+            title
+            pictureHref
+            description
+            hoursCount
+            priceRubles
+            category {
+                id
+                name
+            }
+            author {
+                firstName
+                lastName
+                avatarHref
+            }
+            isArchived
+            hasCertificates
+            isOwned
+            modules {
+                title
+            }
+        }
+    }
+    ''';
+
+    return await service.performQuery(query, variables: {"id": id});
+  }
+
   Future<QueryResult> getOwnedCourses(int amount) async {
     String query = r'''
     query OwnedCourses ($amount: Int) {
