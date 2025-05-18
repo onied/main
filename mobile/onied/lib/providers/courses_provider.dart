@@ -49,6 +49,84 @@ class CourseProvider {
     return await service.performQuery(query, variables: {"id": id});
   }
 
+  Future<QueryResult> getCourseHierarchyById(int id) async {
+    String query = r'''
+    query CourseById($id: Int!) {
+        courseById(id: $id) {
+            id
+            title
+            modules {
+                id
+                index
+                title
+                blocks {
+                    id
+                    index
+                    title
+                    blockType
+                }
+            }
+        }
+    }
+    ''';
+
+    return await service.performQuery(query, variables: {"id": id});
+  }
+
+  Future<QueryResult> getSummaryBlockById(int id) async {
+    String query = r'''
+        query SummaryBlockById($id: Int!) {
+        summaryBlockById(id: $id) {
+            id
+            title
+            markdownText
+            fileName
+            fileHref
+        }
+    }
+    ''';
+
+    return await service.performQuery(query, variables: {"id": id});
+  }
+
+  Future<QueryResult> getVideoBlockById(int id) async {
+    String query = r'''
+    query VideoBlockById($id: Int!) {
+        videoBlockById(id: $id) {
+            id
+            title
+            href
+        }
+    }
+    ''';
+
+    return await service.performQuery(query, variables: {"id": id});
+  }
+
+  Future<QueryResult> getTasksBlockById(int id) async {
+    String query = r'''
+    query TasksBlockById($id: Int!) {
+        tasksBlockById(id: $id) {
+            id
+            title
+            tasks {
+                id
+                title
+                points
+                maxPoints
+                variants {
+                    id
+                    description
+                }
+                taskType
+            }
+        }
+    }
+    ''';
+
+    return await service.performQuery(query, variables: {"id": id});
+  }
+
   Future<QueryResult> getOwnedCourses(int amount) async {
     String query = r'''
     query OwnedCourses ($amount: Int) {

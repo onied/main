@@ -3,6 +3,7 @@ import 'package:onied_mobile/models/course_hierarchy_model.dart';
 import 'package:onied_mobile/models/course_mini_card_model.dart';
 import 'package:onied_mobile/models/course_preview_model.dart';
 import 'package:onied_mobile/models/course_card_model.dart';
+import 'package:onied_mobile/models/enums/block_type.dart';
 import 'package:onied_mobile/providers/courses_provider.dart';
 
 typedef CoursesFilterPredicate = bool Function(CourseCardModel courseCardDto);
@@ -44,7 +45,7 @@ class CourseRepository {
     final data = queryResult.data;
     final json = data?['publicCourseById'] as Map<String, dynamic>?;
     if (json == null) {
-      throw Exception('No course data received for id $courseId');
+      throw Exception('No course data received for course with id $courseId');
     }
 
     return CoursePreviewModel.fromJson(json);
@@ -146,10 +147,60 @@ class CourseRepository {
   }
 
   Future<CourseHierarchyModel?> getCourseHierarchy(int courseId) async {
-    throw UnimplementedError("");
+    final queryResult = await _courseProvider.getCourseHierarchyById(courseId);
+
+    if (queryResult.hasException) {
+      throw Exception(
+        'Error fetching course hierarchy: ${queryResult.exception.toString()}',
+      );
+    }
+
+    final data = queryResult.data;
+    final json = data?['courseById'] as Map<String, dynamic>?;
+    if (json == null) {
+      throw Exception(
+        'No hierarchy data received for course with id $courseId',
+      );
+    }
+
+    return CourseHierarchyModel.fromJson(json);
   }
 
-  Future<CourseBlockModel?> getCourseBlockById(int blockId) async {
-    throw UnimplementedError("");
+  Future<CourseBlockModel?> getCourseBlockById(
+    int blockId,
+    BlockType blockType,
+  ) async {
+    final queryResult = await switch (blockType) {
+      BlockType.summaryBlock => _courseProvider.getSummaryBlockById(blockId),
+      BlockType.videoBlock => _courseProvider.getVideoBlockById(blockId),
+      BlockType.tasksBlock => _courseProvider.getTasksBlockById(blockId),
+      BlockType.anyBlock =>
+        throw UnimplementedError("Can't get block without specified type"),
+    };
+
+    if (queryResult.hasException) {
+      throw Exception(
+        'Error fetching block with id: ${queryResult.exception.toString()}',
+      );
+    }
+
+    final data = queryResult.data;
+    final json =
+        data?[graphqlDataFieldFromBlockType(blockType)]
+            as Map<String, dynamic>?;
+    if (json == null) {
+      throw Exception('No hierarchy data received for course with id $blockId');
+    }
+
+    switch (blockType) {
+      case BlockType.summaryBlock:
+        return CourseSummaryBlockModel.fromJson(json);
+      case BlockType.videoBlock:
+        return CourseVideoBlockModel.fromJson(json);
+      case BlockType.tasksBlock:
+        return CourseTaskBlockModel.fromJson(json);
+      default:
+        throw UnimplementedError("Can't get block without specified type");
+    }
   }
 }

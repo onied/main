@@ -32,7 +32,10 @@ class CourseBloc extends Bloc<CourseBlocEvent, CourseBlocState> {
     if (state is! LoadedState) return;
     final currentState = state as LoadedState;
     emit(currentState.copyWith(isBlockLoading: true));
-    final block = await courseRepository.getCourseBlockById(event.blockId);
+    final block = await courseRepository.getCourseBlockById(
+      event.blockId,
+      event.blockType,
+    );
     if (block == null) {
       emit(ErrorState(errorMessage: "Could not find course block."));
     } else {

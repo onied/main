@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/models/course_hierarchy_model.dart';
+import 'package:onied_mobile/models/enums/block_type.dart';
 
 class CourseSidebar extends StatelessWidget {
   final CourseHierarchyModel hierarchy;
   final int? selectedBlockId;
-  final Function(int) onBlockSelected;
+  final Function(int, BlockType) onBlockSelected;
 
   const CourseSidebar({
     super.key,
@@ -52,7 +53,7 @@ class CourseSidebar extends StatelessWidget {
                         context,
                       ).textTheme.titleLarge?.copyWith(color: Colors.white),
                     ),
-                    onTap: () => onBlockSelected(block.id),
+                    onTap: () => onBlockSelected(block.id, block.blockType),
                   ),
                 );
               }),

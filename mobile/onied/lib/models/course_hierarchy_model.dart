@@ -54,14 +54,12 @@ class CourseHierarchyBlock {
   final String title;
   final int index;
   final BlockType blockType;
-  final bool completed;
 
   CourseHierarchyBlock({
     required this.id,
     required this.title,
     required this.index,
     required this.blockType,
-    required this.completed,
   });
 
   factory CourseHierarchyBlock.fromJson(Map<String, dynamic> json) {
@@ -69,8 +67,7 @@ class CourseHierarchyBlock {
       id: json['id'] as int,
       title: json['title'] as String,
       index: json['index'] as int,
-      blockType: BlockType.values[json["blockType"] as int],
-      completed: json["completed"] as bool,
+      blockType: blockTypeFromString(json["blockType"] as String),
     );
   }
 }

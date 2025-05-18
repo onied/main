@@ -5,29 +5,47 @@ class CourseBlockModel {
   final int id;
   final String title;
   final BlockType blockType;
-  final int index;
 
   CourseBlockModel({
     required this.id,
     required this.title,
     required this.blockType,
-    required this.index,
   });
+
+  factory CourseBlockModel.fromJson(
+    Map<String, dynamic> json,
+    BlockType blockType,
+  ) {
+    return CourseBlockModel(
+      id: json["id"] as int,
+      title: json["title"] as String,
+      blockType: blockType,
+    );
+  }
 }
 
-class CourseConspectBlockModel extends CourseBlockModel {
+class CourseSummaryBlockModel extends CourseBlockModel {
   final String markdownText;
   final String? fileName;
   final String? fileHref;
 
-  CourseConspectBlockModel({
+  CourseSummaryBlockModel({
     required super.id,
     required super.title,
-    required super.index,
     required this.markdownText,
     this.fileName,
     this.fileHref,
   }) : super(blockType: BlockType.summaryBlock);
+
+  factory CourseSummaryBlockModel.fromJson(Map<String, dynamic> json) {
+    return CourseSummaryBlockModel(
+      id: json["id"] as int,
+      title: json["title"],
+      markdownText: json["markdownText"] as String,
+      fileName: json["fileName"] as String?,
+      fileHref: json["fileHref"] as String?,
+    );
+  }
 }
 
 class CourseVideoBlockModel extends CourseBlockModel {
@@ -36,9 +54,16 @@ class CourseVideoBlockModel extends CourseBlockModel {
   CourseVideoBlockModel({
     required super.id,
     required super.title,
-    required super.index,
     required this.href,
   }) : super(blockType: BlockType.videoBlock);
+
+  factory CourseVideoBlockModel.fromJson(Map<String, dynamic> json) {
+    return CourseVideoBlockModel(
+      id: json["id"] as int,
+      title: json["title"],
+      href: json["href"] as String,
+    );
+  }
 }
 
 class CourseTaskBlockModel extends CourseBlockModel {
@@ -47,9 +72,19 @@ class CourseTaskBlockModel extends CourseBlockModel {
   CourseTaskBlockModel({
     required super.id,
     required super.title,
-    required super.index,
     required this.tasks,
   }) : super(blockType: BlockType.tasksBlock);
+
+  factory CourseTaskBlockModel.fromJson(Map<String, dynamic> json) {
+    return CourseTaskBlockModel(
+      id: json["id"] as int,
+      title: json["title"],
+      tasks:
+          (json["tasks"] as List)
+              .map((taskJson) => CourseTaskBlockTask.fromJson(taskJson))
+              .toList(),
+    );
+  }
 }
 
 class CourseTaskBlockTask {
@@ -68,6 +103,23 @@ class CourseTaskBlockTask {
     required this.maxPoints,
     this.variants,
   });
+
+  factory CourseTaskBlockTask.fromJson(Map<String, dynamic> json) {
+    return CourseTaskBlockTask(
+      id: json["id"] as int,
+      title: json["title"],
+      isDone: false,
+      taskType: taskTypeFromString(json["taskType"]),
+      maxPoints: json["maxPoints"] as int,
+      variants:
+          (json["variants"] as List)
+              .map(
+                (variantJson) =>
+                    CourseTaskBlockTaskVariant.fromJson(variantJson),
+              )
+              .toList(),
+    );
+  }
 }
 
 class CourseTaskBlockTaskVariant {
@@ -75,4 +127,11 @@ class CourseTaskBlockTaskVariant {
   final String description;
 
   CourseTaskBlockTaskVariant({required this.id, required this.description});
+
+  factory CourseTaskBlockTaskVariant.fromJson(Map<String, dynamic> json) {
+    return CourseTaskBlockTaskVariant(
+      id: json["id"] as int,
+      description: json["description"] as String,
+    );
+  }
 }
