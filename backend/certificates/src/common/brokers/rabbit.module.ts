@@ -5,7 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    RabbitMQModule.forRoot({
+    RabbitMQModule.forRoot(RabbitMQModule, {
       uri: process.env.RABBITMQ_CONNECTION_STRING,
       connectionInitOptions: { wait: true, timeout: 10000 },
       connectionManagerOptions: {
