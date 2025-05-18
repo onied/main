@@ -5,8 +5,8 @@ class CoursePreviewModel {
   final String description;
   final int hoursCount;
   final int price;
-  final Category category;
-  final CourseAuthor courseAuthor;
+  final CategoryModel category;
+  final CourseAuthorModel courseAuthor;
   final bool isArchived;
   final bool hasCertificates;
   final List<String>? courseProgram;
@@ -38,11 +38,11 @@ class CoursePreviewModel {
       isArchived: json['isArchived'] as bool,
       hasCertificates: json['hasCertificates'] as bool,
       isOwned: json['isOwned'] as bool,
-      category: Category(
+      category: CategoryModel(
         id: (json['category'] as Map<String, dynamic>?)?['id'] as int,
         name: (json['category'] as Map<String, dynamic>?)?['name'] as String,
       ),
-      courseAuthor: CourseAuthor(
+      courseAuthor: CourseAuthorModel(
         name:
             ((json['author'] as Map<String, dynamic>?)?['firstName']
                 as String) +
@@ -61,16 +61,31 @@ class CoursePreviewModel {
   }
 }
 
-class Category {
+class CategoryModel {
   final int id;
   final String name;
 
-  const Category({required this.id, required this.name});
+  const CategoryModel({required this.id, required this.name});
+
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(id: json["id"] as int, name: json["name"]);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 }
 
-class CourseAuthor {
+class CourseAuthorModel {
   final String name;
   final String avatarHref;
 
-  const CourseAuthor({required this.name, required this.avatarHref});
+  const CourseAuthorModel({required this.name, required this.avatarHref});
 }

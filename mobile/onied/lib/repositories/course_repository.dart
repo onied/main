@@ -4,6 +4,7 @@ import 'package:onied_mobile/models/course_mini_card_model.dart';
 import 'package:onied_mobile/models/course_preview_model.dart';
 import 'package:onied_mobile/models/course_card_model.dart';
 import 'package:onied_mobile/models/enums/block_type.dart';
+import 'package:onied_mobile/models/search_filters_model.dart';
 import 'package:onied_mobile/providers/courses_provider.dart';
 
 typedef CoursesFilterPredicate = bool Function(CourseCardModel courseCardDto);
@@ -12,7 +13,7 @@ class CourseRepository {
   final CourseProvider _courseProvider;
   CourseRepository(this._courseProvider);
 
-  Future<Iterable<String>> getAllCategories() async {
+  Future<Iterable<CategoryModel>> getAllCategories() async {
     final queryResult = await _courseProvider.getAllCategories();
     if (queryResult.hasException) {
       throw Exception(
@@ -21,16 +22,16 @@ class CourseRepository {
     }
     final data = queryResult.data;
     if (data == null || data['categories'] == null) {
-      return <String>[];
+      return <CategoryModel>[];
     }
     final rawList = data['categories'] as List<dynamic>;
-    final categoriesNames =
+    final categories =
         rawList
-            .map((entry) => entry?['name'] as String?)
-            .whereType<String>()
-            .toList();
+            .map((categoryJson) => CategoryModel.fromJson(categoryJson))
+            .toList()
+          ..add(CategoryModel(id: -1, name: "All"));
 
-    return categoriesNames;
+    return categories;
   }
 
   Future<CoursePreviewModel?> getCourseById(int courseId) async {
@@ -51,18 +52,40 @@ class CourseRepository {
     return CoursePreviewModel.fromJson(json);
   }
 
-  Future<Iterable<CourseCardModel>> getAllCourses() async {
-    throw UnimplementedError("");
-  }
+  // Future<Iterable<CourseCardModel>> getAllCourses() async {
+  //   throw UnimplementedError("");
+  // }
 
   Future<Iterable<CourseCardModel>> getFilteredCourses(
     String searchQuery,
-    CoursesFilterPredicate filterPredicate,
+    SearchFiltersModel searchFilters,
   ) async {
-    return (await getAllCourses())
-        .where((course) => course.title.contains(searchQuery))
-        .where(filterPredicate)
-        .toList();
+    final queryResult = await _courseProvider.getSearchResult(
+      searchQuery,
+      searchFilters,
+    );
+
+    if (queryResult.hasException) {
+      throw Exception(
+        'Error fetching catalog: ${queryResult.exception.toString()}',
+      );
+    }
+
+    final data = queryResult.data;
+    if (data == null ||
+        data['courses'] == null ||
+        data['courses']['nodes'] == null) {
+      return <CourseCardModel>[];
+    }
+
+    final rawList = data['courses']['nodes'] as List<dynamic>;
+    final results = rawList.map((node) {
+      final json = node as Map<String, dynamic>;
+
+      return CourseCardModel.fromJson(json);
+    });
+
+    return results;
   }
 
   Future<Iterable<CourseMiniCardModel>> getOwnedCourses() async {

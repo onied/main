@@ -1,4 +1,5 @@
 import 'package:graphql/client.dart';
+import 'package:onied_mobile/models/search_filters_model.dart';
 import 'package:onied_mobile/services/graphql_service.dart';
 
 class CourseProvider {
@@ -9,12 +10,64 @@ class CourseProvider {
     String query = '''
     query Categories {
         categories {
+            id
             name
         }
     }
     ''';
 
     return await service.performQuery(query, variables: const {});
+  }
+
+  Future<QueryResult> getSearchResult(
+    String searchQuery,
+    SearchFiltersModel searchFilters,
+  ) async {
+    String query = r'''
+    query Courses(
+        $query: String
+        $id: Int
+        $minPrice: Int
+        $maxPrice: Int
+        $hasCertificates: Boolean
+        $isArchived: Boolean
+    ) {
+        courses(
+            where: {
+                title: { contains: $query }
+                categoryId: { eq: $id }
+                priceRubles: { gte: $minPrice, lte: $maxPrice }
+                hasCertificates: { eq: $hasCertificates }
+                isArchived: { eq: $isArchived }
+            }
+        ) {
+            nodes {
+                id
+                title
+                pictureHref
+                description
+                priceRubles
+                isArchived
+                hasCertificates
+                category {
+                    id
+                    name
+                }
+            }
+        }
+    }
+    ''';
+
+    var variables = {
+      "query": searchQuery,
+      "id": searchFilters.selectedCategory.id,
+      "minPrice": searchFilters.selectedPriceRange.start.toInt(),
+      "maxPrice": searchFilters.selectedPriceRange.end.toInt(),
+      "hasCertificates": searchFilters.selectedHasCertificates,
+      "isArchived": searchFilters.selectedIsArchived,
+    };
+
+    return await service.performQuery(query, variables: variables);
   }
 
   Future<QueryResult> getCoursePreviewById(int id) async {

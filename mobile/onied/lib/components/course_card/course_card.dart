@@ -58,10 +58,10 @@ class CourseCard extends StatelessWidget {
                           Text('${courseCard.price}₽')
                         else
                           const Text('Бесплатно'),
-                        Button(
-                          onPressed: () {},
-                          text: courseCard.isOwned ? 'продолжить' : 'купить',
-                        ),
+                        // Button(
+                        //   onPressed: () {},
+                        //   text: courseCard.isOwned ? 'продолжить' : 'купить',
+                        // ),
                       ],
                     ),
                   ],

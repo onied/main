@@ -1,4 +1,4 @@
-import 'package:onied_mobile/repositories/course_repository.dart';
+import 'package:onied_mobile/models/search_filters_model.dart';
 
 abstract class CatalogBlocEvent {}
 
@@ -10,8 +10,8 @@ class UpdateSearchQuery extends CatalogBlocEvent {
   UpdateSearchQuery(this.query);
 }
 
-class UpdateFilterPredicate extends CatalogBlocEvent {
-  final CoursesFilterPredicate predicate;
+class UpdateSearchFilters extends CatalogBlocEvent {
+  final SearchFiltersModel searchFilters;
 
-  UpdateFilterPredicate(this.predicate);
+  UpdateSearchFilters(this.searchFilters);
 }

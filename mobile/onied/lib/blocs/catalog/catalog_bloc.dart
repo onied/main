@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onied_mobile/models/course_card_model.dart';
+import 'package:onied_mobile/models/course_preview_model.dart';
+import 'package:onied_mobile/models/search_filters_model.dart';
 import 'package:onied_mobile/repositories/course_repository.dart';
 
 import 'catalog_bloc_event.dart';
@@ -12,31 +14,36 @@ class CatalogBloc extends Bloc<CatalogBlocEvent, CatalogBlocState> {
     : super(
         LoadingState(
           query: "",
-          filteringPredicate: (CourseCardModel courseCardDto) => true,
+          searchFilters: SearchFiltersModel(
+            selectedCategory: CategoryModel(id: -1, name: "All"),
+            selectedPriceRange: RangeValues(0, 50_000),
+            selectedCompletionTimeRange: RangeValues(0, 150),
+            selectedHasCertificates: true,
+            selectedIsArchived: false,
+          ),
         ),
       ) {
     on<InitializeCourses>(_onInitializeCourses);
     on<UpdateSearchQuery>(_onUpdateSearchQuery);
-    on<UpdateFilterPredicate>(_onUpdateFilterPredicate);
+    on<UpdateSearchFilters>(_onUpdateSearchFilters);
   }
 
   Future<void> _onInitializeCourses(
     InitializeCourses event,
     Emitter<CatalogBlocState> emit,
   ) async {
-    emit(
-      LoadingState(
-        query: state.query,
-        filteringPredicate: state.filteringPredicate,
-      ),
-    );
-    final results = (await courseRepository.getAllCourses()).toList();
+    emit(LoadingState(query: state.query, searchFilters: state.searchFilters));
+    final results =
+        (await courseRepository.getFilteredCourses(
+          state.query,
+          state.searchFilters,
+        )).toList();
     final categories = (await courseRepository.getAllCategories()).toList();
     emit(
       LoadedState(
         categories: categories,
         query: state.query,
-        filteringPredicate: state.filteringPredicate,
+        searchFilters: state.searchFilters,
         searchResults: results,
       ),
     );
@@ -48,53 +55,43 @@ class CatalogBloc extends Bloc<CatalogBlocEvent, CatalogBlocState> {
   ) async {
     if (state is! LoadedState) return;
     final currentState = state as LoadedState;
-    emit(
-      LoadingState(
-        query: event.query,
-        filteringPredicate: state.filteringPredicate,
-      ),
-    );
+    emit(LoadingState(query: event.query, searchFilters: state.searchFilters));
 
     final results =
         (await courseRepository.getFilteredCourses(
           state.query,
-          state.filteringPredicate,
+          state.searchFilters,
         )).toList();
 
     emit(
       LoadedState(
         categories: currentState.categories,
         query: state.query,
-        filteringPredicate: state.filteringPredicate,
+        searchFilters: state.searchFilters,
         searchResults: results,
       ),
     );
   }
 
-  Future<void> _onUpdateFilterPredicate(
-    UpdateFilterPredicate event,
+  Future<void> _onUpdateSearchFilters(
+    UpdateSearchFilters event,
     Emitter<CatalogBlocState> emit,
   ) async {
     if (state is! LoadedState) return;
     final currentState = state as LoadedState;
-    emit(
-      LoadingState(
-        query: state.query,
-        filteringPredicate: state.filteringPredicate,
-      ),
-    );
+    emit(LoadingState(query: state.query, searchFilters: event.searchFilters));
 
     final results =
         (await courseRepository.getFilteredCourses(
           state.query,
-          state.filteringPredicate,
+          state.searchFilters,
         )).toList();
 
     emit(
       LoadedState(
         categories: currentState.categories,
         query: state.query,
-        filteringPredicate: state.filteringPredicate,
+        searchFilters: state.searchFilters,
         searchResults: results,
       ),
     );

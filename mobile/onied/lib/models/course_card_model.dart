@@ -5,7 +5,7 @@ class CourseCardModel {
   final String description;
   final String imageUrl;
   final int price;
-  final bool isOwned;
+  // final bool isOwned;
   final bool isArchived;
   final bool hasCertificates;
 
@@ -16,7 +16,6 @@ class CourseCardModel {
     required this.description,
     required this.imageUrl,
     required this.price,
-    required this.isOwned,
     required this.isArchived,
     required this.hasCertificates,
   });
@@ -30,7 +29,6 @@ class CourseCardModel {
       description: json["description"] as String,
       imageUrl: json["pictureHref"] as String,
       price: json["priceRubles"] as int,
-      isOwned: json["isOwned"] as bool,
       isArchived: json["isArchived"] as bool,
       hasCertificates: json["hasCertificates"] as bool,
     );

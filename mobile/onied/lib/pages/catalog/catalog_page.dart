@@ -32,13 +32,14 @@ class CatalogPage extends StatelessWidget {
               LoadedState(:final searchResults) => Scaffold(
                 appBar: SearchModeAppBar(
                   categories: state.categories,
+                  currentSearchFilters: state.searchFilters,
                   onSearchChanged:
                       (query) => context.read<CatalogBloc>().add(
                         UpdateSearchQuery(query),
                       ),
-                  onFiltersPredicateChanged:
-                      (predicate) => context.read<CatalogBloc>().add(
-                        UpdateFilterPredicate(predicate),
+                  onSearchFiltersChanged:
+                      (newSearchFilters) => context.read<CatalogBloc>().add(
+                        UpdateSearchFilters(newSearchFilters),
                       ),
                 ),
                 body: ListView.builder(
