@@ -112,8 +112,8 @@ class CourseTaskBlockTask {
       taskType: taskTypeFromString(json["taskType"]),
       maxPoints: json["maxPoints"] as int,
       variants:
-          (json["variants"] as List)
-              .map(
+          (json["variants"] as List?)
+              ?.map(
                 (variantJson) =>
                     CourseTaskBlockTaskVariant.fromJson(variantJson),
               )
