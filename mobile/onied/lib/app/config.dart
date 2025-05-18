@@ -1,5 +1,5 @@
 class Config {
-  static const backendUrl = "http://192.168.31.114:8080";
+  static const backendUrl = "http://localhost:8080";
 
   static const String clientId = '51882579';
   static const String redirectUri = 'onied://auth';
