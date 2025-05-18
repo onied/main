@@ -1,11 +1,11 @@
 import 'package:onied_mobile/models/enums/gender.dart';
 
-class UpdateUserModel {
+class UpdateUserModelRequest {
   String firstName;
   String lastName;
   Gender gender;
 
-  UpdateUserModel({
+  UpdateUserModelRequest({
     required this.firstName,
     required this.lastName,
     required this.gender,

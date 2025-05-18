@@ -1,6 +1,8 @@
+import 'package:onied_mobile/blocs/profile_info/profile_info_bloc_event.dart';
 import 'package:onied_mobile/models/auth/credentials.dart';
 import 'package:onied_mobile/models/enums/auth_status.dart';
 import 'package:onied_mobile/requests/refresh_request.dart';
+import 'package:onied_mobile/requests/update_user_model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:onied_mobile/providers/user_provider.dart';
@@ -51,6 +53,24 @@ class UserRepository {
   }
 
   Future<UserModel?> getProfile() async {
+    final authData = await _tryGetCredentials();
+    if (authData == null) {
+      return null;
+    }
+
+    return userProvider.getProfile();
+  }
+
+  Future<UserModel?> updateProfile(UpdateUserModelRequest request) async {
+    final authData = await _tryGetCredentials();
+    if (authData == null) {
+      return null;
+    }
+
+    return userProvider.updateProfile(request, authData);
+  }
+
+  Future<Credentials?> _tryGetCredentials() async {
     late Credentials? authData;
     if (!await authorizationProvider.isAuthenticated()) {
       final prevData = await authorizationProvider.getCredentials();
@@ -59,13 +79,10 @@ class UserRepository {
           RefreshRequest(refreshToken: prevData.refreshToken),
         );
       }
-      if (authData == null) {
-        return null;
-      }
     } else {
       authData = await authorizationProvider.getCredentials();
     }
 
-    return userProvider.getProfile();
+    return authData;
   }
 }

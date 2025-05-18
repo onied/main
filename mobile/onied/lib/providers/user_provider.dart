@@ -15,6 +15,7 @@ import 'package:onied_mobile/requests/forms/login_form_data.dart';
 import 'package:onied_mobile/requests/forms/login_vk_form_data.dart';
 import 'package:onied_mobile/requests/forms/registration_form_data.dart';
 import 'package:onied_mobile/requests/refresh_request.dart';
+import 'package:onied_mobile/requests/update_user_model.dart';
 
 class UserProvider {
   final _logger = Logger("UserProvider");
@@ -101,7 +102,7 @@ class UserProvider {
   }
 
   Future<UserModel?> updateProfile(
-    UpdateUserModel request,
+    UpdateUserModelRequest request,
     Credentials credentials,
   ) async {
     final response = await http.put(
