@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:onied_mobile/app/injection.dart';
 import 'package:onied_mobile/blocs/authorization/authorization_bloc.dart';
-import 'package:onied_mobile/providers/vk_auth_service.dart';
+import 'package:onied_mobile/providers/vk_auth_provider.dart';
 import 'package:onied_mobile/repositories/user_repository.dart';
+
 import 'components/form_divider.dart';
 import 'components/forms/login_form.dart';
 import 'components/forms/redirect_to_registration_form.dart';
@@ -16,8 +19,8 @@ class AuthorizationPage extends StatelessWidget {
     return BlocProvider(
       create:
           (context) => AuthorizationBloc(
-            repository: UserRepository(),
-            vkAuthService: VKAuthService(),
+            repository: getIt<UserRepository>(),
+            vkAuthProvider: getIt<VKAuthProvider>(),
           ),
       child: Scaffold(
         appBar: AppBar(),

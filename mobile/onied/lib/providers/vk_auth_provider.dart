@@ -2,7 +2,7 @@ import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:logging/logging.dart';
 import 'package:onied_mobile/app/config.dart';
 
-class VKAuthService {
+class VKAuthProvider {
   final _logger = Logger("VKAuthService");
 
   Future<String?> authViaVK() async {

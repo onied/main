@@ -7,8 +7,8 @@ import 'package:logging/logging.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/blocs/authorization/authorization_bloc.dart';
 import 'package:onied_mobile/blocs/authorization/authorization_bloc_event.dart';
-import 'package:onied_mobile/form_data/registration_form_data.dart';
 import 'package:onied_mobile/models/enums/gender.dart';
+import 'package:onied_mobile/requests/forms/registration_form_data.dart';
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
