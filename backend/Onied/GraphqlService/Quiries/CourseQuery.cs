@@ -7,16 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GraphqlService.Quiries;
 
-public class CourseQuery(
-    [Service] IHttpContextAccessor contextAccessor,
-    [Service] IMapper mapper)
+public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Service] IMapper mapper)
 {
     [UsePaging]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<Course> GetCourses(AppDbContext dbContext)
-        => dbContext.Courses;
+    public IQueryable<Course> GetCourses(AppDbContext dbContext) => dbContext.Courses;
+
+    public IQueryable<Category> GetCategories(AppDbContext dbContext) => dbContext.Categories;
 
     [UsePaging]
     [UseProjection]
@@ -29,8 +28,8 @@ public class CourseQuery(
         {
             throw new GraphQLException("Unauthorized access");
         }
-        return dbContext.Courses
-            .Where(x => x.Users.Select(y => y.Id.ToString()).Contains(userId))
+        return dbContext
+            .Courses.Where(x => x.Users.Select(y => y.Id.ToString()).Contains(userId))
             .AsQueryable();
     }
 
@@ -40,9 +39,7 @@ public class CourseQuery(
     [UseSorting]
     public IQueryable<Course> GetPopularCourses(AppDbContext dbContext)
     {
-        return dbContext.Courses
-            .OrderBy(x => x.Users.Count)
-            .AsQueryable();
+        return dbContext.Courses.OrderBy(x => x.Users.Count).AsQueryable();
     }
 
     public async Task<Course> GetCourseById(int id, AppDbContext dbContext)
@@ -52,10 +49,10 @@ public class CourseQuery(
         {
             throw new GraphQLException("Unauthorized access");
         }
-        var course = await dbContext.Courses
-            .AsNoTracking()
+        var course = await dbContext
+            .Courses.AsNoTracking()
             .Include(course => course.Modules)
-                .ThenInclude(module => module.Blocks)
+            .ThenInclude(module => module.Blocks)
             .Include(course => course.Users)
             .Include(course => course.Author)
             .Include(course => course.Category)
@@ -77,8 +74,8 @@ public class CourseQuery(
 
     public async Task<CourseResponse> GetPublicCourseById(int id, AppDbContext dbContext)
     {
-        var course = await dbContext.Courses
-            .AsNoTracking()
+        var course = await dbContext
+            .Courses.AsNoTracking()
             .Include(course => course.Modules)
             .ThenInclude(module => module.Blocks)
             .Include(course => course.Users)
@@ -94,7 +91,8 @@ public class CourseQuery(
         var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
         var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
         var isAuthor = course.Author?.Id.ToString() == userId;
-        response.IsOwned = userId is not null && (student is not null || moderator is not null || isAuthor);
+        response.IsOwned =
+            userId is not null && (student is not null || moderator is not null || isAuthor);
 
         return response;
     }
@@ -106,10 +104,10 @@ public class CourseQuery(
         {
             throw new GraphQLException("Unauthorized access");
         }
-        var block = await dbContext.SummaryBlocks
-            .AsNoTracking()
+        var block = await dbContext
+            .SummaryBlocks.AsNoTracking()
             .Include(x => x.Module.Course)
-                .ThenInclude(course => course.Author)
+            .ThenInclude(course => course.Author)
             .Include(x => x.Module.Course.Users)
             .Include(x => x.Module.Course.Moderators)
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -136,10 +134,10 @@ public class CourseQuery(
         {
             throw new GraphQLException("Unauthorized access");
         }
-        var block = await dbContext.VideoBlocks
-            .AsNoTracking()
+        var block = await dbContext
+            .VideoBlocks.AsNoTracking()
             .Include(x => x.Module.Course)
-                .ThenInclude(course => course.Author)
+            .ThenInclude(course => course.Author)
             .Include(x => x.Module.Course.Users)
             .Include(x => x.Module.Course.Moderators)
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -166,17 +164,17 @@ public class CourseQuery(
         {
             throw new GraphQLException("Unauthorized access");
         }
-        var query = dbContext.TasksBlocks
-            .Include(block => block.Module.Course)
-                .ThenInclude(course => course.Author)
+        var query = dbContext
+            .TasksBlocks.Include(block => block.Module.Course)
+            .ThenInclude(course => course.Author)
             .Include(x => x.Module.Course.Users)
             .Include(x => x.Module.Course.Moderators)
             .Include(block => block.Tasks)
             .AsQueryable();
-        query = query.Include(block => block.Tasks)
+        query = query
+            .Include(block => block.Tasks)
             .ThenInclude(task => ((VariantsTask)task).Variants);
-        query = query.Include(block => block.Tasks)
-            .ThenInclude(task => ((InputTask)task).Answers);
+        query = query.Include(block => block.Tasks).ThenInclude(task => ((InputTask)task).Answers);
         var block = await query.FirstOrDefaultAsync(x => x.Id == id);
         if (block is null)
         {
@@ -193,10 +191,11 @@ public class CourseQuery(
         }
 
         var dto = mapper.Map<TasksBlockResponse>(block);
-        var userTaskPointsDict = dbContext.UserTaskPoints
-            .AsNoTracking()
-            .Where(x => block.Tasks.Select(y => y.Id).Contains(x.TaskId) &&
-                        x.UserId == Guid.Parse(userId))
+        var userTaskPointsDict = dbContext
+            .UserTaskPoints.AsNoTracking()
+            .Where(x =>
+                block.Tasks.Select(y => y.Id).Contains(x.TaskId) && x.UserId == Guid.Parse(userId)
+            )
             .ToDictionary(x => x.TaskId, x => x.Points);
         foreach (var task in dto.Tasks)
         {

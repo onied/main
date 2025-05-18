@@ -1,4 +1,4 @@
-import 'package:onied_mobile/models/course_card_model.dart';
+import 'package:onied_mobile/models/course_mini_card_model.dart';
 
 abstract class HomeBlocState {}
 
@@ -11,9 +11,9 @@ class ErrorState extends HomeBlocState {
 }
 
 class LoadedState extends HomeBlocState {
-  final Iterable<CourseCardModel> ownedCourses;
-  final Iterable<CourseCardModel> popularCourses;
-  final Iterable<CourseCardModel> recommendedCourses;
+  final Iterable<CourseMiniCardModel> ownedCourses;
+  final Iterable<CourseMiniCardModel> popularCourses;
+  final Iterable<CourseMiniCardModel> recommendedCourses;
 
   LoadedState({
     required this.ownedCourses,
@@ -22,9 +22,9 @@ class LoadedState extends HomeBlocState {
   });
 
   LoadedState copyWith({
-    Iterable<CourseCardModel>? ownedCourses,
-    Iterable<CourseCardModel>? popularCourses,
-    Iterable<CourseCardModel>? recommendedCourses,
+    Iterable<CourseMiniCardModel>? ownedCourses,
+    Iterable<CourseMiniCardModel>? popularCourses,
+    Iterable<CourseMiniCardModel>? recommendedCourses,
   }) {
     return LoadedState(
       ownedCourses: ownedCourses ?? this.ownedCourses,

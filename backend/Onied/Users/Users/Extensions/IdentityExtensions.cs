@@ -7,14 +7,21 @@ namespace Users.Extensions;
 
 public static class IdentityExtensions
 {
-    public static IServiceCollection AddIdentityConfigured(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddIdentityConfigured(
+        this IServiceCollection serviceCollection
+    )
     {
-        serviceCollection.AddIdentityApiEndpoints<AppUser>().AddRoles<IdentityRole>()
+        serviceCollection
+            .AddIdentityApiEndpoints<AppUser>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>();
         serviceCollection.AddAuthentication(IdentityConstants.BearerScheme);
         serviceCollection.AddAuthorization();
-        serviceCollection.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
-        serviceCollection.AddScoped<IEmailSender<AppUser>, GoogleSmtpEmailSender>();
+        serviceCollection.Configure<IdentityOptions>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+        });
+        serviceCollection.AddScoped<IEmailSender<AppUser>, LoggingEmailSender>();
         return serviceCollection;
     }
 }

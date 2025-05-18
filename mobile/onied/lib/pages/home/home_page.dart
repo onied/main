@@ -5,52 +5,58 @@ import 'package:onied_mobile/blocs/home/home_bloc.dart';
 import 'package:onied_mobile/blocs/home/home_bloc_event.dart';
 import 'package:onied_mobile/blocs/home/home_bloc_state.dart';
 import 'package:onied_mobile/components/search_bar/search_bar.dart';
-import 'package:onied_mobile/models/course_card_model.dart';
+import 'package:onied_mobile/models/course_mini_card_model.dart';
+import 'package:onied_mobile/providers/courses_provider.dart';
 import 'package:onied_mobile/repositories/course_repository.dart';
+import 'package:onied_mobile/services/graphql_service.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (context) =>
-              HomeBloc(repository: CourseRepository())..add(LoadCourses()),
-      child: Scaffold(
-        appBar: CourseSearchBar(),
-        body: BlocBuilder<HomeBloc, HomeBlocState>(
-          builder: (context, state) {
-            return switch (state) {
-              LoadingState() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              ErrorState(:final errorMessage) => Center(
-                child: Text(errorMessage),
-              ),
-              LoadedState(
-                :final ownedCourses,
-                :final popularCourses,
-                :final recommendedCourses,
-              ) =>
-                ListView(
-                  children: [
-                    buildCourseSection(context, 'Мои курсы', ownedCourses),
-                    buildCourseSection(
-                      context,
-                      'Популярные курсы',
-                      popularCourses,
-                    ),
-                    buildCourseSection(
-                      context,
-                      'Рекомендуемые курсы',
-                      recommendedCourses,
-                    ),
-                  ],
+    return RepositoryProvider(
+      create: (context) => CourseProvider(GraphQlService()),
+      child: BlocProvider(
+        create:
+            (context) => HomeBloc(
+              repository: CourseRepository(context.read<CourseProvider>()),
+            )..add(LoadCourses()),
+        child: Scaffold(
+          appBar: CourseSearchBar(),
+          body: BlocBuilder<HomeBloc, HomeBlocState>(
+            builder: (context, state) {
+              return switch (state) {
+                LoadingState() => const Center(
+                  child: CircularProgressIndicator(),
                 ),
-              _ => const Center(child: Text('Something went wrong.')),
-            };
-          },
+                ErrorState(:final errorMessage) => Center(
+                  child: Text(errorMessage),
+                ),
+                LoadedState(
+                  :final ownedCourses,
+                  :final popularCourses,
+                  :final recommendedCourses,
+                ) =>
+                  ListView(
+                    children: [
+                      buildCourseSection(context, 'Мои курсы', ownedCourses),
+                      buildCourseSection(
+                        context,
+                        'Популярные курсы',
+                        popularCourses,
+                      ),
+                      buildCourseSection(
+                        context,
+                        'Рекомендуемые курсы',
+                        recommendedCourses,
+                      ),
+                    ],
+                  ),
+                _ => const Center(child: Text('Something went wrong.')),
+              };
+            },
+          ),
         ),
       ),
     );
@@ -59,7 +65,7 @@ class HomePage extends StatelessWidget {
   Widget buildCourseSection(
     BuildContext context,
     String title,
-    Iterable<CourseCardModel> courses,
+    Iterable<CourseMiniCardModel> courses,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
