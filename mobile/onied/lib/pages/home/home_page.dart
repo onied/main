@@ -96,7 +96,11 @@ class HomePage extends StatelessWidget {
                                 border: Border.all(color: Colors.black),
                                 borderRadius: BorderRadius.circular(8),
                                 image: DecorationImage(
-                                  image: NetworkImage(course.imageUrl),
+                                  image: NetworkImage(
+                                    course.imageUrl.endsWith(".svg")
+                                        ? "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png"
+                                        : course.imageUrl,
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
