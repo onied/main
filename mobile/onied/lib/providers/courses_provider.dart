@@ -3,8 +3,8 @@ import 'package:onied_mobile/models/search_filters_model.dart';
 import 'package:onied_mobile/services/graphql_service.dart';
 
 class CourseProvider {
-  final GraphQlService service;
-  CourseProvider(this.service);
+  final GraphQlService graphqlService;
+  CourseProvider(this.graphqlService);
 
   Future<QueryResult> getAllCategories() async {
     String query = '''
@@ -16,7 +16,7 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: const {});
+    return await graphqlService.performQuery(query, variables: const {});
   }
 
   Future<QueryResult> getSearchResult(
@@ -67,7 +67,7 @@ class CourseProvider {
       "isArchived": !searchFilters.selectedIsActiveOnly,
     };
 
-    return await service.performQuery(query, variables: variables);
+    return await graphqlService.performQuery(query, variables: variables);
   }
 
   Future<QueryResult> getCoursePreviewById(int id) async {
@@ -99,7 +99,7 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"id": id});
+    return await graphqlService.performQuery(query, variables: {"id": id});
   }
 
   Future<QueryResult> getCourseHierarchyById(int id) async {
@@ -123,7 +123,7 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"id": id});
+    return await graphqlService.performQuery(query, variables: {"id": id});
   }
 
   Future<QueryResult> getSummaryBlockById(int id) async {
@@ -139,7 +139,7 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"id": id});
+    return await graphqlService.performQuery(query, variables: {"id": id});
   }
 
   Future<QueryResult> getVideoBlockById(int id) async {
@@ -153,7 +153,7 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"id": id});
+    return await graphqlService.performQuery(query, variables: {"id": id});
   }
 
   Future<QueryResult> getTasksBlockById(int id) async {
@@ -177,7 +177,7 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"id": id});
+    return await graphqlService.performQuery(query, variables: {"id": id});
   }
 
   Future<QueryResult> getOwnedCourses(int amount) async {
@@ -193,7 +193,10 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"amount": amount});
+    return await graphqlService.performQuery(
+      query,
+      variables: {"amount": amount},
+    );
   }
 
   Future<QueryResult> getPopularCourses(int amount) async {
@@ -209,7 +212,10 @@ class CourseProvider {
     }
     ''';
 
-    return await service.performQuery(query, variables: {"amount": amount});
+    return await graphqlService.performQuery(
+      query,
+      variables: {"amount": amount},
+    );
   }
 
   Future<QueryResult> getRecommendedCourses(int amount) async {
@@ -225,6 +231,9 @@ class CourseProvider {
         }
     ''';
 
-    return await service.performQuery(query, variables: {"amount": amount});
+    return await graphqlService.performQuery(
+      query,
+      variables: {"amount": amount},
+    );
   }
 }
