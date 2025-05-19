@@ -1,7 +1,9 @@
-import 'package:onied_mobile/form_data/login_form_data.dart';
-import 'package:onied_mobile/form_data/registration_form_data.dart';
+import 'package:onied_mobile/requests/forms/login_form_data.dart';
+import 'package:onied_mobile/requests/forms/registration_form_data.dart';
 
 abstract class AuthorizationBlocEvent {}
+
+class AppStarted extends AuthorizationBlocEvent {}
 
 class LoginWithVk extends AuthorizationBlocEvent {}
 

@@ -1,12 +1,14 @@
+import 'package:equatable/equatable.dart';
 import 'package:onied_mobile/models/enums/gender.dart';
 
-class UserModel {
-  String firstName;
-  String lastName;
-  Gender gender;
-  String email;
-  String? avatar;
-  UserModel({
+class UserModel extends Equatable {
+  final String firstName;
+  final String lastName;
+  final Gender gender;
+  final String email;
+  final String? avatar;
+
+  const UserModel({
     required this.firstName,
     required this.lastName,
     required this.gender,
@@ -31,6 +33,9 @@ class UserModel {
       avatar: avatar ?? this.avatar,
     );
   }
+
+  @override
+  List<Object?> get props => [firstName, lastName, gender, email, avatar];
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(

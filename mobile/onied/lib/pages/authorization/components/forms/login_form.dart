@@ -8,7 +8,8 @@ import 'package:logging/logging.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/blocs/authorization/authorization_bloc.dart';
 import 'package:onied_mobile/blocs/authorization/authorization_bloc_event.dart';
-import 'package:onied_mobile/form_data/login_form_data.dart';
+import 'package:onied_mobile/blocs/authorization/authorization_bloc_state.dart';
+import 'package:onied_mobile/requests/forms/login_form_data.dart';
 import 'package:onied_mobile/utils/email_validator.dart';
 
 class LoginForm extends StatefulWidget {
@@ -25,28 +26,28 @@ class _LoginFormState extends State<LoginForm> {
   late String _email;
   late String _password;
   late String? _code;
+  late bool _twoFARequired;
   bool _passwordVisible = false;
-  bool _twoFARequired = false;
 
-  void _enableCodeTextField() {
-    setState(() {
-      _twoFARequired = true;
-    });
-  }
-
-  void _disableCodeTextField() {
-    setState(() {
-      _twoFARequired = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _twoFARequired =
+        context.read<AuthorizationBloc>().state is RequiresTwoFactorState;
   }
 
   Future<void> _trySendLoginRequest() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-
+    if (!_twoFARequired) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Запрос к серверу...')));
+      final formData = LoginFormData(email: _email, password: _password);
+      context.read<AuthorizationBloc>().add(Login(formData: formData));
+    }
     if (_twoFARequired && _code != null && _code!.isNotEmpty) {
-      _disableCodeTextField(); // TODO: убрать при внедрении логики!!!
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Запрос к серверу...')));
@@ -57,9 +58,7 @@ class _LoginFormState extends State<LoginForm> {
       );
       _logger.log(Level.INFO, "Trying to log in ${jsonEncode(formData)}...");
       context.read<AuthorizationBloc>().add(Login(formData: formData));
-      context.push("/");
-    } else {
-      _enableCodeTextField();
+      context.pushReplacementNamed("/");
     }
   }
 
