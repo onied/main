@@ -12,7 +12,9 @@ class CoursePreviewBloc
     on<LoadCoursePreview>((event, emit) async {
       emit(LoadingState());
       try {
-        final course = await courseRepository.getCourseById(event.courseId);
+        final course = await courseRepository.getCourseById(
+          int.parse(event.courseId),
+        );
         if (course != null) {
           emit(LoadedState(course: course));
         } else {

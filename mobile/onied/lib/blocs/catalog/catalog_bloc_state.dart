@@ -1,11 +1,12 @@
 import 'package:onied_mobile/models/course_card_model.dart';
-import 'package:onied_mobile/repositories/course_repository.dart';
+import 'package:onied_mobile/models/course_preview_model.dart';
+import 'package:onied_mobile/models/search_filters_model.dart';
 
 abstract class CatalogBlocState {
   final String query;
-  final CoursesFilterPredicate filteringPredicate;
+  final SearchFiltersModel searchFilters;
 
-  CatalogBlocState({required this.query, required this.filteringPredicate});
+  CatalogBlocState({required this.query, required this.searchFilters});
 }
 
 class ErrorState extends CatalogBlocState {
@@ -14,22 +15,22 @@ class ErrorState extends CatalogBlocState {
   ErrorState({
     required this.errorMessage,
     required super.query,
-    required super.filteringPredicate,
+    required super.searchFilters,
   });
 }
 
 class LoadingState extends CatalogBlocState {
-  LoadingState({required super.query, required super.filteringPredicate});
+  LoadingState({required super.query, required super.searchFilters});
 }
 
 class LoadedState extends CatalogBlocState {
   late final List<CourseCardModel> searchResults;
-  final Iterable<String> categories;
+  final Iterable<CategoryModel> categories;
 
   LoadedState({
     required this.categories,
     required this.searchResults,
     required super.query,
-    required super.filteringPredicate,
+    required super.searchFilters,
   });
 }

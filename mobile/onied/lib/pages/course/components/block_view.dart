@@ -21,7 +21,7 @@ class BlockView extends StatelessWidget {
           builder: (context) {
             switch (block.blockType) {
               case BlockType.summaryBlock:
-                return SummaryBlock(block: block as CourseConspectBlockModel);
+                return SummaryBlock(block: block as CourseSummaryBlockModel);
               case BlockType.videoBlock:
                 return VideoBlock(block: block as CourseVideoBlockModel);
               case BlockType.tasksBlock:

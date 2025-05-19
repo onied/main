@@ -5,7 +5,7 @@ import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/models/course_block_model.dart';
 
 class SummaryBlock extends StatelessWidget {
-  final CourseConspectBlockModel block;
+  final CourseSummaryBlockModel block;
 
   const SummaryBlock({super.key, required this.block});
 

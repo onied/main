@@ -28,7 +28,7 @@ class HomeBloc extends Bloc<HomeBlocEvent, HomeBlocState> {
         ),
       );
     } catch (e) {
-      emit(ErrorState(errorMessage: "Could not load main page."));
+      emit(ErrorState(errorMessage: e.toString()));
     }
   }
 }

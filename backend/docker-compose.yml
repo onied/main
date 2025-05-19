@@ -23,6 +23,20 @@ services:
       db:
         condition: service_started
 
+  graphql:
+    image: graphql-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__CoursesDatabase=Host=db;Username=postgres;Password=postgres;Database=courses_database
+    ports:
+      - 5098:8080
+    build:
+      context: Onied
+      dockerfile: GraphqlService/Dockerfile
+    depends_on:
+      db:
+        condition: service_started
+
   notifications:
     image: misergeevkpfu/notifications
     environment:

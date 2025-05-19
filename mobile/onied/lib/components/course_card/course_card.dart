@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:onied_mobile/components/button/button.dart';
 import 'package:onied_mobile/components/picture_preview/picture_preview.dart';
 import 'package:onied_mobile/models/course_card_model.dart';
 
@@ -58,10 +57,10 @@ class CourseCard extends StatelessWidget {
                           Text('${courseCard.price}₽')
                         else
                           const Text('Бесплатно'),
-                        Button(
-                          onPressed: () {},
-                          text: courseCard.isOwned ? 'продолжить' : 'купить',
-                        ),
+                        // Button(
+                        //   onPressed: () {},
+                        //   text: courseCard.isOwned ? 'продолжить' : 'купить',
+                        // ),
                       ],
                     ),
                   ],

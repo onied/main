@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:onied_mobile/app/app_theme.dart';
+import 'package:onied_mobile/app/injection.dart';
 import 'package:onied_mobile/blocs/course/course_bloc.dart';
 import 'package:onied_mobile/blocs/course/course_bloc_event.dart';
 import 'package:onied_mobile/blocs/course/course_bloc_state.dart';
+import 'package:onied_mobile/providers/courses_provider.dart';
 import 'package:onied_mobile/repositories/course_repository.dart';
 import 'components/block_view.dart';
 import 'components/course_sidebar.dart';
@@ -18,9 +20,9 @@ class CoursePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
-          (context) =>
-              CourseBloc(courseRepository: CourseRepository())
-                ..add(LoadHierarchy(courseId: id)),
+          (context) => CourseBloc(
+            courseRepository: CourseRepository(getIt<CourseProvider>()),
+          )..add(LoadHierarchy(courseId: id)),
       child: Theme(
         data: AppTheme.dataCourseBlocks,
         child: BlocBuilder<CourseBloc, CourseBlocState>(
@@ -54,9 +56,9 @@ class CoursePage extends StatelessWidget {
                     child: CourseSidebar(
                       hierarchy: hierarchy,
                       selectedBlockId: block?.id,
-                      onBlockSelected: (blockId) {
+                      onBlockSelected: (blockId, blockType) {
                         context.read<CourseBloc>().add(
-                          LoadBlock(blockId: blockId),
+                          LoadBlock(blockId: blockId, blockType: blockType),
                         );
                         Navigator.pop(context);
                       },
