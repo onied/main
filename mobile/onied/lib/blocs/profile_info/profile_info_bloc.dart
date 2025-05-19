@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onied_mobile/repositories/user_repository.dart';
-import 'package:onied_mobile/requests/update_user_model.dart';
+import 'package:onied_mobile/requests/profile_changed_request.dart';
 
 import 'profile_info_bloc_event.dart';
 import 'profile_info_bloc_state.dart';
@@ -38,8 +38,9 @@ class ProfileInfoBloc extends Bloc<ProfileInfoBlocEvent, ProfileInfoBlocState> {
     SaveUserInfo event,
     Emitter<ProfileInfoBlocState> emit,
   ) async {
+    emit(LoadingState());
     final profile = await repository.updateProfile(
-      UpdateUserModelRequest(
+      ProfileChangedRequest(
         firstName: event.user.firstName,
         lastName: event.user.lastName,
         gender: event.user.gender,

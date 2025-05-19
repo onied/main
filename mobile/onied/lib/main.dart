@@ -14,7 +14,6 @@ void main() {
 
   WidgetsFlutterBinding.ensureInitialized();
   setupDependencies();
-  getIt<AuthorizationBloc>().add(AppStarted());
 
   runApp(const MainApp());
 }

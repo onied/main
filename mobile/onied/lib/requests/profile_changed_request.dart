@@ -10,4 +10,12 @@ class ProfileChangedRequest {
     required this.lastName,
     required this.gender,
   });
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      "firstName": firstName,
+      "lastName": lastName,
+      "gender": gender.index,
+    };
+  }
 }

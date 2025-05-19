@@ -22,21 +22,18 @@ class AuthorizationProvider {
   }
 
   Future<Credentials?> getCredentials() async {
-    if (await isAuthenticated()) {
+    final accessToken = await flutterSecureStorage.read(key: "accessToken");
+    final refreshToken = await flutterSecureStorage.read(key: "refreshToken");
+    final expiresIn = await flutterSecureStorage.read(key: "expiresIn");
+
+    if (accessToken == null || refreshToken == null || expiresIn == null) {
       return null;
     }
 
-    final accessToken = await flutterSecureStorage.read(key: "accessToken");
-    final refreshToken = await flutterSecureStorage.read(key: "refreshToken");
-    final expiresString = await flutterSecureStorage.read(key: "expiresIn");
-    final expiresIn = DateTime.fromMillisecondsSinceEpoch(
-      int.parse(expiresString!),
-    );
-
     return Credentials(
-      accessToken: accessToken!,
-      refreshToken: refreshToken!,
-      expiresIn: expiresIn,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      expiresIn: DateTime.fromMillisecondsSinceEpoch(int.parse(expiresIn)),
     );
   }
 

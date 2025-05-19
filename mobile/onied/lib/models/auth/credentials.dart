@@ -12,16 +12,17 @@ class Credentials {
   factory Credentials.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
+        "tokenType": "Bearer",
         'accessToken': String accToken,
-        'expiresIn': DateTime dt,
+        'expiresIn': int dt,
         'refreshToken': String refToken,
       } =>
         Credentials(
           accessToken: accToken,
-          expiresIn: dt,
+          expiresIn: DateTime.now().add(Duration(seconds: dt)),
           refreshToken: refToken,
         ),
-      _ => throw const FormatException('Failed to load album.'),
+      _ => throw const FormatException('Failed to load credentials.'),
     };
   }
 }

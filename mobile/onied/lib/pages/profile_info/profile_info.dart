@@ -103,6 +103,13 @@ class ProfileInfoPage extends StatelessWidget {
                                 ),
                                 TextFormField(
                                   initialValue: user.firstName,
+                                  onChanged: (value) {
+                                    context.read<ProfileInfoBloc>().add(
+                                      UpdateUserModel(
+                                        user: user.copyWith(firstName: value),
+                                      ),
+                                    );
+                                  },
                                   decoration: InputDecoration(
                                     hintText: "Имя",
                                     hintStyle: Theme.of(context)
@@ -125,6 +132,13 @@ class ProfileInfoPage extends StatelessWidget {
                                 ),
                                 TextFormField(
                                   initialValue: user.lastName,
+                                  onChanged: (value) {
+                                    context.read<ProfileInfoBloc>().add(
+                                      UpdateUserModel(
+                                        user: user.copyWith(lastName: value),
+                                      ),
+                                    );
+                                  },
                                   decoration: InputDecoration(
                                     hintText: 'Фамилия',
                                     hintStyle: Theme.of(context)

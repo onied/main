@@ -4,7 +4,6 @@ import 'package:onied_mobile/providers/authorization_provider.dart';
 import 'package:onied_mobile/providers/user_provider.dart';
 import 'package:onied_mobile/providers/vk_auth_provider.dart';
 import 'package:onied_mobile/repositories/user_repository.dart';
-import 'package:onied_mobile/blocs/authorization/authorization_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -21,13 +20,6 @@ void setupDependencies() {
     UserRepository(
       authorizationProvider: getIt<AuthorizationProvider>(),
       userProvider: getIt<UserProvider>(),
-    ),
-  );
-
-  getIt.registerSingleton<AuthorizationBloc>(
-    AuthorizationBloc(
-      repository: getIt<UserRepository>(),
-      vkAuthProvider: getIt<VKAuthProvider>(),
     ),
   );
 }

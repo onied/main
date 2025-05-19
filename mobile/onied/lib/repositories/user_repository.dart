@@ -1,8 +1,7 @@
-import 'package:onied_mobile/blocs/profile_info/profile_info_bloc_event.dart';
 import 'package:onied_mobile/models/auth/credentials.dart';
 import 'package:onied_mobile/models/enums/auth_status.dart';
+import 'package:onied_mobile/requests/profile_changed_request.dart';
 import 'package:onied_mobile/requests/refresh_request.dart';
-import 'package:onied_mobile/requests/update_user_model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:onied_mobile/providers/user_provider.dart';
@@ -58,10 +57,10 @@ class UserRepository {
       return null;
     }
 
-    return userProvider.getProfile();
+    return userProvider.getProfile(authData);
   }
 
-  Future<UserModel?> updateProfile(UpdateUserModelRequest request) async {
+  Future<UserModel?> updateProfile(ProfileChangedRequest request) async {
     final authData = await _tryGetCredentials();
     if (authData == null) {
       return null;
