@@ -82,9 +82,8 @@ class MainApp extends StatelessWidget {
                 repository: getIt<UserRepository>(),
                 vkAuthProvider: getIt<VKAuthProvider>(),
                 router: _router,
-              )..add(AppStarted()), // Инициализация при старте
+              )..add(AppStarted()),
         ),
-        // Здесь можно добавить другие Bloc-провайдеры
       ],
       child: MaterialApp.router(
         title: "OniEd",
