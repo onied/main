@@ -32,6 +32,7 @@ class AuthorizationBloc
     Login event,
     Emitter<AuthorizationBlocState> emit,
   ) async {
+    emit(LoadingState());
     try {
       final authStatus = await repository.login(event.formData);
 
