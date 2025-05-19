@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/blocs/profile_info/profile_info_bloc.dart';
 import 'package:onied_mobile/blocs/profile_info/profile_info_bloc_event.dart';
@@ -7,6 +8,8 @@ import 'package:onied_mobile/blocs/profile_info/profile_info_bloc_state.dart';
 import 'package:onied_mobile/components/avatar/avatar.dart';
 import 'package:onied_mobile/components/button/button.dart';
 import 'package:onied_mobile/models/enums/gender.dart';
+import 'package:onied_mobile/providers/authorization_provider.dart';
+import 'package:onied_mobile/providers/user_provider.dart';
 import 'package:onied_mobile/repositories/user_repository.dart';
 
 class ProfileInfoPage extends StatelessWidget {
@@ -16,8 +19,14 @@ class ProfileInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
-          (context) =>
-              ProfileInfoBloc(repository: UserRepository())..add(LoadUser()),
+          (context) => ProfileInfoBloc(
+            repository: UserRepository(
+              authorizationProvider: AuthorizationProvider(
+                flutterSecureStorage: FlutterSecureStorage(),
+              ),
+              userProvider: UserProvider(),
+            ),
+          )..add(LoadUser()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -94,6 +103,13 @@ class ProfileInfoPage extends StatelessWidget {
                                 ),
                                 TextFormField(
                                   initialValue: user.firstName,
+                                  onChanged: (value) {
+                                    context.read<ProfileInfoBloc>().add(
+                                      UpdateUserModel(
+                                        user: user.copyWith(firstName: value),
+                                      ),
+                                    );
+                                  },
                                   decoration: InputDecoration(
                                     hintText: "Имя",
                                     hintStyle: Theme.of(context)
@@ -116,6 +132,13 @@ class ProfileInfoPage extends StatelessWidget {
                                 ),
                                 TextFormField(
                                   initialValue: user.lastName,
+                                  onChanged: (value) {
+                                    context.read<ProfileInfoBloc>().add(
+                                      UpdateUserModel(
+                                        user: user.copyWith(lastName: value),
+                                      ),
+                                    );
+                                  },
                                   decoration: InputDecoration(
                                     hintText: 'Фамилия',
                                     hintStyle: Theme.of(context)

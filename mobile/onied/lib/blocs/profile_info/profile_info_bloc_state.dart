@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:onied_mobile/models/user_model.dart';
 
 abstract class ProfileInfoBlocState {}
@@ -10,8 +11,11 @@ class ErrorState extends ProfileInfoBlocState {
   ErrorState({required this.errorMessage});
 }
 
-class LoadedState extends ProfileInfoBlocState {
+class LoadedState extends ProfileInfoBlocState with EquatableMixin {
   final UserModel user;
 
   LoadedState({required this.user});
+
+  @override
+  List<Object?> get props => [user];
 }

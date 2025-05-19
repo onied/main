@@ -1,67 +1,87 @@
-import 'package:onied_mobile/form_data/login_form_data.dart';
-import 'package:onied_mobile/form_data/login_vk_form_data.dart';
-import 'package:onied_mobile/form_data/registration_form_data.dart';
-import 'package:onied_mobile/models/enums/gender.dart';
-import 'package:onied_mobile/providers/authorization_api.dart';
+import 'package:onied_mobile/models/auth/credentials.dart';
+import 'package:onied_mobile/models/enums/auth_status.dart';
+import 'package:onied_mobile/requests/profile_changed_request.dart';
+import 'package:onied_mobile/requests/refresh_request.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import 'package:onied_mobile/providers/user_provider.dart';
+import 'package:onied_mobile/providers/authorization_provider.dart';
+import 'package:onied_mobile/requests/forms/login_form_data.dart';
+import 'package:onied_mobile/requests/forms/login_vk_form_data.dart';
+import 'package:onied_mobile/requests/forms/registration_form_data.dart';
 import 'package:onied_mobile/models/user_model.dart';
 
-// TODO: ALL API CALLS SHOULD BE IN PROVIDERS!!!!!
-
 class UserRepository {
-  Future<AuthorizationData?> login(LoginFormData formData) async {
-    // final response = await http.post(
-    //   Uri.parse("${Config.backendUrl}/login"),
-    //   body: jsonEncode(formData),
-    // );
+  final AuthorizationProvider authorizationProvider;
+  final UserProvider userProvider;
 
-    // if (response.statusCode != HttpStatus.ok) {
-    //   return null;
-    // }
+  const UserRepository({
+    required this.authorizationProvider,
+    required this.userProvider,
+  });
 
-    // return AuthorizationData.fromJson(
-    //   jsonDecode(response.body) as Map<String, dynamic>,
-    // );
-    return null;
+  Future<AuthStatus> login(LoginFormData formData) async {
+    final authData = await userProvider.login(formData);
+
+    if (authData.authStatus == AuthStatus.ok) {
+      authorizationProvider.setupCredentials(authData.credentials!);
+      return AuthStatus.ok;
+    } else {
+      return authData.authStatus;
+    }
   }
 
-  Future<AuthorizationData?> loginVk(LoginVkFormData formData) async {
-    // final response = await http.post(
-    //   Uri.parse("${Config.backendUrl}/signinVk"),
-    //   body: jsonEncode(formData),
-    // );
+  Future<void> loginVk(LoginVkFormData formData) async {
+    final authData = await userProvider.loginVk(formData);
 
-    // if (response.statusCode != HttpStatus.ok) {
-    //   return null;
-    // }
+    if (authData == null) {
+      throw HttpResponseError();
+    }
 
-    // return AuthorizationData.fromJson(
-    //   jsonDecode(response.body) as Map<String, dynamic>,
-    // );
-    return null;
+    authorizationProvider.setupCredentials(authData);
   }
 
-  Future<AuthorizationData?> register(RegistrationFormData formData) async {
-    // final response = await http.post(
-    //   Uri.parse("${Config.backendUrl}/register"),
-    //   body: jsonEncode(formData),
-    // );
+  Future<void> register(RegistrationFormData formData) async {
+    final authData = await userProvider.register(formData);
 
-    // if (response.statusCode != HttpStatus.ok) {
-    //   return null;
-    // }
+    if (authData == null) {
+      throw HttpResponseError();
+    }
 
-    // return await login(
-    //   LoginFormData(email: formData.email, password: formData.password),
-    // );
-    return null;
+    authorizationProvider.setupCredentials(authData);
   }
 
   Future<UserModel?> getProfile() async {
-    return UserModel(
-      firstName: "Admin",
-      lastName: "Admin",
-      gender: Gender.other,
-      email: "admin@admin.admin",
-    );
+    final authData = await _tryGetCredentials();
+    if (authData == null) {
+      return null;
+    }
+
+    return userProvider.getProfile(authData);
+  }
+
+  Future<UserModel?> updateProfile(ProfileChangedRequest request) async {
+    final authData = await _tryGetCredentials();
+    if (authData == null) {
+      return null;
+    }
+
+    return userProvider.updateProfile(request, authData);
+  }
+
+  Future<Credentials?> _tryGetCredentials() async {
+    late Credentials? authData;
+    if (!await authorizationProvider.isAuthenticated()) {
+      final prevData = await authorizationProvider.getCredentials();
+      if (prevData != null) {
+        authData = await userProvider.refresh(
+          RefreshRequest(refreshToken: prevData.refreshToken),
+        );
+      }
+    } else {
+      authData = await authorizationProvider.getCredentials();
+    }
+
+    return authData;
   }
 }
