@@ -11,7 +11,7 @@ class ProfileInfoBloc extends Bloc<ProfileInfoBlocEvent, ProfileInfoBlocState> {
   ProfileInfoBloc({required this.repository}) : super(LoadingState()) {
     on<LoadUser>(_onLoadUser);
     on<UpdateUserModel>(_onUpdateUserModel);
-    on<SaveUserInfo>(_onSaveUserInfo); // TODO: Save user to backend
+    on<SaveUserInfo>(_onSaveUserInfo);
     // on<SaveUserAvatar>(); // TODO: Save user avatar to backend
   }
 
