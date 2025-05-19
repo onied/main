@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:onied_mobile/components/button/button.dart';
 import 'package:onied_mobile/components/picture_preview/picture_preview.dart';
-import 'package:onied_mobile/models/course_card_dto.dart';
+import 'package:onied_mobile/models/course_card_model.dart';
 
 class CourseCard extends StatelessWidget {
-  final CourseCardDto courseCardDto;
+  final CourseCardModel courseCard;
 
-  const CourseCard({super.key, required this.courseCardDto});
+  const CourseCard({super.key, required this.courseCard});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push("/course/${courseCardDto.id}"),
+      onTap: () => context.push("/course/${courseCard.id}"),
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -25,8 +24,8 @@ class CourseCard extends StatelessWidget {
               PreviewPicture(
                 width: 100,
                 height: 140,
-                href: courseCardDto.imageUrl,
-                isArchived: courseCardDto.isArchived,
+                href: courseCard.imageUrl,
+                isArchived: courseCard.isArchived,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -34,18 +33,18 @@ class CourseCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      courseCardDto.title,
+                      courseCard.title,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Категория: ${courseCardDto.category}',
+                      'Категория: ${courseCard.category}',
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      courseCardDto.description,
+                      courseCard.description,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 12),
@@ -54,14 +53,14 @@ class CourseCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        if (courseCardDto.price > 0)
-                          Text('${courseCardDto.price}₽')
+                        if (courseCard.price > 0)
+                          Text('${courseCard.price}₽')
                         else
                           const Text('Бесплатно'),
-                        Button(
-                          onPressed: () {},
-                          text: courseCardDto.isOwned ? 'продолжить' : 'купить',
-                        ),
+                        // Button(
+                        //   onPressed: () {},
+                        //   text: courseCard.isOwned ? 'продолжить' : 'купить',
+                        // ),
                       ],
                     ),
                   ],
