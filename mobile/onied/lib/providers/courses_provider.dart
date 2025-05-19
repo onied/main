@@ -58,8 +58,6 @@ class CourseProvider {
     }
     ''';
 
-    print(searchQuery);
-
     var variables = {
       "query": searchQuery,
       "id": searchFilters.selectedCategory.id,

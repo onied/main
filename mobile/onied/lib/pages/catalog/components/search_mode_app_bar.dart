@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/models/course_preview_model.dart';
 import 'package:onied_mobile/models/search_filters_model.dart';
-import 'package:onied_mobile/repositories/course_repository.dart';
 import 'search_filters.dart';
 
 class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
