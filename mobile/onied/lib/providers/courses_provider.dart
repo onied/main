@@ -23,22 +23,22 @@ class CourseProvider {
     String searchQuery,
     SearchFiltersModel searchFilters,
   ) async {
-    String query = r'''
+    String query = '''
     query Courses(
-        $query: String
-        $id: Int
-        $minPrice: Int
-        $maxPrice: Int
-        $hasCertificates: Boolean
-        $isArchived: Boolean
+        \$query: String
+        \$minPrice: Int
+        \$maxPrice: Int
+        ${searchFilters.selectedCategory.id != -1 ? "\$id: Int" : ''}
+        ${searchFilters.selectedMustHaveCertificates ? "\$hasCertificates: Boolean" : ''}
+        ${!searchFilters.selectedIsActiveOnly ? '' : "\$isArchived: Boolean"}
     ) {
         courses(
             where: {
-                title: { contains: $query }
-                categoryId: { eq: $id }
-                priceRubles: { gte: $minPrice, lte: $maxPrice }
-                hasCertificates: { eq: $hasCertificates }
-                isArchived: { eq: $isArchived }
+                title: { contains: \$query }
+                priceRubles: { gte: \$minPrice, lte: \$maxPrice }
+                ${searchFilters.selectedCategory.id != -1 ? "categoryId: { eq: \$id }" : ''}
+                ${searchFilters.selectedMustHaveCertificates ? "hasCertificates: { eq: \$hasCertificates }" : ''}
+                ${!searchFilters.selectedIsActiveOnly ? '' : "isArchived: { eq: \$isArchived }"}
             }
         ) {
             nodes {
@@ -58,13 +58,15 @@ class CourseProvider {
     }
     ''';
 
+    print(searchQuery);
+
     var variables = {
       "query": searchQuery,
       "id": searchFilters.selectedCategory.id,
       "minPrice": searchFilters.selectedPriceRange.start.toInt(),
       "maxPrice": searchFilters.selectedPriceRange.end.toInt(),
-      "hasCertificates": searchFilters.selectedHasCertificates,
-      "isArchived": searchFilters.selectedIsArchived,
+      "hasCertificates": searchFilters.selectedMustHaveCertificates,
+      "isArchived": !searchFilters.selectedIsActiveOnly,
     };
 
     return await service.performQuery(query, variables: variables);

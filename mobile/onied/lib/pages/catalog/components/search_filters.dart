@@ -86,20 +86,20 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             const SizedBox(height: 16),
 
             CheckboxListTile(
-              title: const Text('С сертификатом'),
-              value: currentSearchFilters.selectedHasCertificates,
+              title: const Text('С выдачей сертификатов'),
+              value: currentSearchFilters.selectedMustHaveCertificates,
               onChanged: (value) {
                 setState(() {
-                  currentSearchFilters.selectedHasCertificates = value!;
+                  currentSearchFilters.selectedMustHaveCertificates = value!;
                 });
               },
             ),
             CheckboxListTile(
-              title: const Text('В архиве'),
-              value: currentSearchFilters.selectedIsArchived,
+              title: const Text('Только активные'),
+              value: currentSearchFilters.selectedIsActiveOnly,
               onChanged: (value) {
                 setState(() {
-                  currentSearchFilters.selectedIsArchived = value!;
+                  currentSearchFilters.selectedIsActiveOnly = value!;
                 });
               },
             ),

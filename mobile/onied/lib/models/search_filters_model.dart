@@ -5,14 +5,14 @@ class SearchFiltersModel {
   CategoryModel selectedCategory;
   RangeValues selectedPriceRange;
   RangeValues selectedCompletionTimeRange;
-  bool selectedHasCertificates;
-  bool selectedIsArchived;
+  bool selectedMustHaveCertificates;
+  bool selectedIsActiveOnly;
 
   SearchFiltersModel({
     required this.selectedCategory,
     required this.selectedPriceRange,
     required this.selectedCompletionTimeRange,
-    required this.selectedHasCertificates,
-    required this.selectedIsArchived,
+    required this.selectedMustHaveCertificates,
+    required this.selectedIsActiveOnly,
   });
 }

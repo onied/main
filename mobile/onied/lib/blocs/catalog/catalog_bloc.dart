@@ -18,8 +18,8 @@ class CatalogBloc extends Bloc<CatalogBlocEvent, CatalogBlocState> {
             selectedCategory: CategoryModel(id: -1, name: "All"),
             selectedPriceRange: RangeValues(0, 50_000),
             selectedCompletionTimeRange: RangeValues(0, 150),
-            selectedHasCertificates: true,
-            selectedIsArchived: false,
+            selectedMustHaveCertificates: false,
+            selectedIsActiveOnly: false,
           ),
         ),
       ) {

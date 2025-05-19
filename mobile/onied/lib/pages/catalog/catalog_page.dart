@@ -31,6 +31,7 @@ class CatalogPage extends StatelessWidget {
               ),
               LoadedState(:final searchResults) => Scaffold(
                 appBar: SearchModeAppBar(
+                  searchQuery: state.query,
                   categories: state.categories,
                   currentSearchFilters: state.searchFilters,
                   onSearchChanged:
@@ -43,6 +44,7 @@ class CatalogPage extends StatelessWidget {
                       ),
                 ),
                 body: ListView.builder(
+                  padding: EdgeInsets.only(top: 12),
                   itemCount: searchResults.length,
                   itemBuilder: (context, index) {
                     final course = state.searchResults[index];

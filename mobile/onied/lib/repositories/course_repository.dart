@@ -7,8 +7,6 @@ import 'package:onied_mobile/models/enums/block_type.dart';
 import 'package:onied_mobile/models/search_filters_model.dart';
 import 'package:onied_mobile/providers/courses_provider.dart';
 
-typedef CoursesFilterPredicate = bool Function(CourseCardModel courseCardDto);
-
 class CourseRepository {
   final CourseProvider _courseProvider;
   CourseRepository(this._courseProvider);
@@ -51,10 +49,6 @@ class CourseRepository {
 
     return CoursePreviewModel.fromJson(json);
   }
-
-  // Future<Iterable<CourseCardModel>> getAllCourses() async {
-  //   throw UnimplementedError("");
-  // }
 
   Future<Iterable<CourseCardModel>> getFilteredCourses(
     String searchQuery,

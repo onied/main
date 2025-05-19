@@ -6,6 +6,7 @@ import 'package:onied_mobile/repositories/course_repository.dart';
 import 'search_filters.dart';
 
 class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
+  final String searchQuery;
   final ValueChanged<String> onSearchChanged;
   final void Function(SearchFiltersModel) onSearchFiltersChanged;
   final Iterable<CategoryModel> categories;
@@ -13,6 +14,7 @@ class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
 
   const SearchModeAppBar({
     super.key,
+    required this.searchQuery,
     required this.onSearchChanged,
     required this.onSearchFiltersChanged,
     required this.categories,
@@ -28,6 +30,12 @@ class SearchModeAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _SearchModeAppBarState extends State<SearchModeAppBar> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = widget.searchQuery;
+  }
 
   void _openFilterPanel() async {
     final SearchFiltersModel? searchFilters =
@@ -58,7 +66,7 @@ class _SearchModeAppBarState extends State<SearchModeAppBar> {
           hintText: 'Введите запрос...',
           border: InputBorder.none,
         ),
-        onChanged: widget.onSearchChanged,
+        onEditingComplete: () => widget.onSearchChanged(_searchController.text),
       ),
       actions: [
         IconButton(
