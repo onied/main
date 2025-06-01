@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package supportChatGrpc;
+
+import "google/protobuf/timestamp.proto";
+
+service UserChatService {
+  rpc SendMessage (SendMessageRequest) returns (Empty);
+  rpc MarkMessageAsRead (MarkMessageAsReadRequest) returns (Empty);
+  rpc ReceiveMessage (Empty) returns (stream MessageResponse);
+  rpc ReceiveReadAt (Empty) returns (stream ReadAtResponse);
+}
+
+message SendMessageRequest {
+  string messageContent = 1;
+}
+
+message MarkMessageAsReadRequest {
+  string messageId = 1;
+}
+
+message MessageResponse {
+  string messageId = 1;
+  int32 supportNumber = 2;
+  google.protobuf.Timestamp createdAt = 3;
+  string message = 4;
+  bool isSystem = 5;
+}
+
+message ReadAtResponse {
+  string messageId = 1;
+  google.protobuf.Timestamp readAt = 2;
+}
+
+message Empty {
+}
