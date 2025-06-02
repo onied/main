@@ -42,7 +42,7 @@ class ChatRepository {
     _chatStub = ChatGrpc.UserChatServiceClient(
       _supportChannel,
       interceptors: [
-        AuthInterceptor({'Authorization': credentials.accessToken}),
+        AuthInterceptor({'Authorization': "Bearer ${credentials.accessToken}"}),
       ],
     );
   }
