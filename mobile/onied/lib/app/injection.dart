@@ -4,6 +4,7 @@ import 'package:onied_mobile/providers/authorization_provider.dart';
 import 'package:onied_mobile/providers/courses_provider.dart';
 import 'package:onied_mobile/providers/user_provider.dart';
 import 'package:onied_mobile/providers/vk_auth_provider.dart';
+import 'package:onied_mobile/repositories/chat_repository.dart';
 import 'package:onied_mobile/repositories/user_repository.dart';
 import 'package:onied_mobile/services/graphql_service.dart';
 
@@ -31,5 +32,8 @@ void setupDependencies() {
       authorizationProvider: getIt<AuthorizationProvider>(),
       userProvider: getIt<UserProvider>(),
     ),
+  );
+  getIt.registerSingleton<ChatRepository>(
+    ChatRepository(authorizationProvider: getIt<AuthorizationProvider>()),
   );
 }

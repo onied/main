@@ -10,6 +10,7 @@ import 'package:onied_mobile/blocs/authorization/authorization_bloc_state.dart';
 import 'package:onied_mobile/pages/authorization/authorization_page.dart';
 import 'package:onied_mobile/pages/authorization/registration_page.dart';
 import 'package:onied_mobile/pages/catalog/catalog_page.dart';
+import 'package:onied_mobile/pages/chat/chat_page.dart';
 import 'package:onied_mobile/pages/course/course_page.dart';
 import 'package:onied_mobile/pages/course_preview/course_preview_page.dart';
 import 'package:onied_mobile/pages/home/home_page.dart';
@@ -66,6 +67,7 @@ final _router = GoRouter(
               CoursePage(id: int.parse(state.pathParameters["id"]!)),
     ),
     GoRoute(path: '/search', builder: (context, state) => const CatalogPage()),
+    GoRoute(path: '/chat', builder: (context, state) => const ChatPage()),
   ],
 );
 
