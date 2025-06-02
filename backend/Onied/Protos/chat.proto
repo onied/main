@@ -21,7 +21,7 @@ message MarkMessageAsReadRequest {
 
 message MessageResponse {
   string messageId = 1;
-  int32 supportNumber = 2;
+  optional int32 supportNumber = 2;
   google.protobuf.Timestamp createdAt = 3;
   string message = 4;
   bool isSystem = 5;
