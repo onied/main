@@ -13,6 +13,10 @@ class AppTheme {
   static const Color textFieldBackground = Color(0xFFFAFAFA);
   static const Color textFieldBorder = Color(0xFFDBDBDB);
 
+  static const Color otherMessageBackground = Color(0xFFECECEC);
+  static const Color timeMessageColor = Color(0xFFBBBBBB);
+  static const Color markMessageAsRead = Color(0xFF00D9FF);
+
   static ThemeData get main {
     return ThemeData(
       fontFamily: "Inter",
@@ -69,7 +73,7 @@ class AppTheme {
           backgroundColor: accentBright,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: accentBright, width: 3.0)
+            side: BorderSide(color: accentBright, width: 3.0),
           ),
           textStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),

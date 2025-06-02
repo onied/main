@@ -26,6 +26,8 @@ dependencies:
   equatable: ^2.0.7
   graphql_flutter: ^5.2.0
   graphql: ^5.2.1
+  grpc: ^4.0.4
+  protobuf: ^4.1.0
 
 dev_dependencies:
   flutter_test:
