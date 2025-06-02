@@ -4,6 +4,7 @@ using Support.Events.Extensions;
 using Support.Extensions;
 using Support.Hubs;
 using Support.Middlewares;
+using Support.Services.GrpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddGrpc();
+builder.Services.AddGrpcClients(builder.Configuration);
 
 var app = builder.Build();
 
@@ -43,6 +46,7 @@ app.UseCorsConfigured();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/api/v1/chat/hub");
+app.MapGrpcService<UserChatService>();
 
 if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
 {

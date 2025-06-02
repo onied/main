@@ -7,13 +7,15 @@ using Support.Dtos.Hub.Response;
 using Support.Events.Abstractions;
 using Support.Events.Messages;
 using Support.Hubs;
+using UserChatService = Support.Services.GrpcServices.UserChatService;
 
 namespace Support.Services;
 
 public class ChatHubClientSenderService(
     IHubContext<ChatHub, IChatClient> hubContext,
     IMessageScheduler messageScheduler,
-    IMapper mapper) : IChatHubClientSender
+    IMapper mapper,
+    UserChatService userChatService) : IChatHubClientSender
 {
     public async Task SendMessageToSupportUsers(Message message)
     {
@@ -29,6 +31,7 @@ public class ChatHubClientSenderService(
     {
         var messageDto = mapper.Map<HubMessageDto>(message);
         await hubContext.Clients.User(message.Chat.ClientId.ToString()).ReceiveMessage(messageDto);
+        userChatService.ReceiveMessageSender(message.Chat.ClientId, messageDto);
         if (!message.IsSystem)
         {
             await messageScheduler.SchedulePublish(DateTime.UtcNow.AddMinutes(1),
@@ -39,6 +42,7 @@ public class ChatHubClientSenderService(
     public async Task NotifyMessageAuthorItWasRead(Message message)
     {
         await hubContext.Clients.User(message.UserId.ToString()).ReceiveReadAt(message.Id, message.ReadAt!.Value);
+        userChatService.ReceiveReadAtSender(message.UserId, message.Id, message.ReadAt.Value);
     }
 
     public async Task NotifySupportUserMessageAuthorItWasSent(Message message)
