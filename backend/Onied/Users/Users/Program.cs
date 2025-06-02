@@ -6,6 +6,7 @@ using Users.Extensions;
 using Users.Profiles;
 using Users.Services.ProfileService;
 using Users.Services.UsersService;
+using AuthorizationService = Users.Services.GrpcServices.AuthorizationService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json");
@@ -25,6 +26,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
 builder.Services.AddMassTransitConfigured(builder.Configuration);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddGrpc();
 
 var app = builder.Build();
 app.UseRouting();
@@ -40,6 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapHealthChecks("/healthz");
+app.MapGrpcService<AuthorizationService>();
 
 // We need this for Ocelot to work correctly;
 // Otherwise the middleware chain is in the wrong order.
