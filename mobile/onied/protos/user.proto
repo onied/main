@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package usersGrpc;
+
+service AuthorizationService {
+  rpc GetCurrentUserId (Empty) returns (UserIdResponse);
+}
+
+message Empty {
+}
+
+message UserIdResponse {
+  string userId = 1;
+}

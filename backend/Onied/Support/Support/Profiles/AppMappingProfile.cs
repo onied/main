@@ -1,8 +1,10 @@
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Support.Data.Models;
 using Support.Dtos.Chat.GetChat.Response;
 using Support.Dtos.Hub.Response;
 using Support.Dtos.Support.GetChats.Response;
+using SupportChatGrpc;
 
 namespace Support.Profiles;
 
@@ -12,11 +14,11 @@ public class AppMappingProfile : Profile
     {
         // Hub
         CreateMap<MessageView, HubMessageDto>().ForMember(dto => dto.Message,
-            options => options
-                .MapFrom(message => message.MessageContent))
+                options => options
+                    .MapFrom(message => message.MessageContent))
             .ForMember(dto => dto.MessageId,
-            options => options
-                .MapFrom(message => message.Id))
+                options => options
+                    .MapFrom(message => message.Id))
             .ForMember(dto => dto.SupportNumber,
                 options => options
                     .MapFrom(message => message.SupportNumberNullIfUser));
@@ -61,5 +63,9 @@ public class AppMappingProfile : Profile
             .ForMember(dest => dest.SupportNumber,
                 opt => opt
                     .MapFrom(src => src.SupportNumberNullIfUser));
+
+        CreateMap<HubMessageDto, MessageResponse>()
+            .ForMember(dest => dest.CreatedAt, op => op
+                .MapFrom(src => src.CreatedAt.ToTimestamp()));
     }
 }

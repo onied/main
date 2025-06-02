@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:onied_mobile/app/app_theme.dart';
 import 'package:onied_mobile/blocs/profile_info/profile_info_bloc.dart';
 import 'package:onied_mobile/blocs/profile_info/profile_info_bloc_event.dart';
@@ -85,7 +86,6 @@ class ProfileInfoPage extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     Container(
                       padding: const EdgeInsets.all(16.0),
                       child: Form(
@@ -273,8 +273,20 @@ class ProfileInfoPage extends StatelessWidget {
                             ),
 
                             const Divider(),
-
-                            Button(text: "выйти", onPressed: () {}),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              spacing: 16,
+                              children: [
+                                Button(
+                                  text: "выйти",
+                                  onPressed: () => context.pop(),
+                                ),
+                                Button(
+                                  text: "поддержка",
+                                  onPressed: () => context.push("/chat"),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
