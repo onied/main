@@ -18,58 +18,58 @@ class ChatBloc extends Bloc<ChatBlocEvent, ChatBlocState> {
     LoadHistory event,
     Emitter<ChatBlocState> emit,
   ) async {
-    final defaultTimestamp = Timestamp.fromDateTime(
-      DateTime(1971, 1, 1, 12, 0),
-    );
-    final defaultMessage = MessageResponse(
-      messageId: "id1",
-      supportNumber: 20,
-      createdAt: defaultTimestamp,
-      message: "message message",
-      isSystem: true,
-    );
-    final meDefaultMessage = MessageResponse(
-      messageId: "id2",
-      supportNumber: null,
-      createdAt: defaultTimestamp,
-      message: "me message",
-      isSystem: false,
-    );
-    final systemMessage = MessageResponse(
-      messageId: "id3",
-      supportNumber: null,
-      createdAt: defaultTimestamp,
-      message: "close-session",
-      isSystem: true,
-    );
-    final defaultReadAtResponse = ReadAtResponse(
-      messageId: meDefaultMessage.messageId,
-      readAt: defaultTimestamp,
-    );
-
-    final readItem = Message.fromGrpc(meDefaultMessage)
-      ..readAt = defaultReadAtResponse.readAt.toDateTime();
-
-    emit(
-      HistoryLoadedState(
-        messageHistory: [
-          Message.fromGrpc(defaultMessage),
-          readItem,
-          Message.fromGrpc(systemMessage),
-          Message.fromGrpc(defaultMessage),
-          Message.fromGrpc(defaultMessage),
-          Message.fromGrpc(defaultMessage),
-          Message.fromGrpc(defaultMessage),
-          Message.fromGrpc(defaultMessage),
-          Message.fromGrpc(defaultMessage),
-          Message.fromGrpc(defaultMessage),
-        ],
-      ),
-    );
-    // TODO: раскомментировать
-    // emit(
-    //   HistoryLoadedState(messageHistory: await chatRepository.getMessages()),
+    // final defaultTimestamp = Timestamp.fromDateTime(
+    //   DateTime(1971, 1, 1, 12, 0),
     // );
+    // final defaultMessage = MessageResponse(
+    //   messageId: "id1",
+    //   supportNumber: 20,
+    //   createdAt: defaultTimestamp,
+    //   message: "message message",
+    //   isSystem: true,
+    // );
+    // final meDefaultMessage = MessageResponse(
+    //   messageId: "id2",
+    //   supportNumber: null,
+    //   createdAt: defaultTimestamp,
+    //   message: "me message",
+    //   isSystem: false,
+    // );
+    // final systemMessage = MessageResponse(
+    //   messageId: "id3",
+    //   supportNumber: null,
+    //   createdAt: defaultTimestamp,
+    //   message: "close-session",
+    //   isSystem: true,
+    // );
+    // final defaultReadAtResponse = ReadAtResponse(
+    //   messageId: meDefaultMessage.messageId,
+    //   readAt: defaultTimestamp,
+    // );
+
+    // final readItem = Message.fromGrpc(meDefaultMessage)
+    //   ..readAt = defaultReadAtResponse.readAt.toDateTime();
+
+    // emit(
+    //   HistoryLoadedState(
+    //     messageHistory: [
+    //       Message.fromGrpc(defaultMessage),
+    //       readItem,
+    //       Message.fromGrpc(systemMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //       Message.fromGrpc(defaultMessage),
+    //     ],
+    //   ),
+    // );
+    // TODO: раскомментировать
+    emit(
+      HistoryLoadedState(messageHistory: await chatRepository.getMessages()),
+    );
     chatRepository.messageStream.listen((event) async {
       final history = List<Message>.from(
         (state as HistoryLoadedState).messageHistory..add(event),

@@ -18,14 +18,20 @@ class ChatRepository {
   ChatRepository({required this.authorizationProvider});
 
   Future<List<Message>> getMessages() async {
-    final response = await http.get(Uri.parse("${Config.backendUrl}/chat"));
+    final credentials = await authorizationProvider.getCredentials();
+    if (credentials == null) {
+      throw Exception("grpc connection cannot work without authentication");
+    }
+    final response = await http.get(
+      Uri.parse("${Config.backendUrl}/chat"),
+      headers: {"Authorization": 'Bearer ' + credentials.accessToken},
+    );
 
     if (response.statusCode != HttpStatus.ok) {
       return [];
     }
-    return jsonDecode(
-      response.body,
-    ).map((json) => Message.fromJson(json)).toList();
+    final messages = jsonDecode(response.body)["messages"] as List;
+    return messages.map((json) => Message.fromJson(json)).toList();
   }
 
   Future<void> connect() async {
@@ -37,7 +43,14 @@ class ChatRepository {
     _supportChannel = ClientChannel(
       Config.ChatGrpcHost,
       port: Config.ChatGrpcPort,
-      options: const ChannelOptions(credentials: ChannelCredentials.secure()),
+      options: ChannelOptions(
+        credentials: ChannelCredentials.secure(
+          onBadCertificate: (X509Certificate cert, String host) {
+            // Всегда принимать любой сертификат
+            return true;
+          },
+        ),
+      ),
     );
     _chatStub = ChatGrpc.UserChatServiceClient(
       _supportChannel,
