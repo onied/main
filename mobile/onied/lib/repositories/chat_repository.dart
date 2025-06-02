@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:onied_mobile/app/config.dart';
 import 'package:onied_mobile/models/chat/message.dart';
 import 'package:onied_mobile/protos/generated/chat.pbgrpc.dart' as ChatGrpc;
-import 'package:onied_mobile/protos/generated/user.pbgrpc.dart' as UserGrpc;
 import 'package:onied_mobile/protos/helpers/auth_interceptor.dart';
 import 'package:onied_mobile/providers/authorization_provider.dart';
 
@@ -35,19 +34,6 @@ class ChatRepository {
       throw Exception("grpc connection cannot work without authentication");
     }
 
-    final usersChannel = ClientChannel(
-      Config.ChatGrpcHost,
-      port: Config.ChatGrpcPort,
-      options: const ChannelOptions(credentials: ChannelCredentials.secure()),
-    );
-    final authStub = UserGrpc.AuthorizationServiceClient(
-      usersChannel,
-      interceptors: [
-        AuthInterceptor({'Authorization': credentials.accessToken}),
-      ],
-    );
-    final userId = await authStub.getCurrentUserId(UserGrpc.Empty());
-
     _supportChannel = ClientChannel(
       Config.ChatGrpcHost,
       port: Config.ChatGrpcPort,
@@ -56,7 +42,7 @@ class ChatRepository {
     _chatStub = ChatGrpc.UserChatServiceClient(
       _supportChannel,
       interceptors: [
-        AuthInterceptor({'Authorization': userId.userId}),
+        AuthInterceptor({'Authorization': credentials.accessToken}),
       ],
     );
   }

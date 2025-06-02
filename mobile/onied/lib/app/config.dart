@@ -1,8 +1,6 @@
 class Config {
-  static const String UserGrpcHost = "192.168.31.114";
-  static const int UserGrpcPort = 5288;
   static const String ChatGrpcHost = "192.168.31.114";
-  static const int ChatGrpcPort = 7124;
+  static const int ChatGrpcPort = 7191;
   static const backendUrl = "http://192.168.31.114:5288/api/v1";
   static const graphQlEndpoint = "http://192.168.31.114:5288/graphql";
   static const String clientId = '51882579';
