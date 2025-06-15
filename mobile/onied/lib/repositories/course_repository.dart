@@ -220,4 +220,8 @@ class CourseRepository {
         throw UnimplementedError("Can't get block without specified type");
     }
   }
+
+  Future<bool> likeCourse(int courseId, bool like) async {
+    return await _courseProvider.likeCourse(courseId, like);
+  }
 }

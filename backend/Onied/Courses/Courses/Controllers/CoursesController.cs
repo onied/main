@@ -16,6 +16,18 @@ public class CoursesController(ISender sender) : ControllerBase
         return await sender.Send(new GetCoursePreviewQuery(id, userId));
     }
 
+    [HttpPost("like")]
+    public async Task<IResult> LikeCourse(int id, [FromQuery] Guid userId)
+    {
+        return await sender.Send(new LikeCourseCommand(id, userId, true));
+    }
+
+    [HttpPost("unlike")]
+    public async Task<IResult> UnlikeCourse(int id, [FromQuery] Guid userId)
+    {
+        return await sender.Send(new LikeCourseCommand(id, userId, false));
+    }
+
     [HttpPost("enter")]
     public async Task<IResult> EnterFreeCourse(int id, [FromQuery] Guid userId)
     {

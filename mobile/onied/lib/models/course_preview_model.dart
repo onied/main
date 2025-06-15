@@ -11,6 +11,7 @@ class CoursePreviewModel {
   final bool hasCertificates;
   final List<String>? courseProgram;
   final bool isOwned;
+  final bool isLiked;
 
   const CoursePreviewModel({
     required this.id,
@@ -25,6 +26,7 @@ class CoursePreviewModel {
     required this.hasCertificates,
     required this.courseProgram,
     required this.isOwned,
+    required this.isLiked,
   });
 
   factory CoursePreviewModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class CoursePreviewModel {
       isArchived: json['isArchived'] as bool,
       hasCertificates: json['hasCertificates'] as bool,
       isOwned: json['isOwned'] as bool,
+      isLiked: json['isLiked'] as bool,
       category: CategoryModel(
         id: (json['category'] as Map<String, dynamic>?)?['id'] as int,
         name: (json['category'] as Map<String, dynamic>?)?['name'] as String,
@@ -57,6 +60,38 @@ class CoursePreviewModel {
               )
               .toList() ??
           <String>[],
+    );
+  }
+
+  CoursePreviewModel copyWith({
+    int? id,
+    String? title,
+    String? pictureHref,
+    String? description,
+    int? hoursCount,
+    int? price,
+    CategoryModel? category,
+    CourseAuthorModel? courseAuthor,
+    bool? isArchived,
+    bool? hasCertificates,
+    List<String>? courseProgram,
+    bool? isOwned,
+    bool? isLiked,
+  }) {
+    return CoursePreviewModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      pictureHref: pictureHref ?? this.pictureHref,
+      description: description ?? this.description,
+      hoursCount: hoursCount ?? this.hoursCount,
+      price: price ?? this.price,
+      category: category ?? this.category,
+      courseAuthor: courseAuthor ?? this.courseAuthor,
+      isArchived: isArchived ?? this.isArchived,
+      hasCertificates: hasCertificates ?? this.hasCertificates,
+      courseProgram: courseProgram ?? this.courseProgram,
+      isOwned: isOwned ?? this.isOwned,
+      isLiked: isLiked ?? this.isLiked,
     );
   }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Courses.Data.Abstractions;
 using Courses.Data.Models;
 using Courses.Dtos.Course.Response;
 using Courses.Dtos.EditCourse.Request;
@@ -16,6 +17,7 @@ public class CourseService(
     ICourseCreatedProducer courseCreatedProducer,
     ICategoryRepository categoryRepository,
     ISubscriptionManagementService subscriptionManagementService,
+    IStatsRepository statsRepository,
     IMapper mapper
     ) : ICourseService
 {
@@ -32,6 +34,20 @@ public class CourseService(
         var preview = mapper.Map<PreviewResponse>(course);
         preview.IsOwned = userCourseInfo is not null;
         return Results.Ok(preview);
+    }
+
+    public async Task<IResult> LikeCourse(int id, Guid userId, bool like)
+    {
+        var course = await courseRepository.GetCourseAsync(id);
+        if (course == null)
+            return Results.NotFound();
+        if (await statsRepository.IsCourseLikedAsync(id, userId) == like)
+            return Results.Ok();
+        if (like)
+            await statsRepository.LikeCourseAsync(id, userId);
+        else
+            await statsRepository.UnlikeCourseAsync(id, userId);
+        return Results.Ok();
     }
 
     public async Task<IResult> EnterFreeCourse(int id, Guid userId)
