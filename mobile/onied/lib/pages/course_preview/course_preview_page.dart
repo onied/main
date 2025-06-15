@@ -58,9 +58,17 @@ class _CoursePreviewPageState extends State<CoursePreviewPage> {
       setState(() {
         consumer = cons;
         streamSubscription = cons.listen((AmqpMessage amqpMessage) {
-          context.read<CoursePreviewBloc>().add(
-            UpdateStats(amqpMessage.payloadAsJson["likes"]),
-          );
+          final bloc = context.read<CoursePreviewBloc>();
+          if (bloc.state is! StatsOpenState) {
+            amqpMessage.reject(true);
+            return;
+          }
+          final courseId = (bloc.state as StatsOpenState).course.id;
+          if (amqpMessage.payloadAsJson["courseId"] != courseId) {
+            amqpMessage.reject(true);
+            return;
+          }
+          bloc.add(UpdateStats(amqpMessage.payloadAsJson["likes"]));
         });
       });
     });
