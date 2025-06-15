@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 
 import 'package:onied_mobile/app/config.dart';
 import 'package:onied_mobile/models/auth/authorization_data.dart';
@@ -16,8 +15,6 @@ import 'package:onied_mobile/requests/profile_changed_request.dart';
 import 'package:onied_mobile/requests/refresh_request.dart';
 
 class UserProvider {
-  final _logger = Logger("UserProvider");
-
   Future<AuthorizationData> login(LoginFormData formData) async {
     final response = await http.post(
       Uri.parse("${Config.backendUrl}/login"),

@@ -24,7 +24,7 @@ void setupDependencies() {
   );
 
   getIt.registerSingleton<CourseProvider>(
-    CourseProvider(getIt<GraphQlService>()),
+    CourseProvider(getIt<GraphQlService>(), getIt<AuthorizationProvider>()),
   );
 
   getIt.registerSingleton<UserRepository>(
