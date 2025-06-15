@@ -1,5 +1,6 @@
 using AutoFixture;
 using AutoMapper;
+using Courses.Data.Abstractions;
 using Courses.Data.Models;
 using Courses.Dtos.Catalog.Response;
 using Courses.Dtos.Course.Response;
@@ -26,6 +27,7 @@ public class CoursesServiceTests
     private readonly Mock<IUserCourseInfoRepository> _userCourseInfoRepository = new();
     private readonly Mock<ICourseCreatedProducer> _courseCreatedProducer = new();
     private readonly Mock<ISubscriptionManagementService> _subscriptionManagementService = new();
+    private readonly Mock<IStatsRepository> _statsRepository = new();
     private readonly CourseService _service;
     private readonly Fixture _fixture = new();
 
@@ -40,6 +42,7 @@ public class CoursesServiceTests
             _courseCreatedProducer.Object,
             _categoryRepository.Object,
             _subscriptionManagementService.Object,
+            _statsRepository.Object,
             _mapper);
     }
 
