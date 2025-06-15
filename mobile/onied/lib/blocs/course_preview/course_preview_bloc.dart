@@ -24,5 +24,35 @@ class CoursePreviewBloc
         emit(ErrorState(errorMessage: "Failed to load course"));
       }
     });
+    on<LikeCurrentCourse>((event, emit) async {
+      if (state is! LoadedState) return;
+      final currentState = state as LoadedState;
+      final success = await courseRepository.likeCourse(
+        currentState.course.id,
+        event.like,
+      );
+      emit(
+        LoadedState(
+          course: currentState.course.copyWith(
+            isLiked: currentState.course.isLiked ^ success,
+          ),
+        ),
+      );
+    });
+    on<OpenStats>((event, emit) async {
+      if (state is! LoadedState) return;
+      final currentState = state as LoadedState;
+      emit(StatsOpenState(course: currentState.course, likes: null));
+    });
+    on<CloseStats>((event, emit) async {
+      if (state is! StatsOpenState) return;
+      final currentState = state as StatsOpenState;
+      emit(LoadedState(course: currentState.course));
+    });
+    on<UpdateStats>((event, emit) async {
+      if (state is! StatsOpenState) return;
+      final currentState = state as StatsOpenState;
+      emit(StatsOpenState(course: currentState.course, likes: event.likes));
+    });
   }
 }
