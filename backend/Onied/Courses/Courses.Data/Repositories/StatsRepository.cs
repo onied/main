@@ -10,7 +10,8 @@ public class StatsRepository(ClickHouseConnection connection) : IStatsRepository
 
     public async Task CreateTablesIfNotExistsAsync()
     {
-        var query = $"CREATE TABLE IF NOT EXISTS {LikesTableName} (userId UUID, courseId Int32) ENGINE = MergeTree()";
+        var query =
+            $"CREATE TABLE IF NOT EXISTS {LikesTableName} (userId UUID, courseId Int32) ENGINE = MergeTree() ORDER BY (userId, courseId)";
         await using var command = connection.CreateCommand();
         command.CommandText = query;
         await command.ExecuteNonQueryAsync();

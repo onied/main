@@ -65,7 +65,8 @@ public static class MassTransitExtensions
             };
             var conn = factory.CreateConnection();
             var model = conn.CreateModel();
-            model.ExchangeDeclare("onied-stats-exchange", ExchangeType.Fanout, true);
+            model.ExchangeDeclare("onied-stats-exchange", ExchangeType.Fanout);
+            model.QueueBind("onied-stats-queue", "onied-stats-exchange", string.Empty);
             return model;
         });
 

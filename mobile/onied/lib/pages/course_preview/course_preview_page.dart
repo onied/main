@@ -30,10 +30,7 @@ Future<Consumer> _initConsumer() async {
     ),
   );
   final channel = await client.channel();
-
-  // Создаем очередь
-  final queue = await channel.queue('onied-stats-queue', durable: true);
-  // Создаем потребителя, с тегом my_consumer
+  final queue = await channel.queue('onied-stats-queue', durable: false);
   final consumer = await queue.consume(consumerTag: 'mobile');
   return consumer;
 }
