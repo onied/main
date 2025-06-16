@@ -3,4 +3,5 @@
 public class CourseResponse : Courses.Data.Models.Course
 {
     public bool IsOwned { get; set; }
+    public bool IsLiked { get; set; }
 }

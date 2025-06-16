@@ -15,3 +15,10 @@ class LoadedState extends CoursePreviewBlocState {
 
   LoadedState({required this.course});
 }
+
+class StatsOpenState extends CoursePreviewBlocState {
+  final CoursePreviewModel course;
+  final int? likes;
+
+  StatsOpenState({required this.course, required this.likes});
+}

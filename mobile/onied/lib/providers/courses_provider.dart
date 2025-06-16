@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:graphql/client.dart';
+import 'package:http/http.dart' as http;
+import 'package:onied_mobile/app/config.dart';
 import 'package:onied_mobile/models/search_filters_model.dart';
+import 'package:onied_mobile/providers/authorization_provider.dart';
 import 'package:onied_mobile/services/graphql_service.dart';
 
 class CourseProvider {
+  final AuthorizationProvider authorizationProvider;
   final GraphQlService graphqlService;
-  CourseProvider(this.graphqlService);
+  CourseProvider(this.graphqlService, this.authorizationProvider);
 
   Future<QueryResult> getAllCategories() async {
     String query = '''
@@ -92,6 +98,7 @@ class CourseProvider {
             isArchived
             hasCertificates
             isOwned
+            isLiked
             modules {
                 title
             }
@@ -235,5 +242,23 @@ class CourseProvider {
       query,
       variables: {"amount": amount},
     );
+  }
+
+  Future<bool> likeCourse(int courseId, bool like) async {
+    final auth = await authorizationProvider.getCredentials();
+    final response = await http.post(
+      Uri.parse(
+        "${Config.backendUrl}/courses/$courseId/${like ? "like" : "unlike"}",
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer ${auth?.accessToken}",
+      },
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      return false;
+    }
+    return true;
   }
 }

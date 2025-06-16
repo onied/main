@@ -1,6 +1,9 @@
+using ClickHouse.Client.ADO;
 using Courses.Data;
+using Courses.Data.Abstractions;
 using Courses.Extensions;
 using Courses.Profiles;
+using Courses.Services.BackgroundServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +31,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Pr
 
 builder.Services.AddGrpcClients(builder.Configuration);
 
+builder.Services.AddScoped<ClickHouseConnection>(_ =>
+    new ClickHouseConnection(builder.Configuration.GetConnectionString("StatsDatabase")));
+
 // Added business logic services
 builder.Services.AddServices();
 
@@ -36,6 +42,8 @@ builder.Services.AddRepositories();
 
 // Added converters
 builder.Services.AddConverters();
+
+builder.Services.AddHostedService<StatsSenderService>();
 
 var app = builder.Build();
 
@@ -64,5 +72,13 @@ if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
     if (context.Database.GetPendingMigrations().Any())
         context.Database.Migrate();
 }
+
+using (var statsScope = app.Services.CreateScope())
+{
+    var services = statsScope.ServiceProvider;
+    var statsRepository = services.GetRequiredService<IStatsRepository>();
+    await statsRepository.CreateTablesIfNotExistsAsync();
+}
+
 
 app.Run();

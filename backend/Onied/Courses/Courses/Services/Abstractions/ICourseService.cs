@@ -4,6 +4,8 @@ public interface ICourseService
 {
     public Task<IResult> GetCoursePreview(int id, Guid? userId);
 
+    public Task<IResult> LikeCourse(int id, Guid userId, bool like);
+
     public Task<IResult> EnterFreeCourse(int id, Guid userId);
 
     public Task<IResult> GetCourseHierarchy(int id, Guid userId, string? role);

@@ -1,4 +1,6 @@
 ﻿using Courses.Data;
+using Courses.Data.Abstractions;
+using Courses.Data.Repositories;
 using Courses.Profiles.Converters;
 using Courses.Services;
 using Courses.Services.Abstractions;
@@ -36,6 +38,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped<IUserCourseInfoRepository, UserCourseInfoRepository>();
         serviceCollection.AddScoped<IBlockCompletedInfoRepository, BlockCompletedInfoRepository>();
         serviceCollection.AddScoped<IModuleRepository, ModuleRepository>();
+        serviceCollection.AddScoped<IStatsRepository, StatsRepository>();
         return serviceCollection
             .AddScoped<IManualReviewTaskUserAnswerRepository, ManualReviewTaskUserAnswerRepository>();
     }

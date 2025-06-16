@@ -2,8 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onied_mobile/blocs/chat/chat_bloc_event.dart';
 import 'package:onied_mobile/blocs/chat/chat_bloc_state.dart';
 import 'package:onied_mobile/models/chat/message.dart';
-import 'package:onied_mobile/protos/generated/chat.pb.dart';
-import 'package:onied_mobile/protos/generated/timestamp.pb.dart';
 import 'package:onied_mobile/repositories/chat_repository.dart';
 
 class ChatBloc extends Bloc<ChatBlocEvent, ChatBlocState> {

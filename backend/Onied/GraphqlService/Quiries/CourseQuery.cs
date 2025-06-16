@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Courses.Data;
+using Courses.Data.Abstractions;
 using Courses.Data.Models;
 using GraphqlService.Dtos.Block.Response;
 using GraphqlService.Dtos.Course.Response;
@@ -28,6 +29,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Unauthorized access");
         }
+
         return dbContext
             .Courses.Where(x => x.Users.Select(y => y.Id.ToString()).Contains(userId))
             .AsQueryable();
@@ -49,6 +51,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Unauthorized access");
         }
+
         var course = await dbContext
             .Courses.AsNoTracking()
             .Include(course => course.Modules)
@@ -61,6 +64,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Course not found");
         }
+
         var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
         var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
         var isAuthor = course.Author?.Id.ToString() == userId;
@@ -72,7 +76,8 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         return course;
     }
 
-    public async Task<CourseResponse> GetPublicCourseById(int id, AppDbContext dbContext)
+    public async Task<CourseResponse> GetPublicCourseById(int id, AppDbContext dbContext,
+        IStatsRepository statsRepository)
     {
         var course = await dbContext
             .Courses.AsNoTracking()
@@ -86,6 +91,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Course not found");
         }
+
         var response = mapper.Map<CourseResponse>(course);
         var userId = contextAccessor.HttpContext!.Request.Headers["X-User-Id"].FirstOrDefault();
         var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
@@ -93,6 +99,11 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         var isAuthor = course.Author?.Id.ToString() == userId;
         response.IsOwned =
             userId is not null && (student is not null || moderator is not null || isAuthor);
+
+        if (Guid.TryParse(userId, out var userGuid))
+            response.IsLiked = await statsRepository.IsCourseLikedAsync(course.Id, userGuid);
+        else
+            response.IsLiked = false;
 
         return response;
     }
@@ -104,6 +115,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Unauthorized access");
         }
+
         var block = await dbContext
             .SummaryBlocks.AsNoTracking()
             .Include(x => x.Module.Course)
@@ -115,6 +127,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Block not found");
         }
+
         var course = block.Module.Course;
         var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
         var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
@@ -134,6 +147,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Unauthorized access");
         }
+
         var block = await dbContext
             .VideoBlocks.AsNoTracking()
             .Include(x => x.Module.Course)
@@ -145,6 +159,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Block not found");
         }
+
         var course = block.Module.Course;
         var student = course.Users.FirstOrDefault(x => x.Id.ToString() == userId);
         var moderator = course.Moderators.FirstOrDefault(x => x.Id.ToString() == userId);
@@ -164,6 +179,7 @@ public class CourseQuery([Service] IHttpContextAccessor contextAccessor, [Servic
         {
             throw new GraphQLException("Unauthorized access");
         }
+
         var query = dbContext
             .TasksBlocks.Include(block => block.Module.Course)
             .ThenInclude(course => course.Author)

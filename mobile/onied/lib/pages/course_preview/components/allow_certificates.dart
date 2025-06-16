@@ -17,12 +17,14 @@ class AllowCertificate extends StatelessWidget {
             height: 35,
             child: SvgPicture.string(_certificateSvg, width: 35, height: 35),
           ),
-          const Text(
-            'курс выдает сертификаты',
-            style: TextStyle(
-              color: Color(0xFF686868),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+          const Flexible(
+            child: const Text(
+              'курс выдает сертификаты',
+              style: TextStyle(
+                color: Color(0xFF686868),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

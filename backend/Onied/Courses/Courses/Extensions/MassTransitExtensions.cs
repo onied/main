@@ -4,6 +4,7 @@ using Courses.Services.Producers.CourseCreatedProducer;
 using Courses.Services.Producers.CourseUpdatedProducer;
 using Courses.Services.Producers.NotificationSentProducer;
 using MassTransit;
+using RabbitMQ.Client;
 
 namespace Courses.Extensions;
 
@@ -46,6 +47,30 @@ public static class MassTransitExtensions
         serviceCollection.AddScoped<ICourseUpdatedProducer, CourseUpdatedProducer>();
         serviceCollection.AddScoped<ICourseCompletedProducer, CourseCompletedProducer>();
         serviceCollection.AddScoped<INotificationSentProducer, NotificationSentProducer>();
+
+        serviceCollection.AddSingleton((serviceProvider) =>
+        {
+            var configuration = serviceProvider.GetService<IConfiguration>()!;
+            var factory = new ConnectionFactory
+            {
+                Uri = new UriBuilder()
+                {
+                    Scheme = "amqp",
+                    Host = configuration["RabbitMQ:Host"],
+                    Port = 5672,
+                    UserName = configuration["RabbitMQ:Username"],
+                    Password = configuration["RabbitMQ:Password"],
+                    Path = configuration["RabbitMQ:VHost"],
+                }.Uri
+            };
+            var conn = factory.CreateConnection();
+            var model = conn.CreateModel();
+            model.ExchangeDeclare("onied-stats-exchange", ExchangeType.Fanout);
+            model.QueueBind("onied-stats-queue", "onied-stats-exchange", string.Empty);
+            return model;
+        });
+
+
         return serviceCollection;
     }
 }
