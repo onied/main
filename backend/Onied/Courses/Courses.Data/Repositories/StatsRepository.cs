@@ -17,13 +17,13 @@ public class StatsRepository(ClickHouseConnection connection) : IStatsRepository
         await command.ExecuteNonQueryAsync();
     }
 
-    public async Task<int> GetCourseLikesAsync(int courseId)
+    public async Task<ulong> GetCourseLikesAsync(int courseId)
     {
         var query = $"SELECT count() from {LikesTableName} WHERE courseId = {courseId}";
         await using var command = connection.CreateCommand();
         command.CommandText = query;
         var result = await command.ExecuteScalarAsync();
-        return result == null ? 0 : (int)result;
+        return result == null ? 0 : (ulong)result;
     }
 
     public async Task LikeCourseAsync(int courseId, Guid userId)
@@ -54,6 +54,6 @@ public class StatsRepository(ClickHouseConnection connection) : IStatsRepository
         command.AddParameter("courseId", courseId);
         command.AddParameter("userId", userId);
         var result = await command.ExecuteScalarAsync();
-        return result != null && ((int)result) > 0;
+        return result != null && (ulong)result > 0;
     }
 }

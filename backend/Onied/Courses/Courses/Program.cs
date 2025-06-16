@@ -3,6 +3,7 @@ using Courses.Data;
 using Courses.Data.Abstractions;
 using Courses.Extensions;
 using Courses.Profiles;
+using Courses.Services.BackgroundServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,8 @@ builder.Services.AddRepositories();
 
 // Added converters
 builder.Services.AddConverters();
+
+builder.Services.AddHostedService<StatsSenderService>();
 
 var app = builder.Build();
 

@@ -45,26 +45,32 @@ class CoursePreviewPage extends StatefulWidget {
 }
 
 class _CoursePreviewPageState extends State<CoursePreviewPage> {
-  late final StreamSubscription streamSubscription;
+  StreamSubscription? streamSubscription;
   Consumer? consumer;
+  BuildContext? contextWithBloc;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _initConsumer().then((cons) {
       setState(() {
         consumer = cons;
         streamSubscription = cons.listen((AmqpMessage amqpMessage) {
-          final bloc = context.read<CoursePreviewBloc>();
+          if (contextWithBloc == null) {
+            // amqpMessage.reject(true);
+            return;
+          }
+          final bloc = contextWithBloc!.read<CoursePreviewBloc>();
           if (bloc.state is! StatsOpenState) {
-            amqpMessage.reject(true);
+            // amqpMessage.reject(true);
             return;
           }
           final courseId = (bloc.state as StatsOpenState).course.id;
           if (amqpMessage.payloadAsJson["courseId"] != courseId) {
-            amqpMessage.reject(true);
+            // amqpMessage.reject(true);
             return;
           }
+          // amqpMessage.ack();
           bloc.add(UpdateStats(amqpMessage.payloadAsJson["likes"]));
         });
       });
@@ -73,7 +79,7 @@ class _CoursePreviewPageState extends State<CoursePreviewPage> {
 
   @override
   void dispose() {
-    streamSubscription.cancel();
+    streamSubscription?.cancel();
     consumer?.cancel();
     super.dispose();
   }
@@ -155,6 +161,7 @@ class _CoursePreviewPageState extends State<CoursePreviewPage> {
         appBar: const CourseSearchBar(),
         body: BlocBuilder<CoursePreviewBloc, CoursePreviewBlocState>(
           builder: (context, state) {
+            contextWithBloc = context;
             return switch (state) {
               LoadingState() => const Center(
                 child: CircularProgressIndicator(),
@@ -225,7 +232,7 @@ class _CoursePreviewPageState extends State<CoursePreviewPage> {
                           OpenedTab.stats,
                           context.read<CoursePreviewBloc>(),
                         ),
-                        Text("В понравившихся: $likes"),
+                        Text("В понравившихся: ${likes ?? "..."}"),
                       ],
                     ),
                   ),

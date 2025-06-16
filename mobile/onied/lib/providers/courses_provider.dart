@@ -98,6 +98,7 @@ class CourseProvider {
             isArchived
             hasCertificates
             isOwned
+            isLiked
             modules {
                 title
             }

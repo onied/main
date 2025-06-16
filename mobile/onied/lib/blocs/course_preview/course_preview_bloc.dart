@@ -21,7 +21,7 @@ class CoursePreviewBloc
           emit(ErrorState(errorMessage: "Course not found."));
         }
       } catch (e) {
-        emit(ErrorState(errorMessage: "Failed to load course"));
+        emit(ErrorState(errorMessage: "Failed to load course, reason: ${e}"));
       }
     });
     on<LikeCurrentCourse>((event, emit) async {
